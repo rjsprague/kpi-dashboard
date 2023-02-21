@@ -1,5 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://rjsprague:XbAonDmri5EUM8CQ@cluster1.ozwx4lw.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://test-user:L3XCw57GbIF7oeo7@cluster0.tjsihpy.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useUnifiedTopology: true });
 
 async function deleteAllLeads() {
