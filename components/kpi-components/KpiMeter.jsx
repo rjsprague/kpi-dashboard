@@ -36,8 +36,8 @@ const KpiMeter = ({ redFlag, current, target, kpiName }) => {
             <svg xmlns="http://www.w3.org/2000/svg" version="2" viewbox="0 0 240 130" className="flex overflow-hidden sm:overflow-auto">
                 <rect x="10" y="40" rx="2" ry="2" width="200" height="30" fill="gray" stroke="black" stroke-width="1.5" />
                 <rect ref={rectRef} rx="1" ry="1" x="11" y="41" width="0" height="28" />
-                <path d={`M ${currentNum * 2 + 10} 40 L ${currentNum * 2 + 10} 70`} fill="black" stroke="black" stroke-width="1" />
-                <path d={`M ${redFlag * 2 + 10} 40 L ${redFlag * 2 + 10} 70 M ${target * 2 + 10} 40 L ${target * 2 + 10} 70`} fill="black" stroke="black" stroke-width="1" />
+                <path d={`M ${currentNum * 2 + 10} 40 L ${currentNum * 2 + 10} 70`} fill="black" stroke="black" strokeWidth="1" />
+                <path d={`M ${redFlag * 2 + 10} 40 L ${redFlag * 2 + 10} 70 M ${target * 2 + 10} 40 L ${target * 2 + 10} 70`} fill="black" stroke="black" strokeWidth="1" />
                 <polygon ref={triRef} points="10,40 5,30 15,30" fill="blue" />
                 <polygon points={`${redFlag * 2 + 10},70 ${redFlag * 2 + 5},80 ${redFlag * 2 + 15},80`} fill="red" />
                 <polygon points={`${target * 2 + 10},70 ${target * 2 + 5},80 ${target * 2 + 15},80`} fill="green" />
