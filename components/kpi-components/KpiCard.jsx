@@ -8,7 +8,7 @@ export default function CostPerAcquisition({ prop }) {
 
     return (
         <div className="flex flex-col bg-white border rounded-sm shadow hover:shadow-xl transition-all ease-in-out m-1 p-2 w-60 h-56 min-w-full sm:min-w-0 text-center mx-auto justify-center overflow-hidden">
-            <h1 className="font-semibold text-xl text-black tracking-tighter mb-1">{prop.name}</h1>
+            <h1 className="font-semibold text-xl text-black tracking-tighter  align-top">{prop.name}</h1>
             {/*<div className="mb-1 text-md font-medium text-black">
                 {prop.data1 !== null && prop.data2 !== null ? prop.data1 + "/" + prop.data2 : ""}
             </div>*/}

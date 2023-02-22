@@ -1,0 +1,558 @@
+{
+    "item_id": 2065736526,
+    "external_id": null,
+    "title": "04\/04\/2022",
+    "link": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/marketing-expenses\/items\/100",
+    "rights": [
+        "add_conversation",
+        "grant",
+        "delete",
+        "update",
+        "subscribe",
+        "comment",
+        "rate",
+        "view",
+        "grant_view",
+        "add_task"
+    ],
+    "created_on": "2022-04-11 18:29:35",
+    "app_item_id_formatted": "100",
+    "app_item_id": 100,
+    "created_by": {
+        "type": "user",
+        "id": 4781526,
+        "avatar_type": "file",
+        "avatar_id": 1118829290,
+        "image": {
+            "external_file_id": null,
+            "file_id": 1118829290,
+            "hosted_by": "podio",
+            "hosted_by_humanized_name": "Podio",
+            "link": "https:\/\/d2cmuesa4snpwn.cloudfront.net\/public\/1118829290",
+            "link_target": "_blank",
+            "thumbnail_link": "https:\/\/d2cmuesa4snpwn.cloudfront.net\/public\/1118829290"
+        },
+        "name": "Keith Gillispie",
+        "url": "https:\/\/podio.com\/users\/4781526",
+        "avatar": 1118829290
+    },
+    "created_via": {
+        "id": 1,
+        "auth_client_id": 1,
+        "name": "Podio",
+        "url": null,
+        "display": false
+    },
+    "initial_revision": {
+        "revision": null,
+        "created_on": "2022-04-11 18:29:35",
+        "created_by": {
+            "type": "user",
+            "id": 4781526,
+            "avatar_type": "file",
+            "avatar_id": 1118829290,
+            "image": {
+                "external_file_id": null,
+                "file_id": 1118829290,
+                "hosted_by": "podio",
+                "hosted_by_humanized_name": "Podio",
+                "link": "https:\/\/d2cmuesa4snpwn.cloudfront.net\/public\/1118829290",
+                "link_target": "_blank",
+                "thumbnail_link": "https:\/\/d2cmuesa4snpwn.cloudfront.net\/public\/1118829290"
+            },
+            "name": "Keith Gillispie",
+            "url": "https:\/\/podio.com\/users\/4781526",
+            "avatar": 1118829290
+        },
+        "created_via": {
+            "id": 1,
+            "auth_client_id": 1,
+            "name": "Podio",
+            "url": null,
+            "display": false
+        }
+    },
+    "current_revision": {
+        "revision": null,
+        "created_on": "2022-04-11 18:29:35",
+        "created_by": {
+            "type": "user",
+            "id": 4781526,
+            "avatar_type": "file",
+            "avatar_id": 1118829290,
+            "image": {
+                "external_file_id": null,
+                "file_id": 1118829290,
+                "hosted_by": "podio",
+                "hosted_by_humanized_name": "Podio",
+                "link": "https:\/\/d2cmuesa4snpwn.cloudfront.net\/public\/1118829290",
+                "link_target": "_blank",
+                "thumbnail_link": "https:\/\/d2cmuesa4snpwn.cloudfront.net\/public\/1118829290"
+            },
+            "name": "Keith Gillispie",
+            "url": "https:\/\/podio.com\/users\/4781526",
+            "avatar": 1118829290
+        },
+        "created_via": {
+            "id": 1,
+            "auth_client_id": 1,
+            "name": "Podio",
+            "url": null,
+            "display": false
+        }
+    },
+    "fields": [
+        {
+            "field_id": 233790963,
+            "type": "date",
+            "external_id": "date",
+            "label": "Date",
+            "values": [
+                {
+                    "start": "2022-04-04 00:00:00",
+                    "start_date": "2022-04-04",
+                    "start_time": null,
+                    "start_utc": "2022-04-04",
+                    "start_date_utc": "2022-04-04",
+                    "start_time_utc": null
+                }
+            ],
+            "config": {
+                "default_value": null,
+                "delta": 0,
+                "description": null,
+                "hidden": false,
+                "hidden_create_view_edit": false,
+                "label": "Date",
+                "mapping": null,
+                "required": true,
+                "settings": {
+                    "calendar": false,
+                    "end": "disabled",
+                    "time": "disabled",
+                    "color": "DCEBD8"
+                },
+                "unique": false,
+                "visible": true
+            },
+            "status": "active"
+        },
+        {
+            "field_id": 233790962,
+            "type": "money",
+            "external_id": "amount",
+            "label": "Amount",
+            "values": [
+                {
+                    "value": "473.0000",
+                    "currency": "USD"
+                }
+            ],
+            "config": {
+                "default_value": null,
+                "delta": 1,
+                "description": null,
+                "hidden": false,
+                "hidden_create_view_edit": false,
+                "label": "Amount",
+                "mapping": null,
+                "required": true,
+                "settings": {
+                    "allowed_currencies": [
+                        "USD",
+                        "EUR"
+                    ]
+                },
+                "unique": false,
+                "visible": true
+            },
+            "status": "active"
+        },
+        {
+            "field_id": 233790964,
+            "type": "calculation",
+            "external_id": "week-number",
+            "label": "Week Number",
+            "values": [
+                {
+                    "value": "14.0000"
+                }
+            ],
+            "config": {
+                "default_value": null,
+                "delta": 2,
+                "description": null,
+                "hidden": false,
+                "hidden_create_view_edit": false,
+                "label": "Week Number",
+                "mapping": null,
+                "required": false,
+                "settings": {
+                    "unit": null,
+                    "decimals": 0,
+                    "time": null,
+                    "calendar": null,
+                    "color": null,
+                    "expression": null,
+                    "script": "var a = @[Created On](item_created_on)\n\n\ndate = @[Date](field_233790963)\nvar oneJan = new Date(date.getFullYear(),0,1);\nvar numberOfDays = Math.floor((date - oneJan) \/ (24 * 60 * 60 * 1000));\nvar result = Math.ceil(( date.getDay() + 1 + numberOfDays) \/ 7);\n\nresult",
+                    "return_type": "number"
+                },
+                "unique": false,
+                "visible": true
+            },
+            "status": "active"
+        },
+        {
+            "field_id": 235910196,
+            "type": "app",
+            "external_id": "lead-source",
+            "label": "Lead Source",
+            "values": [
+                {
+                    "value": {
+                        "app": {
+                            "app_id": 27203897,
+                            "config": {
+                                "icon": "23.png",
+                                "icon_id": 23,
+                                "item_name": "Lead Source",
+                                "name": "Lead Sources",
+                                "type": "standard"
+                            },
+                            "current_revision": 5,
+                            "default_view_id": null,
+                            "icon": "23.png",
+                            "icon_id": 23,
+                            "is_default": false,
+                            "item_accounting_info": null,
+                            "item_name": "Lead Source",
+                            "link": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/lead-sources",
+                            "link_add": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/lead-sources\/items\/new",
+                            "name": "Lead Sources",
+                            "sharefile_vault_url": null,
+                            "space_id": 6830538,
+                            "status": "active",
+                            "url_add": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/lead-sources\/items\/new",
+                            "url": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/lead-sources",
+                            "url_label": "lead-sources"
+                        },
+                        "app_item_id": 2,
+                        "created_by": {
+                            "avatar": 1379437480,
+                            "avatar_id": 1379437480,
+                            "avatar_type": "file",
+                            "image": {
+                                "external_file_id": null,
+                                "file_id": 1379437480,
+                                "hosted_by": "podio",
+                                "hosted_by_humanized_name": "Podio",
+                                "link": "https:\/\/d2cmuesa4snpwn.cloudfront.net\/public\/1379437480",
+                                "link_target": "_blank",
+                                "thumbnail_link": "https:\/\/d2cmuesa4snpwn.cloudfront.net\/public\/1379437480"
+                            },
+                            "last_seen_on": "2023-02-22 05:55:08",
+                            "name": "REI Automated",
+                            "id": 5011632,
+                            "type": "user",
+                            "url": "https:\/\/podio.com\/users\/5011632",
+                            "user_id": 5011632
+                        },
+                        "created_on": "2022-02-21 19:54:34",
+                        "created_via": {
+                            "auth_client_id": 9108,
+                            "display": true,
+                            "id": 9108,
+                            "name": "Workflow automation",
+                            "url": null
+                        },
+                        "files": [],
+                        "item_id": 2014474100,
+                        "link": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/lead-sources\/items\/2",
+                        "revision": 0,
+                        "initial_revision": {
+                            "created_by": {
+                                "avatar": 1379437480,
+                                "avatar_id": 1379437480,
+                                "avatar_type": "file",
+                                "image": {
+                                    "external_file_id": null,
+                                    "file_id": 1379437480,
+                                    "hosted_by": "podio",
+                                    "hosted_by_humanized_name": "Podio",
+                                    "link": "https:\/\/d2cmuesa4snpwn.cloudfront.net\/public\/1379437480",
+                                    "link_target": "_blank",
+                                    "thumbnail_link": "https:\/\/d2cmuesa4snpwn.cloudfront.net\/public\/1379437480"
+                                },
+                                "last_seen_on": "2023-02-22 05:55:08",
+                                "name": "REI Automated",
+                                "id": 5011632,
+                                "type": "user",
+                                "url": "https:\/\/podio.com\/users\/5011632",
+                                "user_id": 5011632
+                            },
+                            "created_on": "2022-02-21 19:54:34",
+                            "created_via": {
+                                "auth_client_id": 9108,
+                                "display": true,
+                                "id": 9108,
+                                "name": "Workflow automation",
+                                "url": null
+                            },
+                            "item_revision_id": 7918749698,
+                            "revision": 0,
+                            "type": "creation",
+                            "user": {
+                                "avatar": 1379437480,
+                                "avatar_id": 1379437480,
+                                "avatar_type": "file",
+                                "image": {
+                                    "external_file_id": null,
+                                    "file_id": 1379437480,
+                                    "hosted_by": "podio",
+                                    "hosted_by_humanized_name": "Podio",
+                                    "link": "https:\/\/d2cmuesa4snpwn.cloudfront.net\/public\/1379437480",
+                                    "link_target": "_blank",
+                                    "thumbnail_link": "https:\/\/d2cmuesa4snpwn.cloudfront.net\/public\/1379437480"
+                                },
+                                "last_seen_on": "2023-02-22 05:55:08",
+                                "name": "REI Automated",
+                                "id": 5011632,
+                                "type": "user",
+                                "url": "https:\/\/podio.com\/users\/5011632",
+                                "user_id": 5011632
+                            }
+                        },
+                        "sharefile_vault_folder_id": null,
+                        "sharefile_vault_url": null,
+                        "space": {
+                            "item_accounting_info": null,
+                            "name": "Crowne Properties, Inc.",
+                            "org_id": 1478176,
+                            "sharefile_vault_url": null,
+                            "space_id": 6830538,
+                            "type": "regular",
+                            "url": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc",
+                            "url_label": "crownepropertiesinc"
+                        },
+                        "title": "Instapage"
+                    }
+                }
+            ],
+            "config": {
+                "default_value": null,
+                "delta": 3,
+                "description": null,
+                "hidden": false,
+                "hidden_create_view_edit": false,
+                "label": "Lead Source",
+                "mapping": null,
+                "required": true,
+                "settings": {
+                    "apps": [
+                        {
+                            "app_id": 27203897,
+                            "config": {
+                                "icon": "23.png",
+                                "icon_id": 23,
+                                "item_name": "Lead Source",
+                                "name": "Lead Sources",
+                                "type": "standard"
+                            },
+                            "current_revision": 5,
+                            "default_view_id": null,
+                            "icon": "23.png",
+                            "icon_id": 23,
+                            "is_default": false,
+                            "item_accounting_info": null,
+                            "item_name": "Lead Source",
+                            "link": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/lead-sources",
+                            "link_add": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/lead-sources\/items\/new",
+                            "name": "Lead Sources",
+                            "rights": [
+                                "add_widget",
+                                "delete",
+                                "add_task",
+                                "view_structure",
+                                "reference",
+                                "update",
+                                "add_flow",
+                                "add_hook",
+                                "subscribe",
+                                "manage_public_views",
+                                "view",
+                                "install",
+                                "add_advanced_flow",
+                                "report_visualization",
+                                "add_item",
+                                "export",
+                                "add_integration"
+                            ],
+                            "sharefile_vault_url": null,
+                            "space": {
+                                "item_accounting_info": null,
+                                "name": "Crowne Properties, Inc.",
+                                "org_id": 1478176,
+                                "sharefile_vault_url": null,
+                                "space_id": 6830538,
+                                "type": "regular",
+                                "url": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc",
+                                "url_label": "crownepropertiesinc"
+                            },
+                            "space_id": 6830538,
+                            "status": "active",
+                            "url_add": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/lead-sources\/items\/new",
+                            "url": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/lead-sources",
+                            "url_label": "lead-sources"
+                        }
+                    ],
+                    "multiple": false,
+                    "referenceable_types": [
+                        27203897
+                    ],
+                    "referenced_apps": [
+                        {
+                            "app": {
+                                "app_id": 27203897,
+                                "config": {
+                                    "icon": "23.png",
+                                    "icon_id": 23,
+                                    "item_name": "Lead Source",
+                                    "name": "Lead Sources",
+                                    "type": "standard"
+                                },
+                                "current_revision": 5,
+                                "default_view_id": null,
+                                "icon": "23.png",
+                                "icon_id": 23,
+                                "is_default": false,
+                                "item_accounting_info": null,
+                                "item_name": "Lead Source",
+                                "link": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/lead-sources",
+                                "link_add": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/lead-sources\/items\/new",
+                                "name": "Lead Sources",
+                                "rights": [
+                                    "add_widget",
+                                    "delete",
+                                    "add_task",
+                                    "view_structure",
+                                    "reference",
+                                    "update",
+                                    "add_flow",
+                                    "add_hook",
+                                    "subscribe",
+                                    "manage_public_views",
+                                    "view",
+                                    "install",
+                                    "add_advanced_flow",
+                                    "report_visualization",
+                                    "add_item",
+                                    "export",
+                                    "add_integration"
+                                ],
+                                "sharefile_vault_url": null,
+                                "space": {
+                                    "item_accounting_info": null,
+                                    "name": "Crowne Properties, Inc.",
+                                    "org_id": 1478176,
+                                    "sharefile_vault_url": null,
+                                    "space_id": 6830538,
+                                    "type": "regular",
+                                    "url": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc",
+                                    "url_label": "crownepropertiesinc"
+                                },
+                                "space_id": 6830538,
+                                "status": "active",
+                                "url_add": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/lead-sources\/items\/new",
+                                "url": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/lead-sources",
+                                "url_label": "lead-sources"
+                            },
+                            "app_id": 27203897,
+                            "view": null,
+                            "view_id": null
+                        }
+                    ]
+                },
+                "unique": false,
+                "visible": true
+            },
+            "status": "active"
+        }
+    ],
+    "ratings": {
+        "like": {
+            "average": null,
+            "counts": {
+                "1": {
+                    "total": 0,
+                    "users": []
+                }
+            }
+        }
+    },
+    "user_ratings": {
+        "like": null
+    },
+    "last_event_on": "2022-04-11 18:29:35",
+    "participants": [],
+    "tags": [],
+    "refs": [],
+    "linked_account_id": null,
+    "subscribed": false,
+    "invite": null,
+    "app": {
+        "app_id": 27015576,
+        "status": "active",
+        "icon": "290.png",
+        "icon_id": 290,
+        "space_id": 6830538,
+        "config": {
+            "icon": "290.png",
+            "icon_id": 290,
+            "item_name": "Expense",
+            "name": "Marketing Expenses",
+            "type": "standard"
+        },
+        "link": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/marketing-expenses",
+        "url_add": "https:\/\/podio.com\/crownepropertiesinccom\/crownepropertiesinc\/apps\/marketing-expenses\/items\/new",
+        "url_label": "marketing-expenses",
+        "name": "Marketing Expenses",
+        "item_name": "Expense"
+    },
+    "ref": {},
+    "reminder": {},
+    "recurrence": {},
+    "linked_account_data": {},
+    "comments": [],
+    "revisions": [
+        {
+            "revision": null,
+            "created_on": "2022-04-11 18:29:35",
+            "created_by": {
+                "type": "user",
+                "id": 4781526,
+                "avatar_type": "file",
+                "avatar_id": 1118829290,
+                "image": {
+                    "external_file_id": null,
+                    "file_id": 1118829290,
+                    "hosted_by": "podio",
+                    "hosted_by_humanized_name": "Podio",
+                    "link": "https:\/\/d2cmuesa4snpwn.cloudfront.net\/public\/1118829290",
+                    "link_target": "_blank",
+                    "thumbnail_link": "https:\/\/d2cmuesa4snpwn.cloudfront.net\/public\/1118829290"
+                },
+                "name": "Keith Gillispie",
+                "url": "https:\/\/podio.com\/users\/4781526",
+                "avatar": 1118829290
+            },
+            "created_via": {
+                "id": 1,
+                "auth_client_id": 1,
+                "name": "Podio",
+                "url": null,
+                "display": false
+            }
+        }
+    ],
+    "files": []
+}
