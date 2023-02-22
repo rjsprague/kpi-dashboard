@@ -32,7 +32,7 @@ const KpiMeter = ({ redFlag, current, target, kpiName }) => {
     }, [current, currentNum, dollarFill, percentFill]);
 
     return (
-        <div className="flex pt-8 sm:pt-4 scale-150 sm:scale-100 sm:ml-0 sm:-mr-0 sm:px-0 overflow-hidden justify-around mx-1 px-14">
+        <div className="flex pt-8 sm:pt-4 scale-150 sm:scale-100 sm:ml-0 sm:-mr-0 sm:px-0 overflow-hidden justify-center content-center mx-1 px-14">
             <svg xmlns="http://www.w3.org/2000/svg" version="2" viewbox="0 0 240 130" className="flex overflow-hidden sm:overflow-auto">
                 <rect x="10" y="40" rx="2" ry="2" width="200" height="30" fill="gray" stroke="black" strokeWidth="1.5" />
                 <rect ref={rectRef} rx="1" ry="1" x="11" y="41" width="0" height="28" />

@@ -160,7 +160,7 @@ export default function kpiDashboard() {
                 </section>
                 :
                 <section className="bg-blue-600 text-gray-100  px-2 py-1">
-                    <div className="flex flex-wrap lg:justify-start justify-center">
+                    <div className="flex flex-wrap justify-center">
 
                         {props.map(prop => (<KpiCard prop={prop} isLoading={isLoading}></KpiCard>))}
 

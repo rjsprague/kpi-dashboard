@@ -66,17 +66,18 @@ export default async (req, res) => {
 
     // 
     res.json([
-      {name:"Marketing Spend", current:(Math.floor(Math.random() * 500) + 100), redFlag:null, target:null, data1:null, data2:null },
-      {name:"Cost Per Lead", current:(Math.floor(Math.random() * 60) + 20), redFlag:60.00, target:35.00, data1:marketingSpend, data2:leads.length },
-      {name:"Lead Connection Ratio", current:(Math.floor(Math.random() * 40) + 60), redFlag:70, target:80, data1:connectedLeads.length, data2:leads.length},
-      {name:"Triage Calls", current:(Math.floor(Math.random() * 50) + 40), redFlag:60, target:75, data1:triageCalls.length, data2:connectedLeads.length}, 
-      {name:"Qualified Triage Calls", current:(Math.floor(Math.random() * 60) + 30), redFlag:50, target:70, data1:qualTriageCalls.length, data2:triageCalls.length}, 
-      {name:"Perfect Presentations", current:(Math.floor(Math.random() * 40) + 50), redFlag:65, target:80, data1:perfectPresentations.length, data2:qualTriageCalls.length},
-      {name:"Contracted", current:(Math.floor(Math.random() * 40)), redFlag:10, target:25, data1:contracted.length, data2:perfectPresentations.length},
-      {name:"Acquired", current:(Math.floor(Math.random() * 60) + 30), redFlag:50, target:75, data1:acquired.length, data2:contracted.length},
-      {name:"Deals", current:(Math.floor(Math.random() * 10) + 5), redFlag:7, target:20, data1:null, data2:null},
-      {name:"Profit", current:(Math.floor(Math.random() * 20000) + 100000), redFlag:null, target:null, data1:null, data2:null},
-      {name:"Avg Profit Per Deal", current:((Math.floor(Math.random() * 20000) + 100000)/(Math.floor(Math.random() * 10) + 5)).toFixed(2), redFlag:null, target:null, data1:326000, data2:14},
+      //{name:"Marketing Spend", current:(Math.floor(Math.random() * 500) + 100), redFlag:null, target:null, data1:null, data2:null },
+      {name:"Cost Per Lead", current:(Math.floor(Math.random() * 60) + 20), redFlag:60.00, target:35.00, data1:"Marketing: $6600", data2:"Leads: 100"},
+      {name:"Lead Connection", current:(Math.floor(Math.random() * 40) + 60), redFlag:70, target:80, data1:"Leads: 100", data2:"Connections: 60"},
+      {name:"Triage ", current:(Math.floor(Math.random() * 50) + 40), redFlag:60, target:75, data1:"Connections: 60", data2:"Triages: 35"}, 
+      {name:"Triage Qualification", current:(Math.floor(Math.random() * 60) + 30), redFlag:50, target:70, data1:"Triages: 35", data2:"Qualified: 28"}, 
+      {name:"Deal Analysis Approval", current:(Math.floor(Math.random() * 40) + 50), redFlag:65, target:80, data1:"Qualified: 28", data2:"Approvals: 20"},
+      {name:"Presentation Rate", current:(Math.floor(Math.random() * 40) + 50), redFlag:65, target:80, data1:"Approvals: 20", data2:"Presentations: 18"},
+      {name:"Contract Rate", current:(Math.floor(Math.random() * 40)), redFlag:10, target:25, data1:"Presentations: 18", data2:"Contracts: 5"},
+      {name:"Acquisition Rate", current:(Math.floor(Math.random() * 60) + 30), redFlag:50, target:75, data1:"Contracts: 5", data2:"Acquisitions: 4"},
+      //{name:"Deals", current:(Math.floor(Math.random() * 10) + 5), redFlag:7, target:20, data1:null, data2:null},
+      //{name:"Profit", current:(Math.floor(Math.random() * 20000) + 100000), redFlag:null, target:null, data1:null, data2:null},
+      //{name:"Avg Profit Per Deal", current:((Math.floor(Math.random() * 20000) + 100000)/(Math.floor(Math.random() * 10) + 5)).toFixed(2), redFlag:null, target:null, data1:326000, data2:14},
       //{name:"Cost Per Acquisition", current:costPerAcquisition, redFlag:120, target:70, data1:marketingSpend, data2:acquired.length}
     ]);
   } catch (error) {
