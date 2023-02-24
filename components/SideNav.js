@@ -7,15 +7,15 @@ export default function SideNav() {
 
     return (
         <div className="">
-            <nav className="lg:hidden flex items-center justify-between py-4 px-8 bg-blue-900 w-full">
-                <div className="w-full xl:w-auto px-2 xl:mr-12">
+            <nav className="flex items-center justify-between w-full px-8 py-4 bg-blue-900 lg:hidden">
+                <div className="w-full px-2 xl:w-auto xl:mr-12">
                     <div className="flex items-center justify-between">
                         <a className="inline-flex items-center h-8" href="#">
                             <img src="/reia-icon.webp" className="w-6 h-6" alt="" />
-                            <p className="text-white text-2xl ml-4">REI Automated</p>
+                            <p className="ml-4 text-2xl text-white">REI Automated</p>
                         </a>
                         <div className="xl:hidden">
-                            <button className="navbar-burger text-gray-400 hover:text-gray-300 focus:outline-none">
+                            <button className="text-gray-400 navbar-burger hover:text-gray-300 focus:outline-none">
                                 <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <title>Mobile menu</title>
                                     <path d="M1 2H19C19.2652 2 19.5196 1.89464 19.7071 1.70711C19.8946 1.51957 20 1.26522 20 1C20 0.734784 19.8946 0.48043 19.7071 0.292893C19.5196 0.105357 19.2652 0 19 0H1C0.734784 0 0.48043 0.105357 0.292893 0.292893C0.105357 0.48043 0 0.734784 0 1C0 1.26522 0.105357 1.51957 0.292893 1.70711C0.48043 1.89464 0.734784 2 1 2ZM19 10H1C0.734784 10 0.48043 10.1054 0.292893 10.2929C0.105357 10.4804 0 10.7348 0 11C0 11.2652 0.105357 11.5196 0.292893 11.7071C0.48043 11.8946 0.734784 12 1 12H19C19.2652 12 19.5196 11.8946 19.7071 11.7071C19.8946 11.5196 20 11.2652 20 11C20 10.7348 19.8946 10.4804 19.7071 10.2929C19.5196 10.1054 19.2652 10 19 10ZM19 5H1C0.734784 5 0.48043 5.10536 0.292893 5.29289C0.105357 5.48043 0 5.73478 0 6C0 6.26522 0.105357 6.51957 0.292893 6.70711C0.48043 6.89464 0.734784 7 1 7H19C19.2652 7 19.5196 6.89464 19.7071 6.70711C19.8946 6.51957 20 6.26522 20 6C20 5.73478 19.8946 5.48043 19.7071 5.29289C19.5196 5.10536 19.2652 5 19 5Z" fill="currentColor"></path>
@@ -25,13 +25,13 @@ export default function SideNav() {
                     </div>
                 </div>
             </nav>
-            <div className="hidden lg:block navbar-menu relative z-50">
-                <div className="lg:hidden navbar-backdrop fixed top-0 left-0 w-full h-full bg-blue-900 opacity-50"></div>
-                <nav className="fixed top-0 left-0 bottom-0 w-full max-w-xxs flex flex-col h-full pl-4 py-8 bg-blue-900 overflow-auto">
+            <div className="relative z-50 hidden lg:block navbar-menu">
+                <div className="fixed top-0 left-0 w-full h-full bg-blue-900 opacity-50 lg:hidden navbar-backdrop"></div>
+                <nav className="fixed top-0 bottom-0 left-0 flex flex-col w-full h-full py-8 pl-5 overflow-auto shadow-inner-lg shadow-blue-500 bg-gradient-to-r from-blue-900 to-blue-700 max-w-xxs">
                     <div className="mb-6">
-                        <a className="mb-8 flex flex-row justify-center text-center" href="#">
+                        <a className="flex flex-row justify-center mb-8 text-center" href="#">
                             <img src="/reia-icon.webp" className="w-8 h-8" alt="" />
-                            <p className="text-white text-left font-semibold text-2xl ml-4">REI AUTOMATED</p>
+                            <p className="ml-4 text-2xl font-semibold text-left text-white">REI AUTOMATED</p>
                         </a>
                         <ul className="mb-8">
                             <li className="mb-1">
@@ -62,7 +62,7 @@ export default function SideNav() {
                                         </svg>
                                     </span>
                                     <span className="ml-4 mr-auto text-sm font-semibold">Automations</span>
-                                    <span className="flex items-center justify-center w-6 h-6 bg-blue-500 text-white text-xs font-semibold rounded-full">4</span>
+                                    <span className="flex items-center justify-center w-6 h-6 text-xs font-semibold text-white bg-blue-500 rounded-full">4</span>
                                 </a>
                             </li>
                             <li className="mb-1">

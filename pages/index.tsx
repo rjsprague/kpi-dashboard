@@ -15,9 +15,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className='flex lg:flex-row flex-col gap-0 w-fit'>
+      <main className='flex lg:flex-row flex-col gap-0 w-full'>
         <SideNav />
-        <div className='flex flex-col'>
+        <div className='flex flex-col sm:w-full w-fit'>
           <TopNav />
           <KpiDashboard />
         </div>

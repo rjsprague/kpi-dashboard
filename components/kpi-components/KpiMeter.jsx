@@ -16,35 +16,35 @@ const KpiMeter = ({ redFlag, current, target, kpiName }) => {
         if (kpiName === "Cost Per Lead") {
             gsap.to(rectRef.current, {
                 duration: 2,
-                width: currentNum * 2,
+                width: currentNum * 2.5,
                 fill: dollarFill
             });
         } else {
             gsap.to(rectRef.current, {
                 duration: 2,
-                width: currentNum * 2,
+                width: currentNum * 2.5,
                 fill: percentFill
             });
         }
-        gsap.to(triRef.current, { x: currentNum * 2, duration: 2 });
-        gsap.to(labelRef.current, { x: currentNum * 2, duration: 2 });
-        gsap.to(valRef.current, { x: currentNum * 2, duration: 2 });
+        gsap.to(triRef.current, { x: currentNum * 2.5, duration: 2 });
+        gsap.to(labelRef.current, { x: currentNum * 2.5, duration: 2 });
+        gsap.to(valRef.current, { x: currentNum * 2.5, duration: 2 });
     }, [current, currentNum, dollarFill, percentFill]);
 
     return (
-        <div className="flex pt-8 sm:pt-4 scale-150 sm:scale-100 sm:ml-0 sm:-mr-0 sm:px-0 overflow-hidden justify-center content-center mx-1 px-14">
-            <svg xmlns="http://www.w3.org/2000/svg" version="2" viewbox="0 0 240 130" className="flex overflow-hidden sm:overflow-auto">
-                <rect x="10" y="40" rx="2" ry="2" width="200" height="30" fill="gray" stroke="black" strokeWidth="1.5" />
-                <rect ref={rectRef} rx="1" ry="1" x="11" y="41" width="0" height="28" />
+        <div className="flex items-center justify-center overflow-hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" version="2" viewbox="0 0 220 100" className="flex overflow-hidden">
+                <rect x="25" y="60" rx="2" ry="2" width="250" height="40" fill="gray" stroke="black" strokeWidth="1.5" />
+                <rect ref={rectRef} rx="1" ry="1" x="26" y="61" width="0" height="38" />
                 {/*<path d={`M ${currentNum * 2 + 10} 40 L ${currentNum * 2 + 10} 70`} fill="none" stroke="black" strokeWidth="1" />
                 <path d={`M ${redFlag * 2 + 10} 40 L ${redFlag * 2 + 10} 70 M ${target * 2 + 10} 40 L ${target * 2 + 10} 70`} fill="none" stroke="black" strokeWidth="1" />*/}
-                <polygon ref={triRef} points="10,40 5,30 15,30" fill="black" />
-                <polygon points={`${redFlag * 2 + 10},70 ${redFlag * 2 + 5},80 ${redFlag * 2 + 15},80`} fill="red" />
-                <polygon points={`${target * 2 + 10},70 ${target * 2 + 5},80 ${target * 2 + 15},80`} fill="green" />
-                <text ref={valRef} x="12" y="27" text-anchor="middle" font-size="12" className="text-lg">{kpiName === "Cost Per Lead" ? "$" + current : currentNum + "%"}</text>
-                <text x={`${target * 2 + 12}`} y="90" text-anchor="middle" font-size="10">{kpiName === "Cost Per Lead" ? "$" + target : target + "%"}</text>
-                <text x={`${redFlag * 2 + 12}`} y="90" text-anchor="middle" font-size="10">{kpiName === "Cost Per Lead" ? "$" + redFlag : redFlag + "%"}</text>
-                <text ref={labelRef} x="10" y="9" text-anchor="middle" font-size="12" className=" text-xs">Current</text>
+                <polygon ref={triRef} points="26,60 21,50 31,50" fill="black" />
+                <polygon points={`${redFlag * 2.5 + 10},100 ${redFlag * 2.5 + 5},110 ${redFlag * 2.5 + 15},110`} fill="red" />
+                <polygon points={`${target * 2.5 + 10},100 ${target * 2.5 + 5},110 ${target * 2.5 + 15},110`} fill="green" />
+                <text ref={valRef} x="27" y="47" text-anchor="middle" font-size="12" className="text-lg">{kpiName === "Cost Per Lead" ? "$" + current : currentNum + "%"}</text>
+                <text x={`${target * 2.5 + 12}`} y="125" text-anchor="middle" font-size="12" className="text-md">{kpiName === "Cost Per Lead" ? "$" + target : target + "%"}</text>
+                <text x={`${redFlag * 2.5 + 12}`} y="125" text-anchor="middle" font-size="12" className="text-md">{kpiName === "Cost Per Lead" ? "$" + redFlag : redFlag + "%"}</text>
+                <text ref={labelRef} x="25" y="30" text-anchor="middle" font-size="12" className="text-xs ">Current</text>
                 {/*<text x={`${redFlag * 2 + 12}`} y="97" transform={`rotate(-35, ${redFlag * 2 + 12}, 97)`} text-anchor="end" font-size="10">Red Flag</text>
                 <text x={`${target * 2 + 12}`} y="97" transform={`rotate(-35, ${target * 2 + 12}, 97)`} text-anchor="end" font-size="10">Target</text>*/}
             </svg>
@@ -53,3 +53,4 @@ const KpiMeter = ({ redFlag, current, target, kpiName }) => {
 };
 
 export default KpiMeter;
+

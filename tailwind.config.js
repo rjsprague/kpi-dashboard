@@ -12,6 +12,9 @@ module.exports = {
       lg: '1024px',
       xl: '1280px',
       '2xl': '1380px',
+      '3xl': '1440px',
+      '4xl': '1600px',
+      '5xl': '1700px',
     },
     colors: {
       current: 'currentColor',
@@ -136,9 +139,13 @@ module.exports = {
       '10': '2.5rem',
       '11': '2.75rem',
       '12': '3rem',
+      '13': '3.25rem',
       '14': '3.5rem',
+      '15': '3.75rem',
       '16': '4rem',
+      '17': '4.25rem',
       '18': '4.5rem',
+      '19': '4.75rem',
       '20': '5rem',
       '24': '6rem',
       '26': '6.5rem',
@@ -154,6 +161,7 @@ module.exports = {
       '64': '16rem',
       '72': '18rem',
       '80': '20rem',
+      '88': '22rem',
       '96': '24rem'
     },
     backdropBlur: (theme) => theme('blur'),
@@ -253,6 +261,8 @@ module.exports = {
       xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
       '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
       inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+      'inner-sm': 'inset 1px 1px 2px 2px rgba(0, 0, 0, 0.06)',
+      'inner-lg': 'inset 1px 1px 5px 5px rgba(0, 0, 0, 0.06)',
       none: 'none',
     },
     caretColor: (theme) => theme('colors'),
@@ -726,6 +736,9 @@ module.exports = {
       3: '3deg',
       6: '6deg',
       12: '12deg',
+      45: '45deg',
+      90: '90deg',
+      180: '180deg',
     },
     space: (theme, { negative }) => ({
       ...theme('spacing'),
@@ -993,5 +1006,10 @@ module.exports = {
     wordBreak: ['responsive'],
     zIndex: ['responsive', 'focus-within', 'focus'],
   },
-  plugins: [],
+  plugins: [
+    require('tailwindcss-gradients'),
+  ],
+  corePlugins: {
+    transform: true,
+  },
 }
