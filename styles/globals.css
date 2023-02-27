@@ -34,3 +34,7 @@ body {
   .back {
     transform: rotateY(180deg);
   }
+
+  .backface {
+    backface-visibility: hidden;
+  }

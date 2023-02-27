@@ -38,7 +38,7 @@ export default function kpiDashboard() {
 
         <div className="flex flex-col min-h-screen ">
             <section>
-                <div className="flex flex-row flex-wrap bg-gradient-to-b from-blue-800 to-blue-600 ">
+                <div className="flex flex-row flex-wrap bg-blue-600 shadow-super-2 shadow-blue-300">
                     <div className="w-full pt-2 pr-2">
                         <div className="flex flex-row justify-between">
                             <div className="flex flex-row gap-4">
@@ -83,11 +83,11 @@ export default function kpiDashboard() {
                             </div>
                         </div>
                         <ul className="flex flex-wrap items-center mt-5 lg:mt-4">
-                            <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-600 hover:bg-blue-400 rounded-tl-lg rounded-tr-lg" href="#">Business</a></li>
-                            <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-600 hover:bg-blue-500 rounded-tl-lg rounded-tr-lg" href="#">Lead Managers</a></li>
-                            <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-600 hover:bg-blue-500 rounded-tl-lg rounded-tr-lg" href="#">Deal Analyzers</a></li>
-                            <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-600 hover:bg-blue-500 rounded-tl-lg rounded-tr-lg" href="#">Acquisition Managers</a></li>
-                            <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-600 hover:bg-blue-500 rounded-tl-lg rounded-tr-lg" href="#">Etc</a></li>
+                            <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-gray-50 focus:text-blue-900 hover:bg-blue-50 rounded-tl-lg rounded-tr-lg" href="#">Business</a></li>
+                            <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-gray-50 focus:text-blue-900 hover:bg-blue-50 rounded-tl-lg rounded-tr-lg" href="#">Lead Managers</a></li>
+                            <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-gray-50 focus:text-blue-900 hover:bg-blue-50 rounded-tl-lg rounded-tr-lg" href="#">Deal Analyzers</a></li>
+                            <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-gray-50 focus:text-blue-900 hover:bg-blue-50 rounded-tl-lg rounded-tr-lg" href="#">Acquisition Managers</a></li>
+                            <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-gray-50 focus:text-blue-900 hover:bg-blue-50 rounded-tl-lg rounded-tr-lg" href="#">Etc</a></li>
                         </ul>
                     </div>
                 </div>
@@ -126,8 +126,8 @@ export default function kpiDashboard() {
                     </div>
                 </section>
                 :
-                <section className="min-h-screen px-3 py-1 text-gray-700 bg-white shadow-inner-lg shadow-blue-50 4xl:p-8">
-                    <div className="grid grid-cols-1 gap-2 5xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 4xl:gap-4 justify-items-center">
+                <section className="min-h-screen px-3 py-10 bg-gray-50 4xl:p-8">
+                    <div className="grid grid-cols-1 gap-2 5xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 4xl:gap-8 justify-items-center">
 
                         {props.map(prop => (
                             <div className='w-88 h-60'>

@@ -33,17 +33,24 @@ const KpiMeter = ({ redFlag, current, target, kpiName }) => {
 
     return (
         <div className="flex items-center justify-center overflow-hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" version="2" viewbox="0 0 220 100" className="flex overflow-hidden">
-                <rect x="25" y="60" rx="2" ry="2" width="250" height="40" fill="gray" stroke="black" strokeWidth="1.5" />
-                <rect ref={rectRef} rx="1" ry="1" x="26" y="61" width="0" height="38" />
+            <svg xmlns="http://www.w3.org/2000/svg" version="2" viewBox="0 0 300 150" className="flex overflow-hidden">
+                <defs>
+                    <clipPath id="theClipPath">
+                        <rect x="25" y="60" rx="12" ry="12" width="250" height="40" fill="gray" stroke="none" strokeWidth="0" />
+                    </clipPath>
+                </defs>
+                <g clip-path="url(#theClipPath)">
+                <rect x="25" y="60" rx="0" ry="0" width="250" height="40" fill="#D9D9D9" stroke="none" strokeWidth="0" />              
+                <rect ref={rectRef}   rx="0" ry="0" x="25" y="60" width="0" height="40" />
+                </g>
                 {/*<path d={`M ${currentNum * 2 + 10} 40 L ${currentNum * 2 + 10} 70`} fill="none" stroke="black" strokeWidth="1" />
                 <path d={`M ${redFlag * 2 + 10} 40 L ${redFlag * 2 + 10} 70 M ${target * 2 + 10} 40 L ${target * 2 + 10} 70`} fill="none" stroke="black" strokeWidth="1" />*/}
                 <polygon ref={triRef} points="26,60 21,50 31,50" fill="black" />
-                <polygon points={`${redFlag * 2.5 + 10},100 ${redFlag * 2.5 + 5},110 ${redFlag * 2.5 + 15},110`} fill="red" />
-                <polygon points={`${target * 2.5 + 10},100 ${target * 2.5 + 5},110 ${target * 2.5 + 15},110`} fill="green" />
+                <polygon points={`${redFlag * 2.5 + 25},100 ${redFlag * 2.5 + 20},110 ${redFlag * 2.5 + 30},110`} fill="red" />
+                <polygon points={`${target * 2.5 + 25},100 ${target * 2.5 + 20},110 ${target * 2.5 + 30},110`} fill="green" />
                 <text ref={valRef} x="27" y="47" text-anchor="middle" font-size="12" className="text-lg">{kpiName === "Cost Per Lead" ? "$" + current : currentNum + "%"}</text>
-                <text x={`${target * 2.5 + 12}`} y="125" text-anchor="middle" font-size="12" className="text-md">{kpiName === "Cost Per Lead" ? "$" + target : target + "%"}</text>
-                <text x={`${redFlag * 2.5 + 12}`} y="125" text-anchor="middle" font-size="12" className="text-md">{kpiName === "Cost Per Lead" ? "$" + redFlag : redFlag + "%"}</text>
+                <text x={`${target * 2.5 + 25}`} y="125" text-anchor="middle" font-size="12" className="text-md">{kpiName === "Cost Per Lead" ? "$" + target : target + "%"}</text>
+                <text x={`${redFlag * 2.5 + 25}`} y="125" text-anchor="middle" font-size="12" className="text-md">{kpiName === "Cost Per Lead" ? "$" + redFlag : redFlag + "%"}</text>
                 <text ref={labelRef} x="25" y="30" text-anchor="middle" font-size="12" className="text-xs ">Current</text>
                 {/*<text x={`${redFlag * 2 + 12}`} y="97" transform={`rotate(-35, ${redFlag * 2 + 12}, 97)`} text-anchor="end" font-size="10">Red Flag</text>
                 <text x={`${target * 2 + 12}`} y="97" transform={`rotate(-35, ${target * 2 + 12}, 97)`} text-anchor="end" font-size="10">Target</text>*/}

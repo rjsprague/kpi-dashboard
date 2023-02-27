@@ -27,7 +27,7 @@ export default function SideNav() {
             </nav>
             <div className="relative z-50 hidden lg:block navbar-menu">
                 <div className="fixed top-0 left-0 w-full h-full bg-blue-900 opacity-50 lg:hidden navbar-backdrop"></div>
-                <nav className="fixed top-0 bottom-0 left-0 flex flex-col w-full h-full py-8 pl-5 overflow-auto shadow-inner-lg shadow-blue-500 bg-gradient-to-r from-blue-900 to-blue-700 max-w-xxs">
+                <nav className="fixed top-0 bottom-0 left-0 flex flex-col w-full h-full py-8 pl-5 overflow-auto bg-gradient-to-r from-blue-900 to-blue-700 max-w-xxs shadow-super-2 shadow-black">
                     <div className="mb-6">
                         <a className="flex flex-row justify-center mb-8 text-center" href="#">
                             <img src="/reia-icon.webp" className="w-8 h-8" alt="" />
