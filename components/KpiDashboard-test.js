@@ -21,6 +21,24 @@ export default function kpiDashboard() {
         );
     };
 
+    // Map the lead sources numbers to their respective names
+    // leadSourceItemsSet: { 0: 2014475213, 1: 2014476355, 2: 2014474716, 3: 2014474100, 4: 2282145210 }
+    const leadSourceNames = {
+        2014475213: "SmrtPhone",
+        2014476355: "CallRail",
+        2014474716: "Investor Lift",
+        2014474100: "Instapage",
+        2282145210: "Kevin"
+    };
+
+    // map the current leadSources array to an array of objects with the lead source name and id
+    const leadSourcesObj = leadSources.map(leadSource => {
+        return {
+            id: leadSource,
+            name: leadSourceNames[leadSource]
+        }
+    });
+    
     const handleRemoveQuery = queryId => {
         setQueries(queries.filter(query => query.id !== queryId));
     };
@@ -75,7 +93,7 @@ export default function kpiDashboard() {
                                             <select id="leadSource" className="h-8 w-28 rounded-md text-blue-800 {isLoading && animate-pulse}" value={leadSource} onChange={e => setLeadSource(e.target.value)}>
                                                 {isLoading && <option>Loading...</option>}
                                                 <option value="All">All</option>
-                                                {!isLoading && leadSources.map(leadSource => (<option key={leadSource} value={leadSource}>{leadSource}</option>))}
+                                                {!isLoading && leadSourcesObj.map(leadSource => ( <option key={leadSource.id} value={leadSource.id}>{leadSource.name}</option> ))}
                                             </select>
                                         </div>
                                         <div className="flex">
@@ -133,7 +151,7 @@ export default function kpiDashboard() {
                                     </button>
                                     <div className='flex justify-center text-lg font-semibold'>
                                         <p className="pr-8">Date Range: <span className='font-bold'>{query.dateRange}</span></p>
-                                        <p>Lead Source: <span className='font-bold'>{query.leadSource}</span></p>
+                                        <p>Lead Source: <span className='font-bold'>{leadSourceNames[query.leadSource]}</span></p>
                                     </div>
                                     <button onClick={() => handleRemoveQuery(query.id)}>X</button>
                                 </div>

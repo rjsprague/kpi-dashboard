@@ -30,20 +30,18 @@ export default async (req, res) => {
     return {
       leadCreatedOn: obj['Lead Created On'] && new Date(obj['Lead Created On'].start_utc),
       firstLeadConnection: obj['First lead connection'] && new Date(obj['First lead connection'].start_utc),
-      leadSourceItem: obj['Lead Source Item'],
+      leadSourceItem: obj['Lead Source Item'] && obj['Lead Source Item'][0],
       connected: obj['First lead connection'] ? true : false,
     }
   });
   //console.log("leads ", leads);
 
-  
-
-
   try {
 
     // narrow down leads by lead source and date range
     if (leadSource !== "All") {
-      leads = leads.filter(lead => lead.leadSourceItem === leadSource);
+      leads = leads.filter(lead => lead.leadSourceItem && lead.leadSourceItem == Number(leadSource));
+      //console.log("leads after leadSource filter ", leads);
     }
 
     if (dateRange === "Last Week") {
