@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, use } from 'react'
 import KpiCard from '../components/kpi-components/KpiCard'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import 'swiper/css'
 
 export default function kpiDashboard() {
 
@@ -25,14 +27,15 @@ export default function kpiDashboard() {
 
     useEffect(() => {
         const fetchLeadSources = async () => {
-            const response = await fetch('/api/lead-sources');
-            const data = await response.json();
+            // pass in date range to get unique lead sources for that date range
+            const res = await fetch(`/api/lead-sources?dateRange=${dateRange}`)
+            const data = await res.json();
             setLeadSources(data);
         };
         setIsLoading(true);
         fetchLeadSources();
         setIsLoading(false);
-    }, []);
+    }, [dateRange]);
 
     useEffect(() => {
         const handleQuery = async () => {
@@ -47,7 +50,8 @@ export default function kpiDashboard() {
         setIsLoading(false);
     }, [leadSource, dateRange]);
 
-
+    //console.log("leadSources ", leadSources);
+    
     return (
         <>
             <div className="flex flex-col w-full min-h-screen">
@@ -70,8 +74,8 @@ export default function kpiDashboard() {
                                             </label>
                                             <select id="leadSource" className="h-8 w-28 rounded-md text-blue-800 {isLoading && animate-pulse}" value={leadSource} onChange={e => setLeadSource(e.target.value)}>
                                                 {isLoading && <option>Loading...</option>}
-                                                <option value="all">All</option>
-                                                {!isLoading && leadSources.map(value => (<option key={value} value={value}>{value}</option>))}
+                                                <option value="All">All</option>
+                                                {!isLoading && leadSources.map(leadSource => (<option key={leadSource} value={leadSource}>{leadSource}</option>))}
                                             </select>
                                         </div>
                                         <div className="flex">
@@ -85,6 +89,7 @@ export default function kpiDashboard() {
                                                 value={dateRange}
                                                 onChange={(e) => setDateRange(e.target.value)}
                                             >
+                                                <option value="All">All Time</option>
                                                 <option value="Last Week">Last Week</option>
                                                 <option value="Last Month">Last Month</option>
                                                 <option value="Last Quarter">Last Quarter</option>
@@ -101,9 +106,9 @@ export default function kpiDashboard() {
                                     </a>
                                 </div>
                             </div>
-                            
+
                             <ul className="flex flex-wrap items-center mt-5 lg:mt-4">
-                            {/* KPIs by User Type */}
+                                {/* KPIs by User Type */}
                                 <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-400 focus:text-blue-900 hover:bg-blue-400 rounded-lg" href="#">Business</a></li>
                                 <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-400 focus:text-blue-900 hover:bg-blue-400 rounded-lg" href="#">Lead Managers</a></li>
                                 <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-400 focus:text-blue-900 hover:bg-blue-400 rounded-lg" href="#">Deal Analyzers</a></li>
@@ -115,25 +120,25 @@ export default function kpiDashboard() {
                 </section>
 
                 <section className="flex flex-col text-black ">
-                {/* KPI Results Section */}
-                    <div className="flex flex-row flex-wrap m-8 divide-y-8">
-                        
-                        {queries.map(query => (
-                        
-                            <div key={query.id} className="w-full p-4 overflow-auto bg-white justify-items-start shadow-super-3 rounded-xl">
-                                {/* Generates one set of KPI cards per query */}
-                                <div className='flex justify-center text-lg font-semibold'>
-                                    <p className="pr-8">Date Range: {query.dateRange}</p><p>Lead Source: {query.leadSource}</p>
-                                </div>
+                    {/* KPI Results Section */}
+                    <div className="flex flex-row flex-wrap m-4 divide-y-2">
 
-                                <div class="flex justify-between">
+                        {queries.map(query => (
+
+                            <div key={query.id} className="w-full p-2 overflow-auto bg-white justify-items-start shadow-super-3 rounded-xl">
+
+                                <div class="flex justify-between bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 rounded-lg py-2 px-4 text-gray-50">
                                     <button onClick={() => handleToggleQuery(query.id)}>
                                         {query.isOpen ? "Hide" : "Show"}
                                     </button>
+                                    <div className='flex justify-center text-lg font-semibold'>
+                                        <p className="pr-8">Date Range: <span className='font-bold'>{query.dateRange}</span></p>
+                                        <p>Lead Source: <span className='font-bold'>{query.leadSource}</span></p>
+                                    </div>
                                     <button onClick={() => handleRemoveQuery(query.id)}>X</button>
                                 </div>
 
-                                <div className={`flex flex-row items-center justify-start gap-2 px-4 overflow-x-hidden align-middle ${query.isOpen && 'h-80'}`}>
+                                <div className={`flex flex-row items-center justify-start gap-2 px-4 overflow-x-hidden align-middle ${query.isOpen && 'h-72'}`}>
                                     {query.isOpen &&
                                         query.results.map(result => (
                                             <div key="result.id" className='-mr-40 transition-all ease-in-out delay-300 transform-gpu h-60 w-80 hover:z-10 hover:scale-105 hover:-mr-20 backface'>
