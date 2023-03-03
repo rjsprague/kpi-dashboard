@@ -57,3 +57,8 @@ body {
   .swiper-button-next {
     right: 10px;
   }
+
+  .swiper-pagination-fraction,
+  .swiper-pagination-current {
+    color: black;
+  }

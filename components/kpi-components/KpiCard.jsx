@@ -27,6 +27,7 @@ export default function CostPerAcquisition({ prop }) {
                             current={prop.current}
                             target={prop.target}
                             kpiName={prop.name}
+                            
                         />
                     
                     </div>

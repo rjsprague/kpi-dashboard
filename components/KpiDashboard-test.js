@@ -1,12 +1,10 @@
 import React, { useState, useEffect, use } from 'react'
 import KpiCard from '../components/kpi-components/KpiCard'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import SwiperCore, { Navigation, Pagination } from 'swiper';
+import { Navigation, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css'
 import 'swiper/swiper-bundle.css'
-SwiperCore.use([Navigation, Pagination]);
-
 
 export default function kpiDashboard() {
 
@@ -129,10 +127,8 @@ export default function kpiDashboard() {
                             <ul className="flex flex-wrap items-center mt-5 lg:mt-4">
                                 {/* KPIs by User Type */}
                                 <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-400 focus:text-blue-900 hover:bg-blue-400 rounded-lg" href="#">Business</a></li>
-                                <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-400 focus:text-blue-900 hover:bg-blue-400 rounded-lg" href="#">Lead Managers</a></li>
-                                <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-400 focus:text-blue-900 hover:bg-blue-400 rounded-lg" href="#">Deal Analyzers</a></li>
-                                <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-400 focus:text-blue-900 hover:bg-blue-400 rounded-lg" href="#">Acquisition Managers</a></li>
-                                <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-400 focus:text-blue-900 hover:bg-blue-400 rounded-lg" href="#">Etc</a></li>
+                                <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-400 focus:text-blue-900 hover:bg-blue-400 rounded-lg" href="#">Team Members</a></li>
+                                <li className=""><a className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-400 focus:text-blue-900 hover:bg-blue-400 rounded-lg" href="#">Leaderboard</a></li>
                             </ul>
                         </div>
                     </div>
@@ -144,7 +140,7 @@ export default function kpiDashboard() {
 
                         {queries.map(query => (
 
-                            <div key={query.id} className="p-2 overflow-auto bg-white justify-items-start shadow-super-3 rounded-xl">
+                            <div key={query.id} className="p-2 bg-white justify-items-start shadow-super-3 rounded-xl">
 
                                 <div className="flex justify-between px-4 py-2 font-bold rounded-lg bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
                                     <button onClick={() => handleToggleQuery(query.id)}>
@@ -163,50 +159,65 @@ export default function kpiDashboard() {
                                             spaceBetween={0}
                                             loop={true}
                                             slidesPerView={1}
-                                            effect={'fade'}
                                             direction={'horizontal'}
+                                            pagination={{
+                                                clickable: true                                                
+                                            }}
                                             breakpoints={{
                                                 320: {
                                                     slidesPerView: 1,
                                                     spaceBetween: 0,
+                                                    centeredSlides: true,
+                                                    centeredSlidesBounds: true,
+                                                    slidesPerGroup: 1,
+                                                    slidesOffsetBefore: 55,
+                                                    slidesOffsetAfter: 55,        
                                                 },
-                                                
+
                                                 768: {
                                                     slidesPerView: 2,
-                                                    spaceBetween: 10,
+                                                    slidesPerGroup: 2,
+                                                    spaceBetween: 0,
+                                                    slidesOffsetBefore: 5,
+                                                    slidesOffsetAfter: 10,
                                                 },
                                                 1200: {
                                                     slidesPerView: 3,
-                                                    spaceBetween: 20,
+                                                    slidesPerGroup: 2,
+                                                    spaceBetween: 10,
+                                                    slidesOffsetBefore: 20,
+                                                    slidesOffsetAfter: 20,
                                                 },
                                                 1400: {
                                                     slidesPerView: 4,
-                                                    spaceBetween: 30,
+                                                    slidesPerGroup: 4,
+                                                    spaceBetween: 0,
+                                                    slidesOffsetBefore: 20,
+                                                    slidesOffsetAfter: 20,
+
                                                 },
                                             }}
                                             onSlideChange={() => console.log('slide change')}
                                             onSwiper={(swiper) => console.log(swiper)}
-                                            modules={[Navigation]}
-
+                                            modules={[Navigation, Pagination]}
                                             navigation={{
                                                 prevEl: '.swiper-button-prev',
                                                 nextEl: '.swiper-button-next',
                                             }}
-                                            className="relative w-screen mySwiper sm:w-full lg:max-w-8xl min-h-70"
-
+                                            className="relative w-screen mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-80"
                                         >
                                             <div className={`${query.isOpen && 'h-80'}`}>
                                                 {query.isOpen &&
                                                     query.results.map(result => (
                                                         <SwiperSlide key={result.id}>
-                                                            <div key={result.id} className='my-3 h-60 w-80 backface'>
+                                                            <div key={result.id} className='my-10 h-60 w-80 backface'>
                                                                 <KpiCard prop={result} />
                                                             </div>
                                                         </SwiperSlide>
                                                     ))}
                                             </div>
-                                            
-                                            
+
+
                                         </Swiper>
                                         <div className="absolute right-0 -mr-2 swiper-button-next"></div>
                                     </div>
