@@ -38,10 +38,21 @@ export default function kpiDashboard() {
             name: leadSourceNames[leadSource]
         }
     });
-    
+
     const handleRemoveQuery = queryId => {
         setQueries(queries.filter(query => query.id !== queryId));
     };
+
+    // Handle form submission to get KPIs
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+    
+        const data = await fetch(`/api/get-kpis?leadSource=${leadSource}&dateRange=${dateRange}`);
+        const queryResults = await data.json();
+        const newQuery = { id: idCounter, results: queryResults, isOpen: false, dateRange: dateRange, leadSource: leadSource };
+        setQueries([...queries, newQuery]);
+        setIdCounter(idCounter + 1);
+      };
 
     useEffect(() => {
         const fetchLeadSources = async () => {
@@ -55,7 +66,7 @@ export default function kpiDashboard() {
         setIsLoading(false);
     }, [dateRange]);
 
-    useEffect(() => {
+   /* useEffect(() => {
         const handleQuery = async () => {
             const data = await fetch(`/api/get-kpis?leadSource=${leadSource}&dateRange=${dateRange}`);
             const queryResults = await data.json();
@@ -66,10 +77,10 @@ export default function kpiDashboard() {
         setIsLoading(true);
         handleQuery();
         setIsLoading(false);
-    }, [leadSource, dateRange]);
+    }, [leadSource, dateRange]); */
 
     //console.log("leadSources ", leadSources);
-    
+
     return (
         <>
             <div className="flex flex-col w-full min-h-screen">
@@ -84,26 +95,29 @@ export default function kpiDashboard() {
                                         <h4 className="mb-1 text-2xl font-bold leading-6 tracking-wide text-white xl:text-3xl lg:text-2xl">KPI Dashboard</h4>
                                         <p className="hidden text-xs leading-5 text-gray-300 sm:block">Track and analyze your KPIs to unlock your business's full potential and drive growth!</p>
                                     </div>
+                                    <form onSubmit={handleSubmit}>
                                     <div className='flex flex-row flex-wrap items-center gap-4'>
+                                        {/* Lead Source and Date Range Form */}
+
                                         <div className='flex'>
                                             {/* Lead Source selector */}
                                             <label className='mr-2 text-gray-100'>
                                                 Lead Source:
                                             </label>
-                                            <select id="leadSource" className="h-8 w-28 rounded-md text-blue-800 {isLoading && animate-pulse}" value={leadSource} onChange={e => setLeadSource(e.target.value)}>
+                                            <select id="leadSource" className="px-1 h-8 w-28 rounded-md text-blue-800 {isLoading && animate-pulse}" value={leadSource} onChange={e => setLeadSource(e.target.value)}>
                                                 {isLoading && <option>Loading...</option>}
                                                 <option value="All">All</option>
-                                                {!isLoading && leadSourcesObj.map(leadSource => ( <option key={leadSource.id} value={leadSource.id}>{leadSource.name}</option> ))}
+                                                {!isLoading && leadSourcesObj.map(leadSource => (<option key={leadSource.id} value={leadSource.id}>{leadSource.name}</option>))}
                                             </select>
                                         </div>
-                                        <div className="flex">
+                                        <div className="flex mr-10 ">
                                             {/* Date range selector */}
                                             <label htmlFor="dateRange" className="mr-4 text-gray-100">
                                                 Date range:
                                             </label>
                                             <select
                                                 id="dateRange"
-                                                className="h-8 text-blue-800 rounded-md w-28"
+                                                className="h-8 px-1 text-left text-blue-800 rounded-md w-28"
                                                 value={dateRange}
                                                 onChange={(e) => setDateRange(e.target.value)}
                                             >
@@ -113,7 +127,10 @@ export default function kpiDashboard() {
                                                 <option value="Last Quarter">Last Quarter</option>
                                             </select>
                                         </div>
+                                        <button type="submit" className="box-border flex items-center justify-center w-20 h-10 px-4 py-0 font-bold text-center text-blue-100 transition-all transform bg-blue-900 border-2 border-blue-200 rounded-lg text-md hover:scale-110 ">Submit</button>
+
                                     </div>
+                                    </form>
                                 </div>
                                 <div className="relative px-2">
                                     {/* KPIs Settings Menu */}
@@ -145,13 +162,13 @@ export default function kpiDashboard() {
 
                             <div key={query.id} className="w-full p-2 overflow-auto bg-white justify-items-start shadow-super-3 rounded-xl">
 
-                                <div class="flex justify-between bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 rounded-lg py-2 px-4 text-gray-50">
+                                <div className="flex justify-between px-4 py-2 font-bold rounded-lg bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
                                     <button onClick={() => handleToggleQuery(query.id)}>
                                         {query.isOpen ? "Hide" : "Show"}
                                     </button>
                                     <div className='flex justify-center text-lg font-semibold'>
                                         <p className="pr-8">Date Range: <span className='font-bold'>{query.dateRange}</span></p>
-                                        <p>Lead Source: <span className='font-bold'>{leadSourceNames[query.leadSource]}</span></p>
+                                        <p>Lead Source: <span className='font-bold'>{query.leadSource === "All" ? "All" : leadSourceNames[query.leadSource]}</span></p>
                                     </div>
                                     <button onClick={() => handleRemoveQuery(query.id)}>X</button>
                                 </div>
@@ -169,7 +186,7 @@ export default function kpiDashboard() {
                     </div>
 
                 </section>
-            </div>
+            </div >
         </>
     )
 }

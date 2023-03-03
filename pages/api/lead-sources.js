@@ -44,7 +44,7 @@ export default async function getUniqueLeadSources(req, res) {
     // Get unique lead source items
     const leadSourceItems = filteredData.map((obj) => obj['Lead Source Item']);
     const leadSourceItemsSet = new Set(leadSourceItems.flat().filter(Boolean));
-    console.log("leadSourceItemsSet ", leadSourceItemsSet);
+    //console.log("leadSourceItemsSet ", leadSourceItemsSet);
 
     res.json(Array.from(leadSourceItemsSet));
 }
