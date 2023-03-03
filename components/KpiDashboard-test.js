@@ -157,7 +157,7 @@ export default function kpiDashboard() {
                                     <button onClick={() => handleRemoveQuery(query.id)}>X</button>
                                 </div>
                                 {query.isOpen && (
-                                    <div className='relative px-8'>
+                                    <div className='relative px-8 min-h-70'>
                                         <div className="absolute left-0 -ml-2 swiper-button-prev"></div>
                                         <Swiper
                                             spaceBetween={0}
@@ -192,7 +192,7 @@ export default function kpiDashboard() {
                                                 prevEl: '.swiper-button-prev',
                                                 nextEl: '.swiper-button-next',
                                             }}
-                                            className="relative mySwiper max-w-8xl min-h-70"
+                                            className="relative mySwiper lg:max-w-8xl min-h-70"
 
                                         >
                                             <div className={`${query.isOpen && 'h-80'}`}>
