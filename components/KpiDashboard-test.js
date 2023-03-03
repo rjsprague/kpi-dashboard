@@ -1,8 +1,12 @@
 import React, { useState, useEffect, use } from 'react'
 import KpiCard from '../components/kpi-components/KpiCard'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import { Swiper, SwiperSlide } from 'swiper/react'
+import SwiperCore, { Navigation, Pagination } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css'
+import 'swiper/swiper-bundle.css'
+SwiperCore.use([Navigation, Pagination]);
+
 
 export default function kpiDashboard() {
 
@@ -32,7 +36,7 @@ export default function kpiDashboard() {
 
         const data = await fetch(`/api/get-kpis?leadSourceJsonString=${leadSource}&dateRange=${dateRange}`);
         const queryResults = await data.json();
-        const newQuery = { id: idCounter, results: queryResults, isOpen: false, dateRange: dateRange, leadSource: leadSource };
+        const newQuery = { id: idCounter, results: queryResults, isOpen: true, dateRange: dateRange, leadSource: leadSource };
         setQueries([...queries, newQuery]);
         setIdCounter(idCounter + 1);
     };
@@ -51,7 +55,8 @@ export default function kpiDashboard() {
     }, [dateRange]);
 
     //console.log("Lead Source ", leadSource);
-    
+    console.log("Queries ", queries);
+
     return (
         <>
             <div className="flex flex-col w-full min-h-screen">
@@ -84,10 +89,10 @@ export default function kpiDashboard() {
                                                     <option value={'{"itemid":"000","title":"All"}'}>All</option>
                                                     {/* Map the itemid and title for each leadSource to an option in the dropdown AND setLeadSource to the selected leadSource object */}
                                                     {!isLoading && leadSources.map(leadSource => (<option key={leadSource.itemid} value={JSON.stringify(leadSource)}>{leadSource.title}</option>))}
-                                                   
+
                                                 </select>
                                             </div>
-                                            <div className="flex mr-10 ">
+                                            <div className="flex mr-4 ">
                                                 {/* Date range selector */}
                                                 <label htmlFor="dateRange" className="mr-4 text-gray-100">
                                                     Date range:
@@ -104,7 +109,9 @@ export default function kpiDashboard() {
                                                     <option value="Last Quarter">Last Quarter</option>
                                                 </select>
                                             </div>
-                                            <button type="submit" className="box-border flex items-center justify-center w-20 h-10 px-4 py-0 font-bold text-center text-blue-100 transition-all transform bg-blue-900 border-2 border-blue-200 rounded-lg text-md hover:scale-110 ">Submit</button>
+                                            <button
+                                                type="submit"
+                                                className="box-border flex items-center justify-center w-20 h-10 px-4 py-0 font-bold text-center text-blue-100 transition-all transform border-2 border-blue-200 rounded-lg bg-gradient-to-br from-blue-600 via-blue-800 to-blue-400 text-md hover:scale-110 ">Submit</button>
 
                                         </div>
                                     </form>
@@ -131,13 +138,13 @@ export default function kpiDashboard() {
                     </div>
                 </section>
 
-                <section className="flex flex-col text-black ">
+                <section className="flex flex-col w-full h-full text-black">
                     {/* KPI Results Section */}
-                    <div className="flex flex-row flex-wrap m-4 divide-y-2">
+                    <div className="w-auto m-4 divide-y-2">
 
                         {queries.map(query => (
 
-                            <div key={query.id} className="w-full p-2 overflow-auto bg-white justify-items-start shadow-super-3 rounded-xl">
+                            <div key={query.id} className="p-2 overflow-auto bg-white justify-items-start shadow-super-3 rounded-xl">
 
                                 <div className="flex justify-between px-4 py-2 font-bold rounded-lg bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
                                     <button onClick={() => handleToggleQuery(query.id)}>
@@ -149,15 +156,62 @@ export default function kpiDashboard() {
                                     </div>
                                     <button onClick={() => handleRemoveQuery(query.id)}>X</button>
                                 </div>
+                                {query.isOpen && (
+                                    <div className='relative px-8'>
+                                        <div className="absolute left-0 -ml-2 swiper-button-prev"></div>
+                                        <Swiper
+                                            spaceBetween={0}
+                                            loop={true}
+                                            slidesPerView={1}
+                                            effect={'fade'}
+                                            direction={'horizontal'}
+                                            breakpoints={{
+                                                320: {
+                                                    slidesPerView: 1,
+                                                    spaceBetween: 0,
+                                                },
+                                                
+                                                768: {
+                                                    slidesPerView: 2,
+                                                    spaceBetween: 10,
+                                                },
+                                                1200: {
+                                                    slidesPerView: 3,
+                                                    spaceBetween: 20,
+                                                },
+                                                1400: {
+                                                    slidesPerView: 4,
+                                                    spaceBetween: 30,
+                                                },
+                                            }}
+                                            onSlideChange={() => console.log('slide change')}
+                                            onSwiper={(swiper) => console.log(swiper)}
+                                            modules={[Navigation]}
 
-                                <div className={`flex flex-row items-center justify-start gap-2 px-4 overflow-x-hidden align-middle ${query.isOpen && 'h-72'}`}>
-                                    {query.isOpen &&
-                                        query.results.map(result => (
-                                            <div key="result.id" className='-mr-40 transition-all ease-in-out delay-300 transform-gpu h-60 w-80 hover:z-10 hover:scale-105 hover:-mr-20 backface'>
-                                                <KpiCard prop={result} />
+                                            navigation={{
+                                                prevEl: '.swiper-button-prev',
+                                                nextEl: '.swiper-button-next',
+                                            }}
+                                            className="relative mySwiper max-w-8xl min-h-70"
+
+                                        >
+                                            <div className={`${query.isOpen && 'h-80'}`}>
+                                                {query.isOpen &&
+                                                    query.results.map(result => (
+                                                        <SwiperSlide key={result.id}>
+                                                            <div key={result.id} className='my-3 h-60 w-80 backface'>
+                                                                <KpiCard prop={result} />
+                                                            </div>
+                                                        </SwiperSlide>
+                                                    ))}
                                             </div>
-                                        ))}
-                                </div>
+                                            
+                                            
+                                        </Swiper>
+                                        <div className="absolute right-0 -mr-2 swiper-button-next"></div>
+                                    </div>
+
+                                )}
                             </div>
                         ))}
                     </div>
