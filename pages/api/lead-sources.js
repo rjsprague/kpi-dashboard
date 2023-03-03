@@ -1,11 +1,27 @@
 
 
 export default async function getUniqueLeadSources(req, res) {
-    // Get data from API
+    
+    // Get leads from API
     const response = await fetch(`https://db.reiautomated.io/seller-leads/23642479`);
     const text = await response.text();
     const data = JSON.parse(text);
+
+    // Get lead source items from API
+    const response2 = await fetch(`https://db.reiautomated.io/lead-sources/27203897`);
+    const text2 = await response2.text();
+    const data2 = JSON.parse(text2);
+
+    //console.log("data2 ", data2);
     
+    // Create hash map of itemid as keys and title as values
+    const leadSourceMap = data2.reduce((map, obj) => {
+        map[obj.itemid] = obj.Title;
+        return map;
+    }, {});
+    //console.log("leadSourceMap ", leadSourceMap);
+
+    // Map date range from user to dateRange variable
     const { dateRange } = req.query;
     //console.log("dateRange ", dateRange);
 
@@ -46,5 +62,16 @@ export default async function getUniqueLeadSources(req, res) {
     const leadSourceItemsSet = new Set(leadSourceItems.flat().filter(Boolean));
     //console.log("leadSourceItemsSet ", leadSourceItemsSet);
 
-    res.json(Array.from(leadSourceItemsSet));
+    // Use leadSourceMap hash map to get title of each itemid
+    const leadSourceItemsArray = Array.from(leadSourceItemsSet).map((obj) => {
+        return {
+            itemid: obj,
+            title: leadSourceMap[obj]
+        }
+    });
+  
+
+
+
+    res.json(Array.from(leadSourceItemsArray));
 }

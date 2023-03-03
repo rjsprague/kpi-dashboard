@@ -1,17 +1,15 @@
-import { useEffect, useState } from 'react';
+
 
 export default async (req, res) => {
 
-  const { leadSource, dateRange } = req.query;
-  //console.log("leadSource ", leadSource);
-  //console.log("dateRange ", dateRange);
-  //console.log("data ", data);
+  const { leadSourceJsonString, dateRange } = req.query;  
+  //console.log("Lead Source JSON String ", leadSourceJsonString);
+  const leadSource = JSON.parse(leadSourceJsonString);
+  //console.log("Lead Source ", leadSource);
 
   /* “Lead Created On”
     “First lead connection”
     “Lead Source Item” */
-
-  //const [leads, setLeads] = useState([]);
 
   const response = await fetch('https://db.reiautomated.io/seller-leads/23642479');
   const text = await response.text();
@@ -34,13 +32,14 @@ export default async (req, res) => {
       connected: obj['First lead connection'] ? true : false,
     }
   });
+  
   //console.log("leads ", leads);
 
   try {
 
     // narrow down leads by lead source and date range
-    if (leadSource !== "All") {
-      leads = leads.filter(lead => lead.leadSourceItem && lead.leadSourceItem == Number(leadSource));
+    if (leadSource.title !== "All") {
+      leads = leads.filter(lead => lead.leadSourceItem && lead.leadSourceItem == Number(leadSource.itemid));
       //console.log("leads after leadSource filter ", leads);
     }
 

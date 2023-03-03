@@ -9,7 +9,7 @@ export default function kpiDashboard() {
     const [dateRange, setDateRange] = useState("Last Week");
     const [isLoading, setIsLoading] = useState(true);
     const [leadSources, setLeadSources] = useState(["All"]);
-    const [leadSource, setLeadSource] = useState("All");
+    const [leadSource, setLeadSource] = useState('{"itemid":"000","title":"All"}');
     const [queries, setQueries] = useState([]);
     const [idCounter, setIdCounter] = useState(0);
 
@@ -21,24 +21,7 @@ export default function kpiDashboard() {
         );
     };
 
-    // Map the lead sources numbers to their respective names
-    // leadSourceItemsSet: { 0: 2014475213, 1: 2014476355, 2: 2014474716, 3: 2014474100, 4: 2282145210 }
-    const leadSourceNames = {
-        2014475213: "SmrtPhone",
-        2014476355: "CallRail",
-        2014474716: "Investor Lift",
-        2014474100: "Instapage",
-        2282145210: "Kevin"
-    };
-
-    // map the current leadSources array to an array of objects with the lead source name and id
-    const leadSourcesObj = leadSources.map(leadSource => {
-        return {
-            id: leadSource,
-            name: leadSourceNames[leadSource]
-        }
-    });
-
+    // Handle removing a list of KPI cards from the list
     const handleRemoveQuery = queryId => {
         setQueries(queries.filter(query => query.id !== queryId));
     };
@@ -46,14 +29,15 @@ export default function kpiDashboard() {
     // Handle form submission to get KPIs
     const handleSubmit = async (event) => {
         event.preventDefault();
-    
-        const data = await fetch(`/api/get-kpis?leadSource=${leadSource}&dateRange=${dateRange}`);
+
+        const data = await fetch(`/api/get-kpis?leadSourceJsonString=${leadSource}&dateRange=${dateRange}`);
         const queryResults = await data.json();
         const newQuery = { id: idCounter, results: queryResults, isOpen: false, dateRange: dateRange, leadSource: leadSource };
         setQueries([...queries, newQuery]);
         setIdCounter(idCounter + 1);
-      };
+    };
 
+    // Fetch lead sources on page load
     useEffect(() => {
         const fetchLeadSources = async () => {
             // pass in date range to get unique lead sources for that date range
@@ -66,21 +50,8 @@ export default function kpiDashboard() {
         setIsLoading(false);
     }, [dateRange]);
 
-   /* useEffect(() => {
-        const handleQuery = async () => {
-            const data = await fetch(`/api/get-kpis?leadSource=${leadSource}&dateRange=${dateRange}`);
-            const queryResults = await data.json();
-            const newQuery = { id: idCounter, results: queryResults, isOpen: false, dateRange: dateRange, leadSource: leadSource };
-            setQueries([...queries, newQuery]);
-            setIdCounter(idCounter + 1);
-        };
-        setIsLoading(true);
-        handleQuery();
-        setIsLoading(false);
-    }, [leadSource, dateRange]); */
-
-    //console.log("leadSources ", leadSources);
-
+    //console.log("Lead Source ", leadSource);
+    
     return (
         <>
             <div className="flex flex-col w-full min-h-screen">
@@ -96,40 +67,46 @@ export default function kpiDashboard() {
                                         <p className="hidden text-xs leading-5 text-gray-300 sm:block">Track and analyze your KPIs to unlock your business's full potential and drive growth!</p>
                                     </div>
                                     <form onSubmit={handleSubmit}>
-                                    <div className='flex flex-row flex-wrap items-center gap-4'>
-                                        {/* Lead Source and Date Range Form */}
+                                        <div className='flex flex-row flex-wrap items-center gap-4'>
+                                            {/* Lead Source and Date Range Form */}
 
-                                        <div className='flex'>
-                                            {/* Lead Source selector */}
-                                            <label className='mr-2 text-gray-100'>
-                                                Lead Source:
-                                            </label>
-                                            <select id="leadSource" className="px-1 h-8 w-28 rounded-md text-blue-800 {isLoading && animate-pulse}" value={leadSource} onChange={e => setLeadSource(e.target.value)}>
-                                                {isLoading && <option>Loading...</option>}
-                                                <option value="All">All</option>
-                                                {!isLoading && leadSourcesObj.map(leadSource => (<option key={leadSource.id} value={leadSource.id}>{leadSource.name}</option>))}
-                                            </select>
-                                        </div>
-                                        <div className="flex mr-10 ">
-                                            {/* Date range selector */}
-                                            <label htmlFor="dateRange" className="mr-4 text-gray-100">
-                                                Date range:
-                                            </label>
-                                            <select
-                                                id="dateRange"
-                                                className="h-8 px-1 text-left text-blue-800 rounded-md w-28"
-                                                value={dateRange}
-                                                onChange={(e) => setDateRange(e.target.value)}
-                                            >
-                                                <option value="All">All Time</option>
-                                                <option value="Last Week">Last Week</option>
-                                                <option value="Last Month">Last Month</option>
-                                                <option value="Last Quarter">Last Quarter</option>
-                                            </select>
-                                        </div>
-                                        <button type="submit" className="box-border flex items-center justify-center w-20 h-10 px-4 py-0 font-bold text-center text-blue-100 transition-all transform bg-blue-900 border-2 border-blue-200 rounded-lg text-md hover:scale-110 ">Submit</button>
+                                            <div className='flex'>
+                                                {/* Lead Source selector */}
+                                                <label className='mr-2 text-gray-100'>
+                                                    Lead Source:
+                                                </label>
+                                                <select
+                                                    id="leadSource"
+                                                    className="px-1 h-8 w-28 rounded-md text-blue-800 {isLoading && animate-pulse}"
+                                                    value={leadSource}
+                                                    onChange={e => setLeadSource(e.target.value)}>
+                                                    {isLoading && <option>Loading...</option>}
+                                                    <option value={'{"itemid":"000","title":"All"}'}>All</option>
+                                                    {/* Map the itemid and title for each leadSource to an option in the dropdown AND setLeadSource to the selected leadSource object */}
+                                                    {!isLoading && leadSources.map(leadSource => (<option key={leadSource.itemid} value={JSON.stringify(leadSource)}>{leadSource.title}</option>))}
+                                                   
+                                                </select>
+                                            </div>
+                                            <div className="flex mr-10 ">
+                                                {/* Date range selector */}
+                                                <label htmlFor="dateRange" className="mr-4 text-gray-100">
+                                                    Date range:
+                                                </label>
+                                                <select
+                                                    id="dateRange"
+                                                    className="h-8 px-1 text-left text-blue-800 rounded-md w-28"
+                                                    value={dateRange}
+                                                    onChange={(e) => setDateRange(e.target.value)}
+                                                >
+                                                    <option value="All">All Time</option>
+                                                    <option value="Last Week">Last Week</option>
+                                                    <option value="Last Month">Last Month</option>
+                                                    <option value="Last Quarter">Last Quarter</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" className="box-border flex items-center justify-center w-20 h-10 px-4 py-0 font-bold text-center text-blue-100 transition-all transform bg-blue-900 border-2 border-blue-200 rounded-lg text-md hover:scale-110 ">Submit</button>
 
-                                    </div>
+                                        </div>
                                     </form>
                                 </div>
                                 <div className="relative px-2">
@@ -168,7 +145,7 @@ export default function kpiDashboard() {
                                     </button>
                                     <div className='flex justify-center text-lg font-semibold'>
                                         <p className="pr-8">Date Range: <span className='font-bold'>{query.dateRange}</span></p>
-                                        <p>Lead Source: <span className='font-bold'>{query.leadSource === "All" ? "All" : leadSourceNames[query.leadSource]}</span></p>
+                                        <p>Lead Source: <span className='font-bold'>{query.leadSource === "All" ? "All" : JSON.parse(query.leadSource).title}</span></p>
                                     </div>
                                     <button onClick={() => handleRemoveQuery(query.id)}>X</button>
                                 </div>
