@@ -192,7 +192,7 @@ export default function kpiDashboard() {
                                                 prevEl: '.swiper-button-prev',
                                                 nextEl: '.swiper-button-next',
                                             }}
-                                            className="relative mySwiper lg:max-w-8xl min-h-70"
+                                            className="relative w-screen mySwiper sm:w-full lg:max-w-8xl min-h-70"
 
                                         >
                                             <div className={`${query.isOpen && 'h-80'}`}>
