@@ -4,7 +4,8 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Navigation, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css'
-import 'swiper/swiper-bundle.css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
 
 export default function kpiDashboard() {
 
@@ -53,7 +54,7 @@ export default function kpiDashboard() {
     }, [dateRange]);
 
     //console.log("Lead Source ", leadSource);
-    console.log("Queries ", queries);
+    //console.log("Queries ", queries);
 
     return (
         <>
@@ -154,47 +155,68 @@ export default function kpiDashboard() {
                                 </div>
                                 {query.isOpen && (
                                     <div className='relative px-8 min-h-70'>
-                                        <div className="absolute left-0 -ml-2 swiper-button-prev"></div>
-                                        <Swiper
-                                            spaceBetween={0}
+                                        <div className="absolute left-0 -ml-3 swiper-button-prev"></div>
+                                        <Swiper                    
                                             loop={true}
-                                            slidesPerView={1}
+                                            slidesPerView={1}                                            
                                             direction={'horizontal'}
                                             pagination={{
                                                 clickable: true                                                
                                             }}
+                                                                                    
                                             breakpoints={{
                                                 320: {
                                                     slidesPerView: 1,
-                                                    spaceBetween: 0,
-                                                    centeredSlides: true,
-                                                    centeredSlidesBounds: true,
                                                     slidesPerGroup: 1,
-                                                    slidesOffsetBefore: 55,
-                                                    slidesOffsetAfter: 55,        
+                                                    spaceBetween: 0,
+                                                    slidesOffsetBefore: 0,
+                                                    slidesOffsetAfter: 0,
+                                                    centeredSlides: true,
+                                                    
                                                 },
-
+                                                375: {
+                                                    slidesPerView: 1,
+                                                    slidesPerGroup: 1,
+                                                    spaceBetween: 50,
+                                                    slidesOffsetBefore: 25,
+                                                    slidesOffsetAfter: 25,
+                                                    centeredSlides: true,
+                                                },
+                                                414: {
+                                                    slidesPerView: 1,
+                                                    slidesPerGroup: 1,
+                                                    spaceBetween: 50,
+                                                    slidesOffsetBefore: 50,
+                                                    slidesOffsetAfter: 50,
+                                                    centeredSlides: true,                                                    
+                                                    grabCursor: true,
+                                                },
                                                 768: {
                                                     slidesPerView: 2,
                                                     slidesPerGroup: 2,
                                                     spaceBetween: 0,
                                                     slidesOffsetBefore: 5,
                                                     slidesOffsetAfter: 10,
+                                                    centeredSlides: false,
+                                                    centeredSlidesBounds: false,
                                                 },
                                                 1200: {
                                                     slidesPerView: 3,
                                                     slidesPerGroup: 2,
                                                     spaceBetween: 10,
-                                                    slidesOffsetBefore: 20,
+                                                    slidesOffsetBefore: 25,
                                                     slidesOffsetAfter: 20,
+                                                    centeredSlides: false,
+                                                    centeredSlidesBounds: false,
                                                 },
                                                 1400: {
                                                     slidesPerView: 4,
                                                     slidesPerGroup: 4,
-                                                    spaceBetween: 0,
-                                                    slidesOffsetBefore: 20,
-                                                    slidesOffsetAfter: 20,
-
+                                                    spaceBetween: 10,
+                                                    slidesOffsetBefore: 10,
+                                                    slidesOffsetAfter: 100,
+                                                    centeredSlides: false,
+                                                    centeredSlidesBounds: false,
                                                 },
                                             }}
                                             onSlideChange={() => console.log('slide change')}
@@ -204,13 +226,13 @@ export default function kpiDashboard() {
                                                 prevEl: '.swiper-button-prev',
                                                 nextEl: '.swiper-button-next',
                                             }}
-                                            className="relative w-screen mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-80"
+                                            className="w-screen mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-80"
                                         >
                                             <div className={`${query.isOpen && 'h-80'}`}>
                                                 {query.isOpen &&
                                                     query.results.map(result => (
                                                         <SwiperSlide key={result.id}>
-                                                            <div key={result.id} className='my-10 h-60 w-80 backface'>
+                                                            <div key={result.id} className='my-8 h-60 w-80 backface'>
                                                                 <KpiCard prop={result} />
                                                             </div>
                                                         </SwiperSlide>
@@ -219,7 +241,7 @@ export default function kpiDashboard() {
 
 
                                         </Swiper>
-                                        <div className="absolute right-0 -mr-2 swiper-button-next"></div>
+                                        <div className="absolute right-0 -mr-3 swiper-button-next"></div>
                                     </div>
 
                                 )}
