@@ -1,12 +1,14 @@
-import React, { useState, useEffect, use } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import KpiCard from '../components/kpi-components/KpiCard'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Navigation, Pagination, Scrollbar } from "swiper";
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { Controller } from 'swiper';
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
+import SubQuery from './kpi-components/SubQuery'
 
 export default function kpiDashboard() {
 
@@ -15,14 +17,41 @@ export default function kpiDashboard() {
     const [leadSources, setLeadSources] = useState(["All"]);
     const [leadSource, setLeadSource] = useState('{"itemid":"000","title":"All"}');
     const [queries, setQueries] = useState([]);
-    const [idCounter, setIdCounter] = useState(0);
+    const [idCounter, setIdCounter] = useState(1);
 
+    const [swiperControllers, setSwiperControllers] = useState([]);
+    const swiperRef = useRef(null);
+
+    // Main query state
+    const [mainQueryDateRange, setMainQueryDateRange] = useState("Last Week");
+    const [mainQueryLeadSource, setMainQueryLeadSource] = useState('{"itemid":"000","title":"All"}');
+    const [mainQuery, setMainQuery] = useState({ id: 0, results: [], isOpen: true, dateRange: mainQueryDateRange, leadSource: mainQueryLeadSource });
+
+    // Get the KPIs for the main query on page load
+    useEffect(() => {
+        const fetchMainKpis = async () => {
+            const data = await fetch(`/api/get-kpis?leadSourceJsonString=${mainQueryLeadSource}&dateRange=${mainQueryDateRange}`);
+            const queryResults = await data.json();
+            setMainQuery(prevState => ({ ...prevState, results: queryResults }));
+        };
+        setIsLoading(true);
+        fetchMainKpis();
+        setIsLoading(false);
+    }, [mainQueryLeadSource, mainQueryDateRange]);
+
+    // Handle toggling the open/closed state of set of KPI cards
     const handleToggleQuery = queryId => {
-        setQueries(
-            queries.map(query =>
-                query.id === queryId ? { ...query, isOpen: !query.isOpen } : query
-            )
-        );
+        if (queryId === 0) {
+            setMainQuery(prevQuery => {
+                return { ...prevQuery, isOpen: !prevQuery.isOpen }
+            });
+        } else {
+            setQueries(
+                queries.map(query =>
+                    query.id === queryId ? { ...query, isOpen: !query.isOpen } : query
+                )
+            );
+        }
     };
 
     // Handle removing a list of KPI cards from the list
@@ -37,9 +66,34 @@ export default function kpiDashboard() {
         const data = await fetch(`/api/get-kpis?leadSourceJsonString=${leadSource}&dateRange=${dateRange}`);
         const queryResults = await data.json();
         const newQuery = { id: idCounter, results: queryResults, isOpen: true, dateRange: dateRange, leadSource: leadSource };
+
         setQueries([...queries, newQuery]);
         setIdCounter(idCounter + 1);
+
+
     };
+
+    // Update the selected query's results when the date range or lead source is changed
+    const handleQueryUpdate = async (id, dateRange, leadSource) => {
+        console.log('updating query with id', id, 'to date range', dateRange, 'and lead source', leadSource);
+      
+        // Find the query with the specified ID
+        const queryToUpdate = queries.find(query => query.id === id);
+      
+        // Update the query's dateRange and leadSource properties
+        queryToUpdate.dateRange = dateRange;
+        queryToUpdate.leadSource = leadSource;
+      
+        // Make an API call to fetch the updated KPI data for the query
+        const data = await fetch(`/api/get-kpis?leadSourceJsonString=${queryToUpdate.leadSource}&dateRange=${queryToUpdate.dateRange}`);
+        const updatedResults = await data.json();
+      
+        // Update the query's results property with the new KPI data
+        queryToUpdate.results = updatedResults;
+      
+        // Update the queries state with the updated query
+        setQueries([...queries]);
+      };
 
     // Fetch lead sources on page load
     useEffect(() => {
@@ -54,14 +108,9 @@ export default function kpiDashboard() {
         setIsLoading(false);
     }, [dateRange]);
 
-    //console.log("Lead Source ", leadSource);
-    //console.log("Queries ", queries);
-     /*navigation={{
-                                                prevEl: '.swiper-button-prev',
-                                                nextEl: '.swiper-button-next',
-                                            }}  */
-                                             {/*<div className="absolute left-0 -ml-3 swiper-button-prev"></div>*/}
-                                            {/* <div className="absolute right-0 -mr-3 swiper-button-next"></div> */}
+
+
+
 
     return (
         <>
@@ -88,7 +137,7 @@ export default function kpiDashboard() {
                                                 </label>
                                                 <select
                                                     id="leadSource"
-                                                    className="px-1 h-8 w-28 rounded-md text-blue-800 {isLoading && animate-pulse}"
+                                                    className="px-1 h-8 w-28 rounded-md text-blue-800 ${isLoading && animate-pulse}"
                                                     value={leadSource}
                                                     onChange={e => setLeadSource(e.target.value)}>
                                                     {isLoading && <option>Loading...</option>}
@@ -145,116 +194,169 @@ export default function kpiDashboard() {
                 <section className="flex flex-col w-full h-full text-black">
                     {/* KPI Results Section */}
                     <div className="w-auto m-4 divide-y-2">
+                        {/* Main KPI Results */}
+                        <div key={mainQuery.id} className="p-2 bg-white justify-items-start shadow-super-3 rounded-xl">
+                            <div className="flex justify-between px-4 py-2 text-sm rounded-lg sm:text-md xl:text-lg sm:font-bold bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
+                                <button onClick={() => handleToggleQuery(mainQuery.id)}>
+                                    {mainQuery.isOpen ? "Hide" : "Show"}
+                                </button>
+                                <div className='flex justify-center text-lg font-semibold'>
+                                    <div className='flex flex-row flex-wrap items-center gap-4'>
+                                        {/* Lead Source and Date Range Selectors */}
+                                        <div className='flex'>
 
-                        {queries.map(query => (
+                                            {/* Lead Source selector */}
+                                            <label className='mr-2 text-gray-100'>
+                                                Lead Source:
+                                            </label>
+                                            <select
 
-                            <div key={query.id} className="p-2 bg-white justify-items-start shadow-super-3 rounded-xl">
+                                                id={mainQuery.id}
+                                                className="px-1 h-8 w-28 rounded-md text-blue-800 {isLoading && animate-pulse}"
+                                                value={mainQueryLeadSource}
+                                                onChange={e => setMainQueryLeadSource(e.target.value)}
+                                            >
+                                                {isLoading && <option>Loading...</option>}
+                                                <option value={'{"itemid":"000","title":"All"}'}>All</option>
+                                                {/* Map the itemid and title for each leadSource to an option in the dropdown AND setLeadSource to the selected leadSource object */}
+                                                {!isLoading && leadSources.map(leadSource => (<option key={leadSource.itemid} value={JSON.stringify(leadSource)}>{leadSource.title}</option>))}
+                                            </select>
+                                        </div>
+                                        <div className="flex mr-4 ">
 
-                                <div className="flex justify-between px-4 py-2 font-bold rounded-lg bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
-                                    <button onClick={() => handleToggleQuery(query.id)}>
-                                        {query.isOpen ? "Hide" : "Show"}
-                                    </button>
-                                    <div className='flex justify-center text-lg font-semibold'>
-                                        <p className="pr-8">Date Range: <span className='font-bold'>{query.dateRange}</span></p>
-                                        <p>Lead Source: <span className='font-bold'>{query.leadSource === "All" ? "All" : JSON.parse(query.leadSource).title}</span></p>
+                                            {/* Date range selector */}
+                                            <label htmlFor="dateRange" className="mr-4 text-gray-100">
+                                                Date range:
+                                            </label>
+                                            <select
+                                                id={mainQuery.id}
+                                                className="h-8 px-1 text-left text-blue-800 rounded-md w-28"
+                                                value={mainQueryDateRange}
+                                                onChange={e => setMainQueryDateRange(e.target.value)}
+                                            >
+                                                <option value="All">All Time</option>
+                                                <option value="Last Week">Last Week</option>
+                                                <option value="Last Month">Last Month</option>
+                                                <option value="Last Quarter">Last Quarter</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <button onClick={() => handleRemoveQuery(query.id)}>X</button>
                                 </div>
-                                {query.isOpen && (
-                                    <div className='relative px-4 min-h-70'>
-                                       
-                                        {/* SWIPER FOR KPI CARDS */}
-                                        <Swiper
-                                            spaceBetween={10}
-                                            modules={[Scrollbar]}
-                                            scrollbar={{
-                                                draggable: true,
-                                                snapOnRelease: false,                                                
-                                            }}
-                                            loop={false}
-                                            slidesPerView={1}
-                                            direction={'horizontal'}
-                                            breakpoints={{
-                                                320: {
-                                                    slidesPerView: 1,
-                                                    slidesPerGroup: 1,
-                                                    spaceBetween: 20,
-                                                    slidesOffsetBefore: 0,
-                                                    slidesOffsetAfter: 0,
-                                                    centeredSlides: true,
-
-                                                },
-                                                375: {
-                                                    slidesPerView: 1,
-                                                    slidesPerGroup: 1,
-                                                    spaceBetween: 50,
-                                                    slidesOffsetBefore: 25,
-                                                    slidesOffsetAfter: 25,
-                                                    centeredSlides: true,
-                                                },
-                                                414: {
-                                                    slidesPerView: 1,
-                                                    slidesPerGroup: 1,
-                                                    spaceBetween: 50,
-                                                    slidesOffsetBefore: 50,
-                                                    slidesOffsetAfter: 50,
-                                                    centeredSlides: true,
-                                                    grabCursor: true,
-                                                },
-                                                768: {
-                                                    slidesPerView: 2,
-                                                    slidesPerGroup: 1,
-                                                    spaceBetween: 0,
-                                                    slidesOffsetBefore: 5,
-                                                    slidesOffsetAfter: 10,
-                                                    centeredSlides: false,
-                                                    centeredSlidesBounds: false,
-                                                },
-                                                1200: {
-                                                    slidesPerView: 3,
-                                                    slidesPerGroup: 1,
-                                                    spaceBetween: 10,
-                                                    slidesOffsetBefore: 25,
-                                                    slidesOffsetAfter: 20,
-                                                    centeredSlides: false,
-                                                    centeredSlidesBounds: false,
-                                                },
-                                                1400: {
-                                                    slidesPerView: 4,
-                                                    slidesPerGroup: 1,
-                                                    spaceBetween: 10,
-                                                    slidesOffsetBefore: 10,
-                                                    slidesOffsetAfter: 100,
-                                                    centeredSlides: false,
-                                                    centeredSlidesBounds: false,
-                                                },
-                                            }}
-                                            onSlideChange={() => console.log('slide change')}
-                                            onSwiper={(swiper) => console.log(swiper)}
-                                           
-                                            className="w-screen mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
-                                        >
-                                            <div className={`${query.isOpen && 'h-80'}`}>
-                                                {query.isOpen &&
-                                                    query.results.map(result => (
-                                                        <SwiperSlide key={result.id}>
-                                                            <div key={result.id} className='my-3 h-60 w-80 backface'>
-                                                                <KpiCard prop={result} />
-                                                            </div>
-                                                        </SwiperSlide>
-                                                    ))}
-                                            </div>
-                                        </Swiper>
-                                        
-                                    </div>
-
-                                )}
                             </div>
-                        ))}
+
+                            {mainQuery.isOpen && (
+                                <div className='relative px-4 min-h-70'>
+
+                                    {/* SWIPER FOR KPI CARDS */}
+                                    <Swiper
+
+                                        spaceBetween={10}
+                                        modules={[Scrollbar]}
+                                        scrollbar={{
+                                            draggable: true,
+                                            snapOnRelease: false,
+                                        }}
+                                        loop={false}
+                                        slidesPerView={1}
+                                        direction={'horizontal'}
+                                        breakpoints={{
+                                            320: {
+                                                slidesPerView: 1,
+                                                slidesPerGroup: 1,
+                                                spaceBetween: 20,
+                                                slidesOffsetBefore: 0,
+                                                slidesOffsetAfter: 0,
+                                                centeredSlides: true,
+
+                                            },
+                                            375: {
+                                                slidesPerView: 1,
+                                                slidesPerGroup: 1,
+                                                spaceBetween: 50,
+                                                slidesOffsetBefore: 25,
+                                                slidesOffsetAfter: 25,
+                                                centeredSlides: true,
+                                            },
+                                            414: {
+                                                slidesPerView: 1,
+                                                slidesPerGroup: 1,
+                                                spaceBetween: 50,
+                                                slidesOffsetBefore: 50,
+                                                slidesOffsetAfter: 50,
+                                                centeredSlides: true,
+                                                grabCursor: true,
+                                            },
+                                            768: {
+                                                slidesPerView: 2,
+                                                slidesPerGroup: 1,
+                                                spaceBetween: 0,
+                                                slidesOffsetBefore: 5,
+                                                slidesOffsetAfter: 10,
+                                                centeredSlides: false,
+                                                centeredSlidesBounds: false,
+                                            },
+                                            1200: {
+                                                slidesPerView: 3,
+                                                slidesPerGroup: 1,
+                                                spaceBetween: 10,
+                                                slidesOffsetBefore: 25,
+                                                slidesOffsetAfter: 20,
+                                                centeredSlides: false,
+                                                centeredSlidesBounds: false,
+                                            },
+                                            1400: {
+                                                slidesPerView: 4,
+                                                slidesPerGroup: 1,
+                                                spaceBetween: 10,
+                                                slidesOffsetBefore: 10,
+                                                slidesOffsetAfter: 100,
+                                                centeredSlides: false,
+                                                centeredSlidesBounds: false,
+                                            },
+                                        }}
+                                        onSlideChange={() => console.log('slide change')}
+                                        onSwiper={swiper => console.log(swiper)}
+
+                                        className="w-screen mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
+                                    >
+                                        <div className={`${mainQuery.isOpen && 'h-80'}`}>
+                                            {mainQuery.isOpen &&
+                                                mainQuery.results.map(result => (
+                                                    <SwiperSlide key={result.id}>
+                                                        <div key={result.id} className='my-3 h-60 w-80 backface'>
+                                                            <KpiCard prop={result} />
+                                                        </div>
+                                                    </SwiperSlide>
+                                                ))}
+                                        </div>
+                                    </Swiper>
+
+                                </div>
+
+                            )}
+                        </div>
                     </div>
+                    {/* END OF MAIN QUERY */}
+                    {/* START OF SUBQUERIES */}
+
+                    {queries.map(query => (
+                        <SubQuery
+                            key={query.id}
+                            query={query}
+                            leadSources={leadSources}
+                            handleQueryUpdate={handleQueryUpdate}
+                            handleToggleQuery={handleToggleQuery}
+                            handleRemoveQuery={handleRemoveQuery}
+                        />
+                    ))}
+
+                    {/* END OF SUBQUERIES */}
+
 
                 </section>
             </div >
         </>
     )
 }
+
+
