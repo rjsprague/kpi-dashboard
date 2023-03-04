@@ -165,7 +165,7 @@ export default function kpiDashboard() {
                                        
                                         {/* SWIPER FOR KPI CARDS */}
                                         <Swiper
-                                            spaceBetween={50}
+                                            spaceBetween={10}
                                             modules={[Scrollbar]}
                                             scrollbar={{
                                                 draggable: true,
@@ -178,7 +178,7 @@ export default function kpiDashboard() {
                                                 320: {
                                                     slidesPerView: 1,
                                                     slidesPerGroup: 1,
-                                                    spaceBetween: 50,
+                                                    spaceBetween: 20,
                                                     slidesOffsetBefore: 0,
                                                     slidesOffsetAfter: 0,
                                                     centeredSlides: true,
