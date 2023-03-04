@@ -1,11 +1,12 @@
 import React, { useState, useEffect, use } from 'react'
 import KpiCard from '../components/kpi-components/KpiCard'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import { Navigation, Pagination } from "swiper";
+import { Navigation, Pagination, Scrollbar } from "swiper";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
+import 'swiper/css/scrollbar'
 
 export default function kpiDashboard() {
 
@@ -55,6 +56,12 @@ export default function kpiDashboard() {
 
     //console.log("Lead Source ", leadSource);
     //console.log("Queries ", queries);
+     /*navigation={{
+                                                prevEl: '.swiper-button-prev',
+                                                nextEl: '.swiper-button-next',
+                                            }}  */
+                                             {/*<div className="absolute left-0 -ml-3 swiper-button-prev"></div>*/}
+                                            {/* <div className="absolute right-0 -mr-3 swiper-button-next"></div> */}
 
     return (
         <>
@@ -154,25 +161,28 @@ export default function kpiDashboard() {
                                     <button onClick={() => handleRemoveQuery(query.id)}>X</button>
                                 </div>
                                 {query.isOpen && (
-                                    <div className='relative px-8 min-h-70'>
-                                        <div className="absolute left-0 -ml-3 swiper-button-prev"></div>
-                                        <Swiper                    
-                                            loop={true}
-                                            slidesPerView={1}                                            
-                                            direction={'horizontal'}
-                                            pagination={{
-                                                clickable: true                                                
+                                    <div className='relative px-4 min-h-70'>
+                                       
+                                        {/* SWIPER FOR KPI CARDS */}
+                                        <Swiper
+                                            spaceBetween={50}
+                                            modules={[Scrollbar]}
+                                            scrollbar={{
+                                                draggable: true,
+                                                snapOnRelease: false,                                                
                                             }}
-                                                                                    
+                                            loop={false}
+                                            slidesPerView={1}
+                                            direction={'horizontal'}
                                             breakpoints={{
                                                 320: {
                                                     slidesPerView: 1,
                                                     slidesPerGroup: 1,
-                                                    spaceBetween: 0,
+                                                    spaceBetween: 50,
                                                     slidesOffsetBefore: 0,
                                                     slidesOffsetAfter: 0,
                                                     centeredSlides: true,
-                                                    
+
                                                 },
                                                 375: {
                                                     slidesPerView: 1,
@@ -188,12 +198,12 @@ export default function kpiDashboard() {
                                                     spaceBetween: 50,
                                                     slidesOffsetBefore: 50,
                                                     slidesOffsetAfter: 50,
-                                                    centeredSlides: true,                                                    
+                                                    centeredSlides: true,
                                                     grabCursor: true,
                                                 },
                                                 768: {
                                                     slidesPerView: 2,
-                                                    slidesPerGroup: 2,
+                                                    slidesPerGroup: 1,
                                                     spaceBetween: 0,
                                                     slidesOffsetBefore: 5,
                                                     slidesOffsetAfter: 10,
@@ -202,7 +212,7 @@ export default function kpiDashboard() {
                                                 },
                                                 1200: {
                                                     slidesPerView: 3,
-                                                    slidesPerGroup: 2,
+                                                    slidesPerGroup: 1,
                                                     spaceBetween: 10,
                                                     slidesOffsetBefore: 25,
                                                     slidesOffsetAfter: 20,
@@ -211,7 +221,7 @@ export default function kpiDashboard() {
                                                 },
                                                 1400: {
                                                     slidesPerView: 4,
-                                                    slidesPerGroup: 4,
+                                                    slidesPerGroup: 1,
                                                     spaceBetween: 10,
                                                     slidesOffsetBefore: 10,
                                                     slidesOffsetAfter: 100,
@@ -221,27 +231,21 @@ export default function kpiDashboard() {
                                             }}
                                             onSlideChange={() => console.log('slide change')}
                                             onSwiper={(swiper) => console.log(swiper)}
-                                            modules={[Navigation, Pagination]}
-                                            navigation={{
-                                                prevEl: '.swiper-button-prev',
-                                                nextEl: '.swiper-button-next',
-                                            }}
-                                            className="w-screen mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-80"
+                                           
+                                            className="w-screen mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
                                         >
                                             <div className={`${query.isOpen && 'h-80'}`}>
                                                 {query.isOpen &&
                                                     query.results.map(result => (
                                                         <SwiperSlide key={result.id}>
-                                                            <div key={result.id} className='my-8 h-60 w-80 backface'>
+                                                            <div key={result.id} className='my-3 h-60 w-80 backface'>
                                                                 <KpiCard prop={result} />
                                                             </div>
                                                         </SwiperSlide>
                                                     ))}
                                             </div>
-
-
                                         </Swiper>
-                                        <div className="absolute right-0 -mr-3 swiper-button-next"></div>
+                                        
                                     </div>
 
                                 )}
