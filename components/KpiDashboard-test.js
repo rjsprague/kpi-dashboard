@@ -9,28 +9,29 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
 import SubQuery from './kpi-components/SubQuery'
+import Dropdown from './kpi-components/Dropdown'
+import SingleDateRangeSelector from './kpi-components/SingleDateRangeSelector'
 
 export default function kpiDashboard() {
 
-    const [dateRange, setDateRange] = useState("Last Week");
+    const [dateRange, setDateRange] = useState({ gte: null, lte: null });
     const [isLoading, setIsLoading] = useState(true);
     const [leadSources, setLeadSources] = useState(["All"]);
-    const [leadSource, setLeadSource] = useState('{"itemid":"000","title":"All"}');
+    const [leadSource, setLeadSource] = useState("All");
     const [queries, setQueries] = useState([]);
     const [idCounter, setIdCounter] = useState(1);
-
     const [swiperControllers, setSwiperControllers] = useState([]);
     const swiperRef = useRef(null);
 
     // Main query state
-    const [mainQueryDateRange, setMainQueryDateRange] = useState("Last Week");
-    const [mainQueryLeadSource, setMainQueryLeadSource] = useState('{"itemid":"000","title":"All"}');
+    const [mainQueryDateRange, setMainQueryDateRange] = useState({ gte: null, lte: null });
+    const [mainQueryLeadSource, setMainQueryLeadSource] = useState("All");
     const [mainQuery, setMainQuery] = useState({ id: 0, results: [], isOpen: true, dateRange: mainQueryDateRange, leadSource: mainQueryLeadSource });
 
     // Get the KPIs for the main query on page load
     useEffect(() => {
         const fetchMainKpis = async () => {
-            const data = await fetch(`/api/get-kpis?leadSourceJsonString=${mainQueryLeadSource}&dateRange=${mainQueryDateRange}`);
+            const data = await fetch(`/api/get-kpis?leadSource=${mainQueryLeadSource}&gte=${mainQueryDateRange.gte}&lte=${mainQueryDateRange.lte}`);
             const queryResults = await data.json();
             setMainQuery(prevState => ({ ...prevState, results: queryResults }));
         };
@@ -76,41 +77,72 @@ export default function kpiDashboard() {
     // Update the selected query's results when the date range or lead source is changed
     const handleQueryUpdate = async (id, dateRange, leadSource) => {
         console.log('updating query with id', id, 'to date range', dateRange, 'and lead source', leadSource);
-      
+
         // Find the query with the specified ID
         const queryToUpdate = queries.find(query => query.id === id);
-      
+
         // Update the query's dateRange and leadSource properties
         queryToUpdate.dateRange = dateRange;
         queryToUpdate.leadSource = leadSource;
-      
+
         // Make an API call to fetch the updated KPI data for the query
-        const data = await fetch(`/api/get-kpis?leadSourceJsonString=${queryToUpdate.leadSource}&dateRange=${queryToUpdate.dateRange}`);
+        const data = await fetch(`/api/get-kpis?leadSourceJsonString=${queryToUpdate.leadSource}&gte=${queryToUpdate.dateRange.gte}&lte=${queryToUpdate.dateRange.lte}`);
         const updatedResults = await data.json();
-      
+
         // Update the query's results property with the new KPI data
         queryToUpdate.results = updatedResults;
-      
+
         // Update the queries state with the updated query
         setQueries([...queries]);
-      };
+    };
 
     // Fetch lead sources on page load
     useEffect(() => {
         const fetchLeadSources = async () => {
             // pass in date range to get unique lead sources for that date range
-            const res = await fetch(`/api/lead-sources?dateRange=${dateRange}`)
+            const res = await fetch(`/api/lead-sources`)
             const data = await res.json();
+            console.log('lead sources', data);
             setLeadSources(data);
         };
         setIsLoading(true);
         fetchLeadSources();
         setIsLoading(false);
-    }, [dateRange]);
+    }, []);
 
+    // Handle leadSource dropdown selection changes, updating the state
+    function handleOptionSelected(e, queryId) {
+        const selectedLeadSource = e.target.value;
 
+        if (queryId === mainQuery.id) {
+            setMainQueryLeadSource(selectedLeadSource);
+        } else {
+            setQueries((prevQueries) => {
+                return prevQueries.map((query) => {
+                    if (query.id === queryId) {
+                        return { ...query, leadSource: selectedLeadSource };
+                    }
+                    return query;
+                });
+            });
+        }
+    }
 
-
+    // Handle date range selection changes, updating the state
+    function handleDateRangeChange(startDate, endDate, queryId) {
+        if (queryId === mainQuery.id) {
+            setMainQueryDateRange({ gte: startDate, lte: endDate });
+        } else {
+            setQueries((prevQueries) => {
+                return prevQueries.map((query) => {
+                    if (query.id === queryId) {
+                        return { ...query, dateRange: { gte: startDate, lte: endDate } };
+                    }
+                    return query;
+                });
+            });
+        }
+    }
 
     return (
         <>
@@ -128,44 +160,10 @@ export default function kpiDashboard() {
                                     </div>
                                     <form onSubmit={handleSubmit}>
                                         <div className='flex flex-row flex-wrap items-center gap-4'>
-                                            {/* Lead Source and Date Range Form */}
 
-                                            <div className='flex'>
-                                                {/* Lead Source selector */}
-                                                <label className='mr-2 text-gray-100'>
-                                                    Lead Source:
-                                                </label>
-                                                <select
-                                                    id="leadSource"
-                                                    className="px-1 h-8 w-28 rounded-md text-blue-800 ${isLoading && animate-pulse}"
-                                                    value={leadSource}
-                                                    onChange={e => setLeadSource(e.target.value)}>
-                                                    {isLoading && <option>Loading...</option>}
-                                                    <option value={'{"itemid":"000","title":"All"}'}>All</option>
-                                                    {/* Map the itemid and title for each leadSource to an option in the dropdown AND setLeadSource to the selected leadSource object */}
-                                                    {!isLoading && leadSources.map(leadSource => (<option key={leadSource.itemid} value={JSON.stringify(leadSource)}>{leadSource.title}</option>))}
-
-                                                </select>
-                                            </div>
-                                            <div className="flex mr-4 ">
-                                                {/* Date range selector */}
-                                                <label htmlFor="dateRange" className="mr-4 text-gray-100">
-                                                    Date range:
-                                                </label>
-                                                <select
-                                                    id="dateRange"
-                                                    className="h-8 px-1 text-left text-blue-800 rounded-md w-28"
-                                                    value={dateRange}
-                                                    onChange={(e) => setDateRange(e.target.value)}
-                                                >
-                                                    <option value="All">All Time</option>
-                                                    <option value="Last Week">Last Week</option>
-                                                    <option value="Last Month">Last Month</option>
-                                                    <option value="Last Quarter">Last Quarter</option>
-                                                </select>
-                                            </div>
                                             <button
                                                 type="submit"
+
                                                 className="box-border flex items-center justify-center w-20 h-10 px-4 py-0 font-bold text-center text-blue-100 transition-all transform border-2 border-blue-200 rounded-lg bg-gradient-to-br from-blue-600 via-blue-800 to-blue-400 text-md hover:scale-110 ">Submit</button>
 
                                         </div>
@@ -196,49 +194,29 @@ export default function kpiDashboard() {
                     <div className="w-auto m-4 divide-y-2">
                         {/* Main KPI Results */}
                         <div key={mainQuery.id} className="p-2 bg-white justify-items-start shadow-super-3 rounded-xl">
-                            <div className="flex justify-between px-4 py-2 text-sm rounded-lg sm:text-md xl:text-lg sm:font-bold bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
-                                <button onClick={() => handleToggleQuery(mainQuery.id)}>
+                            <div className="flex justify-start px-4 py-2 text-sm rounded-lg sm:text-md xl:text-lg sm:font-bold bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
+                                <button className="mr-40" onClick={() => handleToggleQuery(mainQuery.id)}>
                                     {mainQuery.isOpen ? "Hide" : "Show"}
                                 </button>
                                 <div className='flex justify-center text-lg font-semibold'>
                                     <div className='flex flex-row flex-wrap items-center gap-4'>
                                         {/* Lead Source and Date Range Selectors */}
                                         <div className='flex'>
-
                                             {/* Lead Source selector */}
                                             <label className='mr-2 text-gray-100'>
                                                 Lead Source:
                                             </label>
-                                            <select
-
-                                                id={mainQuery.id}
-                                                className="px-1 h-8 w-28 rounded-md text-blue-800 {isLoading && animate-pulse}"
-                                                value={mainQueryLeadSource}
-                                                onChange={e => setMainQueryLeadSource(e.target.value)}
-                                            >
-                                                {isLoading && <option>Loading...</option>}
-                                                <option value={'{"itemid":"000","title":"All"}'}>All</option>
-                                                {/* Map the itemid and title for each leadSource to an option in the dropdown AND setLeadSource to the selected leadSource object */}
-                                                {!isLoading && leadSources.map(leadSource => (<option key={leadSource.itemid} value={JSON.stringify(leadSource)}>{leadSource.title}</option>))}
-                                            </select>
+                                            <Dropdown selectedOption={mainQueryLeadSource} onOptionSelected={handleOptionSelected} data={leadSources} queryId={mainQuery.id} />
                                         </div>
-                                        <div className="flex mr-4 ">
-
+                                        <div className="flex mr-40 ">
                                             {/* Date range selector */}
-                                            <label htmlFor="dateRange" className="mr-4 text-gray-100">
-                                                Date range:
+                                            <label htmlFor="dateRange" className="mr-40 text-sm text-gray-100 w-60">
+                                                Date range: {mainQueryDateRange && mainQueryDateRange.gte && mainQueryDateRange.lte ? 
+                                                            mainQueryDateRange.gte.toLocaleDateString() + " - " + mainQueryDateRange.lte.toLocaleDateString() : ""}
                                             </label>
-                                            <select
-                                                id={mainQuery.id}
-                                                className="h-8 px-1 text-left text-blue-800 rounded-md w-28"
-                                                value={mainQueryDateRange}
-                                                onChange={e => setMainQueryDateRange(e.target.value)}
-                                            >
-                                                <option value="All">All Time</option>
-                                                <option value="Last Week">Last Week</option>
-                                                <option value="Last Month">Last Month</option>
-                                                <option value="Last Quarter">Last Quarter</option>
-                                            </select>
+
+                                            <SingleDateRangeSelector queryId={mainQuery.id} onDateRangeChange={handleDateRangeChange} />
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -347,6 +325,8 @@ export default function kpiDashboard() {
                             handleQueryUpdate={handleQueryUpdate}
                             handleToggleQuery={handleToggleQuery}
                             handleRemoveQuery={handleRemoveQuery}
+                            handleOptionSelected={handleOptionSelected}
+                            handleDateRangeChange={handleDateRangeChange}
                         />
                     ))}
 

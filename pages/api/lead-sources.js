@@ -1,77 +1,51 @@
 
 
 export default async function getUniqueLeadSources(req, res) {
-    
-    // Get leads from API
-    const response = await fetch(`https://db.reiautomated.io/seller-leads/23642479`);
-    const text = await response.text();
-    const data = JSON.parse(text);
+
+    const leadSources = {        
+        2323528185: "Other",
+        2282145304: "Lead/Acquisition Manager - Nely",
+        2282145210: "Lead/Acquisition Manager - Kevin",
+        2282142797: "Lead Manager - Kay",
+        2282139969: "Disposition Manager - Everyone",
+        2014678698: "Telemarketing",
+        2014635757: "Old",
+        2014632267: "RVM",
+        2014630459: "Postcards",
+        2014579881: "Cold Call",
+        2014540366: "SMS",
+        2014539335: "Facebook",
+        2014538978: "PPC",
+        2014525323: "Other",
+        2014484373: "SEO",
+        2014476355: "CallRail",
+        2014475213: "SmrtPhone",
+        2014474716: "Investor Lift",
+        2014474100: "Instapage",
+        2014474016: "x0242",
+        2000000000: "All" 
+    };
 
     // Get lead source items from API
-    const response2 = await fetch(`https://db.reiautomated.io/lead-sources/27203897`);
-    const text2 = await response2.text();
-    const data2 = JSON.parse(text2);
+    //const response = await fetch(`https://db.reiautomated.io/lead-sources/27203897`);
+    //const text = await response.text();
+    //const data = JSON.parse(text);
 
-    //console.log("data2 ", data2);
-    
     // Create hash map of itemid as keys and title as values
-    const leadSourceMap = data2.reduce((map, obj) => {
-        map[obj.itemid] = obj.Title;
-        return map;
-    }, {});
-    //console.log("leadSourceMap ", leadSourceMap);
-
-    // Map date range from user to dateRange variable
-    const { dateRange } = req.query;
-    //console.log("dateRange ", dateRange);
-
-    /* Filter data by date range using start_utc
-    "Lead Created On": {
-        "start": "2023-03-01 11:49:13",
-        "start_date": "2023-03-01",
-        "start_date_utc": "2023-03-01",
-        "start_time": "11:49:13",
-        "start_time_utc": "21:49:13",
-        "start_utc": "2023-03-01 21:49:13"
-    }*/
-    let filteredData = data;
-    //console.log(new Date(data[11]['Lead Created On'].start_date_utc));
-
-    if (dateRange === "Last Week") {
-        const lastWeek = new Date();
-        lastWeek.setDate(lastWeek.getDate() - 7);
-        filteredData = data.filter(obj => obj['Lead Created On'] && new Date(obj['Lead Created On'].start_utc) > lastWeek);
-        //console.log("filteredData ", filteredData.length);
-    }
-    if (dateRange === "Last Month") {
-        const lastMonth = new Date();
-        lastMonth.setMonth(lastMonth.getMonth() - 1);
-        filteredData = data.filter(obj => obj['Lead Created On'] && new Date(obj['Lead Created On'].start_utc) > lastMonth);
-        //console.log("filteredData ", filteredData.length);
-    }
-    if (dateRange === "Last Quarter") {
-        const lastQuarter = new Date();
-        lastQuarter.setMonth(lastQuarter.getMonth() - 3);
-        filteredData = data.filter(obj => obj['Lead Created On'] && new Date(obj['Lead Created On'].start_utc) > lastQuarter);
-        //console.log("filteredData ", filteredData.length);
-    }
-    //console.log("filteredData ", filteredData);
-
-    // Get unique lead source items
-    const leadSourceItems = filteredData.map((obj) => obj['Lead Source Item']);
-    const leadSourceItemsSet = new Set(leadSourceItems.flat().filter(Boolean));
-    //console.log("leadSourceItemsSet ", leadSourceItemsSet);
+    //const leadSourceMap = data.reduce((map, obj) => {
+    //    map[obj.itemid] = obj.Title;
+    //    return map;
+    //}, {});
 
     // Use leadSourceMap hash map to get title of each itemid
-    const leadSourceItemsArray = Array.from(leadSourceItemsSet).map((obj) => {
-        return {
-            itemid: obj,
-            title: leadSourceMap[obj]
-        }
-    });
+    //const leadSourceItemsArray = Array.from(leadSourceItemsSet).map((obj) => {
+    //    return {
+    //        itemid: obj,
+    //        title: leadSourceMap[obj]
+    //    }
+    //});
   
+    //res.json(Array.from(leadSourceItemsArray));
 
-
-
-    res.json(Array.from(leadSourceItemsArray));
+    res.json(leadSources);
 }

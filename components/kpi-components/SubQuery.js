@@ -4,13 +4,15 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Scrollbar } from "swiper";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Controller } from 'swiper';
+import Dropdown from './Dropdown';
+import DateRangeSelector from './DateRangeSelector';
 
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
 
-const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, handleRemoveQuery }) => {
+const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, handleRemoveQuery, handleOptionSelected, handleDateRangeChange }) => {
     const { isLoading } = query;
 
     return (
@@ -25,31 +27,13 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                         <label className='mr-2 text-gray-100'>
                             Lead Source:
                         </label>
-                        <select
-                            id="leadSource"
-                            className="px-1 h-8 w-28 rounded-md text-blue-800 ${isLoading && animate-pulse}"
-                            value={query.leadSource}
-                            onChange={e => handleQueryUpdate(query.id, query.dateRange, e.target.value)}
-                        >
-                            {isLoading && <option>Loading...</option>}
-                            <option value={'{"itemid":"000","title":"All"}'}>All</option>
-                            {/* Map the itemid and title for each leadSource to an option in the dropdown AND setLeadSource to the selected leadSource object */}
-                            {!isLoading && leadSources.map(leadSource => (<option key={leadSource.itemid} value={JSON.stringify(leadSource)}>{leadSource.title}</option>))}
-                        </select>
+                        <Dropdown selectedOption="All" onOptionSelected={handleOptionSelected} data={leadSources} queryId={query.id} />
+
                         <label className='ml-4 mr-2 text-gray-100'>
                             Date Range:
                         </label>
-                        <select
-                            id="dateRange"
-                            className="px-1 h-8 w-28 rounded-md text-blue-800 ${isLoading && animate-pulse}"
-                            value={query.dateRange}
-                            onChange={e => handleQueryUpdate(query.id, e.target.value, query.leadSource)}                            
-                        >
-                            <option value="All">All Time</option>
-                            <option value="Last Week">Last Week</option>
-                            <option value="Last Month">Last Month</option>
-                            <option value="Last Quarter">Last Quarter</option>
-                        </select>
+                        <DateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
+                        <p>Selected date range: {dateRange.gte} to {dateRange.lte}</p>
                     </div>
                     <button onClick={() => handleRemoveQuery(query.id)}>X</button>
                 </div>

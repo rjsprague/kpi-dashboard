@@ -1,19 +1,28 @@
-
-
 export default async (req, res) => {
 
-  const { leadSourceJsonString, dateRange } = req.query;  
-  //console.log("Lead Source JSON String ", leadSourceJsonString);
-  const leadSource = JSON.parse(leadSourceJsonString);
-  //console.log("Lead Source ", leadSource);
+  const { leadSource, gte, lte } = req.query;
 
   /* “Lead Created On”
     “First lead connection”
     “Lead Source Item” */
 
-  const response = await fetch('https://db.reiautomated.io/seller-leads/23642479');
-  const text = await response.text();
-  const data = JSON.parse(text);
+  const fetchSellerData = async () => {
+    const response = await fetch(`https://db.reiautomated.io/seller-leads?leadSource=${leadSource}&gte=${gte}&lte=${lte}`);
+    const sellerData = await response.json();
+
+    let fetchedResults = sellerData.data;
+    let page = sellerData.data.length;
+
+    while (sellerData.total > fetchedResults.length) {
+      const response = await fetch(`https://db.reiautomated.io/seller-leads?leadSource=${leadSource}&gte=${gte}&lte=${lte}&offset=${page}`);
+      const moreSellerData = await response.json();
+      page = moreSellerData.data.length;
+      fetchedResults = fetchedResults.concat(moreSellerData.data);
+    }
+
+    return fetchedResults;
+  };
+
 
   // Log every item's id with an undefined "Lead Created On"
   /*data.forEach(obj => {
@@ -21,45 +30,21 @@ export default async (req, res) => {
       console.log(obj);
     }
   });*/
- 
-
-  // Map data to object
-  let leads = data.map(obj => {
-    return {
-      leadCreatedOn: obj['Lead Created On'] && new Date(obj['Lead Created On'].start_utc),
-      firstLeadConnection: obj['First lead connection'] && new Date(obj['First lead connection'].start_utc),
-      leadSourceItem: obj['Lead Source Item'] && obj['Lead Source Item'][0],
-      connected: obj['First lead connection'] ? true : false,
-    }
-  });
-  
-  //console.log("leads ", leads);
 
   try {
+    const results = await fetchSellerData();
 
-    // narrow down leads by lead source and date range
-    if (leadSource.title !== "All") {
-      leads = leads.filter(lead => lead.leadSourceItem && lead.leadSourceItem == Number(leadSource.itemid));
-      //console.log("leads after leadSource filter ", leads);
-    }
+    // Map data to object
+    let leads = results.map(obj => {
+      return {
+        leadCreatedOn: obj['Lead Created On'] && new Date(obj['Lead Created On'].start_utc),
+        firstLeadConnection: obj['First lead connection'] && new Date(obj['First lead connection'].start_utc),
+        leadSourceItem: obj['Lead Source Item'] && obj['Lead Source Item'][0],
+        connected: obj['First lead connection'] ? true : false,
+      }
+    });
 
-    if (dateRange === "Last Week") {
-      const lastWeek = new Date();
-      lastWeek.setDate(lastWeek.getDate() - 7);
-      leads = leads.filter(lead => lead.leadCreatedOn && lead.leadCreatedOn > lastWeek);
-    }
-    if (dateRange === "Last Month") {
-      const lastMonth = new Date();
-      lastMonth.setMonth(lastMonth.getMonth() - 1);
-      leads = leads.filter(lead => lead.leadCreatedOn && lead.leadCreatedOn > lastMonth);
-    }
-    if (dateRange === "Last Quarter") {
-      const lastQuarter = new Date();
-      lastQuarter.setMonth(lastQuarter.getMonth() - 3);
-      leads = leads.filter(lead => lead.leadCreatedOn && lead.leadCreatedOn > lastQuarter);
-    }
-    
-    
+    console.log("leads", leads);
 
     // Calculate percent of connected leads
     const connectedLeads = leads.filter(lead => lead.connected === true);
@@ -91,7 +76,7 @@ export default async (req, res) => {
     // 
     res.json([
       { name: "Cost Per Lead", current: (Math.floor(Math.random() * 60) + 20), redFlag: 60.00, target: 35.00, data1: "Marketing: $6600", data2: "Leads: 100" },
-      { name: "Lead Connections", current: percentConnectedLeads, redFlag: 70, target: 80, data1: "Leads "+leads.length, data2: "Connections:"+connectedLeads.length },
+      { name: "Lead Connections", current: percentConnectedLeads, redFlag: 70, target: 80, data1: "Leads " + leads.length, data2: "Connections:" + connectedLeads.length },
       { name: "Triage Calls", current: (Math.floor(Math.random() * 50) + 40), redFlag: 60, target: 75, data1: "Connections: 60", data2: "Triages: 35" },
       { name: "Triage Qualification", current: (Math.floor(Math.random() * 60) + 30), redFlag: 50, target: 70, data1: "Triages: 35", data2: "Qualified: 28" },
       { name: "Deal Analysis", current: (Math.floor(Math.random() * 40) + 50), redFlag: 65, target: 80, data1: "Qualified: 28", data2: "Approvals: 20" },
