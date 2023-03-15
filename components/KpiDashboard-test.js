@@ -29,16 +29,27 @@ export default function kpiDashboard() {
     const [mainQuery, setMainQuery] = useState({ id: 0, results: [], isOpen: true, dateRange: mainQueryDateRange, leadSource: mainQueryLeadSource });
 
     // Get the KPIs for the main query on page load
-    useEffect(() => {
-        const fetchMainKpis = async () => {
-            const data = await fetch(`/api/get-kpis?leadSource=${mainQueryLeadSource}&gte=${mainQueryDateRange.gte}&lte=${mainQueryDateRange.lte}`);
-            const queryResults = await data.json();
-            setMainQuery(prevState => ({ ...prevState, results: queryResults }));
-        };
+
+    const fetchMainKpis = async () => {
         setIsLoading(true);
+        fetch(`/api/get-kpis?leadSource=${mainQueryLeadSource}&gte=${mainQueryDateRange.gte}&lte=${mainQueryDateRange.lte}`)
+            .then(response => response.json())
+            .then(data => {
+                setMainQuery(prevState => ({ ...prevState, results: data }));
+                setIsLoading(false);
+            })
+            .catch(error => {
+                console.log(error);
+                setIsLoading(false);
+            }
+            );
+    };
+
+    const handleFormSubmit = (event) => {
+        event.preventDefault();
         fetchMainKpis();
-        setIsLoading(false);
-    }, [mainQueryLeadSource, mainQueryDateRange]);
+        console.log("Fetch Main KPIs was called");
+    };
 
     // Handle toggling the open/closed state of set of KPI cards
     const handleToggleQuery = queryId => {
@@ -60,22 +71,8 @@ export default function kpiDashboard() {
         setQueries(queries.filter(query => query.id !== queryId));
     };
 
-    // Handle form submission to get KPIs
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        const data = await fetch(`/api/get-kpis?leadSourceJsonString=${leadSource}&dateRange=${dateRange}`);
-        const queryResults = await data.json();
-        const newQuery = { id: idCounter, results: queryResults, isOpen: true, dateRange: dateRange, leadSource: leadSource };
-
-        setQueries([...queries, newQuery]);
-        setIdCounter(idCounter + 1);
-
-
-    };
-
     // Update the selected query's results when the date range or lead source is changed
-    const handleQueryUpdate = async (id, dateRange, leadSource) => {
+    /*const handleQueryUpdate = async (id, dateRange, leadSource) => {
         console.log('updating query with id', id, 'to date range', dateRange, 'and lead source', leadSource);
 
         // Find the query with the specified ID
@@ -94,7 +91,7 @@ export default function kpiDashboard() {
 
         // Update the queries state with the updated query
         setQueries([...queries]);
-    };
+    };*/
 
     // Fetch lead sources on page load
     useEffect(() => {
@@ -102,7 +99,6 @@ export default function kpiDashboard() {
             // pass in date range to get unique lead sources for that date range
             const res = await fetch(`/api/lead-sources`)
             const data = await res.json();
-            console.log('lead sources', data);
             setLeadSources(data);
         };
         setIsLoading(true);
@@ -132,6 +128,7 @@ export default function kpiDashboard() {
     function handleDateRangeChange(startDate, endDate, queryId) {
         if (queryId === mainQuery.id) {
             setMainQueryDateRange({ gte: startDate, lte: endDate });
+            console.log("mainQueryDateRange updated to", mainQueryDateRange)
         } else {
             setQueries((prevQueries) => {
                 return prevQueries.map((query) => {
@@ -158,16 +155,6 @@ export default function kpiDashboard() {
                                         <h4 className="mb-1 text-2xl font-bold leading-6 tracking-wide text-white xl:text-3xl lg:text-2xl">KPI Dashboard</h4>
                                         <p className="hidden text-xs leading-5 text-gray-300 sm:block">Track and analyze your KPIs to unlock your business's full potential and drive growth!</p>
                                     </div>
-                                    <form onSubmit={handleSubmit}>
-                                        <div className='flex flex-row flex-wrap items-center gap-4'>
-
-                                            <button
-                                                type="submit"
-
-                                                className="box-border flex items-center justify-center w-20 h-10 px-4 py-0 font-bold text-center text-blue-100 transition-all transform border-2 border-blue-200 rounded-lg bg-gradient-to-br from-blue-600 via-blue-800 to-blue-400 text-md hover:scale-110 ">Submit</button>
-
-                                        </div>
-                                    </form>
                                 </div>
                                 <div className="relative px-2">
                                     {/* KPIs Settings Menu */}
@@ -194,6 +181,7 @@ export default function kpiDashboard() {
                     <div className="w-auto m-4 divide-y-2">
                         {/* Main KPI Results */}
                         <div key={mainQuery.id} className="p-2 bg-white justify-items-start shadow-super-3 rounded-xl">
+
                             <div className="flex justify-start px-4 py-2 text-sm rounded-lg sm:text-md xl:text-lg sm:font-bold bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
                                 <button className="mr-40" onClick={() => handleToggleQuery(mainQuery.id)}>
                                     {mainQuery.isOpen ? "Hide" : "Show"}
@@ -211,15 +199,17 @@ export default function kpiDashboard() {
                                         <div className="flex mr-40 ">
                                             {/* Date range selector */}
                                             <label htmlFor="dateRange" className="mr-40 text-sm text-gray-100 w-60">
-                                                Date range: {mainQueryDateRange && mainQueryDateRange.gte && mainQueryDateRange.lte ? 
-                                                            mainQueryDateRange.gte.toLocaleDateString() + " - " + mainQueryDateRange.lte.toLocaleDateString() : ""}
+                                                Date range: {mainQueryDateRange && mainQueryDateRange.gte && mainQueryDateRange.lte ?
+                                                    mainQueryDateRange.gte.toLocaleDateString() + " - " + mainQueryDateRange.lte.toLocaleDateString() : ""}
                                             </label>
-
                                             <SingleDateRangeSelector queryId={mainQuery.id} onDateRangeChange={handleDateRangeChange} />
-                                            
                                         </div>
                                     </div>
                                 </div>
+                                <button type="button" onClick={(event) => handleFormSubmit(event)} className="ml-auto mr-4">
+                                    Get KPIs
+                                </button>
+
                             </div>
 
                             {mainQuery.isOpen && (
@@ -317,7 +307,7 @@ export default function kpiDashboard() {
                     {/* END OF MAIN QUERY */}
                     {/* START OF SUBQUERIES */}
 
-                    {queries.map(query => (
+                    {/*  {queries.map(query => (
                         <SubQuery
                             key={query.id}
                             query={query}
@@ -329,7 +319,7 @@ export default function kpiDashboard() {
                             handleDateRangeChange={handleDateRangeChange}
                         />
                     ))}
-
+                  */}
                     {/* END OF SUBQUERIES */}
 
 

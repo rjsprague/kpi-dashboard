@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
-    const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+    const [dateRange, setDateRange] = useState([null, null]);
     const [showDatePicker, setShowDatePicker] = useState(false);
 
     const handleDateRangeChange = (dates) => {
         setDateRange(dates);
         const [startDate, endDate] = dates;
-        console.log("startDate:", startDate, "endDate:", endDate);
         if (startDate && endDate) {
             onDateRangeChange(startDate, endDate, queryId);
         }

@@ -2,7 +2,7 @@
 
 export default async function getUniqueLeadSources(req, res) {
 
-    const leadSources = {        
+    const leadSources = {       
         2323528185: "Other",
         2282145304: "Lead/Acquisition Manager - Nely",
         2282145210: "Lead/Acquisition Manager - Kevin",
@@ -22,8 +22,8 @@ export default async function getUniqueLeadSources(req, res) {
         2014475213: "SmrtPhone",
         2014474716: "Investor Lift",
         2014474100: "Instapage",
-        2014474016: "x0242",
-        2000000000: "All" 
+        2014474016: "x0242"
+         
     };
 
     // Get lead source items from API
