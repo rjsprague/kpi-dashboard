@@ -1,20 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react'
 import KpiCard from '../components/kpi-components/KpiCard'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import { Navigation, Pagination, Scrollbar } from "swiper";
+import { Mousewheel, Scrollbar } from "swiper";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Controller } from 'swiper';
 import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
+import 'swiper/css/mousewheel'
 import SubQuery from './kpi-components/SubQuery'
 import Dropdown from './kpi-components/Dropdown'
 import SingleDateRangeSelector from './kpi-components/SingleDateRangeSelector'
+import { getStartOfLastWeek, getEndOfLastWeek, getStartOfLastMonth, getEndOfLastMonth, getStartOfLastQuarter, getEndOfLastQuarter } from '../lib/date-utils.js'
+
 
 export default function kpiDashboard() {
+    const startOfLastWeek = getStartOfLastWeek();
+    const endOfLastWeek = getEndOfLastWeek();
+    const startOfLastMonth = getStartOfLastMonth();
+    const endOfLastMonth = getEndOfLastMonth();
+    const startOfLastQuarter = getStartOfLastQuarter();
+    const endOfLastQuarter = getEndOfLastQuarter();
 
-    const [dateRange, setDateRange] = useState({ gte: null, lte: null });
+    const [dateRange, setDateRange] = useState({ gte: startOfLastWeek, lte: endOfLastWeek });
     const [isLoading, setIsLoading] = useState(true);
     const [leadSources, setLeadSources] = useState(["All"]);
     const [leadSource, setLeadSource] = useState("All");
@@ -24,12 +31,11 @@ export default function kpiDashboard() {
     const swiperRef = useRef(null);
 
     // Main query state
-    const [mainQueryDateRange, setMainQueryDateRange] = useState({ gte: null, lte: null });
+    const [mainQueryDateRange, setMainQueryDateRange] = useState({ gte: startOfLastWeek, lte: endOfLastWeek });
     const [mainQueryLeadSource, setMainQueryLeadSource] = useState("All");
     const [mainQuery, setMainQuery] = useState({ id: 0, results: [], isOpen: true, dateRange: mainQueryDateRange, leadSource: mainQueryLeadSource });
 
     // Get the KPIs for the main query on page load
-
     const fetchMainKpis = async () => {
         setIsLoading(true);
         fetch(`/api/get-kpis?leadSource=${mainQueryLeadSource}&gte=${mainQueryDateRange.gte}&lte=${mainQueryDateRange.lte}`)
@@ -44,6 +50,8 @@ export default function kpiDashboard() {
             }
             );
     };
+    // Get the KPIs for the main query on page load
+    //fetchMainKpis();
 
     const handleFormSubmit = (event) => {
         event.preventDefault();
@@ -72,26 +80,20 @@ export default function kpiDashboard() {
     };
 
     // Update the selected query's results when the date range or lead source is changed
-    /*const handleQueryUpdate = async (id, dateRange, leadSource) => {
-        console.log('updating query with id', id, 'to date range', dateRange, 'and lead source', leadSource);
-
+    const handleQueryUpdate = async (id, dateRange, leadSource) => {
         // Find the query with the specified ID
         const queryToUpdate = queries.find(query => query.id === id);
-
         // Update the query's dateRange and leadSource properties
         queryToUpdate.dateRange = dateRange;
         queryToUpdate.leadSource = leadSource;
-
         // Make an API call to fetch the updated KPI data for the query
-        const data = await fetch(`/api/get-kpis?leadSourceJsonString=${queryToUpdate.leadSource}&gte=${queryToUpdate.dateRange.gte}&lte=${queryToUpdate.dateRange.lte}`);
+        const data = await fetch(`/api/get-kpis?leadSource=${queryToUpdate.leadSource}&gte=${queryToUpdate.dateRange.gte}&lte=${queryToUpdate.dateRange.lte}`);
         const updatedResults = await data.json();
-
         // Update the query's results property with the new KPI data
         queryToUpdate.results = updatedResults;
-
         // Update the queries state with the updated query
-        setQueries([...queries]);
-    };*/
+        setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
+    };
 
     // Fetch lead sources on page load
     useEffect(() => {
@@ -128,7 +130,6 @@ export default function kpiDashboard() {
     function handleDateRangeChange(startDate, endDate, queryId) {
         if (queryId === mainQuery.id) {
             setMainQueryDateRange({ gte: startDate, lte: endDate });
-            console.log("mainQueryDateRange updated to", mainQueryDateRange)
         } else {
             setQueries((prevQueries) => {
                 return prevQueries.map((query) => {
@@ -140,6 +141,27 @@ export default function kpiDashboard() {
             });
         }
     }
+
+    // Handle adding a new query
+    const handleAddQuery = () => {
+        const newQuery = {
+            id: idCounter,
+            results: [],
+            isOpen: true,
+            leadSource: 'All',
+            dateRange: { gte: startOfLastWeek, lte: endOfLastWeek },
+        };
+        setIdCounter(idCounter + 1);
+        setQueries([...queries, newQuery]);
+    };
+
+    useEffect(() => {
+        // get the newly added query
+        const newQuery = queries.find(query => query.id === idCounter - 1);
+        if (newQuery) {
+            handleQueryUpdate(newQuery.id, newQuery.dateRange, newQuery.leadSource);
+        }
+    }, [idCounter]);
 
     return (
         <>
@@ -176,29 +198,29 @@ export default function kpiDashboard() {
                     </div>
                 </section>
 
-                <section className="flex flex-col w-full h-full text-black">
+                <section className="flex flex-col w-full h-full p-4">
                     {/* KPI Results Section */}
-                    <div className="w-auto m-4 divide-y-2">
+                    <div className="w-screen mb-2 divide-y-2 xl:w-full">
                         {/* Main KPI Results */}
-                        <div key={mainQuery.id} className="p-2 bg-white justify-items-start shadow-super-3 rounded-xl">
+                        <div key={mainQuery.id} className="p-2 bg-white shadow-super-3 rounded-xl">
 
-                            <div className="flex justify-start px-4 py-2 text-sm rounded-lg sm:text-md xl:text-lg sm:font-bold bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
-                                <button className="mr-40" onClick={() => handleToggleQuery(mainQuery.id)}>
+                            <div className="flex justify-between px-4 py-2 text-sm rounded-lg shadow-super-3 sm:text-md xl:text-lg bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
+                                <button className="" onClick={() => handleToggleQuery(mainQuery.id)}>
                                     {mainQuery.isOpen ? "Hide" : "Show"}
                                 </button>
-                                <div className='flex justify-center text-lg font-semibold'>
-                                    <div className='flex flex-row flex-wrap items-center gap-4'>
+                                <div className=''>
+                                    <div className='flex justify-between gap-4'>
                                         {/* Lead Source and Date Range Selectors */}
-                                        <div className='flex'>
+                                        <div className='flex justify-between gap-2'>
                                             {/* Lead Source selector */}
-                                            <label className='mr-2 text-gray-100'>
+                                            <label className=''>
                                                 Lead Source:
                                             </label>
                                             <Dropdown selectedOption={mainQueryLeadSource} onOptionSelected={handleOptionSelected} data={leadSources} queryId={mainQuery.id} />
                                         </div>
-                                        <div className="flex mr-40 ">
+                                        <div className="flex justify-between gap-2">
                                             {/* Date range selector */}
-                                            <label htmlFor="dateRange" className="mr-40 text-sm text-gray-100 w-60">
+                                            <label htmlFor="dateRange" className="">
                                                 Date range: {mainQueryDateRange && mainQueryDateRange.gte && mainQueryDateRange.lte ?
                                                     mainQueryDateRange.gte.toLocaleDateString() + " - " + mainQueryDateRange.lte.toLocaleDateString() : ""}
                                             </label>
@@ -206,20 +228,22 @@ export default function kpiDashboard() {
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" onClick={(event) => handleFormSubmit(event)} className="ml-auto mr-4">
+                                <button
+                                    type="button"
+                                    onClick={(event) => handleFormSubmit(event)}
+                                    className="box-border px-4 text-blue-900 transition-colors duration-200 bg-gray-200 rounded-md ring-offset-4 ring-offset-teal-100 shadow-super-4 hover:bg-gray-100"
+                                >
                                     Get KPIs
                                 </button>
-
                             </div>
-
                             {mainQuery.isOpen && (
-                                <div className='relative px-4 min-h-70'>
+                                <div className='relative px-4'>
 
                                     {/* SWIPER FOR KPI CARDS */}
                                     <Swiper
 
                                         spaceBetween={10}
-                                        modules={[Scrollbar]}
+                                        modules={[Scrollbar, Mousewheel]}
                                         scrollbar={{
                                             draggable: true,
                                             snapOnRelease: false,
@@ -227,10 +251,16 @@ export default function kpiDashboard() {
                                         loop={false}
                                         slidesPerView={1}
                                         direction={'horizontal'}
+                                        mousewheel={{
+                                            sensitivity: 3,
+                                            thresholdDelta: 1,
+                                            thresholdTime: 50,
+                                        }}
+
                                         breakpoints={{
                                             320: {
                                                 slidesPerView: 1,
-                                                slidesPerGroup: 1,
+
                                                 spaceBetween: 20,
                                                 slidesOffsetBefore: 0,
                                                 slidesOffsetAfter: 0,
@@ -239,24 +269,23 @@ export default function kpiDashboard() {
                                             },
                                             375: {
                                                 slidesPerView: 1,
-                                                slidesPerGroup: 1,
+
                                                 spaceBetween: 50,
-                                                slidesOffsetBefore: 25,
-                                                slidesOffsetAfter: 25,
+                                                slidesOffsetBefore: 0,
+                                                slidesOffsetAfter: 0,
                                                 centeredSlides: true,
                                             },
                                             414: {
                                                 slidesPerView: 1,
-                                                slidesPerGroup: 1,
+
                                                 spaceBetween: 50,
-                                                slidesOffsetBefore: 50,
-                                                slidesOffsetAfter: 50,
+                                                slidesOffsetBefore: 15,
+                                                slidesOffsetAfter: 0,
                                                 centeredSlides: true,
-                                                grabCursor: true,
                                             },
                                             768: {
                                                 slidesPerView: 2,
-                                                slidesPerGroup: 1,
+
                                                 spaceBetween: 0,
                                                 slidesOffsetBefore: 5,
                                                 slidesOffsetAfter: 10,
@@ -265,7 +294,7 @@ export default function kpiDashboard() {
                                             },
                                             1200: {
                                                 slidesPerView: 3,
-                                                slidesPerGroup: 1,
+
                                                 spaceBetween: 10,
                                                 slidesOffsetBefore: 25,
                                                 slidesOffsetAfter: 20,
@@ -274,7 +303,7 @@ export default function kpiDashboard() {
                                             },
                                             1400: {
                                                 slidesPerView: 4,
-                                                slidesPerGroup: 1,
+
                                                 spaceBetween: 10,
                                                 slidesOffsetBefore: 10,
                                                 slidesOffsetAfter: 100,
@@ -284,10 +313,9 @@ export default function kpiDashboard() {
                                         }}
                                         onSlideChange={() => console.log('slide change')}
                                         onSwiper={swiper => console.log(swiper)}
-
-                                        className="w-screen mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
+                                        className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
                                     >
-                                        <div className={`${mainQuery.isOpen && 'h-80'}`}>
+                                        <div className={`${mainQuery.isOpen && 'h-70'}`}>
                                             {mainQuery.isOpen &&
                                                 mainQuery.results.map(result => (
                                                     <SwiperSlide key={result.id}>
@@ -307,7 +335,7 @@ export default function kpiDashboard() {
                     {/* END OF MAIN QUERY */}
                     {/* START OF SUBQUERIES */}
 
-                    {/*  {queries.map(query => (
+                    {queries.map(query => (
                         <SubQuery
                             key={query.id}
                             query={query}
@@ -319,9 +347,17 @@ export default function kpiDashboard() {
                             handleDateRangeChange={handleDateRangeChange}
                         />
                     ))}
-                  */}
+
                     {/* END OF SUBQUERIES */}
 
+                    {/* ADD NEW QUERY BUTTON */}
+                    <div
+                        id="add-query-btn"
+                        className="flex items-center justify-center w-12 h-12 m-2 text-2xl text-white bg-blue-500 rounded-full cursor-pointer"
+                        onClick={() => handleAddQuery()}
+                    >
+                        +
+                    </div>
 
                 </section>
             </div >

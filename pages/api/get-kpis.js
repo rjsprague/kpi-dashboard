@@ -47,6 +47,12 @@ export default async (req, res) => {
 
     results.data = await fetchSellerData();
 
+    // How can we determine if a lead was triaged?
+    // How can we determine if a lead was qualified?
+    // How can we determine if a lead received a perfect presentation?
+    // How can we determine if a lead was contracted?
+    // How can we determine if a lead was acquired?
+
     // Map data to object
     let leads = results.data.map(obj => {
       return {
@@ -67,19 +73,19 @@ export default async (req, res) => {
     //const triageCalls = leads.filter(lead => lead.triageCall === true);
     //const percentTriageCalls = (triageCalls.length / connectedLeads.length * 100);
 
-    // Calculate percent of qualified triage calls
+    // Calculate percent of qualified triage calls    
     //const qualTriageCalls = leads.filter(lead => lead.triageCallQualified === true);
     //const percentQualTriageCalls = (qualTriageCalls.length / triageCalls.length * 100);
 
-    // Calculate percent of qualified triage calls
+    // Calculate percent of perfect presentations
     //const perfectPresentations = leads.filter(lead => lead.perfectPresentation === true);
     //const percentPerfectPresentations = (perfectPresentations.length / qualTriageCalls.length * 100);
 
-    // Calculate percent of qualified triage calls
+    // Calculate percent of contracted leads
     //const contracted = leads.filter(lead => lead.contracted === true);
     //const percentContracted = (contracted.length / perfectPresentations.length * 100);
 
-    // Calculate percent of qualified triage calls
+    // Calculate percent of acquired leads
     //const acquired = leads.filter(lead => lead.acquired === true);
     //const percentAcquired = (acquired.length / contracted.length * 100);
 
