@@ -11,7 +11,9 @@ import SubQuery from './kpi-components/SubQuery'
 import Dropdown from './kpi-components/Dropdown'
 import SingleDateRangeSelector from './kpi-components/SingleDateRangeSelector'
 import { getStartOfLastWeek, getEndOfLastWeek, getStartOfLastMonth, getEndOfLastMonth, getStartOfLastQuarter, getEndOfLastQuarter } from '../lib/date-utils.js'
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronDown, faChevronUp, faPlus } from '@fortawesome/free-solid-svg-icons'
+import BurgerMenu from './BurgerMenu'
 
 export default function kpiDashboard() {
     const startOfLastWeek = getStartOfLastWeek();
@@ -28,7 +30,11 @@ export default function kpiDashboard() {
     const [queries, setQueries] = useState([]);
     const [idCounter, setIdCounter] = useState(1);
     const [swiperControllers, setSwiperControllers] = useState([]);
-    const swiperRef = useRef(null);
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+    const handleMenuToggle = () => {
+        setIsMenuOpen(!isMenuOpen)
+    }
 
     // Main query state
     const [mainQueryDateRange, setMainQueryDateRange] = useState({ gte: startOfLastWeek, lte: endOfLastWeek });
@@ -50,8 +56,11 @@ export default function kpiDashboard() {
             }
             );
     };
+
     // Get the KPIs for the main query on page load
-    //fetchMainKpis();
+    useEffect(() => {
+        fetchMainKpis();
+    }, []);
 
     const handleFormSubmit = (event) => {
         event.preventDefault();
@@ -109,22 +118,20 @@ export default function kpiDashboard() {
     }, []);
 
     // Handle leadSource dropdown selection changes, updating the state
-    function handleOptionSelected(e, queryId) {
-        const selectedLeadSource = e.target.value;
-
+    const handleOptionSelected = (value, queryId) => {
         if (queryId === mainQuery.id) {
-            setMainQueryLeadSource(selectedLeadSource);
+            setMainQueryLeadSource(value);
         } else {
             setQueries((prevQueries) => {
                 return prevQueries.map((query) => {
                     if (query.id === queryId) {
-                        return { ...query, leadSource: selectedLeadSource };
+                        return { ...query, leadSource: value };
                     }
                     return query;
                 });
             });
         }
-    }
+    };
 
     // Handle date range selection changes, updating the state
     function handleDateRangeChange(startDate, endDate, queryId) {
@@ -198,50 +205,123 @@ export default function kpiDashboard() {
                     </div>
                 </section>
 
-                <section className="flex flex-col w-full h-full p-4">
+                <section className="flex flex-col h-full px-4 py-2">
                     {/* KPI Results Section */}
-                    <div className="w-screen mb-2 divide-y-2 xl:w-full">
+                    <div className="w-screen mb-2 sm:w-full">
                         {/* Main KPI Results */}
                         <div key={mainQuery.id} className="p-2 bg-white shadow-super-3 rounded-xl">
-
-                            <div className="flex justify-between px-4 py-2 text-sm rounded-lg shadow-super-3 sm:text-md xl:text-lg bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
-                                <button className="" onClick={() => handleToggleQuery(mainQuery.id)}>
-                                    {mainQuery.isOpen ? "Hide" : "Show"}
-                                </button>
-                                <div className=''>
-                                    <div className='flex justify-between gap-4'>
-                                        {/* Lead Source and Date Range Selectors */}
-                                        <div className='flex justify-between gap-2'>
-                                            {/* Lead Source selector */}
-                                            <label className=''>
-                                                Lead Source:
-                                            </label>
-                                            <Dropdown selectedOption={mainQueryLeadSource} onOptionSelected={handleOptionSelected} data={leadSources} queryId={mainQuery.id} />
-                                        </div>
-                                        <div className="flex justify-between gap-2">
-                                            {/* Date range selector */}
-                                            <label htmlFor="dateRange" className="">
-                                                Date range: {mainQueryDateRange && mainQueryDateRange.gte && mainQueryDateRange.lte ?
-                                                    mainQueryDateRange.gte.toLocaleDateString() + " - " + mainQueryDateRange.lte.toLocaleDateString() : ""}
-                                            </label>
-                                            <SingleDateRangeSelector queryId={mainQuery.id} onDateRangeChange={handleDateRangeChange} />
+                            <div className="px-4 py-2 text-sm rounded-lg shadow-super-3 bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
+                                <div className='flex-row items-center hidden align-middle md:justify-between md:flex'>
+                                    <button
+                                        className="box-border px-4 text-blue-900 transition-shadow duration-500 bg-white rounded-md shadow-super-4 hover:animate-pulse"
+                                        onClick={() => handleToggleQuery(mainQuery.id)}
+                                    >
+                                        {mainQuery.isOpen ?
+                                            <FontAwesomeIcon
+                                                icon={faChevronDown}
+                                                size="md"
+                                                className='text-blue-900 transition-transform duration-1000 -rotate-180 transform-gpu'
+                                            /> :
+                                            <FontAwesomeIcon
+                                                icon={faChevronUp}
+                                                size="md"
+                                                className='text-blue-900 transition-transform duration-1000 rotate-180 transform-gpu'
+                                            />
+                                        }
+                                    </button>
+                                    <div className='flex items-center'>
+                                        <div className='flex items-center justify-between gap-4 align-middle'>
+                                            {/* Lead Source and Date Range Selectors */}
+                                            <div className='flex items-center justify-between gap-2 align-middle'>
+                                                {/* Lead Source selector */}
+                                                <label className=''>
+                                                    Lead Source:
+                                                </label>
+                                                <Dropdown
+                                                    selectedOption={mainQueryLeadSource}
+                                                    onOptionSelected={handleOptionSelected}
+                                                    data={leadSources}
+                                                    queryId={mainQuery.id}
+                                                />
+                                            </div>
+                                            <div className="flex justify-between gap-2">
+                                                {/* Date range selector */}
+                                                <label htmlFor="dateRange" className="">
+                                                    Date range: {mainQueryDateRange && mainQueryDateRange.gte && mainQueryDateRange.lte ?
+                                                        mainQueryDateRange.gte.toLocaleDateString() + " - " + mainQueryDateRange.lte.toLocaleDateString() : ""}
+                                                </label>
+                                                <SingleDateRangeSelector queryId={mainQuery.id} onDateRangeChange={handleDateRangeChange} />
+                                            </div>
                                         </div>
                                     </div>
+                                    <button
+                                        type="button"
+                                        onClick={(event) => handleFormSubmit(event)}
+                                        className="box-border px-4 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
+                                    >
+                                        Get KPIs
+                                    </button>
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={(event) => handleFormSubmit(event)}
-                                    className="box-border px-4 text-blue-900 transition-colors duration-200 bg-gray-200 rounded-md ring-offset-4 ring-offset-teal-100 shadow-super-4 hover:bg-gray-100"
-                                >
-                                    Get KPIs
-                                </button>
+                                <div className="flex flex-row justify-between">
+                                    <button
+                                        className="box-border block px-4 text-blue-900 transition-shadow duration-500 bg-white rounded-md md:hidden shadow-super-4 hover:animate-pulse"
+                                        onClick={() => handleToggleQuery(mainQuery.id)}
+                                    >
+                                        {mainQuery.isOpen ?
+                                            <FontAwesomeIcon
+                                                icon={faChevronUp}
+                                                size="lg"
+                                                className='text-blue-900'
+                                            /> :
+                                            <FontAwesomeIcon
+                                                icon={faChevronDown}
+                                                size="lg"
+                                                className='text-blue-900'
+                                            />}
+                                    </button>
+                                    <BurgerMenu >
+                                        <div className='flex-col flex-wrap gap-4'>
+                                            <div className='flex flex-col'>
+                                                {/* Lead Source and Date Range Selectors */}
+                                                <div className='flex flex-col gap-2'>
+                                                    {/* Lead Source selector */}
+                                                    <label className='flex'>
+                                                        Lead Source:
+                                                    </label>
+                                                    <Dropdown
+                                                        selectedOption={mainQueryLeadSource}
+                                                        onOptionSelected={handleOptionSelected}
+                                                        data={leadSources}
+                                                        queryId={mainQuery.id}
+                                                        limit={10}
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col flex-wrap gap-2 mt-4">
+                                                    {/* Date range selector */}
+                                                    <label htmlFor="dateRange" className="flex">
+                                                        Date range: {mainQueryDateRange && mainQueryDateRange.gte && mainQueryDateRange.lte ?
+                                                            mainQueryDateRange.gte.toLocaleDateString() + " - " + mainQueryDateRange.lte.toLocaleDateString() : ""}
+                                                    </label>
+                                                    <SingleDateRangeSelector queryId={mainQuery.id} onDateRangeChange={handleDateRangeChange} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={(event) => handleFormSubmit(event)}
+                                            className="box-border px-4 mt-4 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-gray-100"
+                                        >
+                                            Get KPIs
+                                        </button>
+                                    </BurgerMenu>
+                                </div>
                             </div>
+
                             {mainQuery.isOpen && (
                                 <div className='relative px-4'>
 
                                     {/* SWIPER FOR KPI CARDS */}
                                     <Swiper
-
                                         spaceBetween={10}
                                         modules={[Scrollbar, Mousewheel]}
                                         scrollbar={{
@@ -256,7 +336,6 @@ export default function kpiDashboard() {
                                             thresholdDelta: 1,
                                             thresholdTime: 50,
                                         }}
-
                                         breakpoints={{
                                             320: {
                                                 slidesPerView: 1,
@@ -353,10 +432,10 @@ export default function kpiDashboard() {
                     {/* ADD NEW QUERY BUTTON */}
                     <div
                         id="add-query-btn"
-                        className="flex items-center justify-center w-12 h-12 m-2 text-2xl text-white bg-blue-500 rounded-full cursor-pointer"
+                        className="flex items-center justify-center w-12 h-12 m-2 text-2xl text-white ease-in-out delay-1000 bg-blue-500 rounded-full cursor-pointer shadow-super-3 animate-pulse"
                         onClick={() => handleAddQuery()}
                     >
-                        +
+                        <FontAwesomeIcon icon={faPlus} />
                     </div>
 
                 </section>

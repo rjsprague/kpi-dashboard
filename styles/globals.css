@@ -4,88 +4,101 @@
 @tailwind variants;
 
 body {
-    background-color: #092439;
-    color: white;   
-    overflow-x: hidden;
+  background-color: #092439;
+  color: white;
+  overflow-x: hidden;
 }
 
 .flip-container {
-    perspective: 1000px;
-  }
-  
-  .flipper {
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-    cursor: pointer;
-    position: relative;
-  }
-  
-  .flipped {
-    transform: rotateY(180deg);
-  }
-  
-  .front, .back {
-    backface-visibility: hidden;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-  
-  .back {
-    transform: rotateY(180deg);
-  }
+  perspective: 1000px;
+}
 
-  .backface {
-    backface-visibility: hidden;
-  }
+.flipper {
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  position: relative;
+}
 
-  .swiper-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-  .swiper-button-prev,
-  .swiper-button-next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-  }
-  .swiper-button-prev {
-    left: 10px;
-  }
-  .swiper-button-next {
-    right: 10px;
-  }
+.flipped {
+  transform: rotateY(180deg);
+}
 
-  
+.front,
+.back {
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.back {
+  transform: rotateY(180deg);
+}
+
+.backface {
+  backface-visibility: hidden;
+}
+
+.swiper-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.swiper-button-prev {
+  left: 10px;
+}
+
+.swiper-button-next {
+  right: 10px;
+}
+
+
 .swiper-scrollbar {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    z-index: 10;
-    width: 100%;
-    height: 10px !important;
-    background: rgba(255, 255, 255, 0.5);
-  }
-  .swiper-scrollbar-drag {
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 10;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    opacity: 0.5;
-    transition: opacity 0.3s;
-  }
-  .swiper-scrollbar-drag:hover {
-    opacity: 1;
-  }
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 10;
+  width: 100%;
+  height: 10px !important;
+  background: rgba(255, 255, 255, 0.5);
+}
 
-  .swiper-scrollbar-cursor-drag {
-    cursor: -webkit-grabbing;
-    cursor: -moz-grabbing;
-    cursor: grabbing;
-  }
+.swiper-scrollbar-drag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.swiper-scrollbar-drag:hover {
+  opacity: 1;
+}
+
+.swiper-scrollbar-cursor-drag {
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+  cursor: grabbing;
+}
+
+
+.bm-cross {
+  background: #bdc3c7;
+}
+
+

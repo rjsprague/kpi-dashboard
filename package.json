@@ -19,6 +19,7 @@
     "ngrok": "^4.3.3",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
+    "react-burger-menu": "^3.0.9",
     "react-countup": "^6.4.1",
     "react-datepicker": "^4.10.0",
     "react-dom": "^18.2.0",

@@ -532,7 +532,7 @@ module.exports = {
       },
       bounce: {
         '0%, 100%': {
-          transform: 'translateY(-25%)',
+          transform: 'translateY(-15%)',
           animationTimingFunction: 'cubic-bezier(0.8,0,1,1)',
         },
         '50%': {
@@ -580,7 +580,14 @@ module.exports = {
     maxHeight: {
       full: '100%',
       screen: '100vh',
+      'screen2': '20vh',
+      'screen3': '30vh',
+      'screen4': '40vh',
+      'screen5': '50vh',
+      'screen6': '60vh',
+      'screen7': '70vh',
       'screen8': '80vh',
+      'screen9': '90vh',
     },
     maxWidth: {
       none: 'none',

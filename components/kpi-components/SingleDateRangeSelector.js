@@ -19,13 +19,13 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
     };
 
     return (
-        <div style={{ position: "relative" }}>
+        <div className="relative flex">
             <button
                 onClick={toggleDatePicker}
-                className="box-border px-4 text-blue-900 transition-colors duration-200 bg-gray-200 rounded-md ring-offset-4 ring-offset-teal-100 shadow-super-4 hover:bg-gray-100"
+                className="box-border px-4 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
             >Select dates</button>
             {showDatePicker && (
-                <div style={{ position: "absolute", zIndex: 10 }}>
+                <div className="absolute z-10 translate-y-8">
                     <DatePicker
                         onChange={handleDateRangeChange}
                         startDate={dateRange[0]}
