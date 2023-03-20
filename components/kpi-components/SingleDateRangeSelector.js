@@ -22,7 +22,7 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
         <div className="relative flex">
             <button
                 onClick={toggleDatePicker}
-                className="box-border px-4 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
+                className="box-border px-1 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
             >Select dates</button>
             {showDatePicker && (
                 <div className="absolute z-10 translate-y-8">

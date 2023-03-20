@@ -101,4 +101,17 @@ body {
   background: #bdc3c7;
 }
 
+.kpis-open {
+ 
+  max-height: 400px;
+}
 
+.kpis-closed {
+  -webkit-transition: max-height 1s; 
+  -moz-transition: max-height 1s; 
+  -ms-transition: max-height 1s; 
+  -o-transition: max-height 1s; 
+  transition: max-height 1s;  
+  overflow: hidden;
+  max-height: 65px;
+}

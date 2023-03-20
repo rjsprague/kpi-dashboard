@@ -14,6 +14,8 @@ import { getStartOfLastWeek, getEndOfLastWeek, getStartOfLastMonth, getEndOfLast
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faChevronUp, faPlus } from '@fortawesome/free-solid-svg-icons'
 import BurgerMenu from './BurgerMenu'
+import AnimateHeight from 'react-animate-height';
+
 
 export default function kpiDashboard() {
     const startOfLastWeek = getStartOfLastWeek();
@@ -23,6 +25,7 @@ export default function kpiDashboard() {
     const startOfLastQuarter = getStartOfLastQuarter();
     const endOfLastQuarter = getEndOfLastQuarter();
 
+    const [height, setHeight] = useState('auto');
     const [dateRange, setDateRange] = useState({ gte: startOfLastWeek, lte: endOfLastWeek });
     const [isLoading, setIsLoading] = useState(true);
     const [leadSources, setLeadSources] = useState(["All"]);
@@ -172,17 +175,17 @@ export default function kpiDashboard() {
 
     return (
         <>
-            <div className="flex flex-col w-full min-h-screen">
+            <div className="flex flex-col min-h-screen">
                 <section>
                     {/* Navigation bar */}
-                    <div className="flex flex-row flex-wrap bg-blue-600 shadow-blue-300 shadow-super-2">
+                    <div className="flex flex-row flex-wrap bg-blue-600">
                         <div className="w-full pt-2 pr-2 shadow-super-2">
                             <div className="flex flex-row justify-between">
                                 <div className="flex flex-row gap-4">
                                     <div className="px-4">
                                         {/* Title and subtitle */}
                                         <h4 className="mb-1 text-2xl font-bold leading-6 tracking-wide text-white xl:text-3xl lg:text-2xl">KPI Dashboard</h4>
-                                        <p className="hidden text-xs leading-5 text-gray-300 sm:block">Track and analyze your KPIs to unlock your business's full potential and drive growth!</p>
+                                        <p className="hidden text-xs leading-5 text-gray-100 sm:block">Track and analyze your KPIs to unlock your business's full potential and drive growth!</p>
                                     </div>
                                 </div>
                                 <div className="relative px-2">
@@ -204,37 +207,92 @@ export default function kpiDashboard() {
                         </div>
                     </div>
                 </section>
-
                 <section className="flex flex-col h-full px-4 py-2">
                     {/* KPI Results Section */}
-                    <div className="w-screen mb-2 sm:w-full">
+                    <div className="mb-2">
                         {/* Main KPI Results */}
-                        <div key={mainQuery.id} className="p-2 bg-white shadow-super-3 rounded-xl">
-                            <div className="px-4 py-2 text-sm rounded-lg shadow-super-3 bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
-                                <div className='flex-row items-center hidden align-middle md:justify-between md:flex'>
-                                    <button
-                                        className="box-border px-4 text-blue-900 transition-shadow duration-500 bg-white rounded-md shadow-super-4 hover:animate-pulse"
-                                        onClick={() => handleToggleQuery(mainQuery.id)}
-                                    >
-                                        {mainQuery.isOpen ?
-                                            <FontAwesomeIcon
-                                                icon={faChevronDown}
-                                                size="md"
-                                                className='text-blue-900 transition-transform duration-1000 -rotate-180 transform-gpu'
-                                            /> :
-                                            <FontAwesomeIcon
-                                                icon={faChevronUp}
-                                                size="md"
-                                                className='text-blue-900 transition-transform duration-1000 rotate-180 transform-gpu'
+                        <div className="px-4 py-2 text-sm rounded-lg shadow-super-3 bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
+                            <div className='flex-row items-center hidden gap-2 align-middle md:justify-between md:flex'>
+                                <button
+                                    className="box-border px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md shadow-super-4 hover:animate-pulse"
+                                    onClick={() => {
+                                        handleToggleQuery(mainQuery.id)
+                                        setHeight(height === 0 ? 'auto' : 0)
+                                    }}
+                                >
+                                    {mainQuery.isOpen ?
+                                        <FontAwesomeIcon
+                                            icon={faChevronDown}
+                                            size="md"
+                                            className='text-blue-900 transition-transform duration-500 rotate-180 transform-gpu'
+                                        /> :
+                                        <FontAwesomeIcon
+                                            icon={faChevronDown}
+                                            size="md"
+                                            className='text-blue-900 transition-transform duration-500 transform-gpu'
+                                        />
+                                    }
+                                </button>
+                                <div className='flex items-center'>
+                                    <div className='flex items-center justify-between gap-4 align-middle'>
+                                        {/* Lead Source and Date Range Selectors */}
+                                        <div className='flex items-center justify-between gap-2 align-middle'>
+                                            {/* Lead Source selector */}
+                                            <label className=''>
+                                                Lead Source:
+                                            </label>
+                                            <Dropdown
+                                                selectedOption={mainQueryLeadSource}
+                                                onOptionSelected={handleOptionSelected}
+                                                data={leadSources}
+                                                queryId={mainQuery.id}
                                             />
-                                        }
-                                    </button>
-                                    <div className='flex items-center'>
-                                        <div className='flex items-center justify-between gap-4 align-middle'>
+                                        </div>
+                                        <div className="flex justify-between gap-2">
+                                            {/* Date range selector */}
+                                            <label htmlFor="dateRange" className="">
+                                                Date range: {mainQueryDateRange && mainQueryDateRange.gte && mainQueryDateRange.lte ?
+                                                    mainQueryDateRange.gte.toLocaleDateString() + " - " + mainQueryDateRange.lte.toLocaleDateString() : ""}
+                                            </label>
+                                            <SingleDateRangeSelector queryId={mainQuery.id} onDateRangeChange={handleDateRangeChange} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={(event) => handleFormSubmit(event)}
+                                    className="box-border px-4 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
+                                >
+                                    Get KPIs
+                                </button>
+                            </div>
+                            <div className="flex flex-row justify-between md:hidden">
+                                <button
+                                    className="box-border block px-4 text-blue-900 transition-shadow duration-500 bg-white rounded-md md:hidden shadow-super-4 hover:animate-pulse"
+                                    onClick={() => {
+                                        handleToggleQuery(mainQuery.id)
+                                        setHeight(height === 0 ? 'auto' : 0)
+                                    }}
+                                >
+                                    {mainQuery.isOpen ?
+                                        <FontAwesomeIcon
+                                            icon={faChevronDown}
+                                            size="lg"
+                                            className='text-blue-900 transition-transform duration-500 rotate-180 transform-gpu'
+                                        /> :
+                                        <FontAwesomeIcon
+                                            icon={faChevronDown}
+                                            size="lg"
+                                            className='text-blue-900 transition-transform duration-500 transform-gpu'
+                                        />}
+                                </button>
+                                <BurgerMenu >
+                                    <div className='flex-col flex-wrap gap-4'>
+                                        <div className='flex flex-col'>
                                             {/* Lead Source and Date Range Selectors */}
-                                            <div className='flex items-center justify-between gap-2 align-middle'>
+                                            <div className='flex flex-col gap-2'>
                                                 {/* Lead Source selector */}
-                                                <label className=''>
+                                                <label className='flex'>
                                                     Lead Source:
                                                 </label>
                                                 <Dropdown
@@ -242,11 +300,12 @@ export default function kpiDashboard() {
                                                     onOptionSelected={handleOptionSelected}
                                                     data={leadSources}
                                                     queryId={mainQuery.id}
+                                                    limit={10}
                                                 />
                                             </div>
-                                            <div className="flex justify-between gap-2">
+                                            <div className="flex flex-col flex-wrap gap-2 mt-4">
                                                 {/* Date range selector */}
-                                                <label htmlFor="dateRange" className="">
+                                                <label htmlFor="dateRange" className="flex">
                                                     Date range: {mainQueryDateRange && mainQueryDateRange.gte && mainQueryDateRange.lte ?
                                                         mainQueryDateRange.gte.toLocaleDateString() + " - " + mainQueryDateRange.lte.toLocaleDateString() : ""}
                                                 </label>
@@ -257,69 +316,20 @@ export default function kpiDashboard() {
                                     <button
                                         type="button"
                                         onClick={(event) => handleFormSubmit(event)}
-                                        className="box-border px-4 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
+                                        className="box-border px-4 mt-4 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-gray-100"
                                     >
                                         Get KPIs
                                     </button>
-                                </div>
-                                <div className="flex flex-row justify-between">
-                                    <button
-                                        className="box-border block px-4 text-blue-900 transition-shadow duration-500 bg-white rounded-md md:hidden shadow-super-4 hover:animate-pulse"
-                                        onClick={() => handleToggleQuery(mainQuery.id)}
-                                    >
-                                        {mainQuery.isOpen ?
-                                            <FontAwesomeIcon
-                                                icon={faChevronUp}
-                                                size="lg"
-                                                className='text-blue-900'
-                                            /> :
-                                            <FontAwesomeIcon
-                                                icon={faChevronDown}
-                                                size="lg"
-                                                className='text-blue-900'
-                                            />}
-                                    </button>
-                                    <BurgerMenu >
-                                        <div className='flex-col flex-wrap gap-4'>
-                                            <div className='flex flex-col'>
-                                                {/* Lead Source and Date Range Selectors */}
-                                                <div className='flex flex-col gap-2'>
-                                                    {/* Lead Source selector */}
-                                                    <label className='flex'>
-                                                        Lead Source:
-                                                    </label>
-                                                    <Dropdown
-                                                        selectedOption={mainQueryLeadSource}
-                                                        onOptionSelected={handleOptionSelected}
-                                                        data={leadSources}
-                                                        queryId={mainQuery.id}
-                                                        limit={10}
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col flex-wrap gap-2 mt-4">
-                                                    {/* Date range selector */}
-                                                    <label htmlFor="dateRange" className="flex">
-                                                        Date range: {mainQueryDateRange && mainQueryDateRange.gte && mainQueryDateRange.lte ?
-                                                            mainQueryDateRange.gte.toLocaleDateString() + " - " + mainQueryDateRange.lte.toLocaleDateString() : ""}
-                                                    </label>
-                                                    <SingleDateRangeSelector queryId={mainQuery.id} onDateRangeChange={handleDateRangeChange} />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <button
-                                            type="button"
-                                            onClick={(event) => handleFormSubmit(event)}
-                                            className="box-border px-4 mt-4 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-gray-100"
-                                        >
-                                            Get KPIs
-                                        </button>
-                                    </BurgerMenu>
-                                </div>
+                                </BurgerMenu>
                             </div>
-
-                            {mainQuery.isOpen && (
-                                <div className='relative px-4'>
-
+                        </div>
+                        <AnimateHeight
+                            id="mainQuery"
+                            duration={500}
+                            height={height}
+                        >
+                            <div key={mainQuery.id} className={`relative p-2 bg-white shadow-super-3 rounded-lg`}>
+                                <div className="relative px-4">
                                     {/* SWIPER FOR KPI CARDS */}
                                     <Swiper
                                         spaceBetween={10}
@@ -394,22 +404,20 @@ export default function kpiDashboard() {
                                         onSwiper={swiper => console.log(swiper)}
                                         className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
                                     >
-                                        <div className={`${mainQuery.isOpen && 'h-70'}`}>
+                                        <div className={``}>
                                             {mainQuery.isOpen &&
                                                 mainQuery.results.map(result => (
                                                     <SwiperSlide key={result.id}>
-                                                        <div key={result.id} className='my-3 h-60 w-80 backface'>
+                                                        <div key={result.id} className='my-3 h-70 backface'>
                                                             <KpiCard prop={result} />
                                                         </div>
                                                     </SwiperSlide>
                                                 ))}
                                         </div>
                                     </Swiper>
-
                                 </div>
-
-                            )}
-                        </div>
+                            </div>
+                        </AnimateHeight>
                     </div>
                     {/* END OF MAIN QUERY */}
                     {/* START OF SUBQUERIES */}
