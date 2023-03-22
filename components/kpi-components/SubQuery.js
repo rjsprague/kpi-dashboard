@@ -20,13 +20,13 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
 
     return (
         <div className="box-border mb-2 text-sm">
-            <div className="flex-row justify-between flex-shrink hidden gap-2 px-4 py-2 align-middle rounded-lg md:flex bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50 shadow-super-3">
+            <div className="flex-row justify-between hidden gap-2 px-4 py-2 align-middle rounded-lg md:flex bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50 shadow-super-3">
                 <button
                     onClick={() => {
                         handleToggleQuery(query.id)
                         setHeight(height === 0 ? 'auto' : 0)
                     }}
-                    className="box-border flex-shrink px-2 my-2 text-blue-900 transition-shadow duration-500 bg-white rounded-md shadow-super-4 hover:animate-pulse">
+                    className="box-border px-2 py-1 my-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md shadow-super-4 hover:animate-pulse">
                     {query.isOpen ?
                         <FontAwesomeIcon
                             icon={faChevronDown}
@@ -46,24 +46,17 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                         Lead Source:
                     </label>
                     <Dropdown selectedOption={query.leadSource} onOptionSelected={handleOptionSelected} data={leadSources} queryId={query.id} />
-                    <p>
-                        Date Range: {
-                            query.dateRange.gte instanceof Date ? query.dateRange.gte.toLocaleDateString() : ""
-                        } to {
-                            query.dateRange.lte instanceof Date ? query.dateRange.lte.toLocaleDateString() : ""
-                        }
-                    </p>
                     <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
+                    <button
+                        onClick={() => handleQueryUpdate(query.id, query.dateRange, query.leadSource)}
+                        className="box-border flex-shrink px-2 py-1 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
+                    >
+                        Update KPIs
+                    </button>
                 </div>
                 <button
-                    onClick={() => handleQueryUpdate(query.id, query.dateRange, query.leadSource)}
-                    className="box-border flex-shrink px-2 my-2 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
-                >
-                    Update KPIs
-                </button>
-                <button
                     onClick={() => handleRemoveQuery(query.id)}
-                    className="box-border flex items-center content-center px-2 my-1 font-bold text-blue-900 align-middle transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
+                    className="box-border flex items-center content-center px-2 py-1 my-1 font-bold text-blue-900 align-middle transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
                 >
                     X
                 </button>
@@ -212,8 +205,6 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
 
                     </div>
                 </div>
-
-
             </AnimateHeight>
         </div>
     )

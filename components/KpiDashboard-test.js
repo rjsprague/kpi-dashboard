@@ -212,9 +212,9 @@ export default function kpiDashboard() {
                     <div className="mb-2">
                         {/* Main KPI Results */}
                         <div className="px-4 py-2 text-sm rounded-lg shadow-super-3 bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
-                            <div className='flex-row items-center hidden gap-2 align-middle md:justify-between md:flex'>
+                            <div className='relative flex-row items-center hidden gap-2 align-middle md:justify-center md:flex'>
                                 <button
-                                    className="box-border px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md shadow-super-4 hover:animate-pulse"
+                                    className="box-border absolute px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md left-0.5 shadow-super-4 hover:animate-pulse"
                                     onClick={() => {
                                         handleToggleQuery(mainQuery.id)
                                         setHeight(height === 0 ? 'auto' : 0)
@@ -233,7 +233,7 @@ export default function kpiDashboard() {
                                         />
                                     }
                                 </button>
-                                <div className='flex items-center'>
+                                <div className='flex items-center '>
                                     <div className='flex items-center justify-between gap-4 align-middle'>
                                         {/* Lead Source and Date Range Selectors */}
                                         <div className='flex items-center justify-between gap-2 align-middle'>
@@ -250,21 +250,18 @@ export default function kpiDashboard() {
                                         </div>
                                         <div className="flex justify-between gap-2">
                                             {/* Date range selector */}
-                                            <label htmlFor="dateRange" className="">
-                                                Date range: {mainQueryDateRange && mainQueryDateRange.gte && mainQueryDateRange.lte ?
-                                                    mainQueryDateRange.gte.toLocaleDateString() + " - " + mainQueryDateRange.lte.toLocaleDateString() : ""}
-                                            </label>
                                             <SingleDateRangeSelector queryId={mainQuery.id} onDateRangeChange={handleDateRangeChange} />
                                         </div>
+                                        <button
+                                            type="button"
+                                            onClick={(event) => handleFormSubmit(event)}
+                                            className="box-border px-2 py-1 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
+                                        >
+                                            Get KPIs
+                                        </button>
                                     </div>
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={(event) => handleFormSubmit(event)}
-                                    className="box-border px-4 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
-                                >
-                                    Get KPIs
-                                </button>
+
                             </div>
                             <div className="flex flex-row justify-between md:hidden">
                                 <button
@@ -316,7 +313,7 @@ export default function kpiDashboard() {
                                     <button
                                         type="button"
                                         onClick={(event) => handleFormSubmit(event)}
-                                        className="box-border px-4 mt-4 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-gray-100"
+                                        className="box-border px-4 py-2 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-gray-100"
                                     >
                                         Get KPIs
                                     </button>

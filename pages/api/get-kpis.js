@@ -13,7 +13,7 @@ export default async (req, res) => {
     const results = { noData: false, data: []}
 
       const fetchSellerData = async () => {
-        const response = await fetch(`https://db.reiautomated.io/seller-leads?leadSource=${leadSource}&gte=${startDate}&lte=${endDate}`);
+        const response = await fetch(`https://db.reiautomated.io/seller-leads?leadSource=${leadSource}&gte[“Created On”]=${startDate}&lte[“Created On”]=${endDate}`);
         const sellerData = await response.json();
         
         if (!sellerData.data || sellerData.data.length === 0) {
@@ -24,7 +24,7 @@ export default async (req, res) => {
         let page = fetchedResults.length;
       
         while (sellerData.total > (fetchedResults.length || 0)) {
-          const response = await fetch(`https://db.reiautomated.io/seller-leads?leadSource=${leadSource}&gte=${startDate}&lte=${endDate}&offset=${page}`);
+          const response = await fetch(`https://db.reiautomated.io/seller-leads?leadSource=${leadSource}&gte[“Created On”]=${startDate}&lte[“Created On”]=${endDate}&offset=${page}`);
           const moreSellerData = await response.json();
           page = moreSellerData.data.length;
           fetchedResults = fetchedResults.concat(moreSellerData.data);
