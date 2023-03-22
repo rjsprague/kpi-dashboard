@@ -12,7 +12,8 @@ export default async (req, res) => {
     const endDate = lte ? formatDate(new Date(lte)) : null;
     const results = { noData: false, data: []}
 
-      const fetchSellerData = async () => {
+    const fetchSellerData = async () => {
+      try {
         const response = await fetch(`https://db.reiautomated.io/seller-leads?leadSource=${leadSource}&gte[“Created On”]=${startDate}&lte[“Created On”]=${endDate}`);
         const sellerData = await response.json();
         
@@ -31,7 +32,12 @@ export default async (req, res) => {
           console.log("working hard ", fetchedResults.length);
         }
         return fetchedResults;
-      };
+      } catch (error) {
+        console.error(error);
+        throw new Error("Error fetching seller data. Please try again later.");
+      }
+    };
+    
       
 
 
@@ -123,6 +129,6 @@ export default async (req, res) => {
 
   } catch (error) {
     console.error(error);
-    res.status(500).send("Error fetching kpi");
+    res.status(500).send({"Error":"Error fetching kpi"});
   }
 };

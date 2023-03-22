@@ -12,7 +12,7 @@ import Dropdown from './kpi-components/Dropdown'
 import SingleDateRangeSelector from './kpi-components/SingleDateRangeSelector'
 import { getStartOfLastWeek, getEndOfLastWeek, getStartOfLastMonth, getEndOfLastMonth, getStartOfLastQuarter, getEndOfLastQuarter } from '../lib/date-utils.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faChevronUp, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronUp, faPlus, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import BurgerMenu from './BurgerMenu'
 import AnimateHeight from 'react-animate-height';
 
@@ -33,7 +33,8 @@ export default function kpiDashboard() {
     const [queries, setQueries] = useState([]);
     const [idCounter, setIdCounter] = useState(1);
     const [swiperControllers, setSwiperControllers] = useState([]);
-    const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [serviceUnavailable, setServiceUnavailable] = useState(false);
 
     const handleMenuToggle = () => {
         setIsMenuOpen(!isMenuOpen)
@@ -52,9 +53,15 @@ export default function kpiDashboard() {
             .then(data => {
                 setMainQuery(prevState => ({ ...prevState, results: data }));
                 setIsLoading(false);
+                if (response !== 200) {
+                    setServiceUnavailable(true);
+                } else {
+                    setServiceUnavailable(false);
+                }
             })
             .catch(error => {
                 console.log(error);
+                setServiceUnavailable(true);
                 setIsLoading(false);
             }
             );
@@ -99,12 +106,25 @@ export default function kpiDashboard() {
         queryToUpdate.dateRange = dateRange;
         queryToUpdate.leadSource = leadSource;
         // Make an API call to fetch the updated KPI data for the query
-        const data = await fetch(`/api/get-kpis?leadSource=${queryToUpdate.leadSource}&gte=${queryToUpdate.dateRange.gte}&lte=${queryToUpdate.dateRange.lte}`);
-        const updatedResults = await data.json();
-        // Update the query's results property with the new KPI data
-        queryToUpdate.results = updatedResults;
-        // Update the queries state with the updated query
-        setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
+        fetch(`/api/get-kpis?leadSource=${queryToUpdate.leadSource}&gte=${queryToUpdate.dateRange.gte}&lte=${queryToUpdate.dateRange.lte}`)
+        .then(response => response.json())
+        .then(data => {
+            // Update the query's results property with the new KPI data
+            queryToUpdate.results = data;
+            // Update the queries state with the updated query
+            setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
+            setIsLoading(false);
+            if (response !== 200) {
+                setServiceUnavailable(true);
+            } else {
+                setServiceUnavailable(false);
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            setServiceUnavailable(true);
+            setIsLoading(false);
+        });
     };
 
     // Fetch lead sources on page load
@@ -261,7 +281,6 @@ export default function kpiDashboard() {
                                         </button>
                                     </div>
                                 </div>
-
                             </div>
                             <div className="flex flex-row justify-between md:hidden">
                                 <button
@@ -325,95 +344,112 @@ export default function kpiDashboard() {
                             duration={500}
                             height={height}
                         >
-                            <div key={mainQuery.id} className={`relative p-2 bg-white shadow-super-3 rounded-lg`}>
-                                <div className="relative px-4">
-                                    {/* SWIPER FOR KPI CARDS */}
-                                    <Swiper
-                                        spaceBetween={10}
-                                        modules={[Scrollbar, Mousewheel]}
-                                        scrollbar={{
-                                            draggable: true,
-                                            snapOnRelease: false,
-                                        }}
-                                        loop={false}
-                                        slidesPerView={1}
-                                        direction={'horizontal'}
-                                        mousewheel={{
-                                            sensitivity: 3,
-                                            thresholdDelta: 1,
-                                            thresholdTime: 50,
-                                        }}
-                                        breakpoints={{
-                                            320: {
-                                                slidesPerView: 1,
-
-                                                spaceBetween: 20,
-                                                slidesOffsetBefore: 0,
-                                                slidesOffsetAfter: 0,
-                                                centeredSlides: true,
-
-                                            },
-                                            375: {
-                                                slidesPerView: 1,
-
-                                                spaceBetween: 50,
-                                                slidesOffsetBefore: 0,
-                                                slidesOffsetAfter: 0,
-                                                centeredSlides: true,
-                                            },
-                                            414: {
-                                                slidesPerView: 1,
-
-                                                spaceBetween: 50,
-                                                slidesOffsetBefore: 15,
-                                                slidesOffsetAfter: 0,
-                                                centeredSlides: true,
-                                            },
-                                            768: {
-                                                slidesPerView: 2,
-
-                                                spaceBetween: 0,
-                                                slidesOffsetBefore: 5,
-                                                slidesOffsetAfter: 10,
-                                                centeredSlides: false,
-                                                centeredSlidesBounds: false,
-                                            },
-                                            1200: {
-                                                slidesPerView: 3,
-
-                                                spaceBetween: 10,
-                                                slidesOffsetBefore: 25,
-                                                slidesOffsetAfter: 20,
-                                                centeredSlides: false,
-                                                centeredSlidesBounds: false,
-                                            },
-                                            1400: {
-                                                slidesPerView: 4,
-
-                                                spaceBetween: 10,
-                                                slidesOffsetBefore: 10,
-                                                slidesOffsetAfter: 100,
-                                                centeredSlides: false,
-                                                centeredSlidesBounds: false,
-                                            },
-                                        }}
-                                        onSlideChange={() => console.log('slide change')}
-                                        onSwiper={swiper => console.log(swiper)}
-                                        className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
-                                    >
-                                        <div className={``}>
-                                            {mainQuery.isOpen &&
-                                                mainQuery.results.map(result => (
-                                                    <SwiperSlide key={result.id}>
-                                                        <div key={result.id} className='my-3 h-70 backface'>
-                                                            <KpiCard prop={result} />
-                                                        </div>
-                                                    </SwiperSlide>
-                                                ))}
-                                        </div>
-                                    </Swiper>
+                            {/* Service Unavailable */}
+                            { serviceUnavailable ?
+                                <div className="flex flex-col items-center justify-center w-full h-full p-4 text-center bg-white rounded-lg shadow-super-3">
+                                    <FontAwesomeIcon
+                                        icon={faExclamationTriangle}
+                                        size="3x"
+                                        className='text-red-500'
+                                    />
+                                    <h1 className="text-2xl font-bold text-gray-700">
+                                        Service Unavailable
+                                    </h1>
+                                    <p className="text-gray-500">
+                                        We are currently experiencing technical difficulties. Please try again later.
+                                    </p>
                                 </div>
-                            </div>
+                                : 
+                                <div key={mainQuery.id} className={`relative p-2 bg-white shadow-super-3 rounded-lg`}>
+                                    <div className="relative px-4">
+                                        {/* SWIPER FOR KPI CARDS */}
+                                        <Swiper
+                                            spaceBetween={10}
+                                            modules={[Scrollbar, Mousewheel]}
+                                            scrollbar={{
+                                                draggable: true,
+                                                snapOnRelease: false,
+                                            }}
+                                            loop={false}
+                                            slidesPerView={1}
+                                            direction={'horizontal'}
+                                            mousewheel={{
+                                                sensitivity: 3,
+                                                thresholdDelta: 1,
+                                                thresholdTime: 50,
+                                            }}
+                                            breakpoints={{
+                                                320: {
+                                                    slidesPerView: 1,
+
+                                                    spaceBetween: 20,
+                                                    slidesOffsetBefore: 0,
+                                                    slidesOffsetAfter: 0,
+                                                    centeredSlides: true,
+
+                                                },
+                                                375: {
+                                                    slidesPerView: 1,
+
+                                                    spaceBetween: 50,
+                                                    slidesOffsetBefore: 0,
+                                                    slidesOffsetAfter: 0,
+                                                    centeredSlides: true,
+                                                },
+                                                414: {
+                                                    slidesPerView: 1,
+
+                                                    spaceBetween: 50,
+                                                    slidesOffsetBefore: 15,
+                                                    slidesOffsetAfter: 0,
+                                                    centeredSlides: true,
+                                                },
+                                                768: {
+                                                    slidesPerView: 2,
+
+                                                    spaceBetween: 0,
+                                                    slidesOffsetBefore: 5,
+                                                    slidesOffsetAfter: 10,
+                                                    centeredSlides: false,
+                                                    centeredSlidesBounds: false,
+                                                },
+                                                1200: {
+                                                    slidesPerView: 3,
+
+                                                    spaceBetween: 10,
+                                                    slidesOffsetBefore: 25,
+                                                    slidesOffsetAfter: 20,
+                                                    centeredSlides: false,
+                                                    centeredSlidesBounds: false,
+                                                },
+                                                1400: {
+                                                    slidesPerView: 4,
+
+                                                    spaceBetween: 10,
+                                                    slidesOffsetBefore: 10,
+                                                    slidesOffsetAfter: 100,
+                                                    centeredSlides: false,
+                                                    centeredSlidesBounds: false,
+                                                },
+                                            }}
+                                            onSlideChange={() => console.log('slide change')}
+                                            onSwiper={swiper => console.log(swiper)}
+                                            className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
+                                        >
+                                            <div className={``}>
+                                                {mainQuery.isOpen &&
+                                                    mainQuery.results.map(result => (
+                                                        <SwiperSlide key={result.id}>
+                                                            <div key={result.id} className='my-3 h-70 backface'>
+                                                                <KpiCard prop={result} />
+                                                            </div>
+                                                        </SwiperSlide>
+                                                    ))}
+                                            </div>
+                                        </Swiper>
+                                    </div>
+                                </div>
+                            }
                         </AnimateHeight>
                     </div>
                     {/* END OF MAIN QUERY */}
@@ -424,6 +460,7 @@ export default function kpiDashboard() {
                             key={query.id}
                             query={query}
                             leadSources={leadSources}
+                            serviceUnavailable={serviceUnavailable}
                             handleQueryUpdate={handleQueryUpdate}
                             handleToggleQuery={handleToggleQuery}
                             handleRemoveQuery={handleRemoveQuery}

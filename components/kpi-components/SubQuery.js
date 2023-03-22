@@ -7,7 +7,7 @@ import { Controller } from 'swiper';
 import Dropdown from './Dropdown';
 import SingleDateRangeSelector from './SingleDateRangeSelector';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faChevronUp, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
@@ -15,7 +15,7 @@ import 'swiper/css/scrollbar'
 import BurgerMenu from '../BurgerMenu';
 import AnimateHeight from 'react-animate-height';
 
-const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, handleRemoveQuery, handleOptionSelected, handleDateRangeChange }) => {
+const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, handleRemoveQuery, handleOptionSelected, handleDateRangeChange, serviceUnavailable }) => {
     const [height, setHeight] = useState('auto');
 
     return (
@@ -116,95 +116,112 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                 duration={500}
                 height={height}
             >
-                <div key={query.id} className="p-2 align-middle bg-white shadow-super-3 rounded-xl">
-                    <div className='relative px-4 min-h-70'>
-
-                        {/* SWIPER FOR KPI CARDS */}
-                        <Swiper
-                            spaceBetween={10}
-                            modules={[Scrollbar, Mousewheel]}
-                            scrollbar={{
-                                draggable: true,
-                                snapOnRelease: false,
-                            }}
-                            mousewheel={{
-                                sensitivity: 3,
-                                thresholdDelta: 1,
-                                thresholdTime: 50,
-                            }}
-                            loop={false}
-                            slidesPerView={1}
-                            direction={'horizontal'}
-                            breakpoints={{
-                                320: {
-                                    slidesPerView: 1,
-
-                                    spaceBetween: 20,
-                                    slidesOffsetBefore: 0,
-                                    slidesOffsetAfter: 0,
-                                    centeredSlides: true,
-
-                                },
-                                375: {
-                                    slidesPerView: 1,
-
-                                    spaceBetween: 50,
-                                    slidesOffsetBefore: 0,
-                                    slidesOffsetAfter: 0,
-                                    centeredSlides: true,
-                                },
-                                414: {
-                                    slidesPerView: 1,
-
-                                    spaceBetween: 50,
-                                    slidesOffsetBefore: 15,
-                                    slidesOffsetAfter: 0,
-                                    centeredSlides: true,
-                                },
-                                768: {
-                                    slidesPerView: 2,
-
-                                    spaceBetween: 0,
-                                    slidesOffsetBefore: 5,
-                                    slidesOffsetAfter: 10,
-                                    centeredSlides: false,
-                                    centeredSlidesBounds: false,
-                                },
-                                1200: {
-                                    slidesPerView: 3,
-                                    spaceBetween: 10,
-                                    slidesOffsetBefore: 25,
-                                    slidesOffsetAfter: 20,
-                                    centeredSlides: false,
-                                    centeredSlidesBounds: false,
-                                },
-                                1400: {
-                                    slidesPerView: 3,
-                                    spaceBetween: 10,
-                                    slidesOffsetBefore: 10,
-                                    slidesOffsetAfter: 100,
-                                    centeredSlides: false,
-                                    centeredSlidesBounds: false,
-                                },
-                            }}
-                            onSlideChange={() => console.log('slide change')}
-                            onSwiper={swiper => console.log(swiper)}
-                            className="mySwiper min-h-70"
-                        >
-                            <div className={``}>
-                                {
-                                    query.results.map(result => (
-                                        <SwiperSlide key={result.id}>
-                                            <div key={result.id} className='my-3 h-70 w-80 backface'>
-                                                <KpiCard prop={result} />
-                                            </div>
-                                        </SwiperSlide>
-                                    ))}
-                            </div>
-                        </Swiper>
-
+                {/* Service Unavailable */}
+                {serviceUnavailable ?
+                    <div className="flex flex-col items-center justify-center w-full h-full p-4 text-center bg-white rounded-lg shadow-super-3">
+                        <FontAwesomeIcon
+                            icon={faExclamationTriangle}
+                            size="3x"
+                            className='text-red-500'
+                        />
+                        <h1 className="text-2xl font-bold text-gray-700">
+                            Service Unavailable
+                        </h1>
+                        <p className="text-gray-500">
+                            We are currently experiencing technical difficulties. Please try again later.
+                        </p>
                     </div>
-                </div>
+                    :
+                    <div key={query.id} className="p-2 align-middle bg-white shadow-super-3 rounded-xl">
+                        <div className='relative px-4 min-h-70'>
+
+                            {/* SWIPER FOR KPI CARDS */}
+                            <Swiper
+                                spaceBetween={10}
+                                modules={[Scrollbar, Mousewheel]}
+                                scrollbar={{
+                                    draggable: true,
+                                    snapOnRelease: false,
+                                }}
+                                mousewheel={{
+                                    sensitivity: 3,
+                                    thresholdDelta: 1,
+                                    thresholdTime: 50,
+                                }}
+                                loop={false}
+                                slidesPerView={1}
+                                direction={'horizontal'}
+                                breakpoints={{
+                                    320: {
+                                        slidesPerView: 1,
+
+                                        spaceBetween: 20,
+                                        slidesOffsetBefore: 0,
+                                        slidesOffsetAfter: 0,
+                                        centeredSlides: true,
+
+                                    },
+                                    375: {
+                                        slidesPerView: 1,
+
+                                        spaceBetween: 50,
+                                        slidesOffsetBefore: 0,
+                                        slidesOffsetAfter: 0,
+                                        centeredSlides: true,
+                                    },
+                                    414: {
+                                        slidesPerView: 1,
+
+                                        spaceBetween: 50,
+                                        slidesOffsetBefore: 15,
+                                        slidesOffsetAfter: 0,
+                                        centeredSlides: true,
+                                    },
+                                    768: {
+                                        slidesPerView: 2,
+
+                                        spaceBetween: 0,
+                                        slidesOffsetBefore: 5,
+                                        slidesOffsetAfter: 10,
+                                        centeredSlides: false,
+                                        centeredSlidesBounds: false,
+                                    },
+                                    1200: {
+                                        slidesPerView: 3,
+                                        spaceBetween: 10,
+                                        slidesOffsetBefore: 25,
+                                        slidesOffsetAfter: 20,
+                                        centeredSlides: false,
+                                        centeredSlidesBounds: false,
+                                    },
+                                    1400: {
+                                        slidesPerView: 3,
+                                        spaceBetween: 10,
+                                        slidesOffsetBefore: 10,
+                                        slidesOffsetAfter: 100,
+                                        centeredSlides: false,
+                                        centeredSlidesBounds: false,
+                                    },
+                                }}
+                                onSlideChange={() => console.log('slide change')}
+                                onSwiper={swiper => console.log(swiper)}
+                                className="mySwiper min-h-70"
+                            >
+                                <div className={``}>
+                                    {
+                                        query.results.map(result => (
+                                            <SwiperSlide key={result.id}>
+                                                <div key={result.id} className='my-3 h-70 w-80 backface'>
+                                                    <KpiCard prop={result} />
+                                                </div>
+                                            </SwiperSlide>
+                                        ))}
+                                </div>
+                            </Swiper>
+
+                        </div>
+                    </div>
+                }
             </AnimateHeight>
         </div>
     )
