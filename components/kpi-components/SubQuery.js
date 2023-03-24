@@ -4,7 +4,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Scrollbar, Mousewheel } from "swiper";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Controller } from 'swiper/core';
-SwiperCore.use([Controller ]);
+SwiperCore.use([Controller]);
 import Dropdown from './Dropdown';
 import SingleDateRangeSelector from './SingleDateRangeSelector';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -19,6 +19,15 @@ import AnimateHeight from 'react-animate-height';
 
 const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, handleRemoveQuery, handleOptionSelected, handleDateRangeChange, serviceUnavailable, handleSwiperSub }) => {
     const [height, setHeight] = useState('auto');
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (query.isLoading === false) {
+            setIsLoading(false)
+        } else {
+            setIsLoading(true)
+        }
+    }, [query.isLoading])
 
     return (
         <div className="box-border mb-2 text-sm">
@@ -50,7 +59,10 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                     <Dropdown selectedOption={query.leadSource} onOptionSelected={handleOptionSelected} data={leadSources} queryId={query.id} />
                     <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
                     <button
-                        onClick={() => handleQueryUpdate(query.id, query.dateRange, query.leadSource)}
+                        onClick={() => {
+                            handleQueryUpdate(query.id, query.dateRange, query.leadSource)
+                            setIsLoading(true)
+                        }}
                         className="box-border flex-shrink px-2 py-1 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
                     >
                         Update KPIs
@@ -143,7 +155,7 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                                 spaceBetween={10}
                                 modules={[Scrollbar, Mousewheel, Controller]}
                                 controller
-                                
+
                                 scrollbar={{
                                     draggable: true,
                                     snapOnRelease: false,
@@ -215,7 +227,7 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                                 className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
                             >
                                 <div className={``}>
-                                    {query.isOpen && !query.isLoading ?
+                                    {query.isOpen && !isLoading ?
                                         query.results.map(result => (
                                             <SwiperSlide key={result.id}>
                                                 <div key={result.id} className='my-3 h-70 w-80 backface'>
@@ -231,6 +243,7 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                                             <div className='hidden bg-gray-200 rounded-lg lg:flex w-80 h-60 animate-pulse shadow-super-3'></div>
                                         </div>
                                     }
+
                                 </div>
                             </Swiper>
 

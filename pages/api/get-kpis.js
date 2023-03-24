@@ -190,8 +190,8 @@ export default async (req, res) => {
     const approvedTriageCallRatio = approvedTriageCalls.length / qualifiedTriageCalls.length */
 
     const perfectPresentationRatio = (perfectPresentations.length / triageCalls.length * 100).toFixed(2);
-    const contractRatio = (contracts.length / perfectPresentations.length * 100).toFixed(2);
-    const acquisitionRatio = (acquisitions.length / contracts.length * 100).toFixed(2);
+    const contractRatio = perfectPresentations.length !== 0 ? (contracts.length / perfectPresentations.length * 100).toFixed(2) : 0;
+    const acquisitionRatio = acquisitions.length !== 0 ? (acquisitions.length / contracts.length * 100).toFixed(2) : 0;
 
     // Return the results   
     res.json(
@@ -201,7 +201,7 @@ export default async (req, res) => {
         { name: "Triage Calls", current: triageCallRatio, redFlag: 60, target: 75, data1: "Connections: " + connectedLeads.length, data2: "Triages: " + triageCalls.length },
         { name: "Triage Qualification", current: 0, redFlag: 50, target: 70, data1: "Triages: " + triageCalls.length, data2: "Qualified: ?" },
         { name: "Deal Analysis", current: 0, redFlag: 65, target: 80, data1: "Qualified: ?", data2: "Approvals: ?" },
-        { name: "Perfect Presentations", current: perfectPresentationRatio, redFlag: 65, target: 80, data1: "Approvals: ?", data2: "Presentations: " + perfectPresentations.length },
+        { name: "Perfect Presentations", current: 0, redFlag: 65, target: 80, data1: "Approvals: ?", data2: "Presentations: " + perfectPresentations.length },
         { name: "Contracts", current: contractRatio, redFlag: 10, target: 25, data1: "Presentations: " + perfectPresentations.length, data2: "Contracts: " + contracts.length },
         { name: "Acquisitions", current: acquisitionRatio, redFlag: 50, target: 75, data1: "Contracts: " + contracts.length, data2: "Acquisitions: " + acquisitions.length },
       ]
