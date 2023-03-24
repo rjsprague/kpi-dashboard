@@ -3,10 +3,12 @@ import KpiCard from '../components/kpi-components/KpiCard'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Mousewheel, Scrollbar } from "swiper";
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Controller } from 'swiper';
+import SwiperCore, { Controller } from 'swiper/core';
 import 'swiper/css'
 import 'swiper/css/scrollbar'
 import 'swiper/css/mousewheel'
+
+SwiperCore.use([Controller]);
 import SubQuery from './kpi-components/SubQuery'
 import Dropdown from './kpi-components/Dropdown'
 import SingleDateRangeSelector from './kpi-components/SingleDateRangeSelector'
@@ -15,7 +17,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faChevronUp, faPlus, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import BurgerMenu from './BurgerMenu'
 import AnimateHeight from 'react-animate-height';
-
 
 export default function kpiDashboard() {
     const startOfLastWeek = getStartOfLastWeek();
@@ -27,14 +28,16 @@ export default function kpiDashboard() {
 
     const [height, setHeight] = useState('auto');
     const [dateRange, setDateRange] = useState({ gte: startOfLastWeek, lte: endOfLastWeek });
-    const [isLoading, setIsLoading] = useState(true);
     const [leadSources, setLeadSources] = useState(["All"]);
     const [leadSource, setLeadSource] = useState("All");
     const [queries, setQueries] = useState([]);
     const [idCounter, setIdCounter] = useState(1);
-    const [swiperControllers, setSwiperControllers] = useState([]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [serviceUnavailable, setServiceUnavailable] = useState(false);
+
+    // Swiper state
+    const [swiperMain, setSwiperMain] = useState(null);
+    const swiperSubs = useRef([]);
 
     const handleMenuToggle = () => {
         setIsMenuOpen(!isMenuOpen)
@@ -43,29 +46,32 @@ export default function kpiDashboard() {
     // Main query state
     const [mainQueryDateRange, setMainQueryDateRange] = useState({ gte: startOfLastWeek, lte: endOfLastWeek });
     const [mainQueryLeadSource, setMainQueryLeadSource] = useState("All");
-    const [mainQuery, setMainQuery] = useState({ id: 0, results: [], isOpen: true, dateRange: mainQueryDateRange, leadSource: mainQueryLeadSource });
+    const [mainQuery, setMainQuery] = useState({ id: 0, results: [], isOpen: true, isLoading: true, dateRange: mainQueryDateRange, leadSource: mainQueryLeadSource });
 
     // Get the KPIs for the main query on page load
     const fetchMainKpis = async () => {
-        setIsLoading(true);
+        setMainQuery(prevState => ({ ...prevState, isLoading: true }));
         fetch(`/api/get-kpis?leadSource=${mainQueryLeadSource}&gte=${mainQueryDateRange.gte}&lte=${mainQueryDateRange.lte}`)
-            .then(response => response.json())
-            .then(data => {
-                setMainQuery(prevState => ({ ...prevState, results: data }));
-                setIsLoading(false);
-                if (response !== 200) {
+            .then(response => {
+                if (response.status !== 200) {
                     setServiceUnavailable(true);
+                    throw new Error('Service unavailable');
                 } else {
                     setServiceUnavailable(false);
                 }
+                return response.json();
+            })
+            .then(data => {
+                setMainQuery(prevState => ({ ...prevState, results: data }));
+                setMainQuery(prevState => ({ ...prevState, isLoading: false }));
             })
             .catch(error => {
                 console.log(error);
                 setServiceUnavailable(true);
-                setIsLoading(false);
-            }
-            );
+                setMainQuery(prevState => ({ ...prevState, isLoading: false }));
+            });
     };
+
 
     // Get the KPIs for the main query on page load
     useEffect(() => {
@@ -98,33 +104,38 @@ export default function kpiDashboard() {
         setQueries(queries.filter(query => query.id !== queryId));
     };
 
-    // Update the selected query's results when the date range or lead source is changed
     const handleQueryUpdate = async (id, dateRange, leadSource) => {
+        
         // Find the query with the specified ID
         const queryToUpdate = queries.find(query => query.id === id);
         // Update the query's dateRange and leadSource properties
+        queryToUpdate.isLoading = true;
         queryToUpdate.dateRange = dateRange;
         queryToUpdate.leadSource = leadSource;
         // Make an API call to fetch the updated KPI data for the query
         fetch(`/api/get-kpis?leadSource=${queryToUpdate.leadSource}&gte=${queryToUpdate.dateRange.gte}&lte=${queryToUpdate.dateRange.lte}`)
-        .then(response => response.json())
-        .then(data => {
-            // Update the query's results property with the new KPI data
-            queryToUpdate.results = data;
-            // Update the queries state with the updated query
-            setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
-            setIsLoading(false);
-            if (response !== 200) {
+            .then(response => {
+                if (response.status !== 200) {
+                    setServiceUnavailable(true);
+                    throw new Error('Service unavailable');
+                } else {
+                    setServiceUnavailable(false);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Update the query's results property with the new KPI data
+                queryToUpdate.results = data;
+                queryToUpdate.isLoading = false;
+                // Update the queries state with the updated query
+                setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
+                
+            })
+            .catch(error => {
+                console.log(error);
                 setServiceUnavailable(true);
-            } else {
-                setServiceUnavailable(false);
-            }
-        })
-        .catch(error => {
-            console.log(error);
-            setServiceUnavailable(true);
-            setIsLoading(false);
-        });
+                queryToUpdate.isLoading = false;
+            });
     };
 
     // Fetch lead sources on page load
@@ -134,10 +145,8 @@ export default function kpiDashboard() {
             const res = await fetch(`/api/lead-sources`)
             const data = await res.json();
             setLeadSources(data);
-        };
-        setIsLoading(true);
-        fetchLeadSources();
-        setIsLoading(false);
+        };        
+        fetchLeadSources();        
     }, []);
 
     // Handle leadSource dropdown selection changes, updating the state
@@ -178,6 +187,7 @@ export default function kpiDashboard() {
             id: idCounter,
             results: [],
             isOpen: true,
+            isLoading: true,
             leadSource: 'All',
             dateRange: { gte: startOfLastWeek, lte: endOfLastWeek },
         };
@@ -192,6 +202,21 @@ export default function kpiDashboard() {
             handleQueryUpdate(newQuery.id, newQuery.dateRange, newQuery.leadSource);
         }
     }, [idCounter]);
+
+    // Update the controller when the main swiper or sub swipers are updated
+    useEffect(() => {
+        if (swiperMain && swiperSubs.length > 0) {
+            swiperMain.controller.control = swiperSubs;
+            swiperSubs.forEach((sub) => {
+                sub.controller.control = swiperMain;
+            });
+        }
+    }, [swiperMain, swiperSubs.current]);
+
+    // Handle the sub swiper controller array
+    const handleSwiperSub = (swiper) => {
+        swiperSubs.current = [...swiperSubs.current, swiper];
+      };
 
     return (
         <>
@@ -345,7 +370,7 @@ export default function kpiDashboard() {
                             height={height}
                         >
                             {/* Service Unavailable */}
-                            { serviceUnavailable ?
+                            {serviceUnavailable ?
                                 <div className="flex flex-col items-center justify-center w-full h-full p-4 text-center bg-white rounded-lg shadow-super-3">
                                     <FontAwesomeIcon
                                         icon={faExclamationTriangle}
@@ -356,16 +381,17 @@ export default function kpiDashboard() {
                                         Service Unavailable
                                     </h1>
                                     <p className="text-gray-500">
-                                        We are currently experiencing technical difficulties. Please try again later.
+                                        Please try again later.
                                     </p>
                                 </div>
-                                : 
+                                :
                                 <div key={mainQuery.id} className={`relative p-2 bg-white shadow-super-3 rounded-lg`}>
                                     <div className="relative px-4">
                                         {/* SWIPER FOR KPI CARDS */}
                                         <Swiper
                                             spaceBetween={10}
-                                            modules={[Scrollbar, Mousewheel]}
+                                            modules={[Scrollbar, Mousewheel, Controller]}
+                                            controller                                            
                                             scrollbar={{
                                                 draggable: true,
                                                 snapOnRelease: false,
@@ -433,18 +459,26 @@ export default function kpiDashboard() {
                                                 },
                                             }}
                                             onSlideChange={() => console.log('slide change')}
-                                            onSwiper={swiper => console.log(swiper)}
+                                            onSwiper={setSwiperMain}
                                             className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
                                         >
                                             <div className={``}>
-                                                {mainQuery.isOpen &&
+                                                {mainQuery.isOpen && !mainQuery.isLoading ?
                                                     mainQuery.results.map(result => (
                                                         <SwiperSlide key={result.id}>
                                                             <div key={result.id} className='my-3 h-70 backface'>
                                                                 <KpiCard prop={result} />
                                                             </div>
                                                         </SwiperSlide>
-                                                    ))}
+                                                    )) 
+                                                    :
+                                                    <div className="flex flex-row justify-center gap-10">
+                                                        <div className='flex bg-gray-200 rounded-lg w-80 h-60 animate-pulse shadow-super-3 '></div>
+                                                        <div className='hidden bg-gray-200 rounded-lg sm:flex w-80 h-60 animate-pulse shadow-super-3'></div>
+                                                        <div className='hidden bg-gray-200 rounded-lg md:flex w-80 h-60 animate-pulse shadow-super-3'></div>
+                                                        <div className='hidden bg-gray-200 rounded-lg lg:flex w-80 h-60 animate-pulse shadow-super-3'></div>
+                                                    </div>                                                                                                
+                                                }
                                             </div>
                                         </Swiper>
                                     </div>
@@ -457,7 +491,6 @@ export default function kpiDashboard() {
 
                     {queries.map(query => (
                         <SubQuery
-                            key={query.id}
                             query={query}
                             leadSources={leadSources}
                             serviceUnavailable={serviceUnavailable}
@@ -466,6 +499,7 @@ export default function kpiDashboard() {
                             handleRemoveQuery={handleRemoveQuery}
                             handleOptionSelected={handleOptionSelected}
                             handleDateRangeChange={handleDateRangeChange}
+                            handleSwiperSub={handleSwiperSub}
                         />
                     ))}
 

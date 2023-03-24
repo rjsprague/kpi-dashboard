@@ -3,19 +3,21 @@ import KpiCard from './KpiCard'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Scrollbar, Mousewheel } from "swiper";
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Controller } from 'swiper';
+import SwiperCore, { Controller } from 'swiper/core';
+SwiperCore.use([Controller ]);
 import Dropdown from './Dropdown';
 import SingleDateRangeSelector from './SingleDateRangeSelector';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import 'swiper/css'
-import 'swiper/css/navigation'
+
+
 import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
 import BurgerMenu from '../BurgerMenu';
 import AnimateHeight from 'react-animate-height';
 
-const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, handleRemoveQuery, handleOptionSelected, handleDateRangeChange, serviceUnavailable }) => {
+const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, handleRemoveQuery, handleOptionSelected, handleDateRangeChange, serviceUnavailable, handleSwiperSub }) => {
     const [height, setHeight] = useState('auto');
 
     return (
@@ -128,7 +130,7 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                             Service Unavailable
                         </h1>
                         <p className="text-gray-500">
-                            We are currently experiencing technical difficulties. Please try again later.
+                            Please try again later.
                         </p>
                     </div>
                     :
@@ -136,9 +138,12 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                         <div className='relative px-4 min-h-70'>
 
                             {/* SWIPER FOR KPI CARDS */}
+
                             <Swiper
                                 spaceBetween={10}
-                                modules={[Scrollbar, Mousewheel]}
+                                modules={[Scrollbar, Mousewheel, Controller]}
+                                controller
+                                
                                 scrollbar={{
                                     draggable: true,
                                     snapOnRelease: false,
@@ -188,6 +193,7 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                                     },
                                     1200: {
                                         slidesPerView: 3,
+
                                         spaceBetween: 10,
                                         slidesOffsetBefore: 25,
                                         slidesOffsetAfter: 20,
@@ -195,7 +201,8 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                                         centeredSlidesBounds: false,
                                     },
                                     1400: {
-                                        slidesPerView: 3,
+                                        slidesPerView: 4,
+
                                         spaceBetween: 10,
                                         slidesOffsetBefore: 10,
                                         slidesOffsetAfter: 100,
@@ -204,18 +211,26 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                                     },
                                 }}
                                 onSlideChange={() => console.log('slide change')}
-                                onSwiper={swiper => console.log(swiper)}
-                                className="mySwiper min-h-70"
+                                onSwiper={handleSwiperSub}
+                                className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
                             >
                                 <div className={``}>
-                                    {
+                                    {query.isOpen && !query.isLoading ?
                                         query.results.map(result => (
                                             <SwiperSlide key={result.id}>
                                                 <div key={result.id} className='my-3 h-70 w-80 backface'>
                                                     <KpiCard prop={result} />
                                                 </div>
                                             </SwiperSlide>
-                                        ))}
+                                        ))
+                                        :
+                                        <div className="flex flex-row justify-center gap-10">
+                                            <div className='flex bg-gray-200 rounded-lg w-80 h-60 animate-pulse shadow-super-3 '></div>
+                                            <div className='hidden bg-gray-200 rounded-lg sm:flex w-80 h-60 animate-pulse shadow-super-3'></div>
+                                            <div className='hidden bg-gray-200 rounded-lg md:flex w-80 h-60 animate-pulse shadow-super-3'></div>
+                                            <div className='hidden bg-gray-200 rounded-lg lg:flex w-80 h-60 animate-pulse shadow-super-3'></div>
+                                        </div>
+                                    }
                                 </div>
                             </Swiper>
 
