@@ -51,7 +51,7 @@ export default function kpiDashboard() {
     // Get the KPIs for the main query on page load
     const fetchMainKpis = async () => {
         setMainQuery(prevState => ({ ...prevState, isLoading: true }));
-        fetch(`/api/get-kpis?leadSource=${mainQueryLeadSource}&gte=${mainQueryDateRange.gte}&lte=${mainQueryDateRange.lte}`)
+        fetch(`/api/get-kpis?leadSourceString=${mainQueryLeadSource}&gte=${mainQueryDateRange.gte}&lte=${mainQueryDateRange.lte}`)
             .then(response => {
                 if (response.status !== 200) {
                     setServiceUnavailable(true);
@@ -81,7 +81,6 @@ export default function kpiDashboard() {
     const handleFormSubmit = (event) => {
         event.preventDefault();
         fetchMainKpis();
-        console.log("Fetch Main KPIs was called");
     };
 
     // Handle toggling the open/closed state of set of KPI cards
@@ -113,7 +112,7 @@ export default function kpiDashboard() {
         queryToUpdate.dateRange = dateRange;
         queryToUpdate.leadSource = leadSource;
         // Make an API call to fetch the updated KPI data for the query
-        fetch(`/api/get-kpis?leadSource=${queryToUpdate.leadSource}&gte=${queryToUpdate.dateRange.gte}&lte=${queryToUpdate.dateRange.lte}`)
+        fetch(`/api/get-kpis?leadSourceString=${queryToUpdate.leadSource}&gte=${queryToUpdate.dateRange.gte}&lte=${queryToUpdate.dateRange.lte}`)
             .then(response => {
                 if (response.status !== 200) {
                     setServiceUnavailable(true);
@@ -458,7 +457,7 @@ export default function kpiDashboard() {
                                                     centeredSlidesBounds: false,
                                                 },
                                             }}
-                                            onSlideChange={() => console.log('slide change')}
+                                            
                                             onSwiper={setSwiperMain}
                                             className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
                                         >

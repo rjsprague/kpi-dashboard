@@ -20,12 +20,11 @@ export default async (req, res) => {
      ]) */
 
   try {
-    const { leadSource, gte, lte } = req.query;
+    const { leadSourceString, gte, lte } = req.query;
     const startDate = gte ? formatDate(new Date(gte)) : null;
-    const endDate = lte ? formatDate(new Date(lte)) : null;
-
-    console.log("leadSource", leadSource);
-
+    const endDate = lte ? formatDate(new Date(lte)) : null;  
+    const leadSource = leadSourceString !== "All" ? parseInt(leadSourceString, 10) : "All";
+   
     const fetchAll = async (kpiEndpoint, filters) => {
       try {
         const response = await fetch(kpiEndpoint, {
@@ -34,9 +33,9 @@ export default async (req, res) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            filters,
-            limit: 100,
-            offset: 0,
+            "filters": filters,
+            "limit": 1000,
+            "offset": 0,
           }),
         });
 
@@ -59,9 +58,9 @@ export default async (req, res) => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              filters,
-              offset: offset,
-              limit: 100,
+              "filters": filters,
+              "offset": offset,
+              "limit": 1000,
             }),
           });
 
@@ -82,17 +81,17 @@ export default async (req, res) => {
 
       if (startDate && endDate) {
         filters.push({
-          type: 'date',
-          fieldName: dateFieldName,
-          gte: startDate,
-          lte: endDate,
+          "type": 'date',
+          "fieldName": dateFieldName,
+          "gte": startDate,
+          "lte": endDate,
         });
       }
 
-      if (leadSource && leadSource !== 'All' && fieldName !== "All") {
+      if (leadSource && leadSource !== 'All' && fieldName !== null) {
         filters.push({
-          fieldName: fieldName,
-          value: leadSource,
+          "fieldName": fieldName,
+          "value": leadSource,
         });
       }
 
@@ -125,8 +124,8 @@ export default async (req, res) => {
           url: "https://db.reiautomated.io/seller-lead-sheets",
           filters: generateFilters("Lead Source", "SLS Created On", [
             {
-              fieldName: "Q or UNQ",
-              value: "Q",
+              "fieldName": "Q or UNQ",
+              "value": "Q",
             }
           ]),
         },
@@ -134,12 +133,12 @@ export default async (req, res) => {
           url: "https://db.reiautomated.io/seller-lead-sheets",
           filters: generateFilters("Lead Source", "SLS Created On", [
             {
-              fieldName: "Q or UNQ",
-              value: "Q",
+              "fieldName": "Q or UNQ",
+              "value": "Q",
             },
             {
-              fieldName: "Qualified?",
-              value: "Approved",
+              "fieldName": "Qualified?",
+              "value": "Approved",
             }
           ]),
         }, */
@@ -153,13 +152,19 @@ export default async (req, res) => {
       },
       acquisitions: {
         url: "https://db.reiautomated.io/acquisitions",
-        filters: generateFilters("All", "Date Acquired")
+        filters: generateFilters(null, "Date Acquired")
       }
     };
 
     // Pull the data for each KPI
     const marketingExpenses = await fetchAll(kpiEndpoints.marketingExpenses.url, kpiEndpoints.marketingExpenses.filters)
-      .then(data => data.reduce((acc, curr) => acc + (curr.Amount).toNumber, 0));
+    .then((data) => data.reduce((acc, curr) => {
+        if("Amount" in curr) {
+          return acc + parseInt(curr.Amount, 10);
+        } else {
+          return acc;
+        }
+    }, 0));
 
     const leads = await fetchAll(kpiEndpoints.leads.url, kpiEndpoints.leads.filters);
     const connectedLeads = await fetchAll(kpiEndpoints.connectedLeads.url, kpiEndpoints.connectedLeads.filters);
