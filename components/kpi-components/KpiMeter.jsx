@@ -33,7 +33,7 @@ const KpiMeter = ({ redFlag, current, target, kpiName }) => {
 
     return (
         <div className="flex items-center justify-center overflow-hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" version="2" viewBox="0 0 300 150" className="flex overflow-hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" version="2" viewBox="0 0 300 150" width="300" height="150" className="flex overflow-hidden">
                 <defs>
                     <clipPath id="theClipPath">
                         <rect x="25" y="60" rx="12" ry="12" width="250" height="40" fill="gray" stroke="none" strokeWidth="0" />
