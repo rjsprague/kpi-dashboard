@@ -7,6 +7,7 @@ module.exports = {
   ],
   theme: {
     screens: {
+      xs: '424px',
       sm: '640px',
       md: '768px',
       lg: '1024px',
@@ -159,10 +160,15 @@ module.exports = {
       '56': '14rem',
       '60': '15rem',
       '64': '16rem',
+      '68': '17rem',
       '72': '18rem',
+      '76': '19rem',
       '80': '20rem',
+      '84': '21rem',
       '88': '22rem',
-      '96': '24rem'
+      '92': '23rem',
+      '96': '24rem',
+      '100': '25rem',
     },
     backdropBlur: (theme) => theme('blur'),
     backdropBrightness: (theme) => theme('brightness'),

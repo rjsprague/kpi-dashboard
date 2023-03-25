@@ -171,55 +171,46 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                                 breakpoints={{
                                     320: {
                                         slidesPerView: 1,
-
                                         spaceBetween: 20,
                                         slidesOffsetBefore: 0,
                                         slidesOffsetAfter: 0,
-                                        centeredSlides: true,
-
                                     },
-                                    375: {
+                                    374: {
                                         slidesPerView: 1,
-
-                                        spaceBetween: 50,
-                                        slidesOffsetBefore: 0,
-                                        slidesOffsetAfter: 0,
-                                        centeredSlides: true,
+                                        spaceBetween: 20,
+                                        slidesOffsetBefore: 10,
+                                        slidesOffsetAfter: 10,
                                     },
-                                    414: {
+                                    424: {
                                         slidesPerView: 1,
-
-                                        spaceBetween: 50,
-                                        slidesOffsetBefore: 15,
-                                        slidesOffsetAfter: 0,
-                                        centeredSlides: true,
+                                        spaceBetween: 20,
+                                        slidesOffsetBefore: 20,
+                                        slidesOffsetAfter: 20,
                                     },
                                     768: {
                                         slidesPerView: 2,
-
+                                        spaceBetween: 0,
+                                        slidesOffsetBefore: 10,
+                                        slidesOffsetAfter: 10,
+                                    },
+                                    1023: {
+                                        slidesPerView: 2,
                                         spaceBetween: 0,
                                         slidesOffsetBefore: 5,
-                                        slidesOffsetAfter: 10,
-                                        centeredSlides: false,
-                                        centeredSlidesBounds: false,
-                                    },
-                                    1200: {
-                                        slidesPerView: 3,
+                                        slidesOffsetAfter: 5,
 
-                                        spaceBetween: 10,
-                                        slidesOffsetBefore: 25,
-                                        slidesOffsetAfter: 20,
-                                        centeredSlides: false,
-                                        centeredSlidesBounds: false,
                                     },
                                     1400: {
-                                        slidesPerView: 4,
-
+                                        slidesPerView: 3,
                                         spaceBetween: 10,
                                         slidesOffsetBefore: 10,
-                                        slidesOffsetAfter: 100,
-                                        centeredSlides: false,
-                                        centeredSlidesBounds: false,
+                                        slidesOffsetAfter: 10,
+                                    },
+                                    1750: {
+                                        slidesPerView: 4,
+                                        spaceBetween: 10,
+                                        slidesOffsetBefore: 20,
+                                        slidesOffsetAfter: 20,
                                     },
                                 }}
                                 onSlideChange={() => console.log('slide change')}
@@ -239,8 +230,8 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                                         <div className="flex flex-row justify-center gap-10">
                                             <div className='flex bg-gray-200 rounded-lg w-80 h-60 animate-pulse shadow-super-3 '></div>
                                             <div className='hidden bg-gray-200 rounded-lg sm:flex w-80 h-60 animate-pulse shadow-super-3'></div>
-                                            <div className='hidden bg-gray-200 rounded-lg md:flex w-80 h-60 animate-pulse shadow-super-3'></div>
-                                            <div className='hidden bg-gray-200 rounded-lg lg:flex w-80 h-60 animate-pulse shadow-super-3'></div>
+                                            <div className='hidden bg-gray-200 rounded-lg xl:flex w-80 h-60 animate-pulse shadow-super-3'></div>
+                                            <div className='hidden bg-gray-200 rounded-lg 5xl:flex w-80 h-60 animate-pulse shadow-super-3'></div>
                                         </div>
                                     }
 
