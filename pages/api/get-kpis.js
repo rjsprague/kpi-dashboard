@@ -32,7 +32,7 @@ export default async (req, res) => {
         }
 
         const data = await response.json();
-        if (data.data === null || data.total === 0) {
+        if (data.total === 0) {
           return 0;
         } else if (apiName !== "Marketing Expenses" && apiName !== "Deals") {
           return data.total;
@@ -178,13 +178,13 @@ export default async (req, res) => {
 
     // Pull the data for each KPI
     const [marketingExpenses, leads, connectedLeads, triageCalls, qualifiedTriageCalls, approvedTriageCalls, dealsApproved, perfectPresentations, contracts, acquisitions, deals] = await Promise.all([
-      fetchAll(apiEndpoints.marketingExpenses.name, apiEndpoints.marketingExpenses.url, apiEndpoints.marketingExpenses.filters).then((data) => data.reduce((acc, curr) => {
+      fetchAll(apiEndpoints.marketingExpenses.name, apiEndpoints.marketingExpenses.url, apiEndpoints.marketingExpenses.filters).then((data) => data !== 0 ? data.reduce((acc, curr) => {
         if ("Amount" in curr) {
           return acc + parseInt(curr.Amount, 10);
         } else {
           return acc;
         }
-      }, 0)),
+      }, 0): 0),
       fetchAll(apiEndpoints.leads.name, apiEndpoints.leads.url, apiEndpoints.leads.filters),
       fetchAll(apiEndpoints.connectedLeads.name, apiEndpoints.connectedLeads.url, apiEndpoints.connectedLeads.filters),
       fetchAll(apiEndpoints.triageCalls.name, apiEndpoints.triageCalls.url, apiEndpoints.triageCalls.filters),
@@ -207,7 +207,7 @@ export default async (req, res) => {
     const perfectPresentationRatio = approvedTriageCalls !== 0 ? Math.round(perfectPresentations / approvedTriageCalls * 100) : 0;
     const contractRatio = perfectPresentations !== 0 ? Math.round(contracts / perfectPresentations * 100) : 0;
     const acquisitionRatio = acquisitions !== 0 ? Math.round(acquisitions / contracts * 100) : 0;
-    const profit = deals.length !== 0 ? Math.round(deals.reduce((acc, curr) => {
+    const profit = deals !== 0 ? Math.round(deals.reduce((acc, curr) => {
       if ("Net Profit Center" in curr) {
         return acc + parseInt(curr["Net Profit Center"], 10);
       } else {
@@ -215,7 +215,6 @@ export default async (req, res) => {
       }
     }, 0)) : 0;
 
-    console.log("Acquisitions", acquisitions);
     // Return the results   
     res.json(
       [
@@ -228,8 +227,8 @@ export default async (req, res) => {
         { name: "Perfect Presentations", current: perfectPresentationRatio, redFlag: 65, target: 80, data1: "Analyzed: " + dealsApproved, data2: "Presentations: " + perfectPresentations },
         { name: "Contracts", current: contractRatio, redFlag: 10, target: 25, data1: "Presentations: " + perfectPresentations, data2: "Contracts: " + contracts },
         { name: "Acquisitions", current: acquisitionRatio, redFlag: 50, target: 75, data1: "Contracts: " + contracts, data2: "Acquisitions: " + acquisitions },
-        { name: "Deals", current: deals.length, redFlag: 0, target: 0, data1: "Acquisitions: " + acquisitions, data2: "Deals: " + deals.length },
-        { name: "Profit", current: profit, redFlag: 0, target: 0, data1: "Deals: " + deals.length, data2: "Profit: " + "$" + profit }
+        { name: "Deals", current: (deals!==0?deals.length:0), redFlag: 0, target: 0, data1: "Acquisitions: " + acquisitions, data2: "Deals: " + (deals!==0?deals.length:0) },
+        { name: "Profit", current: profit, redFlag: 0, target: 0, data1: "Deals: " + (deals!==0?deals.length:0), data2: "Profit: " + "$" + profit }
       ]
     );
 
