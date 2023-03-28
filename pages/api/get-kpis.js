@@ -7,25 +7,23 @@ function formatDate(date) {
 
 export default async (req, res) => {
 
-  /* res.json(
-     [
-       { name: "Cost Per Lead", current: (Math.floor(Math.random() * 60) + 20), redFlag: 60.00, target: 35.00, data1: "Marketing: $6600", data2: "Leads: 100" },
-       { name: "Lead Connections", current: (Math.floor(Math.random() * 60) + 20), redFlag: 70, target: 80, data1: "Leads 123" , data2: "Connections: 123" },
-       { name: "Triage Calls", current: (Math.floor(Math.random() * 50) + 40), redFlag: 60, target: 75, data1: "Connections: 60", data2: "Triages: 35" },
-       { name: "Triage Qualification", current: (Math.floor(Math.random() * 60) + 30), redFlag: 50, target: 70, data1: "Triages: 35", data2: "Qualified: 28" },
-       { name: "Deal Analysis", current: (Math.floor(Math.random() * 40) + 50), redFlag: 65, target: 80, data1: "Qualified: 28", data2: "Approvals: 20" },
-       { name: "Perfect Presentations", current: (Math.floor(Math.random() * 40) + 50), redFlag: 65, target: 80, data1: "Approvals: 20", data2: "Presentations: 18" },
-       { name: "Contracts", current: (Math.floor(Math.random() * 40)), redFlag: 10, target: 25, data1: "Presentations: 18", data2: "Contracts: 5" },
-       { name: "Acquisitions", current: (Math.floor(Math.random() * 60) + 30), redFlag: 50, target: 75, data1: "Contracts: 5", data2: "Acquisitions: 4" }
-     ]) */
-
   try {
-    const { leadSourceString, gte, lte } = req.query;
+    const { leadSourceParam, gte, lte } = req.query;
     const startDate = gte ? formatDate(new Date(gte)) : null;
     const endDate = lte ? formatDate(new Date(lte)) : null;
-    const leadSource = leadSourceString !== "All" ? [parseInt(leadSourceString, 10)] : "All";
+    
+    console.log("leadSourceParam in get-kpis ", leadSourceParam);
 
-    const fetchAll = async (apiEndpoint, filters) => {
+    const leadSource = leadSourceParam.split(',').map(str => parseInt(str, 10));
+    
+
+    console.log("leadsource in get-kpis", leadSource);
+
+    const fetchAll = async (apiName, apiEndpoint, filters) => {
+      /** a function to fetch all the data from the API based on filters defined by the user */
+
+      console.log("Fetching data from", apiName, "with filters", filters, "and date range", startDate, "to", endDate, "");
+
       try {
         const response = await fetch(apiEndpoint, {
           method: 'POST',
@@ -33,9 +31,7 @@ export default async (req, res) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            "filters": filters,
-            "limit": 1000,
-            "offset": 0,
+            "filters": filters
           }),
         });
 
@@ -44,31 +40,34 @@ export default async (req, res) => {
         }
 
         const data = await response.json();
-        if (!data.data || data.total === 0) {
+        if (data.data === null || data.total === 0) {
           return [];
+        } else if (apiName !== "Marketing Expenses" && apiName !== "Deals") {
+          return data.total;
+        } else {
+
+          let fetchedResults = data.data ? data.data : [];
+          let offset = fetchedResults.length;
+
+          while (data.total > fetchedResults.length) {
+            const fetchMoreData = await fetch(apiEndpoint, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                "filters": filters,
+                "offset": offset,
+                "limit": 1000,
+              }),
+            });
+
+            const moreData = await fetchMoreData.json();
+            fetchedResults = fetchedResults.concat(moreData.data);
+            offset += moreData.data.length;
+          }
+          return fetchedResults;
         }
-
-        let fetchedResults = data.data ? data.data : [];
-        let offset = fetchedResults.length;
-
-        while (data.total > fetchedResults.length) {
-          const fetchMoreData = await fetch(apiEndpoint, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              "filters": filters,
-              "offset": offset,
-              "limit": 1000,
-            }),
-          });
-
-          const moreData = await fetchMoreData.json();
-          fetchedResults = fetchedResults.concat(moreData.data);
-          offset += moreData.data.length; // Update the offset by adding the length of the fetched data
-        }
-        return fetchedResults;
       } catch (error) {
         console.error(error);
         throw new Error("Error fetching data. Please try again later.");
@@ -88,7 +87,7 @@ export default async (req, res) => {
         });
       }
 
-      if (leadSource && leadSource !== 'All' && fieldName !== null) {
+      if (leadSource && fieldName !== null) {
         filters.push({
           "type": "app",
           "fieldName": fieldName,
@@ -103,25 +102,30 @@ export default async (req, res) => {
       return filters;
     };
 
-    // Define the endpoints for each KPI and the date filter to use
+    // Define the endpoints and filters for each KPI
     const apiEndpoints = {
       marketingExpenses: {
+        name: "Marketing Expenses",
         url: "https://db.reiautomated.io/marketing-expenses",
         filters: generateFilters("Lead Source", "Date")
       },
       leads: {
+        name: "Leads",
         url: "https://db.reiautomated.io/seller-leads",
         filters: generateFilters("Lead Source Item", "Lead Created On")
       },
       connectedLeads: {
+        name: "Connected Leads",
         url: "https://db.reiautomated.io/seller-leads",
         filters: generateFilters("Lead Source Item", "First lead connection")
       },
       triageCalls: {
+        name: "Triage Calls",
         url: "https://db.reiautomated.io/seller-lead-sheets",
         filters: generateFilters("Lead Source", "SLS Created On")
       },
       qualifiedTriageCalls: {
+        name: "Qualified Triage Calls",
         url: "https://db.reiautomated.io/seller-lead-sheets",
         filters: generateFilters("Lead Source", "SLS Created On", [
           {
@@ -131,76 +135,111 @@ export default async (req, res) => {
           }
         ]),
       },
-
-      // Add a deal analysis endpoint when it is ready
-
+      approvedTriageCalls: {
+        name: "Approved Triage Calls",
+        url: "https://db.reiautomated.io/seller-lead-sheets",
+        filters: generateFilters("Lead Source", "SLS Created On", [
+          {
+            "type": "category",
+            "fieldName": "Q or UNQ",
+            "values": ["Q"]
+          },
+          {
+            "type": "category",
+            "fieldName": "Qualified?",
+            "values": ["Approve"]
+          }
+        ]),
+      },
+      dealsApproved: {
+        name: "Deals Approved",
+        url: "https://db.reiautomated.io/acquisition-kpis",
+        filters: generateFilters(null, "Timestamp", [
+          {
+            "type": "category",
+            "fieldName": "Type",
+            "values": ["DA Speed to Lead"]
+          }
+        ])
+      },
       perfectPresentations: {
+        name: "Perfect Presentations",
         url: "https://db.reiautomated.io/acquisition-scripts",
         filters: generateFilters("Lead Source", "AS Created On")
       },
       contracts: {
+        name: "Contracts",
         url: "https://db.reiautomated.io/contracts",
         filters: generateFilters("Lead Source", "*Date Ratified")
       },
       acquisitions: {
+        name: "Acquisitions",
         url: "https://db.reiautomated.io/acquisitions",
         filters: generateFilters(null, "Date Acquired")
-      }
+      },
+      deals: {
+        name: "Deals",
+        url: "https://db.reiautomated.io/deals",
+        filters: generateFilters("Lead Source", "Closing (Sell)")
+      },
     };
-    // Add a deals endpoint when it is ready
-
 
     // Pull the data for each KPI
-    const marketingExpenses = await fetchAll(apiEndpoints.marketingExpenses.url, apiEndpoints.marketingExpenses.filters)
-      .then((data) => data.reduce((acc, curr) => {
+    const [marketingExpenses, leads, connectedLeads, triageCalls, qualifiedTriageCalls, approvedTriageCalls, dealsApproved, perfectPresentations, contracts, acquisitions, deals] = await Promise.all([
+      fetchAll(apiEndpoints.marketingExpenses.name, apiEndpoints.marketingExpenses.url, apiEndpoints.marketingExpenses.filters).then((data) => data.reduce((acc, curr) => {
         if ("Amount" in curr) {
           return acc + parseInt(curr.Amount, 10);
         } else {
           return acc;
         }
-      }, 0));
-
-    const leads = await fetchAll(apiEndpoints.leads.url, apiEndpoints.leads.filters);
-    const connectedLeads = await fetchAll(apiEndpoints.connectedLeads.url, apiEndpoints.connectedLeads.filters);
-    const triageCalls = await fetchAll(apiEndpoints.triageCalls.url, apiEndpoints.triageCalls.filters);
-    const qualifiedTriageCalls = await fetchAll(
-      apiEndpoints.qualifiedTriageCalls.url,
-      apiEndpoints.qualifiedTriageCalls.filters
-    );
-
-    const approvedTriageCalls = qualifiedTriageCalls.filter((lead) => {
-      return lead["Qualified?"] && lead["Qualified?"].length > 0 && lead["Qualified?"][0] === "Approve";
-    });
-    
-    // Add a deal analysis fetch when it is ready
-    const perfectPresentations = await fetchAll(apiEndpoints.perfectPresentations.url, apiEndpoints.perfectPresentations.filters);
-    const contracts = await fetchAll(apiEndpoints.contracts.url, apiEndpoints.contracts.filters);
-    const acquisitions = await fetchAll(apiEndpoints.acquisitions.url, apiEndpoints.acquisitions.filters);
+      }, 0)),
+      fetchAll(apiEndpoints.leads.name, apiEndpoints.leads.url, apiEndpoints.leads.filters),
+      fetchAll(apiEndpoints.connectedLeads.name, apiEndpoints.connectedLeads.url, apiEndpoints.connectedLeads.filters),
+      fetchAll(apiEndpoints.triageCalls.name, apiEndpoints.triageCalls.url, apiEndpoints.triageCalls.filters),
+      fetchAll(apiEndpoints.qualifiedTriageCalls.name, apiEndpoints.qualifiedTriageCalls.url, apiEndpoints.qualifiedTriageCalls.filters),
+      fetchAll(apiEndpoints.approvedTriageCalls.name, apiEndpoints.approvedTriageCalls.url, apiEndpoints.approvedTriageCalls.filters),
+      fetchAll(apiEndpoints.dealsApproved.name, apiEndpoints.dealsApproved.url, apiEndpoints.dealsApproved.filters),
+      fetchAll(apiEndpoints.perfectPresentations.name, apiEndpoints.perfectPresentations.url, apiEndpoints.perfectPresentations.filters),
+      fetchAll(apiEndpoints.contracts.name, apiEndpoints.contracts.url, apiEndpoints.contracts.filters),
+      fetchAll(apiEndpoints.acquisitions.name, apiEndpoints.acquisitions.url, apiEndpoints.acquisitions.filters),
+      fetchAll(apiEndpoints.deals.name, apiEndpoints.deals.url, apiEndpoints.deals.filters)
+    ]);
 
     // Calculate the KPI values
-    const costPerLead = leads.length !== 0 ? (marketingExpenses / leads.length).toFixed(2) : 0;
-    const connectedLeadRatio = leads.length !== 0 ? (connectedLeads.length / leads.length * 100).toFixed(2) : 0;
-    const triageCallRatio = connectedLeads.length !== 0 ? (triageCalls.length / connectedLeads.length * 100).toFixed(2) : 0;
-    const qualifiedTriageCallRatio = triageCalls.length !== 0 ? (qualifiedTriageCalls.length / triageCalls.length * 100).toFixed(2) : 0;
-    const approvedTriageCallRatio = qualifiedTriageCalls.length !== 0 ? (approvedTriageCalls.length / qualifiedTriageCalls.length * 100).toFixed(2) : 0;
-    const perfectPresentationRatio = approvedTriageCalls.length !== 0 ? (perfectPresentations.length / approvedTriageCalls.length * 100).toFixed(2) : 0;
-    const contractRatio = perfectPresentations.length !== 0 ? (contracts.length / perfectPresentations.length * 100).toFixed(2) : 0;
-    const acquisitionRatio = acquisitions.length !== 0 ? (acquisitions.length / contracts.length * 100).toFixed(2) : 0;
+    const costPerLead = leads !== 0 ? Math.round(marketingExpenses / leads) : 0;
+    const connectedLeadRatio = leads !== 0 ? Math.round(connectedLeads / leads * 100) : 0;
+    const triageCallRatio = connectedLeads !== 0 ? Math.round(triageCalls / connectedLeads * 100) : 0;
+    const qualifiedTriageCallRatio = triageCalls !== 0 ? Math.round(qualifiedTriageCalls / triageCalls * 100) : 0;
+    const approvedTriageCallRatio = qualifiedTriageCalls !== 0 ? Math.round(approvedTriageCalls / qualifiedTriageCalls * 100) : 0;
+    const dealAnalysisRatio = approvedTriageCalls !== 0 ? Math.round(dealsApproved / approvedTriageCalls * 100) : 0;
+    const perfectPresentationRatio = approvedTriageCalls !== 0 ? Math.round(perfectPresentations / approvedTriageCalls * 100) : 0;
+    const contractRatio = perfectPresentations !== 0 ? Math.round(contracts / perfectPresentations * 100) : 0;
+    const acquisitionRatio = acquisitions !== 0 ? Math.round(acquisitions / contracts * 100) : 0;
+    const profit = deals.length !== 0 ? Math.round(deals.reduce((acc, curr) => {
+      if ("Net Profit Center" in curr) {
+        return acc + parseInt(curr["Net Profit Center"], 10);
+      } else {
+        return acc;
+      }
+    }, 0)) : 0;
 
     // Return the results   
     res.json(
       [
-        { name: "Cost Per Lead", current: costPerLead, redFlag: 60.00, target: 35.00, data1: "Marketing: " + marketingExpenses, data2: "Leads: " + leads.length },
-        { name: "Lead Connections", current: connectedLeadRatio, redFlag: 70, target: 80, data1: "Leads " + leads.length, data2: "Connections:" + connectedLeads.length },
-        { name: "Triage Calls", current: triageCallRatio, redFlag: 60, target: 75, data1: "Connections: " + connectedLeads.length, data2: "Triages: " + triageCalls.length },
-        { name: "Triage Qualification", current: qualifiedTriageCallRatio, redFlag: 50, target: 70, data1: "Triages: " + triageCalls.length, data2: "Qualified: " + qualifiedTriageCalls.length },
-        { name: "Triage Approval", current: approvedTriageCallRatio, redFlag: 50, target: 70, data1: "Qualified: " + qualifiedTriageCalls.length, data2: "Approved: " + approvedTriageCalls.length },
-        { name: "Deal Analysis", current: 0, redFlag: 65, target: 80, data1: "Approved: " + approvedTriageCalls.length, data2: "Analyzed: ?" },
-        { name: "Perfect Presentations", current: 0, redFlag: 65, target: 80, data1: "Analyzed: ?", data2: "Presentations: " + perfectPresentations.length },
-        { name: "Contracts", current: contractRatio, redFlag: 10, target: 25, data1: "Presentations: " + perfectPresentations.length, data2: "Contracts: " + contracts.length },
-        { name: "Acquisitions", current: acquisitionRatio, redFlag: 50, target: 75, data1: "Contracts: " + contracts.length, data2: "Acquisitions: " + acquisitions.length },
+        { name: "Cost Per Lead", current: costPerLead, redFlag: 60.00, target: 35.00, data1: "Marketing: " + "$" + marketingExpenses, data2: "Leads: " + leads },
+        { name: "Lead Connections", current: connectedLeadRatio, redFlag: 70, target: 80, data1: "Leads " + leads, data2: "Connections:" + connectedLeads },
+        { name: "Triage Calls", current: triageCallRatio, redFlag: 60, target: 75, data1: "Connections: " + connectedLeads, data2: "Triages: " + triageCalls },
+        { name: "Triage Qualification", current: qualifiedTriageCallRatio, redFlag: 50, target: 70, data1: "Triages: " + triageCalls, data2: "Qualified: " + qualifiedTriageCalls },
+        { name: "Triage Approval", current: approvedTriageCallRatio, redFlag: 50, target: 70, data1: "Qualified: " + qualifiedTriageCalls, data2: "Approved: " + approvedTriageCalls },
+        { name: "Deal Analysis", current: dealAnalysisRatio, redFlag: 65, target: 80, data1: "Approved: " + approvedTriageCalls, data2: "Analyzed: " + dealsApproved },
+        { name: "Perfect Presentations", current: perfectPresentationRatio, redFlag: 65, target: 80, data1: "Analyzed: " + dealsApproved, data2: "Presentations: " + perfectPresentations },
+        { name: "Contracts", current: contractRatio, redFlag: 10, target: 25, data1: "Presentations: " + perfectPresentations, data2: "Contracts: " + contracts },
+        { name: "Acquisitions", current: acquisitionRatio, redFlag: 50, target: 75, data1: "Contracts: " + contracts, data2: "Acquisitions: " + acquisitions },
+        { name: "Deals", current: deals.length, redFlag: 0, target: 0, data1: "Acquisitions: " + acquisitions, data2: "Deals: " + deals.length },
+        { name: "Profit", current: profit, redFlag: 0, target: 0, data1: "Deals: " + deals.length, data2: "Profit: " + "$" + profit }
       ]
     );
+
   } catch (error) {
     console.error(error);
     res.status(500).send({ "Error": "Error fetching kpi" });

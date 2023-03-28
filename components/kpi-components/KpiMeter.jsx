@@ -26,9 +26,15 @@ const KpiMeter = ({ redFlag, current, target, kpiName }) => {
                 fill: percentFill
             });
         }
-        gsap.to(triRef.current, { x: currentNum * 2.5, duration: 2 });
-        gsap.to(labelRef.current, { x: currentNum * 2.5, duration: 2 });
-        gsap.to(valRef.current, { x: currentNum * 2.5, duration: 2 });
+        if (currentNum * 2.5 > 250) {
+            gsap.to(triRef.current, { x: 250, duration: 2 });
+            gsap.to(labelRef.current, { x: 250, duration: 2 });
+            gsap.to(valRef.current, { x: 250, duration: 2 });
+        } else {
+            gsap.to(triRef.current, { x: currentNum * 2.5, duration: 2 });
+            gsap.to(labelRef.current, { x: currentNum * 2.5, duration: 2 });
+            gsap.to(valRef.current, { x: currentNum * 2.5, duration: 2 });
+        }
     }, [current, currentNum, dollarFill, percentFill]);
 
     return (

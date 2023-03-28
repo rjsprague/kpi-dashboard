@@ -10,8 +10,6 @@ import SingleDateRangeSelector from './SingleDateRangeSelector';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import 'swiper/css'
-
-
 import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
 import BurgerMenu from '../BurgerMenu';
@@ -56,7 +54,10 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                     <label className='text-gray-50'>
                         Lead Source:
                     </label>
-                    <Dropdown selectedOption={query.leadSource} onOptionSelected={handleOptionSelected} data={leadSources} queryId={query.id} />
+                    <Dropdown
+                        onOptionSelected={handleOptionSelected}
+                        data={leadSources}
+                        queryId={query.id} />
                     <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
                     <button
                         onClick={() => {
@@ -101,7 +102,11 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                         <label className='text-gray-50'>
                             Lead Source:
                         </label>
-                        <Dropdown selectedOption={query.leadSource} onOptionSelected={handleOptionSelected} data={leadSources} queryId={query.id} />
+                        <Dropdown
+                            onOptionSelected={handleOptionSelected}
+                            data={leadSources}
+                            queryId={query.id}
+                        />
                         <p>
                             Date Range: {
                                 query.dateRange.gte instanceof Date ? query.dateRange.gte.toLocaleDateString() : ""

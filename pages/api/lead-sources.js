@@ -21,7 +21,7 @@ export default async function getUniqueLeadSources(req, res) {
 
     for (const source of leadSources.data) {
         if (source.Title) {
-            leadSourceMap[source.itemid] = source.Title;
+            leadSourceMap[source.Title] = parseInt(source.itemid, 10);
         }        
     };
 

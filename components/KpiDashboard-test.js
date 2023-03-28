@@ -27,31 +27,38 @@ export default function kpiDashboard() {
     const endOfLastQuarter = getEndOfLastQuarter();
 
     const [height, setHeight] = useState('auto');
-    const [dateRange, setDateRange] = useState({ gte: startOfLastWeek, lte: endOfLastWeek });
-    const [leadSources, setLeadSources] = useState(["All"]);
-    const [leadSource, setLeadSource] = useState("All");
+    const [leadSources, setLeadSources] = useState([]);
     const [queries, setQueries] = useState([]);
     const [idCounter, setIdCounter] = useState(1);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [serviceUnavailable, setServiceUnavailable] = useState(false);
 
     // Swiper state
     const [swiperMain, setSwiperMain] = useState(null);
     const swiperSubs = useRef([]);
 
-    const handleMenuToggle = () => {
-        setIsMenuOpen(!isMenuOpen)
-    }
-
     // Main query state
     const [mainQueryDateRange, setMainQueryDateRange] = useState({ gte: startOfLastWeek, lte: endOfLastWeek });
-    const [mainQueryLeadSource, setMainQueryLeadSource] = useState("All");
+    const [mainQueryLeadSource, setMainQueryLeadSource] = useState([]);
     const [mainQuery, setMainQuery] = useState({ id: 0, results: [], isOpen: true, isLoading: true, dateRange: mainQueryDateRange, leadSource: mainQueryLeadSource });
 
+    // Fetch lead sources on page load
+    useEffect(() => {
+        const fetchLeadSources = async () => {
+            const res = await fetch(`/api/lead-sources`)
+            const data = await res.json();
+            setLeadSources(data);
+            const fetchedLeadSources = Object.values(data);
+            setMainQueryLeadSource(fetchedLeadSources);
+            fetchMainKpis(fetchedLeadSources);
+        };
+        fetchLeadSources();
+    }, []);
+
     // Get the KPIs for the main query on page load
-    const fetchMainKpis = async () => {
+    const fetchMainKpis = async (leadSourcesToFetch) => {
         setMainQuery(prevState => ({ ...prevState, isLoading: true }));
-        fetch(`/api/get-kpis?leadSourceString=${mainQueryLeadSource}&gte=${mainQueryDateRange.gte}&lte=${mainQueryDateRange.lte}`)
+
+        fetch(`/api/get-kpis?leadSourceParam=${leadSourcesToFetch || mainQueryLeadSource}&gte=${mainQueryDateRange.gte}&lte=${mainQueryDateRange.lte}`)
             .then(response => {
                 if (response.status !== 200) {
                     setServiceUnavailable(true);
@@ -70,13 +77,10 @@ export default function kpiDashboard() {
                 setServiceUnavailable(true);
                 setMainQuery(prevState => ({ ...prevState, isLoading: false }));
             });
+
     };
 
-
     // Get the KPIs for the main query on page load
-    useEffect(() => {
-        fetchMainKpis();
-    }, []);
 
     const handleFormSubmit = (event) => {
         event.preventDefault();
@@ -104,7 +108,7 @@ export default function kpiDashboard() {
     };
 
     const handleQueryUpdate = async (id, dateRange, leadSource) => {
-        
+
         // Find the query with the specified ID
         const queryToUpdate = queries.find(query => query.id === id);
         // Update the query's dateRange and leadSource properties
@@ -128,7 +132,7 @@ export default function kpiDashboard() {
                 queryToUpdate.isLoading = false;
                 // Update the queries state with the updated query
                 setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
-                
+
             })
             .catch(error => {
                 console.log(error);
@@ -137,26 +141,18 @@ export default function kpiDashboard() {
             });
     };
 
-    // Fetch lead sources on page load
-    useEffect(() => {
-        const fetchLeadSources = async () => {
-            // pass in date range to get unique lead sources for that date range
-            const res = await fetch(`/api/lead-sources`)
-            const data = await res.json();
-            setLeadSources(data);
-        };        
-        fetchLeadSources();        
-    }, []);
+
 
     // Handle leadSource dropdown selection changes, updating the state
-    const handleOptionSelected = (value, queryId) => {
+    const handleOptionSelected = (values, queryId) => {
+
         if (queryId === mainQuery.id) {
-            setMainQueryLeadSource(value);
+            setMainQueryLeadSource(values);
         } else {
             setQueries((prevQueries) => {
                 return prevQueries.map((query) => {
                     if (query.id === queryId) {
-                        return { ...query, leadSource: value };
+                        return { ...query, leadSource: values };
                     }
                     return query;
                 });
@@ -187,7 +183,7 @@ export default function kpiDashboard() {
             results: [],
             isOpen: true,
             isLoading: true,
-            leadSource: 'All',
+            leadSource: [],
             dateRange: { gte: startOfLastWeek, lte: endOfLastWeek },
         };
         setIdCounter(idCounter + 1);
@@ -215,7 +211,7 @@ export default function kpiDashboard() {
     // Handle the sub swiper controller array
     const handleSwiperSub = (swiper) => {
         swiperSubs.current = [...swiperSubs.current, swiper];
-      };
+    };
 
     return (
         <>
@@ -286,7 +282,6 @@ export default function kpiDashboard() {
                                                 Lead Source:
                                             </label>
                                             <Dropdown
-                                                selectedOption={mainQueryLeadSource}
                                                 onOptionSelected={handleOptionSelected}
                                                 data={leadSources}
                                                 queryId={mainQuery.id}
@@ -336,7 +331,6 @@ export default function kpiDashboard() {
                                                     Lead Source:
                                                 </label>
                                                 <Dropdown
-                                                    selectedOption={mainQueryLeadSource}
                                                     onOptionSelected={handleOptionSelected}
                                                     data={leadSources}
                                                     queryId={mainQuery.id}
@@ -390,7 +384,7 @@ export default function kpiDashboard() {
                                         <Swiper
                                             spaceBetween={10}
                                             modules={[Scrollbar, Mousewheel, Controller]}
-                                            controller                                            
+                                            controller
                                             scrollbar={{
                                                 draggable: true,
                                                 snapOnRelease: false,
@@ -432,7 +426,7 @@ export default function kpiDashboard() {
                                                     spaceBetween: 0,
                                                     slidesOffsetBefore: 5,
                                                     slidesOffsetAfter: 5,
-                                                    
+
                                                 },
                                                 1400: {
                                                     slidesPerView: 3,
@@ -446,7 +440,7 @@ export default function kpiDashboard() {
                                                     slidesOffsetBefore: 20,
                                                     slidesOffsetAfter: 20,
                                                 },
-                                            }}                                            
+                                            }}
                                             onSwiper={setSwiperMain}
                                             className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
                                         >
@@ -458,14 +452,14 @@ export default function kpiDashboard() {
                                                                 <KpiCard prop={result} />
                                                             </div>
                                                         </SwiperSlide>
-                                                    )) 
+                                                    ))
                                                     :
                                                     <div className="flex flex-row justify-center gap-10">
                                                         <div className='flex bg-gray-200 rounded-lg w-80 h-60 animate-pulse shadow-super-3 '></div>
                                                         <div className='hidden bg-gray-200 rounded-lg sm:flex w-80 h-60 animate-pulse shadow-super-3'></div>
                                                         <div className='hidden bg-gray-200 rounded-lg xl:flex w-80 h-60 animate-pulse shadow-super-3'></div>
                                                         <div className='hidden bg-gray-200 rounded-lg 5xl:flex w-80 h-60 animate-pulse shadow-super-3'></div>
-                                                    </div>                                                                                                
+                                                    </div>
                                                 }
                                             </div>
                                         </Swiper>
