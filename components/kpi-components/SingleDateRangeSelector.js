@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -19,8 +19,21 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
         setShowDatePicker((prevShowDatePicker) => !prevShowDatePicker);
     };
 
+    useEffect(() => {
+        const handleClickOutsideDatePicker = (event) => {
+            if (!event.target.closest(".date-picker")) {
+                setShowDatePicker(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutsideDatePicker);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutsideDatePicker);
+        }; 
+    }, []); 
+
     return (
-        <div className="relative flex">
+        <div className="relative flex date-picker">
             <button
                 onClick={toggleDatePicker}
                 className="box-border px-2 py-1 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"

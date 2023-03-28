@@ -11,19 +11,11 @@ export default async (req, res) => {
     const { leadSourceParam, gte, lte } = req.query;
     const startDate = gte ? formatDate(new Date(gte)) : null;
     const endDate = lte ? formatDate(new Date(lte)) : null;
+    const leadSource = leadSourceParam !== "" ? leadSourceParam.split(',').map(str => parseInt(str, 10)) : null;
+
     
-    console.log("leadSourceParam in get-kpis ", leadSourceParam);
-
-    const leadSource = leadSourceParam.split(',').map(str => parseInt(str, 10));
-    
-
-    console.log("leadsource in get-kpis", leadSource);
-
     const fetchAll = async (apiName, apiEndpoint, filters) => {
       /** a function to fetch all the data from the API based on filters defined by the user */
-
-      console.log("Fetching data from", apiName, "with filters", filters, "and date range", startDate, "to", endDate, "");
-
       try {
         const response = await fetch(apiEndpoint, {
           method: 'POST',
@@ -41,7 +33,7 @@ export default async (req, res) => {
 
         const data = await response.json();
         if (data.data === null || data.total === 0) {
-          return [];
+          return 0;
         } else if (apiName !== "Marketing Expenses" && apiName !== "Deals") {
           return data.total;
         } else {
@@ -87,7 +79,7 @@ export default async (req, res) => {
         });
       }
 
-      if (leadSource && fieldName !== null) {
+      if (leadSource && leadSource !== null && fieldName !== null) {
         filters.push({
           "type": "app",
           "fieldName": fieldName,
@@ -223,6 +215,7 @@ export default async (req, res) => {
       }
     }, 0)) : 0;
 
+    console.log("Acquisitions", acquisitions);
     // Return the results   
     res.json(
       [

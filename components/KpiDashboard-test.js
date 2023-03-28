@@ -30,7 +30,6 @@ export default function kpiDashboard() {
     const [leadSources, setLeadSources] = useState([]);
     const [queries, setQueries] = useState([]);
     const [idCounter, setIdCounter] = useState(1);
-    const [serviceUnavailable, setServiceUnavailable] = useState(false);
 
     // Swiper state
     const [swiperMain, setSwiperMain] = useState(null);
@@ -39,7 +38,7 @@ export default function kpiDashboard() {
     // Main query state
     const [mainQueryDateRange, setMainQueryDateRange] = useState({ gte: startOfLastWeek, lte: endOfLastWeek });
     const [mainQueryLeadSource, setMainQueryLeadSource] = useState([]);
-    const [mainQuery, setMainQuery] = useState({ id: 0, results: [], isOpen: true, isLoading: true, dateRange: mainQueryDateRange, leadSource: mainQueryLeadSource });
+    const [mainQuery, setMainQuery] = useState({ id: 0, results: [], isOpen: true, isLoading: true, isUnavailable: false, dateRange: mainQueryDateRange, leadSource: mainQueryLeadSource });
 
     // Fetch lead sources on page load
     useEffect(() => {
@@ -57,14 +56,13 @@ export default function kpiDashboard() {
     // Get the KPIs for the main query on page load
     const fetchMainKpis = async (leadSourcesToFetch) => {
         setMainQuery(prevState => ({ ...prevState, isLoading: true }));
-
         fetch(`/api/get-kpis?leadSourceParam=${leadSourcesToFetch || mainQueryLeadSource}&gte=${mainQueryDateRange.gte}&lte=${mainQueryDateRange.lte}`)
             .then(response => {
                 if (response.status !== 200) {
-                    setServiceUnavailable(true);
+                    setMainQuery(prevState => ({ ...prevState, isUnavailable: true }));
                     throw new Error('Service unavailable');
                 } else {
-                    setServiceUnavailable(false);
+                    setMainQuery(prevState => ({ ...prevState, isUnavailable: false }));
                 }
                 return response.json();
             })
@@ -74,13 +72,11 @@ export default function kpiDashboard() {
             })
             .catch(error => {
                 console.log(error);
-                setServiceUnavailable(true);
+                setMainQuery(prevState => ({ ...prevState, isUnavailable: true }));
                 setMainQuery(prevState => ({ ...prevState, isLoading: false }));
             });
 
     };
-
-    // Get the KPIs for the main query on page load
 
     const handleFormSubmit = (event) => {
         event.preventDefault();
@@ -108,7 +104,7 @@ export default function kpiDashboard() {
     };
 
     const handleQueryUpdate = async (id, dateRange, leadSource) => {
-
+        
         // Find the query with the specified ID
         const queryToUpdate = queries.find(query => query.id === id);
         // Update the query's dateRange and leadSource properties
@@ -116,13 +112,19 @@ export default function kpiDashboard() {
         queryToUpdate.dateRange = dateRange;
         queryToUpdate.leadSource = leadSource;
         // Make an API call to fetch the updated KPI data for the query
-        fetch(`/api/get-kpis?leadSourceString=${queryToUpdate.leadSource}&gte=${queryToUpdate.dateRange.gte}&lte=${queryToUpdate.dateRange.lte}`)
+        fetch(`/api/get-kpis?leadSourceParam=${queryToUpdate.leadSource}&gte=${queryToUpdate.dateRange.gte}&lte=${queryToUpdate.dateRange.lte}`)
             .then(response => {
                 if (response.status !== 200) {
-                    setServiceUnavailable(true);
+                    // Update only the isUnavailable property for the query with the specified ID
+                    queryToUpdate.isLoading = false;
+                    queryToUpdate.isUnavailable = true;
+                    setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
                     throw new Error('Service unavailable');
                 } else {
-                    setServiceUnavailable(false);
+                    // Reset the isUnavailable property for the query with the specified ID
+                    queryToUpdate.isLoading = false;
+                    queryToUpdate.isUnavailable = false;
+                    setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
                 }
                 return response.json();
             })
@@ -136,12 +138,11 @@ export default function kpiDashboard() {
             })
             .catch(error => {
                 console.log(error);
-                setServiceUnavailable(true);
                 queryToUpdate.isLoading = false;
+                queryToUpdate.isUnavailable = true;
+                setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
             });
     };
-
-
 
     // Handle leadSource dropdown selection changes, updating the state
     const handleOptionSelected = (values, queryId) => {
@@ -183,7 +184,8 @@ export default function kpiDashboard() {
             results: [],
             isOpen: true,
             isLoading: true,
-            leadSource: [],
+            isUnavailable: false,
+            leadSource: Object.values(leadSources),
             dateRange: { gte: startOfLastWeek, lte: endOfLastWeek },
         };
         setIdCounter(idCounter + 1);
@@ -193,6 +195,7 @@ export default function kpiDashboard() {
     useEffect(() => {
         // get the newly added query
         const newQuery = queries.find(query => query.id === idCounter - 1);
+
         if (newQuery) {
             handleQueryUpdate(newQuery.id, newQuery.dateRange, newQuery.leadSource);
         }
@@ -363,7 +366,7 @@ export default function kpiDashboard() {
                             height={height}
                         >
                             {/* Service Unavailable */}
-                            {serviceUnavailable ?
+                            {mainQuery.isUnavailable ?
                                 <div className="flex flex-col items-center justify-center w-full h-full p-4 text-center bg-white rounded-lg shadow-super-3">
                                     <FontAwesomeIcon
                                         icon={faExclamationTriangle}
@@ -474,8 +477,6 @@ export default function kpiDashboard() {
                     {queries.map(query => (
                         <SubQuery
                             query={query}
-                            leadSources={leadSources}
-                            serviceUnavailable={serviceUnavailable}
                             handleQueryUpdate={handleQueryUpdate}
                             handleToggleQuery={handleToggleQuery}
                             handleRemoveQuery={handleRemoveQuery}

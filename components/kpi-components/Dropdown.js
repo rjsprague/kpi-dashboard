@@ -4,8 +4,6 @@ function Dropdown({ onOptionSelected, queryId }) {
     const [isOpen, setIsOpen] = useState(false);
     const [leadSources, setLeadSources] = useState([]);
     const [selectedOptions, setSelectedOptions] = useState([]);
-    
-   
 
     const toggleOpen = () => {
         setIsOpen(!isOpen);
@@ -38,15 +36,15 @@ function Dropdown({ onOptionSelected, queryId }) {
     };
 
     useEffect(() => {
-        const handleClickOutside = (event) => {
+        const handleClickOutsideDropdown = (event) => {
             if (!event.target.closest(".dropdown")) {
                 setIsOpen(false);
             }
         };
 
-        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("mousedown", handleClickOutsideDropdown);
         return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("mousedown", handleClickOutsideDropdown);
         }; 
     }, []); 
     
@@ -65,8 +63,6 @@ function Dropdown({ onOptionSelected, queryId }) {
         setSelectedOptions(Object.values(leadSources));
         onOptionSelected(selectedOptions, queryId); 
     }, [leadSources]);
-
-    console.log("selectedOptions: ", selectedOptions);
 
     return (
         <div className="relative dropdown">

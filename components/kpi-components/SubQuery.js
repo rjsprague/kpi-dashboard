@@ -15,17 +15,20 @@ import 'swiper/css/scrollbar'
 import BurgerMenu from '../BurgerMenu';
 import AnimateHeight from 'react-animate-height';
 
-const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, handleRemoveQuery, handleOptionSelected, handleDateRangeChange, serviceUnavailable, handleSwiperSub }) => {
+const SubQuery = ({ query, handleQueryUpdate, handleToggleQuery, handleRemoveQuery, handleOptionSelected, handleDateRangeChange, handleSwiperSub }) => {
     const [height, setHeight] = useState('auto');
-    const [isLoading, setIsLoading] = useState(true);
-
+   
+     // Fetch lead sources on page load
     useEffect(() => {
-        if (query.isLoading === false) {
-            setIsLoading(false)
-        } else {
-            setIsLoading(true)
-        }
-    }, [query.isLoading])
+        const fetchLeadSources = async () => {
+            const res = await fetch(`/api/lead-sources`)
+            const data = await res.json();
+            const fetchedLeadSources = Object.values(data);
+            
+            handleQueryUpdate(query.id, query.dateRange, fetchedLeadSources);
+        };
+        fetchLeadSources();
+    }, []);
 
     return (
         <div className="box-border mb-2 text-sm">
@@ -56,13 +59,13 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                     </label>
                     <Dropdown
                         onOptionSelected={handleOptionSelected}
-                        data={leadSources}
-                        queryId={query.id} />
+                        queryId={query.id}
+                    />
                     <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
                     <button
                         onClick={() => {
                             handleQueryUpdate(query.id, query.dateRange, query.leadSource)
-                            setIsLoading(true)
+                            query.isLoading = true;
                         }}
                         className="box-border flex-shrink px-2 py-1 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
                     >
@@ -104,7 +107,6 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                         </label>
                         <Dropdown
                             onOptionSelected={handleOptionSelected}
-                            data={leadSources}
                             queryId={query.id}
                         />
                         <p>
@@ -136,7 +138,7 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                 height={height}
             >
                 {/* Service Unavailable */}
-                {serviceUnavailable ?
+                {query.isUnavailable ?
                     <div className="flex flex-col items-center justify-center w-full h-full p-4 text-center bg-white rounded-lg shadow-super-3">
                         <FontAwesomeIcon
                             icon={faExclamationTriangle}
@@ -223,7 +225,7 @@ const SubQuery = ({ query, leadSources, handleQueryUpdate, handleToggleQuery, ha
                                 className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
                             >
                                 <div className={``}>
-                                    {query.isOpen && !isLoading ?
+                                    {query.isOpen && !query.isLoading ?
                                         query.results.map(result => (
                                             <SwiperSlide key={result.id}>
                                                 <div key={result.id} className='my-3 h-70 w-80 backface'>

@@ -14,7 +14,7 @@ export default function CostPerAcquisition({ prop }) {
     return (
         <div className="box-border flip-container" onClick={handleClick}>
             <div className={`box-border flipper ${isFlipped ? 'flipped' : ''}`}>
-                <div className={` w-68 xs:w-76 sm:w-80 h-60 box-border py-4 text-center text-black delay-500 ${prop.current !== 0 ? "bg-white" : "bg-red-400"} rounded shadow-super-3 transform-gpu h-60 front`}>
+                <div className={` w-68 xs:w-76 sm:w-80 h-60 box-border py-4 text-center text-black delay-500 rounded shadow-super-3 transform-gpu front`}>
                     <h1 className="text-2xl font-semibold tracking-tighter align-top">{prop.name}</h1>
                     <div className="mt-3 font-medium text-md">
                         {prop.data1 !== null && prop.data2 !== null ? <div className='flex flex-row justify-around mx-2'><div>{prop.data1}</div><div>{prop.data2}</div> </div> : ""}
