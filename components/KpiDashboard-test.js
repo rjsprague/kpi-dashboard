@@ -30,6 +30,7 @@ export default function kpiDashboard() {
     const [leadSources, setLeadSources] = useState([]);
     const [queries, setQueries] = useState([]);
     const [idCounter, setIdCounter] = useState(1);
+    const [isLoading, setIsLoading] = useState({});
 
     // Swiper state
     const [swiperMain, setSwiperMain] = useState(null);
@@ -48,7 +49,6 @@ export default function kpiDashboard() {
             setLeadSources(data);
             const fetchedLeadSources = Object.values(data);
             setMainQueryLeadSource(fetchedLeadSources);
-            fetchMainKpis(fetchedLeadSources);
         };
         fetchLeadSources();
     }, []);
@@ -78,6 +78,12 @@ export default function kpiDashboard() {
 
     };
 
+    useEffect(() => {
+        if (mainQueryDateRange && mainQueryLeadSource && mainQueryLeadSource.length > 0) {
+            fetchMainKpis();
+        }
+    }, [mainQueryDateRange, mainQueryLeadSource]);
+
     const handleFormSubmit = (event) => {
         event.preventDefault();
         fetchMainKpis();
@@ -103,8 +109,13 @@ export default function kpiDashboard() {
         setQueries(queries.filter(query => query.id !== queryId));
     };
 
+    // Handle updating the date range and lead source for a query
     const handleQueryUpdate = async (id, dateRange, leadSource) => {
-        
+
+        setIsLoading((prevState) => ({
+            ...prevState,
+            [id]: true,
+        }));
         // Find the query with the specified ID
         const queryToUpdate = queries.find(query => query.id === id);
         // Update the query's dateRange and leadSource properties
@@ -116,31 +127,30 @@ export default function kpiDashboard() {
             .then(response => {
                 if (response.status !== 200) {
                     // Update only the isUnavailable property for the query with the specified ID
-                    queryToUpdate.isLoading = false;
                     queryToUpdate.isUnavailable = true;
                     setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
-                    throw new Error('Service unavailable');
+                    setIsLoading((prevState) => ({...prevState, [id]: false }));                
+                    throw new Error('Service unavailable');                    
                 } else {
                     // Reset the isUnavailable property for the query with the specified ID
-                    queryToUpdate.isLoading = false;
                     queryToUpdate.isUnavailable = false;
                     setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
+                    setIsLoading((prevState) => ({...prevState, [id]: false }));                
                 }
                 return response.json();
             })
             .then(data => {
                 // Update the query's results property with the new KPI data
                 queryToUpdate.results = data;
-                queryToUpdate.isLoading = false;
                 // Update the queries state with the updated query
                 setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
-
+                setIsLoading((prevState) => ({...prevState, [id]: false }));                
             })
             .catch(error => {
                 console.log(error);
-                queryToUpdate.isLoading = false;
                 queryToUpdate.isUnavailable = true;
                 setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
+                setIsLoading((prevState) => ({...prevState, [id]: false }));                
             });
     };
 
@@ -219,6 +229,7 @@ export default function kpiDashboard() {
     return (
         <>
             <div className="flex flex-col min-h-screen">
+
                 <section>
                     {/* Navigation bar */}
                     <div className="flex flex-row flex-wrap bg-blue-600">
@@ -250,6 +261,7 @@ export default function kpiDashboard() {
                         </div>
                     </div>
                 </section>
+
                 <section className="flex flex-col h-full px-4 py-2">
                     {/* KPI Results Section */}
                     <div className="mb-2">
@@ -294,13 +306,13 @@ export default function kpiDashboard() {
                                             {/* Date range selector */}
                                             <SingleDateRangeSelector queryId={mainQuery.id} onDateRangeChange={handleDateRangeChange} />
                                         </div>
-                                        <button
+                                        {/* <button
                                             type="button"
                                             onClick={(event) => handleFormSubmit(event)}
                                             className="box-border px-2 py-1 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
                                         >
                                             Get KPIs
-                                        </button>
+                                </button> */}
                                     </div>
                                 </div>
                             </div>
@@ -350,13 +362,13 @@ export default function kpiDashboard() {
                                             </div>
                                         </div>
                                     </div>
-                                    <button
+                                    {/*<button
                                         type="button"
                                         onClick={(event) => handleFormSubmit(event)}
                                         className="box-border px-4 py-2 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-gray-100"
                                     >
                                         Get KPIs
-                                    </button>
+                                                    </button>*/}
                                 </BurgerMenu>
                             </div>
                         </div>
@@ -477,6 +489,11 @@ export default function kpiDashboard() {
                     {queries.map(query => (
                         <SubQuery
                             query={query}
+                            isLoading={isLoading[query.id]}
+                            setIsLoading={setIsLoading}
+                            leadSource={query.leadSource}
+                            dateRange={query.dateRange}
+                            triggerUpdate={`${query.id}-${JSON.stringify(query.leadSource)}-${JSON.stringify(query.dateRange)}`}
                             handleQueryUpdate={handleQueryUpdate}
                             handleToggleQuery={handleToggleQuery}
                             handleRemoveQuery={handleRemoveQuery}
@@ -498,6 +515,7 @@ export default function kpiDashboard() {
                     </div>
 
                 </section>
+
             </div >
         </>
     )

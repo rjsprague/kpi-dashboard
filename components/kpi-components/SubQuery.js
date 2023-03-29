@@ -15,20 +15,28 @@ import 'swiper/css/scrollbar'
 import BurgerMenu from '../BurgerMenu';
 import AnimateHeight from 'react-animate-height';
 
-const SubQuery = ({ query, handleQueryUpdate, handleToggleQuery, handleRemoveQuery, handleOptionSelected, handleDateRangeChange, handleSwiperSub }) => {
+const SubQuery = ({ query, isLoading, setIsLoading, leadSource, dateRange, triggerUpdate, handleQueryUpdate, handleToggleQuery, handleRemoveQuery, handleOptionSelected, handleDateRangeChange, handleSwiperSub }) => {
     const [height, setHeight] = useState('auto');
-   
-     // Fetch lead sources on page load
+
+    // Fetch lead sources on page load
     useEffect(() => {
         const fetchLeadSources = async () => {
             const res = await fetch(`/api/lead-sources`)
             const data = await res.json();
             const fetchedLeadSources = Object.values(data);
-            
+
             handleQueryUpdate(query.id, query.dateRange, fetchedLeadSources);
         };
         fetchLeadSources();
     }, []);
+
+    useEffect(() => {
+        handleQueryUpdate(query.id, dateRange, leadSource);
+        setIsLoading((prevState) => ({
+            ...prevState,
+            [query.id]: true,
+        }));
+    }, [triggerUpdate]);
 
     return (
         <div className="box-border mb-2 text-sm">
@@ -62,15 +70,6 @@ const SubQuery = ({ query, handleQueryUpdate, handleToggleQuery, handleRemoveQue
                         queryId={query.id}
                     />
                     <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
-                    <button
-                        onClick={() => {
-                            handleQueryUpdate(query.id, query.dateRange, query.leadSource)
-                            query.isLoading = true;
-                        }}
-                        className="box-border flex-shrink px-2 py-1 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
-                    >
-                        Update KPIs
-                    </button>
                 </div>
                 <button
                     onClick={() => handleRemoveQuery(query.id)}
@@ -225,7 +224,7 @@ const SubQuery = ({ query, handleQueryUpdate, handleToggleQuery, handleRemoveQue
                                 className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
                             >
                                 <div className={``}>
-                                    {query.isOpen && !query.isLoading ?
+                                    {query.isOpen && !isLoading ?
                                         query.results.map(result => (
                                             <SwiperSlide key={result.id}>
                                                 <div key={result.id} className='my-3 h-70 w-80 backface'>
@@ -241,10 +240,8 @@ const SubQuery = ({ query, handleQueryUpdate, handleToggleQuery, handleRemoveQue
                                             <div className='hidden bg-gray-200 rounded-lg 5xl:flex w-80 h-60 animate-pulse shadow-super-3'></div>
                                         </div>
                                     }
-
                                 </div>
                             </Swiper>
-
                         </div>
                     </div>
                 }
