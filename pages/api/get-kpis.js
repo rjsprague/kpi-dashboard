@@ -13,7 +13,7 @@ export default async (req, res) => {
     const endDate = lte ? formatDate(new Date(lte)) : null;
     const leadSource = leadSourceParam !== "" ? leadSourceParam.split(',').map(str => parseInt(str, 10)) : null;
 
-    
+
     const fetchAll = async (apiName, apiEndpoint, filters) => {
       /** a function to fetch all the data from the API based on filters defined by the user */
       try {
@@ -184,7 +184,7 @@ export default async (req, res) => {
         } else {
           return acc;
         }
-      }, 0): 0),
+      }, 0) : 0),
       fetchAll(apiEndpoints.leads.name, apiEndpoints.leads.url, apiEndpoints.leads.filters),
       fetchAll(apiEndpoints.connectedLeads.name, apiEndpoints.connectedLeads.url, apiEndpoints.connectedLeads.filters),
       fetchAll(apiEndpoints.triageCalls.name, apiEndpoints.triageCalls.url, apiEndpoints.triageCalls.filters),
@@ -218,17 +218,243 @@ export default async (req, res) => {
     // Return the results   
     res.json(
       [
-        { name: "Cost Per Lead", current: costPerLead, redFlag: 60.00, target: 35.00, data1: "Marketing: " + "$" + marketingExpenses, data2: "Leads: " + leads },
-        { name: "Lead Connections", current: connectedLeadRatio, redFlag: 70, target: 80, data1: "Leads " + leads, data2: "Connections:" + connectedLeads },
-        { name: "Triage Calls", current: triageCallRatio, redFlag: 60, target: 75, data1: "Connections: " + connectedLeads, data2: "Triages: " + triageCalls },
-        { name: "Triage Qualification", current: qualifiedTriageCallRatio, redFlag: 50, target: 70, data1: "Triages: " + triageCalls, data2: "Qualified: " + qualifiedTriageCalls },
-        { name: "Triage Approval", current: approvedTriageCallRatio, redFlag: 50, target: 70, data1: "Qualified: " + qualifiedTriageCalls, data2: "Approved: " + approvedTriageCalls },
-        { name: "Deal Analysis", current: dealAnalysisRatio, redFlag: 65, target: 80, data1: "Approved: " + approvedTriageCalls, data2: "Analyzed: " + dealsApproved },
-        { name: "Perfect Presentations", current: perfectPresentationRatio, redFlag: 65, target: 80, data1: "Analyzed: " + dealsApproved, data2: "Presentations: " + perfectPresentations },
-        { name: "Contracts", current: contractRatio, redFlag: 10, target: 25, data1: "Presentations: " + perfectPresentations, data2: "Contracts: " + contracts },
-        { name: "Acquisitions", current: acquisitionRatio, redFlag: 50, target: 75, data1: "Contracts: " + contracts, data2: "Acquisitions: " + acquisitions },
-        { name: "Deals", current: (deals!==0?deals.length:0), redFlag: 0, target: 0, data1: "Acquisitions: " + acquisitions, data2: "Deals: " + (deals!==0?deals.length:0) },
-        { name: "Profit", current: profit, redFlag: 0, target: 0, data1: "Deals: " + (deals!==0?deals.length:0), data2: "Profit: " + "$" + profit }
+        {
+          name: "Cost Per Lead",
+          current: costPerLead,
+          redFlag: 60,
+          target: 35,
+          data1: "Marketing: " + "$" + marketingExpenses,
+          data2: "Leads: " + leads,
+          kpiFactors: [
+            {
+              id: 1,
+              desc: "Consider increasing your metro count. The more people you market to, the cheaper your leads will get. Disregard this if you are only marketing locally.",
+              linkName: "Learn More: Choosing Your Metros", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/43155989-starting-your-marketing-choosing-your-metros" 
+            },
+          ]          
+        },
+        {
+          name: "Lead Connections",
+          current: connectedLeadRatio,
+          redFlag: 70,
+          target: 80,
+          data1: "Leads " + leads,
+          data2: "Connections:" + connectedLeads,
+          kpiFactors: [
+            {
+              id: 1,
+              desc: "1 of 2 things is wrong: Leads are giving you wrong numbers, or your phone number may be marked as 'Spam Risk'. Get a new phone number, or go through A2P/10DLC/Stirred & Shaken and register your numbers in a Campaign through Smrtphone.",
+              linkName: "Learn More: smrtPhone Trust Center", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/multimedia/41192521-smrtphone-trust-center" 
+            },
+          ]
+        },
+        { 
+          name: "Triage Calls", 
+          current: triageCallRatio, 
+          redFlag: 60, 
+          target: 75, 
+          data1: "Connections: " + connectedLeads, 
+          data2: "Triages: " + triageCalls,
+          kpiFactors: [
+            {
+              id: 1,
+              desc: "Speed to Lead",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235788-speed-to-lead-the-most-important-metric" 
+            },
+            {
+              id: 2,
+              desc: "Big Checks",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235790-the-big-check-philosophy" 
+            },
+            {
+              id: 3, 
+              desc: "Crazy Ex-Girlfriend",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235793-best-practices-calling-using-the-crazy-ex-girlfriend-method" 
+            },
+            {
+              id: 4,
+              desc: "Not submitting SLS",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/42977333-how-to-fill-out-the-triage-call-formerly-the-sls" 
+            },
+          ]
+        },
+        { 
+          name: "Triage Qualification", 
+          current: qualifiedTriageCallRatio, 
+          redFlag: 50, 
+          target: 70, 
+          data1: "Triages: " + triageCalls, 
+          data2: "Qualified: " + qualifiedTriageCalls,
+          kpiFactors: [
+            {
+              id: 1,
+              desc: "Weekly Marketing Manager Reports",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235788-speed-to-lead-the-most-important-metric" 
+            },
+            {
+              id: 1,
+              desc: "Mislabeling 'Qualified' leads",
+              linkName: "Learn More", 
+              link: "#" 
+            }
+          ]
+        },
+        { 
+          name: "Triage Approval", 
+          current: approvedTriageCallRatio, 
+          redFlag: 50, 
+          target: 70, 
+          data1: "Qualified: " + qualifiedTriageCalls, 
+          data2: "Approved: " + approvedTriageCalls,
+          kpiFactors: [
+            {
+              id: 1,
+              desc: "Speed to Lead",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235788-speed-to-lead-the-most-important-metric" 
+            },
+            {
+              id: 2,
+              desc: "Big Checks",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235790-the-big-check-philosophy" 
+            }
+          ]
+        },
+        { 
+          name: "Deal Analysis", 
+          current: dealAnalysisRatio, 
+          redFlag: 65, 
+          target: 80, 
+          data1: "Approved: " + approvedTriageCalls, 
+          data2: "Analyzed: " + dealsApproved,
+          kpiFactors: [
+            {
+              id: 1,
+              desc: "Speed to Lead",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235788-speed-to-lead-the-most-important-metric" 
+            },
+            {
+              id: 2,
+              desc: "Big Checks",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235790-the-big-check-philosophy" 
+            }
+          ]
+        },
+        { 
+          name: "Perfect Presentations", 
+          current: perfectPresentationRatio, 
+          redFlag: 65, 
+          target: 80, 
+          data1: "Analyzed: " + dealsApproved, 
+          data2: "Presentations: " + perfectPresentations,
+          kpiFactors: [
+            { 
+              id: 1,
+              desc: "Speed to Lead",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235788-speed-to-lead-the-most-important-metric" 
+            },
+            {
+              id: 2, 
+              desc: "Big Checks",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235790-the-big-check-philosophy" 
+            },
+            {
+              id: 3,
+              desc: "Crazy Ex-Girlfriend",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235793-best-practices-calling-using-the-crazy-ex-girlfriend-method" 
+            },
+            {
+              id: 4,
+              desc: "Not submitting Perfect Presentation",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/42977390-the-perfect-presentation" 
+            },
+          ]
+        },
+        { 
+          name: "Contracts", 
+          current: contractRatio, 
+          redFlag: 10, 
+          target: 25, 
+          data1: "Presentations: " + perfectPresentations, 
+          data2: "Contracts: " + contracts,
+          kpiFactors: [
+            {
+              id: 1,
+              desc: "Negotiation/Sales Frame",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235788-speed-to-lead-the-most-important-metric" 
+            },
+            {
+              id: 2,
+              desc: "Deal Structure",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235790-the-big-check-philosophy" 
+            },
+            {
+              id: 3,
+              desc: "Stay on the phone for PSA Signing",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235793-best-practices-calling-using-the-crazy-ex-girlfriend-method" 
+            }            
+          ] 
+        },
+        { 
+          name: "Acquisitions", 
+          current: acquisitionRatio, 
+          redFlag: 50, 
+          target: 75, 
+          data1: "Contracts: " + contracts, 
+          data2: "Acquisitions: " + acquisitions,
+          kpiFactors: [
+            {
+              id: 1,
+              desc: "Renegotiation after inspections.",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235788-speed-to-lead-the-most-important-metric" 
+            },
+            {
+              id: 2,
+              desc: "Regular Seller Update, Professionalism, Preparedness.",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/42976159-what-to-do-after-a-contract-is-signed-immediate-next-steps-video" 
+            },
+            {
+              id: 3,
+              desc: "Give the seller confidence in your ability to solve their problem.",
+              linkName: "Learn More", 
+              link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235793-best-practices-calling-using-the-crazy-ex-girlfriend-method" 
+            }            
+          ]
+        },
+        { 
+          name: "Deals", 
+          current: (deals !== 0 ? deals.length : 0), 
+          redFlag: 0, target: 0, 
+          data1: "Acquisitions: " + acquisitions, 
+          data2: "Deals: " + (deals !== 0 ? deals.length : 0) 
+        },
+        { 
+          name: "Profit", 
+          current: profit, 
+          redFlag: 0, 
+          target: 0, 
+          data1: "Deals: " + (deals !== 0 ? deals.length : 0), 
+          data2: "Profit: " + "$" + profit 
+        }
       ]
     );
 

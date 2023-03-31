@@ -10,13 +10,13 @@ function Dropdown({ onOptionSelected, queryId }) {
     };
 
     const handleSelectAll = () => {
-        onOptionSelected(Object.values(leadSources), queryId); 
-        setSelectedOptions(Object.values(leadSources));       
-    };
-
-    const handleSelectNone = () => {
-        onOptionSelected([], queryId); 
-        setSelectedOptions([]);       
+        if (selectedOptions.length === Object.keys(leadSources).length) {
+            onOptionSelected([''], queryId);
+            setSelectedOptions([]);
+        } else {
+            onOptionSelected(Object.values(leadSources), queryId);
+            setSelectedOptions(Object.values(leadSources));
+        }
     };
 
     const handleCheckboxChange = (value) => {
@@ -45,9 +45,9 @@ function Dropdown({ onOptionSelected, queryId }) {
         document.addEventListener("mousedown", handleClickOutsideDropdown);
         return () => {
             document.removeEventListener("mousedown", handleClickOutsideDropdown);
-        }; 
-    }, []); 
-    
+        };
+    }, []);
+
     useEffect(() => {
         const fetchLeadSources = async () => {
             // pass in date range to get unique lead sources for that date range
@@ -56,12 +56,12 @@ function Dropdown({ onOptionSelected, queryId }) {
             setLeadSources(data);
         };
         fetchLeadSources();
-        
+
     }, []);
 
     useEffect(() => {
         setSelectedOptions(Object.values(leadSources));
-        onOptionSelected(selectedOptions, queryId); 
+        onOptionSelected(selectedOptions, queryId);
     }, [leadSources]);
 
     return (
@@ -70,7 +70,7 @@ function Dropdown({ onOptionSelected, queryId }) {
                 className="h-8 px-2 overflow-hidden text-sm text-left text-white align-middle bg-blue-900 rounded-md cursor-pointer w-60 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-opacity-80"
                 onClick={toggleOpen}
             >
-                { selectedOptions.length === Object.keys(leadSources).length
+                {selectedOptions.length === Object.keys(leadSources).length
                     ? "All"
                     : selectedOptions.length === 0
                         ? "None"
@@ -106,19 +106,6 @@ function Dropdown({ onOptionSelected, queryId }) {
                                     onChange={handleSelectAll}
                                 />
                                 All
-                            </label>
-                        </li>
-                        <li
-                            className="px-3 py-2 text-white cursor-pointer hover:bg-blue-800"
-                        >
-                            <label className="inline-flex items-center">
-                                <input
-                                    type="checkbox"
-                                    className="w-4 h-4 mr-2 text-blue-900 border-gray-300 rounded"
-                                    checked={selectedOptions.length === 0}
-                                    onChange={handleSelectNone}
-                                />
-                                None
                             </label>
                         </li>
                         {Object.entries(leadSources).map(([key, value]) => (

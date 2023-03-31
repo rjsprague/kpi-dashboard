@@ -14,7 +14,7 @@ export default function CostPerAcquisition({ prop }) {
     return (
         <div className="box-border flip-container" onClick={handleClick}>
             <div className={`box-border flipper ${isFlipped ? 'flipped' : ''}`}>
-                <div className={` w-68 xs:w-76 sm:w-80 h-60 box-border py-4 text-center text-black delay-500 rounded shadow-super-3 transform-gpu front`}>
+                <div className="box-border py-4 text-center text-black delay-500 rounded w-68 xs:w-76 sm:w-80 h-60 shadow-super-3 transform-gpu front">
                     <h1 className="text-2xl font-semibold tracking-tighter align-top">{prop.name}</h1>
                     <div className="mt-3 font-medium text-md">
                         {prop.data1 !== null && prop.data2 !== null ? <div className='flex flex-row justify-around mx-2'><div>{prop.data1}</div><div>{prop.data2}</div> </div> : ""}
@@ -28,8 +28,26 @@ export default function CostPerAcquisition({ prop }) {
                         />
                     </div>
                 </div>
-                <div className="box-border w-full py-4 overflow-hidden text-center text-black transition-all bg-white h-60 rounded-xl back shadow-super-3">
-                    <h1>Back of the Card</h1>
+                <div className="box-border py-4 ml-8 overflow-hidden transition-all delay-500 bg-white rounded w-68 xs:w-76 sm:w-80 transform-gpu h-60 back shadow-super-3">
+                    {prop.kpiFactors ? prop.kpiFactors.map((factor) => {
+                        return (
+                            
+                                <li
+                                    key={factor.id}
+                                    className="flex flex-row justify-between px-4 py-2 text-sm font-medium text-gray-700 border-b border-gray-200"
+                                >
+                                    <div className="flex flex-row items-center">
+                                        <div className="flex-shrink-0 w-2 h-2 mr-2 bg-green-400 rounded-full"></div>
+                                        <div>{factor.desc}</div>
+                                    </div>
+                                    <div className="flex flex-row items-center">
+                                        <div className="flex-shrink-0 w-2 h-2 mr-2 bg-green-400 rounded-full"></div>
+                                        <div><a href={factor.link} target="_blank">{factor.linkName}</a></div>
+                                    </div>
+                                </li>                            
+                        )
+                    }
+                    ) : "TBD"}
                 </div>
             </div>
         </div>
