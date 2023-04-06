@@ -226,6 +226,10 @@ export default async (req, res) => {
           data1: "Marketing: " + "$" + marketingExpenses,
           data2: "Leads: " + leads,
           kpiFactors: [
+            {              
+              id: 0,
+              title: "How to Optimize Cost Per Lead",
+            },
             {
               id: 1,
               desc: "Consider increasing your metro count. The more people you market to, the cheaper your leads will get. Disregard this if you are only marketing locally.",
@@ -242,6 +246,10 @@ export default async (req, res) => {
           data1: "Leads " + leads,
           data2: "Connections:" + connectedLeads,
           kpiFactors: [
+            {              
+              id: 0,
+              title: "How to Optimize Lead Connections",
+            },
             {
               id: 1,
               desc: "1 of 2 things is wrong: Leads are giving you wrong numbers, or your phone number may be marked as 'Spam Risk'. Get a new phone number, or go through A2P/10DLC/Stirred & Shaken and register your numbers in a Campaign through Smrtphone.",
@@ -258,6 +266,10 @@ export default async (req, res) => {
           data1: "Connections: " + connectedLeads, 
           data2: "Triages: " + triageCalls,
           kpiFactors: [
+            {              
+              id: 0,
+              title: "How to Optimize Triage Calls",
+            },
             {
               id: 1,
               desc: "Speed to Lead",
@@ -292,6 +304,10 @@ export default async (req, res) => {
           data1: "Triages: " + triageCalls, 
           data2: "Qualified: " + qualifiedTriageCalls,
           kpiFactors: [
+            {              
+              id: 0,
+              title: "How to Optimize Triage Qualifications",
+            },
             {
               id: 1,
               desc: "Weekly Marketing Manager Reports",
@@ -314,6 +330,10 @@ export default async (req, res) => {
           data1: "Qualified: " + qualifiedTriageCalls, 
           data2: "Approved: " + approvedTriageCalls,
           kpiFactors: [
+            {              
+              id: 0,
+              title: "How to Optimize Triage Approvals",
+            },
             {
               id: 1,
               desc: "Speed to Lead",
@@ -336,6 +356,10 @@ export default async (req, res) => {
           data1: "Approved: " + approvedTriageCalls, 
           data2: "Analyzed: " + dealsApproved,
           kpiFactors: [
+            {              
+              id: 0,
+              title: "How to Optimize Deal Analysis",
+            },
             {
               id: 1,
               desc: "Speed to Lead",
@@ -358,6 +382,10 @@ export default async (req, res) => {
           data1: "Analyzed: " + dealsApproved, 
           data2: "Presentations: " + perfectPresentations,
           kpiFactors: [
+            {              
+              id: 0,
+              title: "How to Optimize Perfect Presentations",
+            },
             { 
               id: 1,
               desc: "Speed to Lead",
@@ -392,6 +420,10 @@ export default async (req, res) => {
           data1: "Presentations: " + perfectPresentations, 
           data2: "Contracts: " + contracts,
           kpiFactors: [
+            {              
+              id: 0,
+              title: "How to Optimize Contracts",
+            },
             {
               id: 1,
               desc: "Negotiation/Sales Frame",
@@ -420,7 +452,12 @@ export default async (req, res) => {
           data1: "Contracts: " + contracts, 
           data2: "Acquisitions: " + acquisitions,
           kpiFactors: [
-            {
+            
+            {              
+              id: 0,
+              title: "How to Optimize Acquisitions",
+            },
+            {              
               id: 1,
               desc: "Renegotiation after inspections.",
               linkName: "Learn More", 

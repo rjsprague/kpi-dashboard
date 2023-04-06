@@ -1,6 +1,5 @@
 import Head from 'next/head'
-import { InferGetServerSidePropsType } from 'next'
-import KpiDashboard from '../components/KpiDashboard-test'
+import KpiDashboard from '../components/KpiDashboard'
 import TopNav from '../components/TopNav'
 import SideNav from '../components/SideNav'
 import Login from '../components/Login'
