@@ -471,7 +471,7 @@ export default function kpiDashboard() {
                                                         </SwiperSlide>
                                                     ))
                                                     :
-                                                    <div className="flex flex-row justify-center gap-10">
+                                                    <div className="flex flex-row justify-center gap-10 mt-3">
                                                         <div className='flex bg-gray-200 rounded-lg w-80 h-60 animate-pulse shadow-super-3 '></div>
                                                         <div className='hidden bg-gray-200 rounded-lg sm:flex w-80 h-60 animate-pulse shadow-super-3'></div>
                                                         <div className='hidden bg-gray-200 rounded-lg xl:flex w-80 h-60 animate-pulse shadow-super-3'></div>

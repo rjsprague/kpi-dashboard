@@ -3,9 +3,7 @@ import { FiX } from 'react-icons/fi';
 
 
 const RightSlideModal = ({ isOpen, handleCloseModal, prop }) => {
-
-  console.log("prop", prop)
-
+  
   // Close the modal on escape key press and on clicking outside the modal
   useEffect(() => {
     const handleEscape = (e) => {
@@ -28,7 +26,7 @@ const RightSlideModal = ({ isOpen, handleCloseModal, prop }) => {
 
   return (
     <div
-  className={`fixed top-0 right-0 w-1/4 h-full transition-transform duration-300 ${
+  className={`fixed top-0 right-0 w-screen sm:w-1/4 h-full transition-transform duration-300 ${
     isOpen ? 'translate-x-0' : 'translate-x-full'
   }`}
   style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', zIndex: 1000 }}
