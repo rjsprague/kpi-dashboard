@@ -54,8 +54,8 @@ const AcquisitionKpis = () => {
                     ? {
                         ...query,
                         dateRange: {
-                            startDate,
-                            endDate,
+                            gte: startDate,
+                            lte: endDate,
                         },
                     }
                     : query

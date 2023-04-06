@@ -31,13 +31,12 @@ const KpiQuery = ({
     const fetchData = async () => {
       onSetLoading(query.id, true);
 
-      const leadSourceParam = query.leadSource || []; // Replace with appropriate value
-      const gte = query.dateRange?.startDate || ''; // Replace with appropriate value
-      const lte = query.dateRange?.endDate || ''; // Replace with appropriate value
-      const data = await fetchKpiData(leadSourceParam, gte, lte);
-      // Update the query with the fetched data
+      const leadSource = query.leadSource || [];
+      const gte = query.dateRange?.gte || '';
+      const lte = query.dateRange?.lte || '';
+      const data = await fetchKpiData(leadSource, gte, lte);
+      
       onFetchedKpiData(query.id, data);
-
       onSetLoading(query.id, false);
     };
 
