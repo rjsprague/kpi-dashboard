@@ -26,7 +26,7 @@ const AcquisitionKpis = () => {
             isOpen: true,
             isLoading: false,
             isUnavailable: false,
-            leadSource: [Object.values(leadSources)],
+            leadSource: [],
             dateRange: { gte: startOfLastWeek, lte: endOfLastWeek },
         },
     ]);
@@ -77,8 +77,6 @@ const AcquisitionKpis = () => {
     };
 
     const handleToggleQuery = (queryId) => {
-        console.log('Toggling query:', queryId);
-
         setQueries((prevQueries) =>
             prevQueries.map((query) =>
                 query.id === queryId
@@ -102,7 +100,7 @@ const AcquisitionKpis = () => {
             isOpen: true,
             isLoading: false,
             isUnavailable: false,
-            leadSource: [Object.values(leadSources)],
+            leadSource: [],
             dateRange: { gte: startOfLastWeek, lte: endOfLastWeek },
         };
         setIdCounter(idCounter + 1);

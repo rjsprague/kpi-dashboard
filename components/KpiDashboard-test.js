@@ -16,10 +16,10 @@ export default function KpiDashboardTest() {
                 return <AcquisitionKpis />;
             case 'Dispositions':
                 // Replace with your Dispositions KPIs component
-                return <KpiQuery />;
+                return <div>Dispositions</div>;
             case 'Team':
                 // Replace with your Team KPIs component
-                return <KpiQuery />;
+                return <div>Team</div>;
             default:
                 return <AcquisitionKpis />;
         }

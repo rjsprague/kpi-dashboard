@@ -6,9 +6,9 @@ export default function NavigationBar({ onQueryTypeChange }) {
   };
 
   return (
-    <div className="flex flex-row flex-wrap bg-blue-600">
+    <div className="flex flex-row flex-wrap bg-blue-600 shadow-super-4">
       {/* Add your existing navigation bar content here */}
-      <ul className="flex flex-wrap items-center mt-5 lg:mt-4">
+      <ul className="flex flex-wrap items-center gap-4 m-4 lg:mt-4">
         <li className="">
           <button
             className="inline-block py-1.5 px-4 text-sm text-white font-bold leading-6 focus:bg-blue-400 focus:text-blue-900 hover:bg-blue-400 rounded-lg"

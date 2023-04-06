@@ -57,21 +57,16 @@ function Dropdown({ onOptionSelected, queryId }) {
         fetchSources();
       }, []);
 
-    useEffect(() => {
-        setSelectedOptions(Object.values(leadSources));
-        onOptionSelected(selectedOptions, queryId);
-    }, [leadSources]);
-
     return (
         <div className="relative dropdown">
             <button
                 className="h-8 px-2 overflow-hidden text-sm text-left text-white align-middle bg-blue-900 rounded-md cursor-pointer w-60 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-opacity-80"
                 onClick={toggleOpen}
             >
-                {selectedOptions.length === Object.keys(leadSources).length
-                    ? "All"
-                    : selectedOptions.length === 0
-                        ? "None"
+                { selectedOptions.length === 0
+                    ? "No Filter"
+                    : selectedOptions.length === Object.keys(leadSources).length                    
+                        ?  "All"
                         : selectedOptions.length === 1
                             ? Object.keys(leadSources).find(key => leadSources[key] === selectedOptions[0])
                             : `${selectedOptions.length} selected`}
