@@ -8,6 +8,7 @@ import 'swiper/css'
 import 'swiper/css/scrollbar'
 import 'swiper/css/mousewheel'
 import RightSlideModal from './RightSlideModal'
+import KpiQuery from './kpi-components/KpiQuery'
 
 SwiperCore.use([Controller]);
 import SubQuery from './kpi-components/SubQuery'
@@ -87,11 +88,6 @@ export default function kpiDashboard() {
         }
     }, [mainQueryDateRange, mainQueryLeadSource]);
 
-    const handleFormSubmit = (event) => {
-        event.preventDefault();
-        fetchMainKpis();
-    };
-
     // Handle toggling the open/closed state of set of KPI cards
     const handleToggleQuery = queryId => {
         if (queryId === 0) {
@@ -114,48 +110,80 @@ export default function kpiDashboard() {
 
     // Handle updating the date range and lead source for a query
     const handleQueryUpdate = async (id, dateRange, leadSource) => {
-
         setIsLoading((prevState) => ({
             ...prevState,
             [id]: true,
         }));
-        // Find the query with the specified ID
-        const queryToUpdate = queries.find(query => query.id === id);
-        // Update the query's dateRange and leadSource properties
-        queryToUpdate.isLoading = true;
-        queryToUpdate.dateRange = dateRange;
-        queryToUpdate.leadSource = leadSource;
-        // Make an API call to fetch the updated KPI data for the query
-        fetch(`/api/get-kpis?leadSourceParam=${queryToUpdate.leadSource}&gte=${queryToUpdate.dateRange.gte}&lte=${queryToUpdate.dateRange.lte}`)
+
+        fetch(`/api/get-kpis?leadSourceParam=${leadSource}&gte=${dateRange.gte}&lte=${dateRange.lte}`)
             .then(response => {
                 if (response.status !== 200) {
-                    // Update only the isUnavailable property for the query with the specified ID
-                    queryToUpdate.isUnavailable = true;
-                    setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
-                    setIsLoading((prevState) => ({ ...prevState, [id]: false }));
                     throw new Error('Service unavailable');
-                } else {
-                    // Reset the isUnavailable property for the query with the specified ID
-                    queryToUpdate.isUnavailable = false;
-                    setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
-                    setIsLoading((prevState) => ({ ...prevState, [id]: false }));
                 }
                 return response.json();
             })
             .then(data => {
-                // Update the query's results property with the new KPI data
-                queryToUpdate.results = data;
-                // Update the queries state with the updated query
-                setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
-                setIsLoading((prevState) => ({ ...prevState, [id]: false }));
+                setQueries(prevQueries =>
+                    prevQueries.map(query =>
+                        query.id === id
+                            ? {
+                                ...query,
+                                dateRange,
+                                leadSource,
+                                results: data,
+                                isUnavailable: false,
+                            }
+                            : query
+                    )
+                );
+                setIsLoading((prevState) => ({
+                    ...prevState,
+                    [id]: false,
+                }));
             })
             .catch(error => {
                 console.log(error);
-                queryToUpdate.isUnavailable = true;
-                setQueries([...queries.filter(query => query.id !== id), queryToUpdate]);
-                setIsLoading((prevState) => ({ ...prevState, [id]: false }));
+                setQueries(prevQueries =>
+                    prevQueries.map(query =>
+                        query.id === id
+                            ? {
+                                ...query,
+                                isUnavailable: true,
+                            }
+                            : query
+                    )
+                );
+                setIsLoading((prevState) => ({
+                    ...prevState,
+                    [id]: false,
+                }));
             });
     };
+
+
+    // Handle adding a new query
+    const handleAddQuery = () => {
+        const newQuery = {
+            id: idCounter,
+            results: [],
+            isOpen: true,
+
+            isUnavailable: false,
+            leadSource: Object.values(leadSources),
+            dateRange: { gte: startOfLastWeek, lte: endOfLastWeek },
+        };
+        setIdCounter(idCounter + 1);
+        setQueries([...queries, newQuery]);
+    };
+
+    useEffect(() => {
+        // get the newly added query
+        const newQuery = queries.find(query => query.id === idCounter - 1);
+
+        if (newQuery) {
+            handleQueryUpdate(newQuery.id, newQuery.dateRange, newQuery.leadSource);
+        }
+    }, [idCounter]);
 
     // Handle leadSource dropdown selection changes, updating the state
     const handleOptionSelected = (values, queryId) => {
@@ -190,29 +218,7 @@ export default function kpiDashboard() {
         }
     }
 
-    // Handle adding a new query
-    const handleAddQuery = () => {
-        const newQuery = {
-            id: idCounter,
-            results: [],
-            isOpen: true,
-            isLoading: true,
-            isUnavailable: false,
-            leadSource: Object.values(leadSources),
-            dateRange: { gte: startOfLastWeek, lte: endOfLastWeek },
-        };
-        setIdCounter(idCounter + 1);
-        setQueries([...queries, newQuery]);
-    };
 
-    useEffect(() => {
-        // get the newly added query
-        const newQuery = queries.find(query => query.id === idCounter - 1);
-
-        if (newQuery) {
-            handleQueryUpdate(newQuery.id, newQuery.dateRange, newQuery.leadSource);
-        }
-    }, [idCounter]);
 
     // Update the controller when the main swiper or sub swipers are updated
     useEffect(() => {
@@ -492,16 +498,17 @@ export default function kpiDashboard() {
                         </AnimateHeight>
                     </div>
                     {/* END OF MAIN QUERY */}
+
                     {/* START OF SUBQUERIES */}
 
                     {queries.map(query => (
                         <SubQuery
                             query={query}
-                            isLoading={isLoading[query.id]}
+                            isLoading={isLoading}
                             setIsLoading={setIsLoading}
                             leadSource={query.leadSource}
                             dateRange={query.dateRange}
-                            triggerUpdate={`${query.id}-${JSON.stringify(query.leadSource)}-${JSON.stringify(query.dateRange)}`}
+                            triggerUpdate={query.id === triggerUpdateId}
                             handleQueryUpdate={handleQueryUpdate}
                             handleToggleQuery={handleToggleQuery}
                             handleRemoveQuery={handleRemoveQuery}

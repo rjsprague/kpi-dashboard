@@ -1,29 +1,17 @@
-export default async function getUniqueLeadSources(req, res) {
+import fetch from 'node-fetch';
 
-    // Get lead source items from API
-    const leadSources = await fetch("https://db.reiautomated.io/lead-sources")
-        .then((res) => {
-            if (res.status === 200) {
-                return res.json();
-            } else {
-                throw new Error("Something went wrong on api server!");
-            }
-        })
-        .then((data) => {
-            return data;
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+export default async function handler(req, res) {
+  try {
+    const response = await fetch('https://db.reiautomated.io/lead-sources');
+    const data = await response.json();
 
-    // Create hash map of itemid as key and title as value
-    const leadSourceMap = {};
-
-    for (const source of leadSources.data) {
-        if (source.Title) {
-            leadSourceMap[source.Title] = parseInt(source.itemid, 10);
-        }        
-    };
-
-    res.json(leadSourceMap);
+    if (response.ok) {
+      res.status(200).json(data);
+    } else {
+      res.status(response.status).json({ error: 'Something went wrong on the API server!' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error fetching lead sources. Please try again later.' });
+  }
 }

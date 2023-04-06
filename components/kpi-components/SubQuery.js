@@ -17,26 +17,32 @@ import AnimateHeight from 'react-animate-height';
 
 const SubQuery = ({ query, isLoading, setIsLoading, leadSource, dateRange, triggerUpdate, handleQueryUpdate, handleToggleQuery, handleRemoveQuery, handleOptionSelected, handleDateRangeChange, handleSwiperSub }) => {
     const [height, setHeight] = useState('auto');
+    const [loading, setLoading] = useState(false);
+
 
     // Fetch lead sources on page load
     useEffect(() => {
         const fetchLeadSources = async () => {
+            setLoading(true);
             const res = await fetch(`/api/lead-sources`)
             const data = await res.json();
             const fetchedLeadSources = Object.values(data);
 
             handleQueryUpdate(query.id, query.dateRange, fetchedLeadSources);
+            setLoading(false);
         };
         fetchLeadSources();
     }, []);
 
     useEffect(() => {
         handleQueryUpdate(query.id, dateRange, leadSource);
-        setIsLoading((prevState) => ({
-            ...prevState,
-            [query.id]: true,
-        }));
-    }, [triggerUpdate]);
+        setLoading(true);
+    }, [triggerUpdate, dateRange, leadSource]);
+
+    // Update loading state when query.results changes
+    useEffect(() => {
+        setLoading(false);
+    }, [query.results]);
 
     return (
         <div className="box-border mb-2 text-sm">
@@ -224,7 +230,7 @@ const SubQuery = ({ query, isLoading, setIsLoading, leadSource, dateRange, trigg
                                 className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
                             >
                                 <div className={``}>
-                                    {query.isOpen && !isLoading ?
+                                    {query.isOpen && !loading && !isLoading[query.id] ?
                                         query.results.map(result => (
                                             <SwiperSlide key={result.id}>
                                                 <div key={result.id} className='my-3 h-70 w-80 backface'>

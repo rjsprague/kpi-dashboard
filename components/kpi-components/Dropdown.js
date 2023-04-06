@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import fetchLeadSources from '../../lib/fetchLeadSources';
 
 function Dropdown({ onOptionSelected, queryId }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +12,7 @@ function Dropdown({ onOptionSelected, queryId }) {
 
     const handleSelectAll = () => {
         if (selectedOptions.length === Object.keys(leadSources).length) {
-            onOptionSelected([''], queryId);
+            onOptionSelected([], queryId);
             setSelectedOptions([]);
         } else {
             onOptionSelected(Object.values(leadSources), queryId);
@@ -49,15 +50,12 @@ function Dropdown({ onOptionSelected, queryId }) {
     }, []);
 
     useEffect(() => {
-        const fetchLeadSources = async () => {
-            // pass in date range to get unique lead sources for that date range
-            const res = await fetch(`/api/lead-sources`)
-            const data = await res.json();
-            setLeadSources(data);
+        const fetchSources = async () => {
+          const sources = await fetchLeadSources();
+          setLeadSources(sources);
         };
-        fetchLeadSources();
-
-    }, []);
+        fetchSources();
+      }, []);
 
     useEffect(() => {
         setSelectedOptions(Object.values(leadSources));
