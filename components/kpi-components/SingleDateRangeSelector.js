@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
+import { getDatePresets } from "../../lib/date-utils";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
-    const [dateRange, setDateRange] = useState([null, null]);
+    const datePresets = getDatePresets();
+    const defaultDateRange = [datePresets['All Time'].startDate, datePresets['All Time'].endDate];
+    const [dateRange, setDateRange] = useState(defaultDateRange);
     const [showDatePicker, setShowDatePicker] = useState(false);
 
     const handleDateRangeChange = (dates) => {
@@ -30,124 +33,29 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
         return () => {
             document.removeEventListener("mousedown", handleClickOutsideDatePicker);
         };
-    }, []);
-
-    const datePresets = [
-        {
-            label: "Yesterday",
-            range: () => {
-                const yesterday = new Date();
-                yesterday.setDate(yesterday.getDate() - 1);
-                return [yesterday, yesterday];
-            },
-        },
-        {
-            label: "7 days",
-            range: () => {
-                const today = new Date();
-                const lastWeek = new Date();
-                lastWeek.setDate(today.getDate() - 6);
-                return [lastWeek, today];
-            },
-        },
-        {
-            label: "30 days",
-            range: () => {
-                const today = new Date();
-                const lastMonth = new Date();
-                lastMonth.setDate(today.getDate() - 29);
-                return [lastMonth, today];
-            },
-        },
-        {
-            label: "Quarter",
-            range: () => {
-                const today = new Date();
-                const startOfQuarter = new Date(today.getFullYear(), Math.floor(today.getMonth() / 3) * 3, 1);
-                const endOfQuarter = new Date(today.getFullYear(), Math.floor(today.getMonth() / 3) * 3 + 3, 0);
-                return [startOfQuarter, endOfQuarter];
-            },
-        },
-        {
-            label: "Year",
-            range: () => {
-                const today = new Date();
-                const startOfYear = new Date(today.getFullYear(), 0, 1);
-                const endOfYear = new Date(today.getFullYear(), 11, 31);
-                return [startOfYear, endOfYear];
-            },
-        },
-        {
-            label: "Today",
-            range: () => {
-                const today = new Date();
-                return [today, today];
-            },
-        },
-        {
-            label: "Current Week",
-            range: () => {
-                const today = new Date();
-                const startOfWeek = new Date(today);
-                startOfWeek.setDate(today.getDate() - today.getDay());
-                return [startOfWeek, today];
-            },
-        },
-        {
-            label: "Current Month",
-            range: () => {
-                const today = new Date();
-                const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-                return [startOfMonth, today];
-            },
-        },
-        {
-            label: "Current Quarter",
-            range: () => {
-                const today = new Date();
-                const startOfQuarter = new Date(today.getFullYear(), Math.floor(today.getMonth() / 3) * 3, 1);
-                return [startOfQuarter, today];
-            },
-        },
-        {
-            label: "Current Year",
-            range: () => {
-                const today = new Date();
-                const startOfYear = new Date(today.getFullYear(), 0, 1);
-                return [startOfYear, today];
-            },
-        },
-        {
-            label: "All Time",
-            range: () => {
-                const today = new Date();
-                const startOfAllTime = new Date(1970, 0, 1);
-                return [startOfAllTime, today];
-            },
-        },
-    ];
-    
+    }, []);    
 
     return (
-        <div className="relative flex date-picker">
+        <div className="relative flex text-sm bg-opacity-80 date-picker">
             <button
                 onClick={toggleDatePicker}
-                className="box-border px-2 py-1 text-blue-900 transition-colors duration-200 bg-white rounded-md shadow-super-4 hover:bg-blue-50"
+                className="box-border w-40 h-8 px-2 py-1 text-white transition-colors duration-200 bg-blue-900 rounded-md shadow-super-4 hover:bg-blue-50"
             >
-                {dateRange[0] && dateRange[1]
-                    ? `${dateRange[0].toLocaleDateString()} - ${dateRange[1].toLocaleDateString()}`
-                    : "Select Date Range"}
+                {dateRange[0]?.toLocaleDateString() === '1/1/1970' ? 'All Time' :
+                    dateRange[0]?.toLocaleDateString() === dateRange[1]?.toLocaleDateString() ? dateRange[0]?.toLocaleDateString() :
+                        dateRange[0] && dateRange[1] ? `${dateRange[0].toLocaleDateString()} - ${dateRange[1].toLocaleDateString()}`
+                            : "Select Date Range"}
             </button>
             {showDatePicker && (
-                <div className="absolute z-10 flex flex-row translate-y-8 bg-white rounded-md shadow-super-4">
-                    <div className="mt-2 mb-3 ml-2 border border-gray-200 rounded">
-                        {datePresets.map((preset, index) => (
+                <div className="absolute z-10 flex flex-row translate-y-8 bg-blue-900 rounded-md bg-opacity-80 shadow-super-4 min-h-70 h-78">
+                    <div className="mt-2 mb-3 ml-2 overflow-y-scroll">
+                        {Object.entries(datePresets).map(([key, preset], index) => (
                             <button
                                 key={index}
-                                className="w-32 px-2 py-0 mb-0.5 border-b text-left text-blue-900 hover:bg-blue-100 focus:bg-blue-100 focus:outline-none"
-                                onClick={() => handleDateRangeChange(preset.range())}
+                                className="w-32 px-2 py-0 mb-0.5 border-b text-left text-white hover:bg-blue-100 focus:bg-blue-100 focus:outline-none"
+                                onClick={() => handleDateRangeChange([preset.startDate, preset.endDate])}
                             >
-                                {preset.label}
+                                {key}
                             </button>
                         ))}
                     </div>
@@ -162,7 +70,7 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
                             showYearDropdown
                         />
                     </div>
-                    
+
                 </div>
             )}
         </div>

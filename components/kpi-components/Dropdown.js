@@ -60,7 +60,7 @@ function Dropdown({ onOptionSelected, queryId }) {
     return (
         <div className="relative dropdown">
             <button
-                className="h-8 px-2 overflow-hidden text-sm text-left text-white align-middle bg-blue-900 rounded-md cursor-pointer w-60 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-opacity-80"
+                className="w-40 h-8 px-2 overflow-hidden text-sm text-left text-white align-middle bg-blue-900 rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 bg-opacity-80"
                 onClick={toggleOpen}
             >
                 { selectedOptions.length === 0
@@ -89,12 +89,12 @@ function Dropdown({ onOptionSelected, queryId }) {
                 <div className="absolute right-0 z-10 w-full overflow-y-auto text-white bg-blue-900 rounded-md shadow-lg bg-opacity-80 top-10 max-h-screen3">
                     <ul className="py-1">
                         <li
-                            className="px-3 py-2 text-white cursor-pointer hover:bg-blue-800"
+                            className="px-3 py-0 text-white cursor-pointer hover:bg-blue-800"
                         >
                             <label className="inline-flex items-center">
                                 <input
                                     type="checkbox"
-                                    className="w-4 h-4 mr-2 text-blue-900 border-gray-300 rounded"
+                                    className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
                                     checked={selectedOptions.length === Object.keys(leadSources).length}
                                     onChange={handleSelectAll}
                                 />
@@ -104,12 +104,12 @@ function Dropdown({ onOptionSelected, queryId }) {
                         {Object.entries(leadSources).map(([key, value]) => (
                             <li
                                 key={value}
-                                className="px-3 py-2 text-white cursor-pointer hover:bg-blue-800"
+                                className="px-3 py-0 text-white cursor-pointer hover:bg-blue-800"
                             >
                                 <label className="inline-flex items-center">
                                     <input
                                         type="checkbox"
-                                        className="w-4 h-4 mr-2 text-blue-900 border-gray-300 rounded"
+                                        className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
                                         checked={selectedOptions.includes(value)}
                                         onChange={() => handleCheckboxChange(value)}
                                     />
