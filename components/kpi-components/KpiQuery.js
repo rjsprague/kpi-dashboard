@@ -62,6 +62,8 @@ const KpiQuery = ({
     onRemoveQuery && onRemoveQuery(query.id);
   };
 
+  console.log("query result ", query.results)
+
   return (
     <div className="mb-2">
       {/* Main KPI Results */}
@@ -77,12 +79,12 @@ const KpiQuery = ({
             {query.isOpen ?
               <FontAwesomeIcon
                 icon={faChevronDown}
-                size="md"
+                size="sm"
                 className='text-blue-900 transition-transform duration-500 rotate-180 transform-gpu'
               /> :
               <FontAwesomeIcon
                 icon={faChevronDown}
-                size="md"
+                size="sm"
                 className='text-blue-900 transition-transform duration-500 transform-gpu'
               />
             }
@@ -112,7 +114,7 @@ const KpiQuery = ({
             >
               <FontAwesomeIcon
                 icon={faTimes}
-                size="md"
+                size="sm"
                 className="text-blue-900 transform-gpu"
               />
             </button>
@@ -208,9 +210,9 @@ const KpiQuery = ({
               >
                 <div className={``}>
                   { query.results.length > 0 && query.isOpen && !query.isLoading ?
-                    query.results.map(result => (
-                      <SwiperSlide key={result.id}>
-                        <div key={result.id} className='my-3 h-70 backface'>
+                    query.results.map((result, index) => (
+                      <SwiperSlide key={index}>
+                        <div className='my-3 h-70 backface'>
                           <KpiCard
                             prop={result}
                             handleOpenModal={() => {
