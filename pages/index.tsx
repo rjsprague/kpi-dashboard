@@ -1,9 +1,8 @@
 import Head from 'next/head'
-import KpiDashboard from '../components/KpiDashboard'
 import TopNav from '../components/TopNav'
 import SideNav from '../components/SideNav'
 import Login from '../components/Login'
-import KpiDashboardTest from '../components/KpiDashboard-test'
+import KpiDashboard from '../components/KpiDashboard'
 
 
 export default function Home() {
@@ -19,7 +18,7 @@ export default function Home() {
         <SideNav />
         <div className='absolute left-0 right-0 flex flex-col lg:left-72'>
           <TopNav />
-          <KpiDashboardTest />
+          <KpiDashboard />
         </div>
       </main>
       
