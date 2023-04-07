@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import KpiQuery from './KpiQuery';
 import AddQueryButton from './AddQueryButton';
-import { getStartOfLastWeek, getEndOfLastWeek } from '../../lib/date-utils'
+import { getDatePresets } from "../../lib/date-utils";
 import fetchLeadSources from '../../lib/fetchLeadSources';
 
 const AcquisitionKpis = () => {
     const [idCounter, setIdCounter] = useState(2);
-    const startOfLastWeek = getStartOfLastWeek();
-    const endOfLastWeek = getEndOfLastWeek();
     const [leadSources, setLeadSources] = useState([]);
+    const datePresets = getDatePresets(); 
 
     useEffect(() => {
         const fetchSources = async () => {
@@ -18,7 +17,6 @@ const AcquisitionKpis = () => {
         fetchSources();
       }, []);
 
-
     const [queries, setQueries] = useState([
         {
             id: 1,
@@ -27,7 +25,7 @@ const AcquisitionKpis = () => {
             isLoading: false,
             isUnavailable: false,
             leadSource: [],
-            dateRange: { gte: startOfLastWeek, lte: endOfLastWeek },
+            dateRange: { gte: datePresets['All Time'].startDate, lte: datePresets['All Time'].endDate },
         },
     ]);
 
@@ -101,7 +99,7 @@ const AcquisitionKpis = () => {
             isLoading: false,
             isUnavailable: false,
             leadSource: [],
-            dateRange: { gte: startOfLastWeek, lte: endOfLastWeek },
+            dateRange: { gte: datePresets['All Time'].startDate, lte: datePresets['All Time'].endDate },
         };
         setIdCounter(idCounter + 1);
         setQueries([...queries, newQuery]);
