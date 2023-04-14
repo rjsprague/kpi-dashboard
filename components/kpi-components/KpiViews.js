@@ -6,49 +6,58 @@ import fetchLeadSources from '../../lib/fetchLeadSources';
 
 const VIEW_KPIS = {
     Acquisitions: [
-      "Cost Per Lead",
-      "Lead Connections",
-      "Triage Calls",
-      "Triage Qualifications",
-      "Triage Approval",
-      "Deal Analysis",
-      "Perfect Presentations",
-      "Contracts",
-      "Acquisitions",
-      "Deals",
-      "Profit",
+        "Cost Per Lead",
+        "Lead Connections",
+        "Triage Calls",
+        "Triage Qualifications",
+        "Triage Approval",
+        "Deal Analysis",
+        "Perfect Presentations",
+        "Contracts",
+        "Acquisitions",
+        "Deals",
+        "Profit",
     ],
-    Team: ["Speed to Lead", "Big Checks"],
+    Team: [
+        "LM STL Median",
+        "AM STL Median",
+        "DA STL Median",
+        "BiG Checks",
+    ],
     Financials: [
-      "Ad Spend",
-      "Cost Per Lead",
-      "Cost Per Contract",
-      "Cost Per Acquisition",
-      "Cost Per Deal",
-      "Actualized Profit",
-      "Projected Profit",
-      "Total Profit",
-      "ROAS Actualized",
-      "ROAS Projected",
-      "ROAS Total",
-      "ROAS Total APR",
+        "Ad Spend",
+        "Cost Per Lead",
+        "Cost Per Contract",
+        "Cost Per Acquisition",
+        "Cost Per Deal",
+        "Actualized Profit",
+        "Projected Profit",
+        "Total Profit",
+        "ROAS Actualized",
+        "ROAS Projected",
+        "ROAS Total",
+        "ROAS Total APR",
     ],
-  };
+};
 
 const KpiViews = ({ view }) => {
     const [idCounter, setIdCounter] = useState(2);
     const [leadSources, setLeadSources] = useState([]);
-    const datePresets = getDatePresets(); 
+    const datePresets = getDatePresets();
     const [kpiList, setKpiList] = useState(VIEW_KPIS[view]);
 
 
     useEffect(() => {
         const fetchSources = async () => {
-          const sources = await fetchLeadSources();
-          setLeadSources(sources);
+            const sources = await fetchLeadSources();
+            setLeadSources(sources);
         };
         fetchSources();
-      }, []);
+    }, []);
+
+    useEffect(() => {
+        setKpiList(VIEW_KPIS[view]);
+    }, [view]);
 
     const [queries, setQueries] = useState([
         {
@@ -64,11 +73,11 @@ const KpiViews = ({ view }) => {
 
     const handleSetLoading = (queryId, isLoading) => {
         setQueries((prevQueries) =>
-          prevQueries.map((query) =>
-            query.id === queryId ? { ...query, isLoading: isLoading } : query
-          )
+            prevQueries.map((query) =>
+                query.id === queryId ? { ...query, isLoading: isLoading } : query
+            )
         );
-      };
+    };
 
     const handleFetchedKpiData = (queryId, data) => {
         setQueries((prevQueries) =>
@@ -138,14 +147,17 @@ const KpiViews = ({ view }) => {
         setQueries([...queries, newQuery]);
     };
 
+    //console.log("kpi list", kpiList)
+
     return (
         <div>
             {queries.map((query) => (
                 <KpiQuery
                     key={query.id}
                     view={view}
+                    VIEW_KPIS={VIEW_KPIS}
                     query={query}
-                    kpiList={VIEW_KPIS[view]}
+                    kpiList={kpiList}
                     onKpiListChange={setKpiList}
                     onDateRangeChange={handleDateRangeChange}
                     onLeadSourceChange={handleLeadSourceChange}

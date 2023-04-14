@@ -7,6 +7,7 @@ const RightSlideModal = ({
   handleCloseModal,
   prop,
   viewKpis,
+  VIEW_KPIS,
   onKpiListChange,
   selectedView,
   modalType,
@@ -17,6 +18,10 @@ const RightSlideModal = ({
   useEffect(() => {
     onKpiListChange(selectedKpis);
   }, [selectedKpis]);
+
+  useEffect(() => {
+    setSelectedKpis(VIEW_KPIS[selectedView]);
+  }, [selectedView, setSelectedKpis]);
 
   useEffect(() => {
     const handleEscape = (e) => {
@@ -96,13 +101,11 @@ const RightSlideModal = ({
         )}
 
         {modalType === "settings" && (
-          <div className="flex flex-col px-1">
-            <div className="mt-4 text-xl font-bold text-center">
-              {selectedView}
-            </div>
-            <ul className="grid grid-cols-1 gap-6 px-10 lg:grid-cols-2">
+          <div className="flex flex-col px-5">
+            <div className="mt-4 text-xl font-bold text-center">{selectedView}</div>
+            <ul className="flex flex-wrap items-center gap-8 px-10 justify-evenly">
               {/* KPI checkboxes */}
-              {kpiList.map((kpi, index) => (
+              {VIEW_KPIS[selectedView].map((kpi, index) => (
                 <li key={index} className="flex items-center my-2">
                   <input
                     type="checkbox"
