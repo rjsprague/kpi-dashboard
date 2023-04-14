@@ -4,7 +4,38 @@ import AddQueryButton from './AddQueryButton';
 import { getDatePresets } from "../../lib/date-utils";
 import fetchLeadSources from '../../lib/fetchLeadSources';
 
-const AcquisitionKpis = () => {
+const VIEW_KPIS = {
+    Acquisitions: [
+      "Cost Per Lead",
+      "Lead Connections",
+      "Triage Calls",
+      "Triage Qualifications",
+      "Triage Approval",
+      "Deal Analysis",
+      "Perfect Presentations",
+      "Contracts",
+      "Acquisitions",
+      "Deals",
+      "Profit",
+    ],
+    Team: ["Speed to Lead", "Big Checks"],
+    Financials: [
+      "Ad Spend",
+      "Cost Per Lead",
+      "Cost Per Contract",
+      "Cost Per Acquisition",
+      "Cost Per Deal",
+      "Actualized Profit",
+      "Projected Profit",
+      "Total Profit",
+      "ROAS Actualized",
+      "ROAS Projected",
+      "ROAS Total",
+      "ROAS Total APR",
+    ],
+  };
+
+const KpiViews = ({ view }) => {
     const [idCounter, setIdCounter] = useState(2);
     const [leadSources, setLeadSources] = useState([]);
     const datePresets = getDatePresets(); 
@@ -110,7 +141,9 @@ const AcquisitionKpis = () => {
             {queries.map((query) => (
                 <KpiQuery
                     key={query.id}
+                    view={view}
                     query={query}
+                    kpiList={VIEW_KPIS[view]}
                     onDateRangeChange={handleDateRangeChange}
                     onLeadSourceChange={handleLeadSourceChange}
                     onToggleQuery={handleToggleQuery}
@@ -124,4 +157,4 @@ const AcquisitionKpis = () => {
     );
 };
 
-export default AcquisitionKpis;
+export default KpiViews;

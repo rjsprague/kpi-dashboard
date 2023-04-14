@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import fetchLeadSources from '../../lib/fetchLeadSources';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import AnimateHeight from 'react-animate-height';
 
 function Dropdown({ onOptionSelected, queryId }) {
     const [isOpen, setIsOpen] = useState(false);
     const [leadSources, setLeadSources] = useState([]);
     const [selectedOptions, setSelectedOptions] = useState([]);
+    const [height, setHeight] = useState(0);
 
     const toggleOpen = () => {
         setIsOpen(!isOpen);
@@ -51,74 +55,79 @@ function Dropdown({ onOptionSelected, queryId }) {
 
     useEffect(() => {
         const fetchSources = async () => {
-          const sources = await fetchLeadSources();
-          setLeadSources(sources);
+            const sources = await fetchLeadSources();
+            setLeadSources(sources);
         };
         fetchSources();
-      }, []);
+    }, []);
 
     return (
-        <div className="relative dropdown">
+        <div className="relative items-center dropdown">
             <button
-                className="w-40 h-8 px-2 overflow-hidden text-sm text-left text-white align-middle bg-blue-900 rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 bg-opacity-80"
-                onClick={toggleOpen}
+                className="items-center w-40 h-8 min-w-0 px-2 overflow-hidden text-sm text-left text-white align-middle bg-blue-900 rounded-md cursor-pointer max-w-xxs focus:outline-none focus:ring-2 focus:ring-blue-400 bg-opacity-80"
+                onClick={() => {
+                    toggleOpen();
+                    setHeight(height === 0 ? 'auto' : 0);
+                }}
             >
-                { selectedOptions.length === 0
+                {selectedOptions.length === 0
                     ? "No Filter"
-                    : selectedOptions.length === Object.keys(leadSources).length                    
-                        ?  "All"
+                    : selectedOptions.length === Object.keys(leadSources).length
+                        ? "All"
                         : selectedOptions.length === 1
                             ? Object.keys(leadSources).find(key => leadSources[key] === selectedOptions[0])
                             : `${selectedOptions.length} selected`}
-                <span className="absolute inset-y-0 right-0 flex items-center pr-2 text-white pointer-events-none">
-                    <svg
-                        className={`w-5 h-5 transition-transform duration-200 ${isOpen ? "transform rotate-180" : ""
-                            }`}
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                    >
-                        <path
-                            fillRule="evenodd"
-                            d="M10 14a.75.75 0 01-.53-.22l-3.5-3.5a.75.75 0 111.06-1.06L10 11.94l3.97-3.97a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-.53.22z"
-                            clipRule="evenodd"
-                        ></path>
-                    </svg>
-                </span>
+                {isOpen ?
+                    <FontAwesomeIcon
+                        icon={faChevronDown}
+                        size="sm"
+                        className='absolute text-white transition-transform duration-500 rotate-180 transform-gpu right-2 top-2'
+                    /> :
+                    <FontAwesomeIcon
+                        icon={faChevronDown}
+                        size="sm"
+                        className='absolute text-white transition-transform duration-500 transform-gpu right-2 top-2'
+                    />
+                }
             </button>
             {isOpen && (
-                <div className="absolute right-0 z-10 w-full overflow-y-auto text-white bg-blue-900 rounded-md shadow-lg bg-opacity-80 top-10 max-h-screen3">
-                    <ul className="py-1">
-                        <li
-                            className="px-3 py-0 text-white cursor-pointer hover:bg-blue-800"
-                        >
-                            <label className="inline-flex items-center">
-                                <input
-                                    type="checkbox"
-                                    className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
-                                    checked={selectedOptions.length === Object.keys(leadSources).length}
-                                    onChange={handleSelectAll}
-                                />
-                                All
-                            </label>
-                        </li>
-                        {Object.entries(leadSources).map(([key, value]) => (
+                <AnimateHeight duration={500} height={height}>
+                    <div className="absolute right-0 z-10 w-full overflow-y-auto text-white bg-blue-900 rounded-md shadow-lg bg-opacity-80 top-10 max-h-screen3">
+
+                        <ul className="py-1">
                             <li
-                                key={value}
                                 className="px-3 py-0 text-white cursor-pointer hover:bg-blue-800"
                             >
                                 <label className="inline-flex items-center">
                                     <input
                                         type="checkbox"
                                         className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
-                                        checked={selectedOptions.includes(value)}
-                                        onChange={() => handleCheckboxChange(value)}
+                                        checked={selectedOptions.length === Object.keys(leadSources).length}
+                                        onChange={handleSelectAll}
                                     />
-                                    {key}
+                                    All
                                 </label>
                             </li>
-                        ))}
-                    </ul>
-                </div>
+                            {Object.entries(leadSources).map(([key, value]) => (
+                                <li
+                                    key={value}
+                                    className="px-3 py-0 text-white cursor-pointer hover:bg-blue-800"
+                                >
+                                    <label className="inline-flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
+                                            checked={selectedOptions.includes(value)}
+                                            onChange={() => handleCheckboxChange(value)}
+                                        />
+                                        {key}
+                                    </label>
+                                </li>
+                            ))}
+                        </ul>
+
+                    </div>
+                </AnimateHeight>
             )}
         </div>
     );

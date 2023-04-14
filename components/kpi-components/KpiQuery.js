@@ -4,7 +4,7 @@ import KpiCard from './KpiCard';
 import Dropdown from './Dropdown';
 import SingleDateRangeSelector from './SingleDateRangeSelector';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faTimes, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faTimes, faExclamationTriangle, faGear } from '@fortawesome/free-solid-svg-icons';
 import AnimateHeight from 'react-animate-height';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Scrollbar, Mousewheel, Controller } from 'swiper';
@@ -14,7 +14,9 @@ import RightSlideModal from '../RightSlideModal';
 SwiperCore.use([Scrollbar, Mousewheel, Controller]);
 
 const KpiQuery = ({
+  view,
   query,
+  kpiList,
   onDateRangeChange,
   onLeadSourceChange,
   onToggleQuery,
@@ -25,7 +27,19 @@ const KpiQuery = ({
 
   const [height, setHeight] = useState('auto');
   const [openModal, setOpenModal] = useState(false);
+  const [modalType, setModalType] = useState("info");
   const [selectedResult, setSelectedResult] = useState(null);
+
+  const handleCardInfoClick = (result) => {
+    setSelectedResult(result);
+    setModalType("info");
+    setOpenModal(true);
+  };
+
+  const handleGearIconClick = () => {
+    setModalType("settings");
+    setOpenModal(true);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,8 +48,8 @@ const KpiQuery = ({
       const leadSource = query.leadSource || [];
       const gte = query.dateRange?.gte || '';
       const lte = query.dateRange?.lte || '';
-      const data = await fetchKpiData(leadSource, gte, lte);
-      
+      const data = await fetchKpiData(view, kpiList, leadSource, gte, lte);
+
       onFetchedKpiData(query.id, data);
       onSetLoading(query.id, false);
     };
@@ -43,7 +57,7 @@ const KpiQuery = ({
     if (query.leadSource && query.dateRange) {
       fetchData();
     }
-  }, [query.leadSource, query.dateRange]);
+  }, [query.leadSource, query.dateRange, kpiList]);
 
   const handleDateRangeChange = (startDate, endDate) => {
     onDateRangeChange(startDate, endDate, query.id);
@@ -107,6 +121,16 @@ const KpiQuery = ({
               </div>
             </div>
           </div>
+          <button
+            className="box-border absolute px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md right-0.5 shadow-super-4 hover:animate-pulse"
+            onClick={() => setOpenModal(true)}
+          >
+            <FontAwesomeIcon
+              icon={faGear}
+              size="sm"
+              className="text-blue-900 transform-gpu"
+            />
+          </button>
           {query.id !== 1 && (
             <button
               className="box-border absolute px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md right-0.5 shadow-super-4 hover:animate-pulse"
@@ -209,7 +233,7 @@ const KpiQuery = ({
                 className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
               >
                 <div className={``}>
-                  { query.results.length > 0 && query.isOpen && !query.isLoading ?
+                  {query.results.length > 0 && query.isOpen && !query.isLoading ?
                     query.results.map((result, index) => (
                       <SwiperSlide key={index}>
                         <div className='my-3 h-70 backface'>
@@ -238,6 +262,10 @@ const KpiQuery = ({
                 isOpen={openModal}
                 handleCloseModal={() => setOpenModal(false)}
                 prop={selectedResult}
+                viewKpis={kpiList}
+                selectedView={view}
+                onKpiListChange={(newKpiList) => setKpiList(newKpiList)}
+                modalType={modalType}
               />
             </div>
           </div>
