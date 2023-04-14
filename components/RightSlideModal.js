@@ -10,10 +10,14 @@ const RightSlideModal = ({
   onKpiListChange,
   selectedView,
   modalType,
+  selectedKpis,
+  setSelectedKpis
 }) => {
-  const [selectedKpis, setSelectedKpis] = useState([]);
 
-  // Close the modal on escape key press and on clicking outside the modal
+  useEffect(() => {
+    onKpiListChange(selectedKpis);
+  }, [selectedKpis]);
+
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
@@ -31,9 +35,7 @@ const RightSlideModal = ({
       document.removeEventListener('keydown', handleEscape);
       document.removeEventListener('mousedown', handleClickOutside);
     };
-
-    onKpiListChange(selectedKpis);
-  }, [selectedKpis]);
+  }, []);
 
   const handleKpiCheckboxChange = (e, kpi) => {
     if (e.target.checked) {
@@ -47,11 +49,11 @@ const RightSlideModal = ({
 
   return (
     <div
-      className={`fixed top-0 right-0 w-screen sm:w-1/4 h-full transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'
+      className={`flex fixed top-0 right-0 w-screen sm:w-1/4 h-full transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', zIndex: 1000 }}
     >
-      <div className="absolute top-0 right-0 w-full h-screen bg-blue-900 bg-opacity-50 infoModal">
+      <div className="absolute top-0 right-0 flex-col w-full h-screen bg-blue-900 bg-opacity-50 infoModal">
         <button className="absolute right-2 top-2" onClick={handleCloseModal}>
           <FiX />
         </button>
@@ -94,11 +96,11 @@ const RightSlideModal = ({
         )}
 
         {modalType === "settings" && (
-          <>
+          <div className="flex flex-col px-1">
             <div className="mt-4 text-xl font-bold text-center">
               {selectedView}
             </div>
-            <ul>
+            <ul className="grid grid-cols-1 gap-6 px-10 lg:grid-cols-2">
               {/* KPI checkboxes */}
               {kpiList.map((kpi, index) => (
                 <li key={index} className="flex items-center my-2">
@@ -115,7 +117,7 @@ const RightSlideModal = ({
                 </li>
               ))}
             </ul>
-          </>
+          </div>
         )}
 
       </div>

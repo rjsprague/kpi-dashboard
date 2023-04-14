@@ -17,6 +17,7 @@ const KpiQuery = ({
   view,
   query,
   kpiList,
+  onKpiListChange,
   onDateRangeChange,
   onLeadSourceChange,
   onToggleQuery,
@@ -29,6 +30,8 @@ const KpiQuery = ({
   const [openModal, setOpenModal] = useState(false);
   const [modalType, setModalType] = useState("info");
   const [selectedResult, setSelectedResult] = useState(null);
+  const [selectedKpis, setSelectedKpis] = useState(kpiList);
+
 
   const handleCardInfoClick = (result) => {
     setSelectedResult(result);
@@ -77,6 +80,7 @@ const KpiQuery = ({
   };
 
   console.log("query result ", query.results)
+  console.log("selected kpis ", selectedKpis)
 
   return (
     <div className="mb-2">
@@ -122,8 +126,8 @@ const KpiQuery = ({
             </div>
           </div>
           <button
-            className="box-border absolute px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md right-0.5 shadow-super-4 hover:animate-pulse"
-            onClick={() => setOpenModal(true)}
+            className="box-border px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md right-0.5 shadow-super-4 hover:animate-pulse"
+            onClick={handleGearIconClick}
           >
             <FontAwesomeIcon
               icon={faGear}
@@ -234,15 +238,14 @@ const KpiQuery = ({
               >
                 <div className={``}>
                   {query.results.length > 0 && query.isOpen && !query.isLoading ?
-                    query.results.map((result, index) => (
+                    query.results
+                    .filter((result) => selectedKpis.includes(result.name))
+                    .map((result, index) => (
                       <SwiperSlide key={index}>
                         <div className='my-3 h-70 backface'>
                           <KpiCard
                             prop={result}
-                            handleOpenModal={() => {
-                              setSelectedResult(result);
-                              setOpenModal(true);
-                            }}
+                            handleCardInfoClick={() => handleCardInfoClick(result)}
                           />
                         </div>
                       </SwiperSlide>
@@ -264,8 +267,10 @@ const KpiQuery = ({
                 prop={selectedResult}
                 viewKpis={kpiList}
                 selectedView={view}
-                onKpiListChange={(newKpiList) => setKpiList(newKpiList)}
+                onKpiListChange={onKpiListChange}
                 modalType={modalType}
+                selectedKpis={selectedKpis}
+                setSelectedKpis={setSelectedKpis}
               />
             </div>
           </div>

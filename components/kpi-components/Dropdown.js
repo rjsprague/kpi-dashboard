@@ -92,7 +92,7 @@ function Dropdown({ onOptionSelected, queryId }) {
             </button>
             {isOpen && (
                 <AnimateHeight duration={500} height={height}>
-                    <div className="absolute right-0 z-10 w-full overflow-y-auto text-white bg-blue-900 rounded-md shadow-lg bg-opacity-80 top-10 max-h-screen3">
+                    <div className="absolute right-0 z-50 w-full overflow-y-auto text-white bg-blue-900 rounded-md shadow-lg bg-opacity-80 top-10 max-h-screen3">
 
                         <ul className="py-1">
                             <li

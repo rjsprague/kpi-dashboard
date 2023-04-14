@@ -4,7 +4,7 @@ import { FiInfo } from 'react-icons/fi'
 
 
 
-export default function KpiCard({ prop, handleOpenModal }) {
+export default function KpiCard({ prop, handleCardInfoClick }) {
 
     //const startValue = 0;
     const [isFlipped, setIsFlipped] = useState(false);
@@ -29,7 +29,13 @@ export default function KpiCard({ prop, handleOpenModal }) {
                             kpiName={prop.name}
                         />
                     </div>
-                    <button onClick={handleOpenModal} className="absolute info-icon right-2 bottom-2">
+                    <button
+                        onClick= { () => {
+                            handleCardInfoClick(prop);                            
+                        }  
+                    }
+                        className="absolute info-icon right-2 bottom-2"
+                    >
                         <FiInfo />
                     </button>
                 </div>

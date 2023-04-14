@@ -39,6 +39,8 @@ const KpiViews = ({ view }) => {
     const [idCounter, setIdCounter] = useState(2);
     const [leadSources, setLeadSources] = useState([]);
     const datePresets = getDatePresets(); 
+    const [kpiList, setKpiList] = useState(VIEW_KPIS[view]);
+
 
     useEffect(() => {
         const fetchSources = async () => {
@@ -144,6 +146,7 @@ const KpiViews = ({ view }) => {
                     view={view}
                     query={query}
                     kpiList={VIEW_KPIS[view]}
+                    onKpiListChange={setKpiList}
                     onDateRangeChange={handleDateRangeChange}
                     onLeadSourceChange={handleLeadSourceChange}
                     onToggleQuery={handleToggleQuery}
