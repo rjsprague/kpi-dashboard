@@ -2,13 +2,12 @@ import { useState, useEffect } from "react";
 import fetchLeadSources from '../../lib/fetchLeadSources';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import AnimateHeight from 'react-animate-height';
+import { Collapse } from 'react-collapse';
 
 function Dropdown({ onOptionSelected, queryId }) {
     const [isOpen, setIsOpen] = useState(false);
     const [leadSources, setLeadSources] = useState([]);
     const [selectedOptions, setSelectedOptions] = useState([]);
-    const [height, setHeight] = useState(0);
 
     const toggleOpen = () => {
         setIsOpen(!isOpen);
@@ -67,7 +66,6 @@ function Dropdown({ onOptionSelected, queryId }) {
                 className="items-center w-40 h-8 min-w-0 px-2 overflow-hidden text-sm text-left text-white align-middle bg-blue-900 rounded-md cursor-pointer max-w-xxs focus:outline-none focus:ring-2 focus:ring-blue-400 bg-opacity-80"
                 onClick={() => {
                     toggleOpen();
-                    setHeight(height === 0 ? 'auto' : 0);
                 }}
             >
                 {selectedOptions.length === 0
@@ -91,9 +89,8 @@ function Dropdown({ onOptionSelected, queryId }) {
                 }
             </button>
             {isOpen && (
-                <AnimateHeight duration={500} height={height}>
+            <Collapse isOpened={isOpen}>
                     <div className="absolute right-0 z-50 w-full overflow-y-auto text-white bg-blue-900 rounded-md shadow-lg bg-opacity-80 top-10 max-h-screen3">
-
                         <ul className="py-1">
                             <li
                                 className="px-3 py-0 text-white cursor-pointer hover:bg-blue-800"
@@ -125,9 +122,8 @@ function Dropdown({ onOptionSelected, queryId }) {
                                 </li>
                             ))}
                         </ul>
-
                     </div>
-                </AnimateHeight>
+            </Collapse>
             )}
         </div>
     );

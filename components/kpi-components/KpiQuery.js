@@ -80,8 +80,8 @@ const KpiQuery = ({
     onRemoveQuery && onRemoveQuery(query.id);
   };
 
-  //console.log("query result ", query.results)
-  //console.log("selected kpis ", selectedKpis)
+  console.log("query result ", query.results)
+  console.log("selected kpis ", selectedKpis)
 
   return (
     <div className="mb-2">
