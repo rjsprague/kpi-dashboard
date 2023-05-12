@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { FiInfo } from 'react-icons/fi';
 
 export default function KpiCard({ prop, handleCardInfoClick }) {
-  console.log('KpiCard: ', prop);
+  //console.log('KpiCard: ', prop);
   const [isFlipped, setIsFlipped] = useState(false);
 
   const renderMeter = () => {
@@ -22,7 +22,7 @@ export default function KpiCard({ prop, handleCardInfoClick }) {
       return (
         <BigChecksMeter
           value={prop.current}
-          unit=" per week"
+          unit="min"
           goal={prop.target}
           redFlag={prop.redFlag}
         />
@@ -46,9 +46,9 @@ export default function KpiCard({ prop, handleCardInfoClick }) {
           <h1 className="text-2xl font-semibold tracking-tighter align-top">{prop.name}</h1>
           <div className="mt-2 font-medium text-md">
             {prop.data1 !== null && prop.data2 !== null ? (
-              <div className="flex flex-row justify-around mx-2">
-                <div>{prop.data1}</div>
-                <div>{prop.data2}</div>
+              <div className="flex flex-row justify-center gap-4 mx-2">
+                <div>{ prop.data1.length > 1 && prop.data1}</div>
+                <div>{ prop.data2.length > 1 && prop.data2}</div>
               </div>
             ) : (
               ''

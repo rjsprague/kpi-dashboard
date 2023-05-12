@@ -80,8 +80,10 @@ const KpiQuery = ({
     onRemoveQuery && onRemoveQuery(query.id);
   };
 
-  console.log("query result ", query.results)
-  console.log("selected kpis ", selectedKpis)
+  //console.log("query result ", query.results)
+  //console.log("selected kpis ", selectedKpis)
+  //console.log("kpi list ", kpiList)
+  //console.log("view ", view)
 
   return (
     <div className="mb-2">
@@ -238,7 +240,7 @@ const KpiQuery = ({
                 className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
               >
                 <div className={``}>
-                  {query.results.length > 0 && query.isOpen && !query.isLoading ?
+                  {query.results.length > 0 && query.isOpen ?
                     query.results
                     .filter((result) => selectedKpis.includes(result.name))
                     .map((result, index) => (

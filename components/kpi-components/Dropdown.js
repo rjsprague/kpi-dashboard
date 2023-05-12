@@ -1,13 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import fetchLeadSources from '../../lib/fetchLeadSources';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { Collapse } from 'react-collapse';
+import { Transition } from "react-transition-group";
+
 
 function Dropdown({ onOptionSelected, queryId }) {
     const [isOpen, setIsOpen] = useState(false);
     const [leadSources, setLeadSources] = useState([]);
     const [selectedOptions, setSelectedOptions] = useState([]);
+    const [contentHeight, setContentHeight] = useState(0);
+    const dropdownContentRef = useRef(null);
+
+    useEffect(() => {
+        if (isOpen) {
+            const contentElement = dropdownContentRef.current;
+            if (contentElement) {
+                setContentHeight(contentElement.scrollHeight);
+            }
+        } else {
+            setContentHeight(0);
+        }
+    }, [isOpen]);
 
     const toggleOpen = () => {
         setIsOpen(!isOpen);
@@ -60,6 +74,21 @@ function Dropdown({ onOptionSelected, queryId }) {
         fetchSources();
     }, []);
 
+    const duration = 350;
+    const defaultStyle = {
+        transition: `height ${duration}ms ease-in-out, opacity ${duration}ms ease-in-out`,
+        height: 0,
+        opacity: 0,
+        overflow: "hidden",
+    };
+
+    const transitionStyles = {
+        entering: { height: "0", opacity: 1 },
+        entered: { height: contentHeight, opacity: 1 },
+        exiting: { height: 0, opacity: 1 },
+        exited: { height: 0, opacity: 0 },
+    };
+
     return (
         <div className="relative items-center dropdown">
             <button
@@ -88,9 +117,18 @@ function Dropdown({ onOptionSelected, queryId }) {
                     />
                 }
             </button>
-            {isOpen && (
-            <Collapse isOpened={isOpen}>
-                    <div className="absolute right-0 z-50 w-full overflow-y-auto text-white bg-blue-900 rounded-md shadow-lg bg-opacity-80 top-10 max-h-screen3">
+            <Transition in={isOpen} timeout={duration}>
+                {(state) => (
+                    <div
+                        ref={dropdownContentRef}
+                        className="absolute right-0 z-50 w-full text-white bg-blue-900 rounded-md shadow-lg bg-opacity-80 top-10"
+                        style={{
+                            ...defaultStyle,
+                            ...transitionStyles[state],
+                            maxHeight: "200px", // Limit the height of the dropdown
+                            overflowY: "auto", // Enable scrolling if the content is too long
+                        }}
+                    >
                         <ul className="py-1">
                             <li
                                 className="px-3 py-0 text-white cursor-pointer hover:bg-blue-800"
@@ -123,8 +161,8 @@ function Dropdown({ onOptionSelected, queryId }) {
                             ))}
                         </ul>
                     </div>
-            </Collapse>
-            )}
+                )}
+            </Transition>
         </div>
     );
 }
