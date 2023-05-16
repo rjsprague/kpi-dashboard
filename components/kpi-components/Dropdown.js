@@ -1,16 +1,18 @@
 import { useState, useEffect, useRef } from "react";
-import fetchLeadSources from '../../lib/fetchLeadSources';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Transition } from "react-transition-group";
 
 
-function Dropdown({ onOptionSelected, queryId }) {
+function Dropdown({ onOptionSelected, queryId, options, fetchOptions, optionDisplayName }) {
     const [isOpen, setIsOpen] = useState(false);
-    const [leadSources, setLeadSources] = useState([]);
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [contentHeight, setContentHeight] = useState(0);
     const dropdownContentRef = useRef(null);
+
+    const allSelected = options
+        ? selectedOptions.length === Object.keys(options).length
+        : false;
 
     useEffect(() => {
         if (isOpen) {
@@ -28,12 +30,12 @@ function Dropdown({ onOptionSelected, queryId }) {
     };
 
     const handleSelectAll = () => {
-        if (selectedOptions.length === Object.keys(leadSources).length) {
+        if (selectedOptions.length === Object.keys(options).length) {
             onOptionSelected([], queryId);
             setSelectedOptions([]);
         } else {
-            onOptionSelected(Object.values(leadSources), queryId);
-            setSelectedOptions(Object.values(leadSources));
+            onOptionSelected(Object.values(options), queryId);
+            setSelectedOptions(Object.values(options));
         }
     };
 
@@ -65,15 +67,15 @@ function Dropdown({ onOptionSelected, queryId }) {
             document.removeEventListener("mousedown", handleClickOutsideDropdown);
         };
     }, []);
-
+/*
     useEffect(() => {
         const fetchSources = async () => {
-            const sources = await fetchLeadSources();
-            setLeadSources(sources);
+            const sources = await fetchoptions();
+            setoptions(sources);
         };
         fetchSources();
     }, []);
-
+*/
     const duration = 350;
     const defaultStyle = {
         transition: `height ${duration}ms ease-in-out, opacity ${duration}ms ease-in-out`,
@@ -99,10 +101,10 @@ function Dropdown({ onOptionSelected, queryId }) {
             >
                 {selectedOptions.length === 0
                     ? "No Filter"
-                    : selectedOptions.length === Object.keys(leadSources).length
+                    : selectedOptions.length === Object.keys(options).length
                         ? "All"
                         : selectedOptions.length === 1
-                            ? Object.keys(leadSources).find(key => leadSources[key] === selectedOptions[0])
+                            ? optionDisplayName(selectedOptions[0])
                             : `${selectedOptions.length} selected`}
                 {isOpen ?
                     <FontAwesomeIcon
@@ -137,13 +139,13 @@ function Dropdown({ onOptionSelected, queryId }) {
                                     <input
                                         type="checkbox"
                                         className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
-                                        checked={selectedOptions.length === Object.keys(leadSources).length}
+                                        checked={allSelected}
                                         onChange={handleSelectAll}
                                     />
                                     All
                                 </label>
                             </li>
-                            {Object.entries(leadSources).map(([key, value]) => (
+                            {options && Object.entries(options).map(([key, value]) => (
                                 <li
                                     key={value}
                                     className="px-3 py-0 text-white cursor-pointer hover:bg-blue-800"
