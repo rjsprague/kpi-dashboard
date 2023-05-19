@@ -54,7 +54,12 @@ const KpiMeter = ({ redFlag, current, target, kpiName }) => {
                 <polygon ref={triRef} points="26,60 21,50 31,50" fill="black" />
                 <polygon points={`${redFlag * 2.5 + 25},100 ${redFlag * 2.5 + 20},110 ${redFlag * 2.5 + 30},110`} fill="red" />
                 <polygon points={`${target * 2.5 + 25},100 ${target * 2.5 + 20},110 ${target * 2.5 + 30},110`} fill="green" />
-                <text ref={valRef} x="27" y="47" textAnchor="middle" fontSize="12" className="text-lg">{kpiName === "Cost Per Lead" ? "$" + current : currentNum + "%"}</text>
+                <text ref={valRef} x="27" y="47" textAnchor="middle" fontSize="12" className="text-lg">
+                    {
+                        kpiName.startsWith("Cost Per") || kpiName === "Ad Spend" ? 
+                            "$" + current : currentNum + "%"
+                    }
+                </text>
                 <text x={`${target * 2.5 + 25}`} y="125" textAnchor="middle" fontSize="12" className="text-md">{kpiName === "Cost Per Lead" ? "$" + target : target + "%"}</text>
                 <text x={`${redFlag * 2.5 + 25}`} y="125" textAnchor="middle" fontSize="12" className="text-md">{kpiName === "Cost Per Lead" ? "$" + redFlag : redFlag + "%"}</text>
                 <text ref={labelRef} x="25" y="30" textAnchor="middle" fontSize="12" className="text-xs ">Current</text>

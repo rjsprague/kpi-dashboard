@@ -3,49 +3,16 @@ import KpiQuery from './KpiQuery';
 import AddQueryButton from './AddQueryButton';
 import { getDatePresets } from "../../lib/date-utils";
 import fetchLeadSources from '../../lib/fetchLeadSources';
+import { VIEW_KPIS } from './constants';
 
-const VIEW_KPIS = {
-    Acquisitions: [
-        "Cost Per Lead",
-        "Lead Connections",
-        "Triage Calls",
-        "Triage Qualifications",
-        "Triage Approval",
-        "Deal Analysis",
-        "Perfect Presentations",
-        "Contracts",
-        "Acquisitions",
-        "Deals",
-        "Profit",
-    ],
-    Team: [
-        "LM STL Median",
-        "AM STL Median",
-        "DA STL Median",
-        "BiG Checks",
-    ],
-    Financials: [
-        "Ad Spend",
-        "Cost Per Lead",
-        "Cost Per Contract",
-        "Cost Per Acquisition",
-        "Cost Per Deal",
-        "Actualized Profit",
-        "Projected Profit",
-        "Total Profit",
-        "ROAS Actualized",
-        "ROAS Projected",
-        "ROAS Total",
-        "ROAS Total APR",
-    ],
-};
+const KpiQueryContainer = ({ view, kpiList }) => {
 
-const KpiViews = ({ view }) => {
+    //console.log("KpiViews view: ", view)
+    //console.log("kpilist: ", kpiList)
+
     const [idCounter, setIdCounter] = useState(2);
     const [leadSources, setLeadSources] = useState([]);
     const datePresets = getDatePresets();
-    const [kpiList, setKpiList] = useState(VIEW_KPIS[view]);
-
 
     useEffect(() => {
         const fetchSources = async () => {
@@ -54,10 +21,6 @@ const KpiViews = ({ view }) => {
         };
         fetchSources();
     }, []);
-
-    useEffect(() => {
-        setKpiList(VIEW_KPIS[view]);
-    }, [view]);
 
     const [queries, setQueries] = useState([
         {
@@ -68,6 +31,8 @@ const KpiViews = ({ view }) => {
             isUnavailable: false,
             leadSource: [],
             dateRange: { gte: datePresets['All Time'].startDate, lte: datePresets['All Time'].endDate },
+            teamMember: [],
+            department: [],
         },
     ]);
 
@@ -75,6 +40,14 @@ const KpiViews = ({ view }) => {
         setQueries((prevQueries) =>
             prevQueries.map((query) =>
                 query.id === queryId ? { ...query, isLoading: isLoading } : query
+            )
+        );
+    };
+
+    const handleSetUnavailable = (queryId, isUnavailable) => {
+        setQueries((prevQueries) =>
+            prevQueries.map((query) =>
+                query.id === queryId ? { ...query, isUnavailable: isUnavailable } : query
             )
         );
     };
@@ -110,6 +83,32 @@ const KpiViews = ({ view }) => {
                     ? {
                         ...query,
                         leadSource: values,
+                    }
+                    : query
+            )
+        );
+    };
+
+    const handleTeamMemberChange = (teamMember, queryId) => {
+        setQueries((prevQueries) =>
+            prevQueries.map((query) =>
+                query.id === queryId
+                    ? {
+                        ...query,
+                        teamMember: teamMember,
+                    }
+                    : query
+            )
+        );
+    };
+
+    const handleDepartmentChange = (department, queryId) => {
+        setQueries((prevQueries) =>
+            prevQueries.map((query) =>
+                query.id === queryId
+                    ? {
+                        ...query,
+                        department: department,
                     }
                     : query
             )
@@ -158,13 +157,14 @@ const KpiViews = ({ view }) => {
                     VIEW_KPIS={VIEW_KPIS}
                     query={query}
                     kpiList={kpiList}
-                    onKpiListChange={setKpiList}
                     onDateRangeChange={handleDateRangeChange}
                     onLeadSourceChange={handleLeadSourceChange}
                     onToggleQuery={handleToggleQuery}
                     onRemoveQuery={handleRemoveQuery}
                     onFetchedKpiData={handleFetchedKpiData}
                     onSetLoading={handleSetLoading}
+                    onTeamMemberChange={handleTeamMemberChange}
+                    onDepartmentChange={handleDepartmentChange}
                 />
             ))}
             <AddQueryButton handleAddQuery={handleAddQuery} />
@@ -172,4 +172,4 @@ const KpiViews = ({ view }) => {
     );
 };
 
-export default KpiViews;
+export default KpiQueryContainer;

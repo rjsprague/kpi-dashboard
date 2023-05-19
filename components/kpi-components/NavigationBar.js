@@ -1,4 +1,5 @@
 export default function NavigationBar({ onQueryTypeChange }) {
+  
   const handleQueryTypeClick = (type) => {
     onQueryTypeChange(type);
   };

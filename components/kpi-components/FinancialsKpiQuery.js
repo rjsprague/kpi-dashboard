@@ -13,7 +13,7 @@ import RightSlideModal from '../RightSlideModal';
 
 SwiperCore.use([Scrollbar, Mousewheel, Controller]);
 
-const AcquisitionsKpiQuery = ({
+const FinancialsKpiQuery = ({
     view,
     VIEW_KPIS,
     query,
@@ -23,13 +23,10 @@ const AcquisitionsKpiQuery = ({
     onLeadSourceChange,
     onToggleQuery,
     onRemoveQuery,
- 
 }) => {
     //console.log("view: ", view)
-    //console.log("VIEW_KPIS: ", VIEW_KPIS)
     //console.log("query: ", query)
-    //console.log("kpiList: ", kpiList)
-
+    //console.log("kpiList: ", kpiList)     
     
     const [height, setHeight] = useState('auto');
     const [openModal, setOpenModal] = useState(false);
@@ -268,4 +265,4 @@ const AcquisitionsKpiQuery = ({
     );
 };
 
-export default AcquisitionsKpiQuery;
+export default FinancialsKpiQuery;

@@ -5,7 +5,15 @@ import Dropdown from './Dropdown';
 import SingleDateRangeSelector from './SingleDateRangeSelector';
 import SeatDropdown from './SeatDropdown'; // This is a new component to be created
 import TeamMemberDropdown from './TeamMemberDropdown'; // This is a new component to be created
-// ... other imports
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faGear, faTimes } from '@fortawesome/free-solid-svg-icons';
+import AnimateHeight from 'react-animate-height';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import SwiperCore, { Scrollbar, Mousewheel, Controller } from 'swiper';
+import 'swiper/swiper-bundle.min.css';
+import RightSlideModal from '../RightSlideModal';
+
+SwiperCore.use([Scrollbar, Mousewheel, Controller]);
 
 const TeamKpiQuery = ({
     view,
@@ -14,13 +22,17 @@ const TeamKpiQuery = ({
     kpiList,
     onKpiListChange,
     onDateRangeChange,
-    onSeatChange,
-    onTeamMemberChange,
     onToggleQuery,
     onRemoveQuery,
-    onFetchedKpiData,
-    onSetLoading
+    onTeamMemberChange,
+    onDepartmentChange,
 }) => {
+    //console.log("view ", view)
+    //console.log("VIEW_KPIS ", VIEW_KPIS)
+    //console.log("query ", query)
+    //console.log("kpiList ", kpiList)
+
+
     const [height, setHeight] = useState('auto');
     const [openModal, setOpenModal] = useState(false);
     const [modalType, setModalType] = useState("info");
@@ -39,27 +51,8 @@ const TeamKpiQuery = ({
         setOpenModal(true);
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            onSetLoading(query.id, true);
-
-            const seat = query.seat || '';
-            const teamMember = query.teamMember || '';
-            const gte = query.dateRange?.gte || '';
-            const lte = query.dateRange?.lte || '';
-            const data = await fetchKpiData(view, kpiList, seat, teamMember, gte, lte);
-
-            onFetchedKpiData(query.id, data);
-            onSetLoading(query.id, false);
-        };
-
-        if (query.seat && query.dateRange) {
-            fetchData();
-        }
-    }, [query.seat, query.teamMember, query.dateRange, kpiList]);
-
-    const handleSeatChange = (value) => {
-        onSeatChange(value, query.id);
+    const handleDepartmentChange = (value) => {
+        onDepartmentChange(value, query.id);
     };
 
     const handleTeamMemberChange = (value) => {
@@ -68,10 +61,6 @@ const TeamKpiQuery = ({
 
     const handleDateRangeChange = (startDate, endDate) => {
         onDateRangeChange(startDate, endDate, query.id);
-    };
-
-    const handleOptionSelected = (values) => {
-        onLeadSourceChange(values, query.id);
     };
 
     const handleToggleQuery = () => {
@@ -111,28 +100,30 @@ const TeamKpiQuery = ({
                     </button>
                     <div className='flex items-center '>
                         <div className='flex items-center justify-between gap-4 align-middle'>
-                            {/* Lead Source and Date Range Selectors */}
+                            {/* Seat, Team Member and Date Range Selectors */}
                             <div className='flex items-center justify-between gap-2 align-middle'>
+
                                 <div className='flex items-center justify-between gap-4 align-middle'>
-                                    {/* Seat selector */}
+                                {/*
+                                    
                                     <label className=''>
                                         Seat:
                                     </label>
                                     <SeatDropdown
-                                        onOptionSelected={handleSeatChange}
+                                        onOptionSelected={handleDepartmentChange}
                                         queryId={query.id}
                                     />
 
-                                    {/* Team member selector */}
+                                    
                                     <label className=''>
                                         Team Member:
                                     </label>
                                     <TeamMemberDropdown
                                         onOptionSelected={handleTeamMemberChange}
                                         queryId={query.id}
-                                    />
+                                    /> */}
                                 </div>
-                                {/* Lead Source selector */}
+                                
                             </div>
                             <div className="flex justify-between gap-2">
                                 <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
@@ -250,7 +241,7 @@ const TeamKpiQuery = ({
                                 className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
                             >
                                 <div className={``}>
-                                    {query.results.length > 0 && query.isOpen ?
+                                    {query.results.length > 0 && query.isOpen && !query.isLoading ?
                                         query.results
                                             .filter((result) => selectedKpis.includes(result.name))
                                             .map((result, index) => (

@@ -8,16 +8,11 @@ const RightSlideModal = ({
   prop,
   viewKpis,
   VIEW_KPIS,
-  onKpiListChange,
   selectedView,
   modalType,
   selectedKpis,
   setSelectedKpis
 }) => {
-
-  useEffect(() => {
-    onKpiListChange(selectedKpis);
-  }, [selectedKpis]);
 
   useEffect(() => {
     setSelectedKpis(VIEW_KPIS[selectedView]);

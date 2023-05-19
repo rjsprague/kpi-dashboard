@@ -1,23 +1,19 @@
 import { useState } from 'react';
-import KpiViews from './kpi-components/KpiViews';
+import KpiQueryContainer from './kpi-components/KpiQueryContainer';
 import NavigationBar from './kpi-components/NavigationBar';
+import { KPI_VIEWS, VIEW_KPIS } from './kpi-components/constants';
 
-const KPI_VIEWS = {
-  Financial: 'Financials',
-  Acquisitions: 'Acquisitions',
-  Dispositions: 'Dispositions',
-  Team: 'Team',
-};
-
-export default function KpiDashboardTest() {
+export default function KpiDashboard() {
   const [queryType, setQueryType] = useState(KPI_VIEWS.Acquisitions);
+  const [kpiList, setKpiList] = useState(VIEW_KPIS[queryType]);
 
   const handleQueryTypeChange = (type) => {
-    setQueryType(KPI_VIEWS[type]);
+    setQueryType(type);
+    setKpiList(VIEW_KPIS[type]);
   };
 
   const renderKpiResultsSection = () => {
-    return <KpiViews view={queryType} />;
+    return <KpiQueryContainer view={queryType} kpiList={kpiList} />;
   };
 
   return (

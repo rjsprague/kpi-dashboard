@@ -2,12 +2,12 @@ import React, { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 
 
-const SpeedToLeadMeter = ({ value, unit, goal, redFlag }) => {
+const SpeedToLeadMeter = ({ value, unit, target, redFlag }) => {
   const max = redFlag * 1.5;
 
   return (
     <div className="relative px-4 mt-4" style={{ height: '250px' }}>
-      <Dial width={250} height={250} target={goal} redFlag={redFlag} max={max} value={value} />
+      <Dial width={250} height={250} target={target} redFlag={redFlag} max={max} value={value} />
     </div>
   );
 };

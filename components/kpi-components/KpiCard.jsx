@@ -8,13 +8,15 @@ export default function KpiCard({ prop, handleCardInfoClick }) {
   //console.log('KpiCard: ', prop);
   const [isFlipped, setIsFlipped] = useState(false);
 
+  //console.log('KpiCard: ', prop);
+
   const renderMeter = () => {
     if (prop.kpiType === 'STL') {
       return (
         <SpeedToLeadMeter
           value={prop.current}
           unit="min"
-          goal={prop.target}
+          target={prop.target}
           redFlag={prop.redFlag}
         />
       );
@@ -23,7 +25,7 @@ export default function KpiCard({ prop, handleCardInfoClick }) {
         <BigChecksMeter
           value={prop.current}
           unit="min"
-          goal={prop.target}
+          target={prop.target}
           redFlag={prop.redFlag}
         />
       );
@@ -47,8 +49,8 @@ export default function KpiCard({ prop, handleCardInfoClick }) {
           <div className="mt-2 font-medium text-md">
             {prop.data1 !== null && prop.data2 !== null ? (
               <div className="flex flex-row justify-center gap-4 mx-2">
-                <div>{ prop.data1.length > 1 && prop.data1}</div>
-                <div>{ prop.data2.length > 1 && prop.data2}</div>
+                <div>{prop.data1.length > 1 && prop.data1}</div>
+                <div>{prop.data2.length > 1 && prop.data2}</div>
               </div>
             ) : (
               ''
@@ -65,28 +67,28 @@ export default function KpiCard({ prop, handleCardInfoClick }) {
           </button>
         </div>
         <div className="box-border py-2 ml-8 overflow-hidden transition-all delay-500 bg-white rounded w-68 xs:w-76 sm:w-80 transform-gpu h-60 back shadow-super-3">
-          {prop.kpiFactors
-            ? prop.kpiFactors.map((factor) => {
-                return (
-                  <li
-                    key={factor.id}
-                    className="flex flex-row justify-between px-4 py-2 text-sm font-medium text-gray-700 border-b border-gray-200"
-                  >
-                    <div className="flex flex-row items-center">
-                      <div className="flex-shrink-0 w-2 h-2 mr-2 bg-green-400 rounded-full"></div>
-                      <div>{factor.desc}</div>
-                    </div>
-                    <div className="flex flex-row items-center">
-                      <div className="flex-shrink-0 w-2 h-2 mr-2 bg-green-400 rounded-full"></div>
-                      <div>
-                        <a href={factor.link} target="_blank">
+          {prop.kpiFactors ?
+            prop.kpiFactors.map((factor) => {
+              return (
+                <li
+                  key={factor.id}
+                  className="flex flex-row justify-between px-4 py-2 text-sm font-medium text-gray-700 border-b border-gray-200"
+                >
+                  <div className="flex flex-row items-center">
+                    <div className="flex-shrink-0 w-2 h-2 mr-2 bg-green-400 rounded-full"></div>
+                    <div>{factor.desc}</div>
+                  </div>
+                  <div className="flex flex-row items-center">
+                    <div className="flex-shrink-0 w-2 h-2 mr-2 bg-green-400 rounded-full"></div>
+                    <div>
+                      <a href={factor.link} target="_blank">
                         {factor.linkName}
-                        </a>
-                      </div>
+                      </a>
                     </div>
-                  </li>
-                );
-              })
+                  </div>
+                </li>
+              );
+            })
             : 'TBD'}
         </div>
       </div>

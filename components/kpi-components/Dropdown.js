@@ -2,13 +2,27 @@ import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Transition } from "react-transition-group";
+import fetchLeadSources from "../../lib/fetchLeadSources";
 
+function getKeyByValue(object, value) {
+    if (object === null || value === null) return null;
+    return Object.keys(object).find(key => object[key] === value);
+  }
 
-function Dropdown({ onOptionSelected, queryId, options, fetchOptions, optionDisplayName }) {
+function Dropdown({ onOptionSelected, queryId }) {
+    const [options, setOptions] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [contentHeight, setContentHeight] = useState(0);
     const dropdownContentRef = useRef(null);
+
+    useEffect(() => {
+        const fetchSources = async () => {
+            const sources = await fetchLeadSources();
+            setOptions(sources);
+        };
+        fetchSources();
+    }, []);
 
     const allSelected = options
         ? selectedOptions.length === Object.keys(options).length
@@ -67,15 +81,9 @@ function Dropdown({ onOptionSelected, queryId, options, fetchOptions, optionDisp
             document.removeEventListener("mousedown", handleClickOutsideDropdown);
         };
     }, []);
-/*
-    useEffect(() => {
-        const fetchSources = async () => {
-            const sources = await fetchoptions();
-            setoptions(sources);
-        };
-        fetchSources();
-    }, []);
-*/
+
+    
+
     const duration = 350;
     const defaultStyle = {
         transition: `height ${duration}ms ease-in-out, opacity ${duration}ms ease-in-out`,
@@ -104,7 +112,7 @@ function Dropdown({ onOptionSelected, queryId, options, fetchOptions, optionDisp
                     : selectedOptions.length === Object.keys(options).length
                         ? "All"
                         : selectedOptions.length === 1
-                            ? optionDisplayName(selectedOptions[0])
+                            ? getKeyByValue(options, selectedOptions[0])
                             : `${selectedOptions.length} selected`}
                 {isOpen ?
                     <FontAwesomeIcon
