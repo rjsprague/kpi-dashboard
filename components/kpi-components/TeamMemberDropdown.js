@@ -1,35 +1,22 @@
 import { useState, useEffect } from "react";
+import fetchActiveTeamMembers from '../../lib/fetchActiveTeamMembers';
 import Dropdown from './Dropdown';
-//import fetchTeamMembers from '../../lib/fetchTeamMembers';
 
-function TeamMemberDropdown(props) {
-    const [teamMembers, setTeamMembers] = useState([]);
-    
-    setTeamMembers[
-        {
-            "0123456789": "All",
-            "1866392814": "Kay Weaver",
-        }
-    ]
-
-/*    useEffect(() => {
-        const fetchSources = async () => {
-            const sources = await fetchTeamMembers();
-            setTeamMembers(sources);
+function TeamMemberDropdown({ onOptionSelected, queryId }) {
+    const [options, setOptions] = useState([]);
+    useEffect(() => {
+        const fetchOptions = async () => {
+            const teamMembers = await fetchActiveTeamMembers();
+            setOptions(teamMembers);
         };
-        fetchSources();
+        fetchOptions();
     }, []);
-*/
-    const optionDisplayName = (optionValue) => {
-        // Return the display name for the given option value
-        return Object.keys(teamMembers).find(key => teamMembers[key] === optionValue);
-    }
 
     return (
         <Dropdown
-            options={teamMembers}
-            optionDisplayName={optionDisplayName}
-            {...props}
+            options={options}
+            onOptionSelected={onOptionSelected}
+            queryId={queryId}
         />
     );
 }

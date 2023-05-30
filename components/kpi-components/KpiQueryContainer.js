@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import KpiQuery from './KpiQuery';
 import AddQueryButton from './AddQueryButton';
 import { getDatePresets } from "../../lib/date-utils";
-import fetchLeadSources from '../../lib/fetchLeadSources';
 import { VIEW_KPIS } from './constants';
 
 const KpiQueryContainer = ({ view, kpiList }) => {
@@ -11,16 +10,7 @@ const KpiQueryContainer = ({ view, kpiList }) => {
     //console.log("kpilist: ", kpiList)
 
     const [idCounter, setIdCounter] = useState(2);
-    const [leadSources, setLeadSources] = useState([]);
     const datePresets = getDatePresets();
-
-    useEffect(() => {
-        const fetchSources = async () => {
-            const sources = await fetchLeadSources();
-            setLeadSources(sources);
-        };
-        fetchSources();
-    }, []);
 
     const [queries, setQueries] = useState([
         {
@@ -102,19 +92,6 @@ const KpiQueryContainer = ({ view, kpiList }) => {
         );
     };
 
-    const handleDepartmentChange = (department, queryId) => {
-        setQueries((prevQueries) =>
-            prevQueries.map((query) =>
-                query.id === queryId
-                    ? {
-                        ...query,
-                        department: department,
-                    }
-                    : query
-            )
-        );
-    };
-
     const handleToggleQuery = (queryId) => {
         setQueries((prevQueries) =>
             prevQueries.map((query) =>
@@ -157,6 +134,7 @@ const KpiQueryContainer = ({ view, kpiList }) => {
                     VIEW_KPIS={VIEW_KPIS}
                     query={query}
                     kpiList={kpiList}
+                    teamMember={query.teamMember}
                     onDateRangeChange={handleDateRangeChange}
                     onLeadSourceChange={handleLeadSourceChange}
                     onToggleQuery={handleToggleQuery}
@@ -164,7 +142,6 @@ const KpiQueryContainer = ({ view, kpiList }) => {
                     onFetchedKpiData={handleFetchedKpiData}
                     onSetLoading={handleSetLoading}
                     onTeamMemberChange={handleTeamMemberChange}
-                    onDepartmentChange={handleDepartmentChange}
                 />
             ))}
             <AddQueryButton handleAddQuery={handleAddQuery} />

@@ -2,27 +2,17 @@ import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Transition } from "react-transition-group";
-import fetchLeadSources from "../../lib/fetchLeadSources";
 
-function getKeyByValue(object, value) {
+function getKeyByValue(object, value, props) {
     if (object === null || value === null) return null;
     return Object.keys(object).find(key => object[key] === value);
-  }
+}
 
-function Dropdown({ onOptionSelected, queryId }) {
-    const [options, setOptions] = useState(null);
+function Dropdown({ options, onOptionSelected, queryId }) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [contentHeight, setContentHeight] = useState(0);
     const dropdownContentRef = useRef(null);
-
-    useEffect(() => {
-        const fetchSources = async () => {
-            const sources = await fetchLeadSources();
-            setOptions(sources);
-        };
-        fetchSources();
-    }, []);
 
     const allSelected = options
         ? selectedOptions.length === Object.keys(options).length
@@ -53,36 +43,25 @@ function Dropdown({ onOptionSelected, queryId }) {
         }
     };
 
-    const handleCheckboxChange = (value) => {
-        const isSelected = selectedOptions.includes(value);
-        if (isSelected) {
-            const index = selectedOptions.indexOf(value);
-            const newSelectedOptions = [
-                ...selectedOptions.slice(0, index),
-                ...selectedOptions.slice(index + 1),
-            ];
-            onOptionSelected(newSelectedOptions, queryId);
-            setSelectedOptions(newSelectedOptions);
-        } else {
-            onOptionSelected([...selectedOptions, value], queryId);
-            setSelectedOptions([...selectedOptions, value]);
-        }
-    };
+    const handleCheckboxChange = (department, member) => {
+        let selectedValues = member ? [`${department}-${member}`] : Object.keys(options[department]).map(member => `${department}-${member}`);
+        let newSelectedOptions = [...selectedOptions];
 
-    useEffect(() => {
-        const handleClickOutsideDropdown = (event) => {
-            if (!event.target.closest(".dropdown")) {
-                setIsOpen(false);
+        for (let val of selectedValues) {
+            const isSelected = newSelectedOptions.includes(val);
+            if (isSelected) {
+                const index = newSelectedOptions.indexOf(val);
+                newSelectedOptions = [
+                    ...newSelectedOptions.slice(0, index),
+                    ...newSelectedOptions.slice(index + 1),
+                ];
+            } else {
+                newSelectedOptions.push(val);
             }
-        };
-
-        document.addEventListener("mousedown", handleClickOutsideDropdown);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutsideDropdown);
-        };
-    }, []);
-
-    
+        }
+        onOptionSelected(newSelectedOptions, queryId);
+        setSelectedOptions(newSelectedOptions);
+    };
 
     const duration = 350;
     const defaultStyle = {
@@ -135,40 +114,43 @@ function Dropdown({ onOptionSelected, queryId }) {
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],
-                            maxHeight: "200px", // Limit the height of the dropdown
-                            overflowY: "auto", // Enable scrolling if the content is too long
+                            maxHeight: "200px",
+                            overflowY: "auto",
                         }}
                     >
                         <ul className="py-1">
-                            <li
-                                className="px-3 py-0 text-white cursor-pointer hover:bg-blue-800"
-                            >
-                                <label className="inline-flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
-                                        checked={allSelected}
-                                        onChange={handleSelectAll}
-                                    />
-                                    All
-                                </label>
-                            </li>
-                            {options && Object.entries(options).map(([key, value]) => (
-                                <li
-                                    key={value}
-                                    className="px-3 py-0 text-white cursor-pointer hover:bg-blue-800"
-                                >
-                                    <label className="inline-flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
-                                            checked={selectedOptions.includes(value)}
-                                            onChange={() => handleCheckboxChange(value)}
-                                        />
-                                        {key}
-                                    </label>
-                                </li>
-                            ))}
+                            {options && Object.entries(options).map(([department, members]) => {
+                                return (
+                                    <li key={department} className="px-3 py-0 text-white cursor-pointer hover:bg-blue-800">
+                                        <label className="inline-flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
+                                                checked={Object.keys(members).every(member => selectedOptions.includes(`${department}-${member}`))}
+                                                onChange={() => handleCheckboxChange(department)}
+                                            />
+                                            {department}
+                                        </label>
+                                        <ul className="pl-6">
+                                            {Object.entries(members).map(([id, name]) => {
+                                                return (
+                                                    <li key={id} className="px-3 py-1 text-white cursor-pointer hover:bg-blue-800">
+                                                        <label className="inline-flex items-center">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
+                                                                checked={selectedOptions.includes(`${department}-${id}`)}
+                                                                onChange={() => handleCheckboxChange(department, id)}
+                                                            />
+                                                            {name}
+                                                        </label>
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                    </li>
+                                );
+                            })}
                         </ul>
                     </div>
                 )}

@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import fetchKpiData from '../../lib/fetch-kpis';
 import KpiCard from './KpiCard';
-import Dropdown from './Dropdown';
 import SingleDateRangeSelector from './SingleDateRangeSelector';
-import SeatDropdown from './SeatDropdown'; // This is a new component to be created
 import TeamMemberDropdown from './TeamMemberDropdown'; // This is a new component to be created
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faGear, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -25,20 +22,12 @@ const TeamKpiQuery = ({
     onToggleQuery,
     onRemoveQuery,
     onTeamMemberChange,
-    onDepartmentChange,
 }) => {
-    //console.log("view ", view)
-    //console.log("VIEW_KPIS ", VIEW_KPIS)
-    //console.log("query ", query)
-    //console.log("kpiList ", kpiList)
-
-
     const [height, setHeight] = useState('auto');
     const [openModal, setOpenModal] = useState(false);
     const [modalType, setModalType] = useState("info");
     const [selectedResult, setSelectedResult] = useState(null);
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
-
 
     const handleCardInfoClick = (result) => {
         setSelectedResult(result);
@@ -49,10 +38,6 @@ const TeamKpiQuery = ({
     const handleGearIconClick = () => {
         setModalType("settings");
         setOpenModal(true);
-    };
-
-    const handleDepartmentChange = (value) => {
-        onDepartmentChange(value, query.id);
     };
 
     const handleTeamMemberChange = (value) => {
@@ -103,25 +88,14 @@ const TeamKpiQuery = ({
                             {/* Seat, Team Member and Date Range Selectors */}
                             <div className='flex items-center justify-between gap-2 align-middle'>
 
-                                <div className='flex items-center justify-between gap-4 align-middle'>
-                                {/*
-                                    
-                                    <label className=''>
-                                        Seat:
-                                    </label>
-                                    <SeatDropdown
-                                        onOptionSelected={handleDepartmentChange}
-                                        queryId={query.id}
-                                    />
-
-                                    
+                                <div className='flex items-center justify-between gap-4 align-middle'>                                    
                                     <label className=''>
                                         Team Member:
                                     </label>
                                     <TeamMemberDropdown
                                         onOptionSelected={handleTeamMemberChange}
                                         queryId={query.id}
-                                    /> */}
+                                    /> 
                                 </div>
                                 
                             </div>

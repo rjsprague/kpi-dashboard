@@ -5,7 +5,7 @@ import FinancialsKpiQuery from './FinancialsKpiQuery';
 import fetchKpiData from '../../lib/fetch-kpis';
 
 const KpiQuery = ({ ...props }) => {
-  //console.log("KpiQuery props.view", props.view)
+  console.log("KpiQuery props", props)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,8 +14,10 @@ const KpiQuery = ({ ...props }) => {
       const leadSource = props.query.leadSource || [];
       const gte = props.query.dateRange?.gte || '';
       const lte = props.query.dateRange?.lte || '';
-      const data = await fetchKpiData(props.view, props.kpiList, leadSource, gte, lte);
+      const teamMember = props.query.teamMember || [];
 
+      const data = await fetchKpiData(props.view, props.kpiList, leadSource, gte, lte, teamMember);
+      
       props.onFetchedKpiData(props.query.id, data);
       props.onSetLoading(props.query.id, false);
     };
