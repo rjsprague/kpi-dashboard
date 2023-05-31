@@ -1,16 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import KpiCard from './KpiCard';
+import React, { useState } from 'react';
+import KpiSwiper from './KpiSwiper';
 import SingleDateRangeSelector from './SingleDateRangeSelector';
-import TeamMemberDropdown from './TeamMemberDropdown'; // This is a new component to be created
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faGear, faTimes } from '@fortawesome/free-solid-svg-icons';
+import TeamMemberDropdown from './TeamMemberDropdown';
+import QueryPanel from './QueryPanel';
 import AnimateHeight from 'react-animate-height';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import SwiperCore, { Scrollbar, Mousewheel, Controller } from 'swiper';
-import 'swiper/swiper-bundle.min.css';
 import RightSlideModal from '../RightSlideModal';
+import ServiceUnavailable from '../ServiceUnavailable';
 
-SwiperCore.use([Scrollbar, Mousewheel, Controller]);
 
 const TeamKpiQuery = ({
     view,
@@ -61,184 +57,40 @@ const TeamKpiQuery = ({
         <div className="mb-2">
             {/* Main KPI Results */}
             {/* ... similar to AcquisitionsKpiQuery */}
-            <div className="px-4 py-2 text-sm rounded-lg shadow-super-3 bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
-                <div className='relative flex flex-row items-center gap-2 align-middle md:justify-center'>
-                    <button
-                        className="box-border absolute px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md left-0.5 shadow-super-4 hover:animate-pulse"
-                        onClick={() => {
-                            handleToggleQuery(query.id)
-                            setHeight(height === 0 ? 'auto' : 0)
-                        }}
-                    >
-                        {query.isOpen ?
-                            <FontAwesomeIcon
-                                icon={faChevronDown}
-                                size="sm"
-                                className='text-blue-900 transition-transform duration-500 rotate-180 transform-gpu'
-                            /> :
-                            <FontAwesomeIcon
-                                icon={faChevronDown}
-                                size="sm"
-                                className='text-blue-900 transition-transform duration-500 transform-gpu'
-                            />
-                        }
-                    </button>
-                    <div className='flex items-center '>
+            <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
+                <div className='flex items-center justify-between gap-4 align-middle'>
+                    {/* Seat, Team Member and Date Range Selectors */}
+                    <div className='flex items-center justify-between gap-2 align-middle'>
                         <div className='flex items-center justify-between gap-4 align-middle'>
-                            {/* Seat, Team Member and Date Range Selectors */}
-                            <div className='flex items-center justify-between gap-2 align-middle'>
-
-                                <div className='flex items-center justify-between gap-4 align-middle'>                                    
-                                    <label className=''>
-                                        Team Member:
-                                    </label>
-                                    <TeamMemberDropdown
-                                        onOptionSelected={handleTeamMemberChange}
-                                        queryId={query.id}
-                                    /> 
-                                </div>
-                                
-                            </div>
-                            <div className="flex justify-between gap-2">
-                                <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
-                            </div>
+                            <label className=''>
+                                Team Member:
+                            </label>
+                            <TeamMemberDropdown
+                                onOptionSelected={handleTeamMemberChange}
+                                queryId={query.id}
+                            />
                         </div>
                     </div>
-                    <button
-                        className="box-border px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md right-0.5 shadow-super-4 hover:animate-pulse"
-                        onClick={handleGearIconClick}
-                    >
-                        <FontAwesomeIcon
-                            icon={faGear}
-                            size="sm"
-                            className="text-blue-900 transform-gpu"
-                        />
-                    </button>
-                    {query.id !== 1 && (
-                        <button
-                            className="box-border absolute px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md right-0.5 shadow-super-4 hover:animate-pulse"
-                            onClick={handleRemoveQuery}
-                        >
-                            <FontAwesomeIcon
-                                icon={faTimes}
-                                size="sm"
-                                className="text-blue-900 transform-gpu"
-                            />
-                        </button>
-                    )}
+                    <div className="flex justify-between gap-2">
+                        <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
+                    </div>
                 </div>
-            </div>
+            </QueryPanel>
             <AnimateHeight
                 id="query"
                 duration={500}
                 height={height}
             >
                 {/* Service Unavailable */}
-                {query.isUnavailable ?
-                    <div className="flex flex-col items-center justify-center w-full h-full p-4 text-center bg-white rounded-lg shadow-super-3">
-                        <FontAwesomeIcon
-                            icon={faExclamationTriangle}
-                            size="3x"
-                            className='text-red-500'
-                        />
-                        <h1 className="text-2xl font-bold text-gray-700">
-                            Service Unavailable
-                        </h1>
-                        <p className="text-gray-500">
-                            Please try again later.
-                        </p>
-                    </div>
+                {query.isUnavailable ? <ServiceUnavailable />
                     :
                     <div key={query.id} className={`relative p-2 bg-white shadow-super-3 rounded-lg`}>
                         <div className="relative px-4">
-                            {/* SWIPER FOR KPI CARDS */}
-                            <Swiper
-                                spaceBetween={10}
-                                modules={[Scrollbar, Mousewheel, Controller]}
-                                controller
-                                scrollbar={{
-                                    draggable: true,
-                                    snapOnRelease: false,
-                                }}
-                                loop={false}
-                                direction={'horizontal'}
-                                mousewheel={{
-                                    sensitivity: 3,
-                                    thresholdDelta: 1,
-                                    thresholdTime: 50,
-                                }}
-                                breakpoints={{
-                                    320: {
-                                        slidesPerView: 1,
-                                        spaceBetween: 20,
-                                        slidesOffsetBefore: 0,
-                                        slidesOffsetAfter: 0,
-                                    },
-                                    374: {
-                                        slidesPerView: 1,
-                                        spaceBetween: 20,
-                                        slidesOffsetBefore: 10,
-                                        slidesOffsetAfter: 10,
-                                    },
-                                    424: {
-                                        slidesPerView: 1,
-                                        spaceBetween: 20,
-                                        slidesOffsetBefore: 20,
-                                        slidesOffsetAfter: 20,
-                                    },
-                                    768: {
-                                        slidesPerView: 2,
-                                        spaceBetween: 0,
-                                        slidesOffsetBefore: 10,
-                                        slidesOffsetAfter: 10,
-                                    },
-                                    1023: {
-                                        slidesPerView: 2,
-                                        spaceBetween: 0,
-                                        slidesOffsetBefore: 5,
-                                        slidesOffsetAfter: 5,
-
-                                    },
-                                    1400: {
-                                        slidesPerView: 3,
-                                        spaceBetween: 10,
-                                        slidesOffsetBefore: 10,
-                                        slidesOffsetAfter: 10,
-                                    },
-                                    1750: {
-                                        slidesPerView: 4,
-                                        spaceBetween: 10,
-                                        slidesOffsetBefore: 20,
-                                        slidesOffsetAfter: 20,
-                                    },
-                                }}
-                                className="mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70"
-                            >
-                                <div className={``}>
-                                    {query.results.length > 0 && query.isOpen && !query.isLoading ?
-                                        query.results
-                                            .filter((result) => selectedKpis.includes(result.name))
-                                            .map((result, index) => (
-                                                <SwiperSlide key={index}>
-                                                    <div className='my-3 h-70 backface'>
-                                                        <KpiCard
-                                                            prop={result}
-                                                            handleCardInfoClick={() => handleCardInfoClick(result)}
-                                                        />
-                                                    </div>
-                                                </SwiperSlide>
-                                            ))
-                                        :
-                                        <div className="flex flex-row justify-center gap-10 mt-3">
-                                            <div className='flex bg-gray-200 rounded-lg w-80 h-60 animate-pulse shadow-super-3 '></div>
-                                            <div className='hidden bg-gray-200 rounded-lg sm:flex w-80 h-60 animate-pulse shadow-super-3'></div>
-                                            <div className='hidden bg-gray-200 rounded-lg xl:flex w-80 h-60 animate-pulse shadow-super-3'></div>
-                                            <div className='hidden bg-gray-200 rounded-lg 5xl:flex w-80 h-60 animate-pulse shadow-super-3'></div>
-                                        </div>
-                                    }
-                                </div>
-                            </Swiper>
-                            {/* END OF SWIPER FOR KPI CARDS */}
+                            <KpiSwiper
+                                query={query}
+                                selectedKpis={selectedKpis}
+                                handleCardInfoClick={handleCardInfoClick}
+                            />
                             <RightSlideModal
                                 isOpen={openModal}
                                 handleCloseModal={() => setOpenModal(false)}

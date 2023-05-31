@@ -1,29 +1,28 @@
-import { useState, useEffect } from "react";
-import Dropdown from './Dropdown';
+import React, { useEffect, useState } from 'react';
 import fetchLeadSources from '../../lib/fetchLeadSources';
+import Dropdown from './Dropdown';
 
-function LeadSourcesDropdown({ onOptionSelected, queryId }) {
-    const [leadSources, setLeadSources] = useState([]);
+export default function LeadSourceDropdown({ onOptionSelected }) {
+    const [leadSources, setLeadSources] = useState({});
+
     useEffect(() => {
-        const fetchSources = async () => {
+        async function getLeadSources() {
             const sources = await fetchLeadSources();
             setLeadSources(sources);
-        };
-        fetchSources();
+        }
+        getLeadSources();
     }, []);
 
-    const optionDisplayName = (optionValue) => {
-        return Object.keys(leadSources).find(key => leadSources[key] === optionValue);
-    }
+    const leadSourceArray = Object.keys(leadSources);
 
-    return leadSources ? (
-        <Dropdown
-            options={leadSources}
-            optionDisplayName={optionDisplayName}
-            onOptionSelected={onOptionSelected}
-            queryId={queryId}
-        />
-    ) : null;
+    const handleOptionSelected = (selectedOptions) => {
+        // Here, selectedOptions is an array of selected option names
+        // We convert this array back to an array of IDs
+        const selectedIds = selectedOptions.map(option => leadSources[option]);
+        onOptionSelected(selectedIds);
+    };
+
+    return (
+        <Dropdown options={leadSourceArray} onOptionSelected={handleOptionSelected} />
+    );
 }
-
-export default LeadSourcesDropdown;

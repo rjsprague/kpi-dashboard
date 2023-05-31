@@ -3,20 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Transition } from "react-transition-group";
 
-function getKeyByValue(object, value, props) {
-    if (object === null || value === null) return null;
-    return Object.keys(object).find(key => object[key] === value);
-}
-
 function Dropdown({ options, onOptionSelected, queryId }) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [contentHeight, setContentHeight] = useState(0);
+    const dropdownRef = useRef(null); // New ref for dropdown
     const dropdownContentRef = useRef(null);
-
-    const allSelected = options
-        ? selectedOptions.length === Object.keys(options).length
-        : false;
 
     useEffect(() => {
         if (isOpen) {
@@ -29,36 +21,39 @@ function Dropdown({ options, onOptionSelected, queryId }) {
         }
     }, [isOpen]);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            // Use dropdownRef to check if click was inside or outside
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsOpen(false); // Close dropdown
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     const toggleOpen = () => {
         setIsOpen(!isOpen);
     };
 
-    const handleSelectAll = () => {
-        if (selectedOptions.length === Object.keys(options).length) {
-            onOptionSelected([], queryId);
-            setSelectedOptions([]);
-        } else {
-            onOptionSelected(Object.values(options), queryId);
-            setSelectedOptions(Object.values(options));
-        }
-    };
-
-    const handleCheckboxChange = (department, member) => {
-        let selectedValues = member ? [`${department}-${member}`] : Object.keys(options[department]).map(member => `${department}-${member}`);
+    const handleCheckboxChange = (option) => {
         let newSelectedOptions = [...selectedOptions];
 
-        for (let val of selectedValues) {
-            const isSelected = newSelectedOptions.includes(val);
+        if (option === 'All') {
+            // Toggle selection of all options
+            newSelectedOptions = newSelectedOptions.length === options.length ? [] : [...options];
+        } else {
+            const isSelected = newSelectedOptions.includes(option);
             if (isSelected) {
-                const index = newSelectedOptions.indexOf(val);
-                newSelectedOptions = [
-                    ...newSelectedOptions.slice(0, index),
-                    ...newSelectedOptions.slice(index + 1),
-                ];
+                newSelectedOptions = newSelectedOptions.filter(selectedOption => selectedOption !== option);
             } else {
-                newSelectedOptions.push(val);
+                newSelectedOptions.push(option);
             }
         }
+
         onOptionSelected(newSelectedOptions, queryId);
         setSelectedOptions(newSelectedOptions);
     };
@@ -79,7 +74,7 @@ function Dropdown({ options, onOptionSelected, queryId }) {
     };
 
     return (
-        <div className="relative items-center dropdown">
+        <div ref={dropdownRef} className="relative items-center dropdown">
             <button
                 className="items-center w-40 h-8 min-w-0 px-2 overflow-hidden text-sm text-left text-white align-middle bg-blue-900 rounded-md cursor-pointer max-w-xxs focus:outline-none focus:ring-2 focus:ring-blue-400 bg-opacity-80"
                 onClick={() => {
@@ -91,7 +86,7 @@ function Dropdown({ options, onOptionSelected, queryId }) {
                     : selectedOptions.length === Object.keys(options).length
                         ? "All"
                         : selectedOptions.length === 1
-                            ? getKeyByValue(options, selectedOptions[0])
+                            ? selectedOptions[0] // Display the name of the selected option
                             : `${selectedOptions.length} selected`}
                 {isOpen ?
                     <FontAwesomeIcon
@@ -119,35 +114,29 @@ function Dropdown({ options, onOptionSelected, queryId }) {
                         }}
                     >
                         <ul className="py-1">
-                            {options && Object.entries(options).map(([department, members]) => {
+                            <li className="px-3 py-1 text-white cursor-pointer hover:bg-blue-800">
+                                <label className="inline-flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
+                                        checked={selectedOptions.length === options.length}
+                                        onChange={() => handleCheckboxChange('All')}
+                                    />
+                                    All
+                                </label>
+                            </li>
+                            {options && options.map((option) => {
                                 return (
-                                    <li key={department} className="px-3 py-0 text-white cursor-pointer hover:bg-blue-800">
+                                    <li key={option} className="px-3 py-1 text-white cursor-pointer hover:bg-blue-800">
                                         <label className="inline-flex items-center">
                                             <input
                                                 type="checkbox"
                                                 className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
-                                                checked={Object.keys(members).every(member => selectedOptions.includes(`${department}-${member}`))}
-                                                onChange={() => handleCheckboxChange(department)}
+                                                checked={selectedOptions.includes(option)}
+                                                onChange={() => handleCheckboxChange(option)}
                                             />
-                                            {department}
+                                            {option}
                                         </label>
-                                        <ul className="pl-6">
-                                            {Object.entries(members).map(([id, name]) => {
-                                                return (
-                                                    <li key={id} className="px-3 py-1 text-white cursor-pointer hover:bg-blue-800">
-                                                        <label className="inline-flex items-center">
-                                                            <input
-                                                                type="checkbox"
-                                                                className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
-                                                                checked={selectedOptions.includes(`${department}-${id}`)}
-                                                                onChange={() => handleCheckboxChange(department, id)}
-                                                            />
-                                                            {name}
-                                                        </label>
-                                                    </li>
-                                                );
-                                            })}
-                                        </ul>
                                     </li>
                                 );
                             })}

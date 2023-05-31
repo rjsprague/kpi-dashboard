@@ -5,7 +5,7 @@ import FinancialsKpiQuery from './FinancialsKpiQuery';
 import fetchKpiData from '../../lib/fetch-kpis';
 
 const KpiQuery = ({ ...props }) => {
-  console.log("KpiQuery props", props)
+  //console.log("KpiQuery props", props)
 
   useEffect(() => {
     const fetchData = async () => {
