@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import KpiSwiper from './KpiSwiper';
 import SingleDateRangeSelector from './SingleDateRangeSelector';
-import TeamMemberDropdown from './TeamMemberDropdown';
+import TeamComponent from './TeamComponent';
 import QueryPanel from './QueryPanel';
 import AnimateHeight from 'react-animate-height';
 import RightSlideModal from '../RightSlideModal';
 import ServiceUnavailable from '../ServiceUnavailable';
-
 
 const TeamKpiQuery = ({
     view,
@@ -17,13 +16,15 @@ const TeamKpiQuery = ({
     onDateRangeChange,
     onToggleQuery,
     onRemoveQuery,
-    onTeamMemberChange,
+    onTeamChange,
 }) => {
     const [height, setHeight] = useState('auto');
     const [openModal, setOpenModal] = useState(false);
     const [modalType, setModalType] = useState("info");
     const [selectedResult, setSelectedResult] = useState(null);
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
+
+    console.log("query Team Member Dropdown", query.teamMember)
 
     const handleCardInfoClick = (result) => {
         setSelectedResult(result);
@@ -34,10 +35,6 @@ const TeamKpiQuery = ({
     const handleGearIconClick = () => {
         setModalType("settings");
         setOpenModal(true);
-    };
-
-    const handleTeamMemberChange = (value) => {
-        onTeamMemberChange(value, query.id);
     };
 
     const handleDateRangeChange = (startDate, endDate) => {
@@ -61,15 +58,10 @@ const TeamKpiQuery = ({
                 <div className='flex items-center justify-between gap-4 align-middle'>
                     {/* Seat, Team Member and Date Range Selectors */}
                     <div className='flex items-center justify-between gap-2 align-middle'>
-                        <div className='flex items-center justify-between gap-4 align-middle'>
-                            <label className=''>
-                                Team Member:
-                            </label>
-                            <TeamMemberDropdown
-                                onOptionSelected={handleTeamMemberChange}
-                                queryId={query.id}
-                            />
-                        </div>
+                        <TeamComponent
+                            onTeamChange={onTeamChange}
+                            queryId={query.id}
+                        />
                     </div>
                     <div className="flex justify-between gap-2">
                         <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />

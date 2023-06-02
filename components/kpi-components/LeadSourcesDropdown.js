@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import fetchLeadSources from '../../lib/fetchLeadSources';
 import Dropdown from './Dropdown';
+import ServiceUnavailable from '../ServiceUnavailable';
 
 export default function LeadSourceDropdown({ onOptionSelected }) {
     const [leadSources, setLeadSources] = useState({});
+    const [isUnavailable, setIsUnavailable] = useState(false);
 
     useEffect(() => {
         async function getLeadSources() {
-            const sources = await fetchLeadSources();
-            setLeadSources(sources);
+            try {
+                const sources = await fetchLeadSources();
+                setLeadSources(sources);
+            } catch (error) {
+                console.error(error);
+                setIsUnavailable(true);
+            }
         }
         getLeadSources();
     }, []);
@@ -22,7 +29,14 @@ export default function LeadSourceDropdown({ onOptionSelected }) {
         onOptionSelected(selectedIds);
     };
 
+    if (isUnavailable) {
+        return <ServiceUnavailable small={true} />;
+    }
+
     return (
-        <Dropdown options={leadSourceArray} onOptionSelected={handleOptionSelected} />
+        <Dropdown 
+            options={leadSourceArray} 
+            onOptionSelected={handleOptionSelected} 
+        />
     );
 }

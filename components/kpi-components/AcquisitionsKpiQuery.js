@@ -17,7 +17,6 @@ const AcquisitionsKpiQuery = ({
     onLeadSourceChange,
     onToggleQuery,
     onRemoveQuery,
-
 }) => {
     //console.log("view: ", view)
     //console.log("VIEW_KPIS: ", VIEW_KPIS)

@@ -21,8 +21,8 @@ const KpiQueryContainer = ({ view, kpiList }) => {
             isUnavailable: false,
             leadSource: [],
             dateRange: { gte: datePresets['All Time'].startDate, lte: datePresets['All Time'].endDate },
-            teamMember: [],
             department: [],
+            teamMember: []
         },
     ]);
 
@@ -79,13 +79,14 @@ const KpiQueryContainer = ({ view, kpiList }) => {
         );
     };
 
-    const handleTeamMemberChange = (teamMember, queryId) => {
+    const handleTeamChange = (department, teamMembers, queryId) => {
         setQueries((prevQueries) =>
             prevQueries.map((query) =>
                 query.id === queryId
                     ? {
                         ...query,
-                        teamMember: teamMember,
+                        department: department,
+                        teamMember: teamMembers,
                     }
                     : query
             )
@@ -118,6 +119,8 @@ const KpiQueryContainer = ({ view, kpiList }) => {
             isUnavailable: false,
             leadSource: [],
             dateRange: { gte: datePresets['All Time'].startDate, lte: datePresets['All Time'].endDate },
+            department: [],
+            teamMember: []
         };
         setIdCounter(idCounter + 1);
         setQueries([...queries, newQuery]);
@@ -135,13 +138,14 @@ const KpiQueryContainer = ({ view, kpiList }) => {
                     query={query}
                     kpiList={kpiList}
                     teamMember={query.teamMember}
+                    department={query.department}
                     onDateRangeChange={handleDateRangeChange}
                     onLeadSourceChange={handleLeadSourceChange}
                     onToggleQuery={handleToggleQuery}
                     onRemoveQuery={handleRemoveQuery}
                     onFetchedKpiData={handleFetchedKpiData}
                     onSetLoading={handleSetLoading}
-                    onTeamMemberChange={handleTeamMemberChange}
+                    onTeamChange={handleTeamChange}
                 />
             ))}
             <AddQueryButton handleAddQuery={handleAddQuery} />

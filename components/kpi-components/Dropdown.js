@@ -10,6 +10,9 @@ function Dropdown({ options, onOptionSelected, queryId }) {
     const dropdownRef = useRef(null); // New ref for dropdown
     const dropdownContentRef = useRef(null);
 
+    console.log("options", options) // this is an array of objects, each object has a name and an id
+    // Check if options contains objects with 
+
     useEffect(() => {
         if (isOpen) {
             const contentElement = dropdownContentRef.current;
