@@ -21,8 +21,8 @@ const KpiQueryContainer = ({ view, kpiList }) => {
             isUnavailable: false,
             leadSource: [],
             dateRange: { gte: datePresets['All Time'].startDate, lte: datePresets['All Time'].endDate },
-            department: [],
-            teamMember: []
+            department: ["Lead Manager"],
+            teamMember: ["All"]
         },
     ]);
 

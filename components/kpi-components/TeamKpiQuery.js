@@ -24,7 +24,7 @@ const TeamKpiQuery = ({
     const [selectedResult, setSelectedResult] = useState(null);
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
 
-    console.log("query Team Member Dropdown", query.teamMember)
+    //console.log("query Team Member Dropdown", query.teamMember)
 
     const handleCardInfoClick = (result) => {
         setSelectedResult(result);

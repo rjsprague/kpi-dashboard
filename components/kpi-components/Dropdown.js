@@ -3,15 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Transition } from "react-transition-group";
 
-function Dropdown({ options, onOptionSelected, queryId }) {
+function Dropdown({ options, onOptionSelected, queryId, isSingleSelect }) {
+    const [selectedOptions, setSelectedOptions] = useState(options || []);
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedOptions, setSelectedOptions] = useState([]);
     const [contentHeight, setContentHeight] = useState(0);
     const dropdownRef = useRef(null); // New ref for dropdown
     const dropdownContentRef = useRef(null);
 
-    console.log("options", options) // this is an array of objects, each object has a name and an id
-    // Check if options contains objects with 
 
     useEffect(() => {
         if (isOpen) {
@@ -46,20 +44,27 @@ function Dropdown({ options, onOptionSelected, queryId }) {
         let newSelectedOptions = [...selectedOptions];
 
         if (option === 'All') {
-            // Toggle selection of all options
-            newSelectedOptions = newSelectedOptions.length === options.length ? [] : [...options];
+            newSelectedOptions = newSelectedOptions.length === option.length ? [] : [...option];
         } else {
-            const isSelected = newSelectedOptions.includes(option);
-            if (isSelected) {
-                newSelectedOptions = newSelectedOptions.filter(selectedOption => selectedOption !== option);
+            if (isSingleSelect) {
+                // If isSingleSelect is true, only select the clicked option
+                newSelectedOptions = [option];
             } else {
-                newSelectedOptions.push(option);
+                // Otherwise, add the clicked option to the selected options
+                const isSelected = selectedOptions.includes(option);
+                newSelectedOptions = [...selectedOptions];
+                if (isSelected) {
+                    newSelectedOptions = newSelectedOptions.filter(selectedOption => selectedOption !== option);
+                } else {
+                    newSelectedOptions.push(option);
+                }
             }
         }
 
         onOptionSelected(newSelectedOptions, queryId);
         setSelectedOptions(newSelectedOptions);
     };
+
 
     const duration = 350;
     const defaultStyle = {
@@ -79,7 +84,7 @@ function Dropdown({ options, onOptionSelected, queryId }) {
     return (
         <div ref={dropdownRef} className="relative items-center dropdown">
             <button
-                className="items-center w-40 h-8 min-w-0 px-2 overflow-hidden text-sm text-left text-white align-middle bg-blue-900 rounded-md cursor-pointer max-w-xxs focus:outline-none focus:ring-2 focus:ring-blue-400 bg-opacity-80"
+                className="items-center w-40 h-8 min-w-0 px-2 overflow-hidden text-sm text-left text-white align-middle bg-blue-900 rounded-md cursor-pointer shadow-super-4 max-w-xxs focus:outline-none focus:ring-2 focus:ring-blue-400 bg-opacity-80"
                 onClick={() => {
                     toggleOpen();
                 }}

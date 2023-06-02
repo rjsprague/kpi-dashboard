@@ -9,7 +9,7 @@ const KpiQuery = ({ ...props }) => {
   //console.log("KpiQuery props query team member", props.query.teamMember)
   //console.log("KpiQuery props query lead source", props.query.leadSource)
   //console.log("KpiQuery props query date range", props.query.dateRange)
-  console.log("On Team Change props", props.onTeamChange)
+  //console.log("On Team Change props", props.onTeamChange)
 
   useEffect(() => {
     const fetchData = async () => {

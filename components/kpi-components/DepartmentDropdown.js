@@ -3,7 +3,7 @@ import Dropdown from './Dropdown';
 import fetchActiveTeamMembers from "../../lib/fetchActiveTeamMembers";
 import ServiceUnavailable from '../ServiceUnavailable';
 
-function DepartmentDropdown({ onOptionSelected, queryId }) {
+function DepartmentDropdown({ onOptionSelected, selectedDepartment, queryId }) {
     const [departments, setDepartments] = useState([]);
     const [isUnavailable, setIsUnavailable] = useState(false);
 
@@ -22,7 +22,7 @@ function DepartmentDropdown({ onOptionSelected, queryId }) {
         fetchDepartments();
     }, []);
 
-    const handleOptionSelected = (selectedOptions) => {       
+    const handleOptionSelected = (selectedOptions) => {
         onOptionSelected(selectedOptions);
     };
 
@@ -34,7 +34,9 @@ function DepartmentDropdown({ onOptionSelected, queryId }) {
         <Dropdown
             options={departments}
             onOptionSelected={handleOptionSelected}
+            selectedOptions={selectedDepartment}
             queryId={queryId}
+            isSingleSelect={true}
         />
     );
 }

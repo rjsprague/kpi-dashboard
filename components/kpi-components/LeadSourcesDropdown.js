@@ -3,7 +3,7 @@ import fetchLeadSources from '../../lib/fetchLeadSources';
 import Dropdown from './Dropdown';
 import ServiceUnavailable from '../ServiceUnavailable';
 
-export default function LeadSourceDropdown({ onOptionSelected }) {
+export default function LeadSourceDropdown({ onOptionSelected, queryId }) {
     const [leadSources, setLeadSources] = useState({});
     const [isUnavailable, setIsUnavailable] = useState(false);
 
@@ -34,9 +34,12 @@ export default function LeadSourceDropdown({ onOptionSelected }) {
     }
 
     return (
-        <Dropdown 
-            options={leadSourceArray} 
-            onOptionSelected={handleOptionSelected} 
+        <Dropdown
+            options={leadSourceArray}
+            onOptionSelected={handleOptionSelected}
+            selectedOptions={null}
+            queryId={queryId}
+            isSingleSelect={false}
         />
     );
 }
