@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import AcquisitionsKpiQuery from './AcquisitionsKpiQuery';
 import TeamKpiQuery from './TeamKpiQuery';
 import FinancialsKpiQuery from './FinancialsKpiQuery';
+import Leaderboard from './Leaderboard';
 import fetchKpiData from '../../lib/fetch-kpis';
 
 const KpiQuery = ({ ...props }) => {
@@ -49,8 +50,8 @@ const KpiQuery = ({ ...props }) => {
       );
     case 'Financial':
       return <FinancialsKpiQuery {...props} />;
-    case 'Dispositions':
-      return <DispositionsKpiQuery {...props} />;
+    case 'Leaderboard':
+      return <Leaderboard />;
     default:
       return <AcquisitionsKpiQuery {...props} />;
   }

@@ -1,8 +1,8 @@
-export const KPI_VIEWS = {
-    Financial: 'Financials',
-    Acquisitions: 'Acquisitions',
-    Dispositions: 'Dispositions',
+export const KPI_VIEWS = {    
+    Acquisitions: 'Acquisitions',    
     Team: 'Team',
+    Financial: 'Financials',
+    Leaderboard: 'Leaderboard'
   };
 
  export const VIEW_KPIS = {
@@ -39,4 +39,11 @@ export const KPI_VIEWS = {
         "ROAS Total",
         "ROAS Total APR",
     ],
+    Leaderboard: [
+        "Cost Per Contract",
+        "Cost Per Qualified Lead",
+        "Speed to Lead",
+        "# of Signed Contracts",
+        "# of Deals"
+    ]
 };
