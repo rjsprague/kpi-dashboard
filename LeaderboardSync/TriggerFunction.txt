@@ -1,0 +1,3 @@
+httpsTrigger:
+  securityLevel: SECURE_ALWAYS
+  url: https://us-central1-access-spreadsheets-388622.cloudfunctions.net/sync_reia_leaderboard
