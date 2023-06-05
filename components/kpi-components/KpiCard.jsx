@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { FiInfo } from 'react-icons/fi';
 
 export default function KpiCard({ prop, handleCardInfoClick }) {
-  console.log('KpiCard: ', prop);
+  //console.log('KpiCard: ', prop);
   const [isFlipped, setIsFlipped] = useState(false);
 
   const renderMeter = () => {

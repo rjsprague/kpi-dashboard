@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import fetchActiveTeamMembers from '../../lib/fetchActiveTeamMembers';
-import Dropdown from './Dropdown';
+import CheckboxDropdown from './CheckboxDropdown';
 import ServiceUnavailable from '../ServiceUnavailable';
 
 export default function TeamMemberDropdown({ onOptionSelected, selectedDepartment, selectedTeamMembers, queryId }) {
@@ -38,7 +38,7 @@ export default function TeamMemberDropdown({ onOptionSelected, selectedDepartmen
   }
 
   return (
-    <Dropdown
+    <CheckboxDropdown
       options={teamMemberArray}
       onOptionSelected={handleOptionSelected}
       selectedOptions={selectedTeamMembers}

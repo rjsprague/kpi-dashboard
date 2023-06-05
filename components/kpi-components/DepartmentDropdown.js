@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Dropdown from './Dropdown';
+import CheckboxDropdown from './CheckboxDropdown';
 import fetchActiveTeamMembers from "../../lib/fetchActiveTeamMembers";
 import ServiceUnavailable from '../ServiceUnavailable';
 
@@ -31,7 +31,7 @@ function DepartmentDropdown({ onOptionSelected, selectedDepartment, queryId }) {
     }
 
     return (
-        <Dropdown
+        <CheckboxDropdown
             options={departments}
             onOptionSelected={handleOptionSelected}
             selectedOptions={selectedDepartment}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import fetchLeadSources from '../../lib/fetchLeadSources';
-import Dropdown from './Dropdown';
+import CheckboxDropdown from './CheckboxDropdown';
 import ServiceUnavailable from '../ServiceUnavailable';
 
 export default function LeadSourceDropdown({ onOptionSelected, queryId }) {
@@ -34,7 +34,7 @@ export default function LeadSourceDropdown({ onOptionSelected, queryId }) {
     }
 
     return (
-        <Dropdown
+        <CheckboxDropdown
             options={leadSourceArray}
             onOptionSelected={handleOptionSelected}
             selectedOptions={null}

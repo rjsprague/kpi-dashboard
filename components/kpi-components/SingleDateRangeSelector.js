@@ -102,6 +102,7 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
                         </div>
                         <div className="p-2">
                             <DatePicker
+                                key={`${dateRange[0]}-${dateRange[1]}`}
                                 onChange={handleDateRangeChange}
                                 startDate={dateRange[0]}
                                 endDate={dateRange[1]}

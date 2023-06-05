@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Transition } from "react-transition-group";
 
-function Dropdown({ options, onOptionSelected, queryId, isSingleSelect }) {
+function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }) {
     const [selectedOptions, setSelectedOptions] = useState(options || []);
     const [isOpen, setIsOpen] = useState(false);
     const [contentHeight, setContentHeight] = useState(0);
@@ -156,4 +156,4 @@ function Dropdown({ options, onOptionSelected, queryId, isSingleSelect }) {
     );
 }
 
-export default Dropdown;
+export default CheckboxDropdown;

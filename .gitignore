@@ -37,4 +37,5 @@ next-env.d.ts
 db.code-workspace
 
 # Leaderboard Google Sheet sync
-/LeaderboardSync
+/LeaderboardSync/*
+/LeaderboardSync/access-spreadsheets-388622-fe6a2715bfda.json

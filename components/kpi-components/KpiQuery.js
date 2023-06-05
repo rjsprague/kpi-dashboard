@@ -51,7 +51,7 @@ const KpiQuery = ({ ...props }) => {
     case 'Financial':
       return <FinancialsKpiQuery {...props} />;
     case 'Leaderboard':
-      return <Leaderboard />;
+      return <Leaderboard {...props} />;
     default:
       return <AcquisitionsKpiQuery {...props} />;
   }
