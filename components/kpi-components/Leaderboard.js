@@ -76,7 +76,7 @@ export default function Leaderboard({
                 const response = await axios.get(`/api/leaderboard?year=${year}&month=${month}`);
                 const data = response.data;
 
-                console.log('data', data)
+                //console.log('data', data)
 
                 const costPerContractData = [];
                 const costPerQualifiedLeadData = [];

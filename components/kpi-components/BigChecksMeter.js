@@ -7,10 +7,10 @@ import PropTypes from 'prop-types';
 const BigChecksMeter = ({ value, unit, target, redFlag }) => {
   const max = redFlag * 1.5;
 
-  console.log('target', target);
-  console.log('redFlag', redFlag);
-  console.log('max', max);
-  console.log('value', value);
+  //console.log('target', target);
+  //console.log('redFlag', redFlag);
+  //console.log('max', max);
+  //console.log('value', value);
   
 
   return (
@@ -41,8 +41,8 @@ const Dial = ({ target, redFlag, max, value }) => {
     { x: 225 + 205 * Math.cos((Math.PI / 180) * (180 - targetPosition + 4)), y: 200 - 195 * Math.sin((Math.PI / 180) * (180 - targetPosition + 4)) },
   ];
 
-  console.log('targetTriangle', targetTriangle);
-  console.log('redFlagTriangle', redFlagTriangle);
+  //console.log('targetTriangle', targetTriangle);
+  //console.log('redFlagTriangle', redFlagTriangle);
 
   const fillColor = value >= target ? 'green' : value <= redFlag ? 'red' : 'yellow';
 
