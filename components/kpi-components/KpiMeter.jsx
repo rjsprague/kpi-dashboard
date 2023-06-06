@@ -38,8 +38,8 @@ const KpiMeter = ({ redFlag, current, target, kpiName }) => {
     }, [current, currentNum, dollarFill, percentFill]);
 
     return (
-        <div className="flex items-center justify-center overflow-hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" version="2" viewBox="0 0 300 150" width="300" height="150" className="flex overflow-hidden">
+        <div className="absolute bottom-0 overflow-visible -right-1">
+            <svg xmlns="http://www.w3.org/2000/svg" version="2" viewBox="0 0 300 150" width="280" height="130" className="flex overflow-visible">
                 <defs>
                     <clipPath id="theClipPath">
                         <rect x="25" y="60" rx="12" ry="12" width="250" height="40" fill="gray" stroke="none" strokeWidth="0" />

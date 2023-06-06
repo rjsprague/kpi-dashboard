@@ -64,7 +64,7 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }
 
 
 
-    const duration = 350;
+    const duration = 250;
     const defaultStyle = {
         transition: `height ${duration}ms ease-in-out, opacity ${duration}ms ease-in-out`,
         height: 0,
@@ -82,7 +82,7 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }
     return (
         <div ref={dropdownRef} className="relative items-center dropdown">
             <button
-                className="items-center justify-between w-full h-8 px-2 mr-5 overflow-hidden text-sm text-left text-white align-middle bg-blue-900 rounded-md cursor-pointer shadow-super-4 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-opacity-80"
+                className="items-center justify-between w-20 h-8 px-2 overflow-hidden text-sm text-left text-white bg-blue-900 rounded-md cursor-pointer sm:w-32 shadow-super-4 bg-opacity-80"
                 onClick={() => {
                     toggleOpen();
                 }}
@@ -98,12 +98,12 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }
                     <FontAwesomeIcon
                         icon={faChevronDown}
                         size="sm"
-                        className='absolute ml-2 text-white transition-transform duration-500 rotate-180 transform-gpu top-2'
+                        className='absolute ml-2 text-white transition-transform duration-500 rotate-180 transform-gpu top-2 right-2'
                     /> :
                     <FontAwesomeIcon
                         icon={faChevronDown}
                         size="sm"
-                        className='absolute ml-2 text-white transition-transform duration-500 transform-gpu top-2'
+                        className='absolute ml-2 text-white transition-transform duration-500 transform-gpu top-2 right-2'
                     />
                 }
             </button>
@@ -111,7 +111,7 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }
                 {(state) => (
                     <div
                         ref={dropdownContentRef}
-                        className="absolute right-0 z-50 w-full text-white bg-blue-900 rounded-md shadow-lg bg-opacity-80 top-10"
+                        className="absolute left-0 z-50 text-white bg-blue-900 rounded-md shadow-lg w-44 bg-opacity-80 top-10"
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],

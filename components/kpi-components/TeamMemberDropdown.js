@@ -3,19 +3,21 @@ import fetchActiveTeamMembers from '../../lib/fetchActiveTeamMembers';
 import CheckboxDropdown from './CheckboxDropdown';
 import ServiceUnavailable from '../ServiceUnavailable';
 
-export default function TeamMemberDropdown({ onOptionSelected, selectedDepartment, selectedTeamMembers, queryId }) {
-  const [teamMembers, setTeamMembers] = useState({});
+export default function TeamMemberDropdown({ onOptionSelected, selectedDepartment, selectedTeamMembers, queryId, defaultDepartment }) {
+  const [teamMembers, setTeamMembers] = useState([]);
   const [isUnavailable, setIsUnavailable] = useState(false);
 
   useEffect(() => {
     async function getTeamMembers() {
       try {
         const members = await fetchActiveTeamMembers();
+        console.log("members", members)
         const membersObject = {};
 
         for (const id in members[selectedDepartment]) {
           membersObject[members[selectedDepartment][id]] = id;
         }
+        console.log("membersObject", membersObject)
         setTeamMembers(membersObject);
       } catch (error) {
         console.error(error);

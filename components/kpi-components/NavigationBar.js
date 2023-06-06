@@ -18,7 +18,7 @@ export default function NavigationBar({ onQueryTypeChange }) {
   }
 
   return (
-    <div className="flex flex-row flex-wrap bg-blue-600 shadow-super-4 ">
+    <div className="flex flex-row flex-wrap justify-center bg-blue-600 lg:justify-normal lg:pl-2 shadow-super-4 ">
       <ul className="flex flex-wrap items-center gap-1 m-1 sm:m-2 sm:gap-4">        
         {views.map(view => (
           <li className="" key={view}>

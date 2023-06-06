@@ -40,13 +40,13 @@ export default function KpiCard({ prop, handleCardInfoClick }) {
   };
 
   return (
-    <div className="box-border flip-container">
-      <div className={`box-border flipper ${isFlipped ? 'flipped' : ''}`}>
-        <div className="box-border py-1 text-center text-black delay-500 rounded w-68 xs:w-76 sm:w-80 h-60 shadow-super-3 transform-gpu front">
+    <div className="flex">
+      <div className={`box-border`}>
+        <div className="box-border px-2 py-1 text-center text-black delay-500 rounded h-52 w-68 xs:w-72 sm:w-72 shadow-super-3 transform-gpu front">
           <h1 className="text-2xl font-semibold tracking-tighter align-top">{prop.name}</h1>
-          <div className="mt-2 font-medium text-md">
+          <div className="mt-1 font-medium text-md">
             {prop.data1 !== null && prop.data2 !== null ? (
-              <div className="flex flex-row justify-center gap-4 mx-2">
+              <div className="flex flex-row justify-center gap-6 mx-2">
                 <div>{prop.data1.length > 1 && prop.data1}</div>
                 <div>{prop.data2.length > 1 && prop.data2}</div>
               </div>
@@ -64,7 +64,7 @@ export default function KpiCard({ prop, handleCardInfoClick }) {
             <FiInfo />
           </button>
         </div>
-        <div className="box-border py-2 ml-8 overflow-hidden transition-all delay-500 bg-white rounded w-68 xs:w-76 sm:w-80 transform-gpu h-60 back shadow-super-3">
+        <div className="box-border py-2 ml-8 overflow-hidden transition-all delay-500 bg-white rounded w-68 xs:w-76 sm:w-80 transform-gpu back shadow-super-3">
           {prop.kpiFactors ?
             prop.kpiFactors.map((factor) => {
               return (

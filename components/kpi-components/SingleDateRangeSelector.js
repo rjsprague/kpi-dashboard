@@ -70,7 +70,7 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
         <div className="relative flex text-sm bg-opacity-80 date-picker">
             <button
                 onClick={toggleDatePicker}
-                className="box-border w-40 h-8 px-2 py-1 text-white transition-colors duration-200 bg-blue-900 rounded-md shadow-super-4 hover:bg-blue-50"
+                className="box-border w-20 h-8 px-2 py-1 mx-2 text-white transition-colors duration-200 bg-blue-900 rounded-md sm:w-32 shadow-super-4 hover:bg-blue-50"
             >
                 {dateRange && dateRange[0] instanceof Date && !isNaN(dateRange[0]) && dateRange[0] === datePresets['All Time'].startDate ? 'All Time' :
                     dateRange && dateRange[0] instanceof Date && !isNaN(dateRange[0]) && dateRange[1] && dateRange[0].toLocaleDateString() === dateRange[1]?.toLocaleDateString() ? dateRange[0]?.toLocaleDateString() :
@@ -81,7 +81,7 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
                 {(state) => (
                     <div
                         ref={datePickerContentRef}
-                        className={`absolute z-50 flex flex-row translate-y-8 bg-blue-900 rounded-md bg-opacity-80 shadow-super-4`}
+                        className={`absolute -right-10 xl:left-2 h-full z-50 flex w-72 sm:w-100 flex-col sm:flex-row translate-y-9 bg-blue-900 rounded-md bg-opacity-80 shadow-super-4`}
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],
@@ -89,7 +89,7 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
                             overflowY: "auto", // Enable scrolling if the content is too long
                         }}
                     >
-                        <div className="mt-2 mb-3 ml-2 overflow-y-scroll">
+                        <div className="flex flex-row flex-wrap mt-2 mb-2 ml-2 sm:overflow-y-scroll sm:overflow-x-hidden">
                             {Object.entries(datePresets).map(([key, preset], index) => (
                                 <button
                                     key={index}

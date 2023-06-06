@@ -3,16 +3,17 @@ import CheckboxDropdown from './CheckboxDropdown';
 import fetchActiveTeamMembers from "../../lib/fetchActiveTeamMembers";
 import ServiceUnavailable from '../ServiceUnavailable';
 
-function DepartmentDropdown({ onOptionSelected, selectedDepartment, queryId }) {
-    const [departments, setDepartments] = useState([]);
+function DepartmentDropdown({ onOptionSelected, selectedDepartment, queryId, defaultOption }) {
+    const [departments, setDepartments] = useState(defaultOption);
     const [isUnavailable, setIsUnavailable] = useState(false);
 
     useEffect(() => {
         async function fetchDepartments() {
             try {
                 const data = await fetchActiveTeamMembers();
+                console.log("data", data)
                 const departments = Object.keys(data);
-                //console.log("departments", departments)
+                console.log("departments", departments)
                 setDepartments(departments);
             } catch (error) {
                 console.error(error);

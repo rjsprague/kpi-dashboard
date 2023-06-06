@@ -34,8 +34,8 @@ export default function Leaderboard({
     const [speedToLeadTop3, setSpeedToLeadTop3] = useState([]);
     const [signedContractsTop3, setSignedContractsTop3] = useState([]);
     const [dealsTop3, setDealsTop3] = useState([]);
-    const [year, setYear] = useState('');
-    const [month, setMonth] = useState('');
+    const [year, setYear] = useState('2023');
+    const [month, setMonth] = useState('February');
     const [error, setError] = useState(null);
     const [height, setHeight] = useState('auto');
     const [openModal, setOpenModal] = useState(false);
@@ -64,8 +64,6 @@ export default function Leaderboard({
             data: dealsTop3,
         },
     ];
-
-
 
     const years = ['2023'];  // update this list as needed
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -168,10 +166,12 @@ export default function Leaderboard({
                 <SelectDropdown
                     options={years}
                     onOptionSelected={handleYearChange}
+                    defaultValue={year}
                 />
                 <SelectDropdown
                     options={months}
                     onOptionSelected={handleMonthChange}
+                    defaultValue={month}
                 />
             </QueryPanel>
             <AnimateHeight duration={500} height={height}>
@@ -183,7 +183,7 @@ export default function Leaderboard({
                                 {kpi.name}
                             </div>
                             {['1st', '2nd', '3rd'].map((rank, i) => (
-                                <div key={i} className="flex flex-row justify-between gap-2 px-4 py-3 m-1 text-sm text-blue-800 bg-white rounded-lg shadow-super-4">
+                                <div key={i} className="flex flex-row justify-between gap-2 px-4 py-3 mx-3 my-2 text-sm text-blue-800 bg-white rounded-lg shadow-super-4">
                                     <div className={` mr-1 ${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>{rank}</div>
                                     {
                                         kpi.data[i]?.metric ?

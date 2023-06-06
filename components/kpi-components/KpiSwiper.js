@@ -75,7 +75,7 @@ const KpiSwiper = ({ query, selectedKpis, handleCardInfoClick }) => {
                 slidesOffsetAfter: 20,
             },
         },
-        className: "mx-auto mySwiper sm:w-full lg:max-w-8xl min-h-70 ease-in-out duration-1000",
+        className: "mx-auto mySwiper sm:w-full lg:max-w-8xl h-60 ease-in-out duration-1000",
     };
 
     const slides = query.results.length > 0 && query.isOpen && !query.isLoading
@@ -83,7 +83,7 @@ const KpiSwiper = ({ query, selectedKpis, handleCardInfoClick }) => {
             .filter((result) => selectedKpis.includes(result.name))
             .map((result) => (
                 <SwiperSlide key={result.name}>
-                    <div className='my-3 h-70 backface'>
+                    <div className='absolute top-2'>
                         <KpiCard
                             prop={result}
                             handleCardInfoClick={() => handleCardInfoClick(result)}

@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Transition } from "react-transition-group";
 
-function SelectDropdown({ options, onOptionSelected }) {
-    const [selectedOption, setSelectedOption] = useState(null);
+function SelectDropdown({ options, onOptionSelected, defaultValue  }) {
+    const [selectedOption, setSelectedOption] = useState(defaultValue );
     const [isOpen, setIsOpen] = useState(false);
     const [contentHeight, setContentHeight] = useState(0);
     const dropdownRef = useRef(null);
