@@ -22,7 +22,7 @@ const KpiQueryContainer = ({ view, kpiList }) => {
             leadSource: [],
             dateRange: { gte: datePresets['All Time'].startDate, lte: datePresets['All Time'].endDate },
             department: ["Lead Manager"],
-            teamMember: ["All"]
+            teamMember: []
         },
     ]);
 
@@ -125,8 +125,6 @@ const KpiQueryContainer = ({ view, kpiList }) => {
         setIdCounter(idCounter + 1);
         setQueries([...queries, newQuery]);
     };
-
-    //console.log("kpi list", kpiList)
 
     return (
         <div>

@@ -37,6 +37,7 @@ export default function TeamMemberDropdown({ onOptionSelected, selectedDepartmen
     return <ServiceUnavailable small={true} />;
   }
 
+  console.log("teamMembers", teamMembers)
   return (
     <CheckboxDropdown
       options={teamMemberArray}

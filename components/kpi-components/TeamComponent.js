@@ -8,10 +8,15 @@ function TeamComponent({ onTeamChange, queryId }) {
 
     const handleTeamSelected = (department, teamMembers) => {
         setSelectedDepartment(department);
-        setSelectedTeamMembers(teamMembers);
-
-        // Call handleTeamChange from KpiQueryContainer.js
-        onTeamChange(department, teamMembers, queryId);
+    
+        // If the selected department has changed, reset the selected team members
+        if (department !== selectedDepartment) {
+            setSelectedTeamMembers([]);
+            onTeamChange(department, [], queryId);
+        } else {
+            setSelectedTeamMembers(teamMembers);
+            onTeamChange(department, teamMembers, queryId);
+        }
     };
 
     return (

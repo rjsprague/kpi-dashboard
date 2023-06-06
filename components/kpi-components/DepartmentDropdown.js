@@ -30,6 +30,8 @@ function DepartmentDropdown({ onOptionSelected, selectedDepartment, queryId }) {
         return <ServiceUnavailable small={true} />;
     }
 
+    console.log("departments", departments)
+
     return (
         <CheckboxDropdown
             options={departments}

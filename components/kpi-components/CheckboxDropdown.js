@@ -10,6 +10,8 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }
     const dropdownRef = useRef(null); // New ref for dropdown
     const dropdownContentRef = useRef(null);
 
+    //console.log("options", options)
+    //console.log("Selected Options in CheckboxDropdown", selectedOptions)
 
     useEffect(() => {
         if (isOpen) {
@@ -43,27 +45,23 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }
     const handleCheckboxChange = (option) => {
         let newSelectedOptions = [...selectedOptions];
 
-        if (option === 'All') {
-            newSelectedOptions = newSelectedOptions.length === option.length ? [] : [...option];
+        if (isSingleSelect) {
+            newSelectedOptions = [option];
+        } else if (option === 'All') {
+            newSelectedOptions = newSelectedOptions.length === options.length ? [] : [...options];
         } else {
-            if (isSingleSelect) {
-                // If isSingleSelect is true, only select the clicked option
-                newSelectedOptions = [option];
+            const isSelected = selectedOptions.includes(option);
+            if (isSelected) {
+                newSelectedOptions = newSelectedOptions.filter(selectedOption => selectedOption !== option);
             } else {
-                // Otherwise, add the clicked option to the selected options
-                const isSelected = selectedOptions.includes(option);
-                newSelectedOptions = [...selectedOptions];
-                if (isSelected) {
-                    newSelectedOptions = newSelectedOptions.filter(selectedOption => selectedOption !== option);
-                } else {
-                    newSelectedOptions.push(option);
-                }
+                newSelectedOptions.push(option);
             }
         }
 
         onOptionSelected(newSelectedOptions, queryId);
         setSelectedOptions(newSelectedOptions);
     };
+
 
 
     const duration = 350;
@@ -84,28 +82,28 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }
     return (
         <div ref={dropdownRef} className="relative items-center dropdown">
             <button
-                className="items-center w-40 h-8 min-w-0 px-2 overflow-hidden text-sm text-left text-white align-middle bg-blue-900 rounded-md cursor-pointer shadow-super-4 max-w-xxs focus:outline-none focus:ring-2 focus:ring-blue-400 bg-opacity-80"
+                className="items-center justify-between w-full h-8 px-2 mr-5 overflow-hidden text-sm text-left text-white align-middle bg-blue-900 rounded-md cursor-pointer shadow-super-4 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-opacity-80"
                 onClick={() => {
                     toggleOpen();
                 }}
             >
                 {selectedOptions.length === 0
                     ? "No Filter"
-                    : selectedOptions.length === Object.keys(options).length
-                        ? "All"
-                        : selectedOptions.length === 1
-                            ? selectedOptions[0] // Display the name of the selected option
+                    : isSingleSelect
+                        ? selectedOptions[0]
+                        : selectedOptions.length === options.length
+                            ? "All"
                             : `${selectedOptions.length} selected`}
                 {isOpen ?
                     <FontAwesomeIcon
                         icon={faChevronDown}
                         size="sm"
-                        className='absolute text-white transition-transform duration-500 rotate-180 transform-gpu right-2 top-2'
+                        className='absolute ml-2 text-white transition-transform duration-500 rotate-180 transform-gpu top-2'
                     /> :
                     <FontAwesomeIcon
                         icon={faChevronDown}
                         size="sm"
-                        className='absolute text-white transition-transform duration-500 transform-gpu right-2 top-2'
+                        className='absolute ml-2 text-white transition-transform duration-500 transform-gpu top-2'
                     />
                 }
             </button>
