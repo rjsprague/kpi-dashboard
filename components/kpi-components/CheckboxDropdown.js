@@ -82,7 +82,7 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }
     return (
         <div ref={dropdownRef} className="relative items-center dropdown">
             <button
-                className="items-center justify-between w-20 h-8 px-2 overflow-hidden text-sm text-left text-white bg-blue-900 rounded-md cursor-pointer sm:w-32 shadow-super-4 bg-opacity-80"
+                className="items-center justify-between w-20 px-2 overflow-hidden text-sm text-left text-white bg-blue-900 rounded-md cursor-pointer sm:h-8 sm:w-40 shadow-super-4 bg-opacity-80"
                 onClick={() => {
                     toggleOpen();
                 }}

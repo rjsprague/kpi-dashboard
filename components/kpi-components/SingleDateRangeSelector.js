@@ -70,7 +70,7 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
         <div className="relative flex text-sm bg-opacity-80 date-picker">
             <button
                 onClick={toggleDatePicker}
-                className="box-border w-20 h-8 px-2 py-1 mx-2 text-white transition-colors duration-200 bg-blue-900 rounded-md sm:w-32 shadow-super-4 hover:bg-blue-50"
+                className="box-border w-32 px-2 py-1 mx-2 text-white transition-colors duration-200 bg-blue-900 rounded-md sm:h-8 sm:w-40 shadow-super-4 hover:bg-blue-50"
             >
                 {dateRange && dateRange[0] instanceof Date && !isNaN(dateRange[0]) && dateRange[0] === datePresets['All Time'].startDate ? 'All Time' :
                     dateRange && dateRange[0] instanceof Date && !isNaN(dateRange[0]) && dateRange[1] && dateRange[0].toLocaleDateString() === dateRange[1]?.toLocaleDateString() ? dateRange[0]?.toLocaleDateString() :

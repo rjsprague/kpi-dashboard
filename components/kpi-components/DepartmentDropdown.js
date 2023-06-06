@@ -11,9 +11,9 @@ function DepartmentDropdown({ onOptionSelected, selectedDepartment, queryId, def
         async function fetchDepartments() {
             try {
                 const data = await fetchActiveTeamMembers();
-                console.log("data", data)
+                //console.log("data", data)
                 const departments = Object.keys(data);
-                console.log("departments", departments)
+                //console.log("departments", departments)
                 setDepartments(departments);
             } catch (error) {
                 console.error(error);
@@ -31,7 +31,7 @@ function DepartmentDropdown({ onOptionSelected, selectedDepartment, queryId, def
         return <ServiceUnavailable small={true} />;
     }
 
-    console.log("departments", departments)
+    //console.log("departments", departments)
 
     return (
         <CheckboxDropdown

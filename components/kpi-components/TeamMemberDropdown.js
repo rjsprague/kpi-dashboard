@@ -11,13 +11,13 @@ export default function TeamMemberDropdown({ onOptionSelected, selectedDepartmen
     async function getTeamMembers() {
       try {
         const members = await fetchActiveTeamMembers();
-        console.log("members", members)
+        //console.log("members", members)
         const membersObject = {};
 
         for (const id in members[selectedDepartment]) {
           membersObject[members[selectedDepartment][id]] = id;
         }
-        console.log("membersObject", membersObject)
+        //console.log("membersObject", membersObject)
         setTeamMembers(membersObject);
       } catch (error) {
         console.error(error);

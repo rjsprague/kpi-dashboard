@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 export default function NavigationBar({ onQueryTypeChange }) {
   
-  const [activeButton, setActiveButton] = useState('');
+  const [activeButton, setActiveButton] = useState('Acquisitions');
 
   const views = ['Acquisitions', 'Team', 'Financial', 'Leaderboard']; // New array to store the names of the views
 
