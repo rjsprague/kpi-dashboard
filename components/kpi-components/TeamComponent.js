@@ -20,7 +20,7 @@ function TeamComponent({ onTeamChange, queryId }) {
     };
 
     return (
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-row gap-1 sm:gap-4">
             <DepartmentDropdown
                 onOptionSelected={(department) => handleTeamSelected(department, selectedTeamMembers)}
                 selectedDepartment={selectedDepartment}

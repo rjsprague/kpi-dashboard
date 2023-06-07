@@ -158,7 +158,7 @@ export default function KpiDashboard() {
           {/* Navigation bar */}
           <NavigationBar onQueryTypeChange={handleQueryTypeChange} />
         </section>
-        <section className="flex flex-col h-full px-4 py-2">
+        <section className="flex flex-col h-full px-2 py-2 sm:px-4">
           {/* KPI Results Section */}
           {renderKpiResultsSection()}
         </section>

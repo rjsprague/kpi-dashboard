@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Transition } from "react-transition-group";
+import DropdownButton from './DropdownButton';
+
 
 function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }) {
     const [selectedOptions, setSelectedOptions] = useState(options || []);
@@ -80,13 +80,8 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }
     };
 
     return (
-        <div ref={dropdownRef} className="relative items-center dropdown">
-            <button
-                className="items-center justify-between w-20 px-2 overflow-hidden text-sm text-left text-white bg-blue-900 rounded-md cursor-pointer sm:h-8 sm:w-40 shadow-super-4 bg-opacity-80"
-                onClick={() => {
-                    toggleOpen();
-                }}
-            >
+        <div ref={dropdownRef} className="text-xs sm:text-sm dropdown">
+            <DropdownButton onClick={toggleOpen} isOpen={isOpen}>
                 {selectedOptions.length === 0
                     ? "No Filter"
                     : isSingleSelect
@@ -94,24 +89,12 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }
                         : selectedOptions.length === options.length
                             ? "All"
                             : `${selectedOptions.length} selected`}
-                {isOpen ?
-                    <FontAwesomeIcon
-                        icon={faChevronDown}
-                        size="sm"
-                        className='absolute ml-2 text-white transition-transform duration-500 rotate-180 transform-gpu top-2 right-2'
-                    /> :
-                    <FontAwesomeIcon
-                        icon={faChevronDown}
-                        size="sm"
-                        className='absolute ml-2 text-white transition-transform duration-500 transform-gpu top-2 right-2'
-                    />
-                }
-            </button>
+            </DropdownButton>
             <Transition in={isOpen} timeout={duration}>
                 {(state) => (
                     <div
                         ref={dropdownContentRef}
-                        className="absolute left-0 z-50 text-white bg-blue-900 rounded-md shadow-lg w-44 bg-opacity-80 top-10"
+                        className="absolute z-50 text-white bg-blue-900 rounded-md shadow-lg sm:w-44 bg-opacity-80"
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],

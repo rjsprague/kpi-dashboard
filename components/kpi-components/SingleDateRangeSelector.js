@@ -3,6 +3,7 @@ import { getDatePresets } from "../../lib/date-utils";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Transition } from "react-transition-group";
+import DropdownButton from "./DropdownButton";
 //import { fetchEarliestLeadDate } from "../../lib/api-utils";
 
 function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
@@ -50,7 +51,7 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
         };
     }, []);
 
-    const duration = 300;
+    const duration = 250;
     const defaultStyle = {
         transition: `height ${duration}ms ease-in-out, opacity ${duration}ms ease-in-out`,
         height: 0,
@@ -67,21 +68,18 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
     };
 
     return (
-        <div className="relative flex text-sm bg-opacity-80 date-picker">
-            <button
-                onClick={toggleDatePicker}
-                className="box-border w-32 px-2 py-1 mx-2 text-white transition-colors duration-200 bg-blue-900 rounded-md sm:h-8 sm:w-40 shadow-super-4 hover:bg-blue-50"
-            >
-                {dateRange && dateRange[0] instanceof Date && !isNaN(dateRange[0]) && dateRange[0] === datePresets['All Time'].startDate ? 'All Time' :
+        <div className="relative justify-center text-xs sm:text-sm bg-opacity-80 date-picker">
+            <DropdownButton onClick={toggleDatePicker} isOpen={showDatePicker}>
+            {dateRange && dateRange[0] instanceof Date && !isNaN(dateRange[0]) && dateRange[0] === datePresets['All Time'].startDate ? 'All Time' :
                     dateRange && dateRange[0] instanceof Date && !isNaN(dateRange[0]) && dateRange[1] && dateRange[0].toLocaleDateString() === dateRange[1]?.toLocaleDateString() ? dateRange[0]?.toLocaleDateString() :
                         dateRange && dateRange[0] instanceof Date && !isNaN(dateRange[0]) && dateRange[1] instanceof Date && !isNaN(dateRange[1]) ? `${dateRange[0].toLocaleDateString()} - ${dateRange[1].toLocaleDateString()}`
                             : "Select Date Range"}
-            </button>
+            </DropdownButton>
             <Transition in={showDatePicker} timeout={duration}>
                 {(state) => (
                     <div
                         ref={datePickerContentRef}
-                        className={`absolute -right-10 xl:left-2 h-full z-50 flex w-72 sm:w-100 flex-col sm:flex-row translate-y-9 bg-blue-900 rounded-md bg-opacity-80 shadow-super-4`}
+                        className={` absolute -left-28 flex-1 mx-auto xl:left-2 z-50 flex w-72 sm:w-100 flex-col sm:flex-row translate-y-2 bg-blue-900 rounded-md bg-opacity-80 shadow-super-4`}
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],
@@ -89,7 +87,7 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
                             overflowY: "auto", // Enable scrolling if the content is too long
                         }}
                     >
-                        <div className="flex flex-row flex-wrap mt-2 mb-2 ml-2 sm:overflow-y-scroll sm:overflow-x-hidden">
+                        <div className="flex flex-row flex-wrap mt-2 mb-2 ml-2 sm:overflow-y-scroll">
                             {Object.entries(datePresets).map(([key, preset], index) => (
                                 <button
                                     key={index}

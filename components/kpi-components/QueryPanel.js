@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faGear, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const QueryPanel = ({ query, height, setHeight, handleToggleQuery, handleGearIconClick, handleRemoveQuery, children }) => (
-  <div className="px-4 py-2 text-sm rounded-lg shadow-super-3 bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
-    <div className='relative flex flex-row justify-center'>
+  <div className="p-2 text-sm rounded-lg shadow-super-3 bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
+    <div className='flex flex-row justify-between'>
       <button
-        className="box-border absolute px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md left-0.5 shadow-super-4 hover:animate-pulse"
+        className="flex h-7 items-center px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md left-0.5 shadow-super-4 hover:animate-pulse"
         onClick={() => {
           handleToggleQuery(query.id)
           setHeight(height === 0 ? 'auto' : 0)
@@ -25,11 +25,11 @@ const QueryPanel = ({ query, height, setHeight, handleToggleQuery, handleGearIco
           />
         }
       </button>
-      <div className='flex items-center ml-4'>
+      <div className=''>
         {children}
       </div>
       <button
-        className="box-border px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md right-0.5 shadow-super-4 hover:animate-pulse"
+        className="flex h-7 items-center px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md right-0.5 shadow-super-4 hover:animate-pulse"
         onClick={handleGearIconClick}
       >
         <FontAwesomeIcon
@@ -40,7 +40,7 @@ const QueryPanel = ({ query, height, setHeight, handleToggleQuery, handleGearIco
       </button>
       {query.id !== 1 && (
         <button
-          className="box-border absolute px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md right-0.5 shadow-super-4 hover:animate-pulse"
+          className="flex h-7 items-center absolute px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md right-0.5 shadow-super-4 hover:animate-pulse"
           onClick={handleRemoveQuery}
         >
           <FontAwesomeIcon

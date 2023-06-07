@@ -65,21 +65,10 @@ const FinancialsKpiQuery = ({
         <div className="mb-2">
             {/* Main KPI Results */}
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
-                <div className='flex items-center justify-between gap-4 align-middle'>
+                <div className='flex flex-row gap-1 sm:gap-4'>
                     {/* Lead Source and Date Range Selectors */}
-                    <div className='flex items-center justify-between gap-2 align-middle'>
-                        {/* Lead Source selector */}
-                        <label className=''>
-                            Lead Source:
-                        </label>
-                        <LeadSourcesDropdown
-                            onOptionSelected={handleOptionSelected}
-                            queryId={query.id}
-                        />
-                    </div>
-                    <div className="flex justify-between gap-2">
-                        <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
-                    </div>
+                    <LeadSourcesDropdown onOptionSelected={handleOptionSelected} queryId={query.id} />
+                    <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
                 </div>
             </QueryPanel>
 

@@ -163,20 +163,22 @@ export default function Leaderboard({
     return (
         <div className="mb-2">
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
-                <SelectDropdown
-                    options={years}
-                    onOptionSelected={handleYearChange}
-                    defaultValue={year}
-                />
-                <SelectDropdown
-                    options={months}
-                    onOptionSelected={handleMonthChange}
-                    defaultValue={month}
-                />
+                <div className="flex flex-row gap-1 sm:gap-4">
+                    <SelectDropdown
+                        options={years}
+                        onOptionSelected={handleYearChange}
+                        defaultValue={year}
+                    />
+                    <SelectDropdown
+                        options={months}
+                        onOptionSelected={handleMonthChange}
+                        defaultValue={month}
+                    />
+                </div>
             </QueryPanel>
             <AnimateHeight duration={500} height={height}>
 
-                <div className="flex flex-col flex-wrap justify-center w-full gap-2 px-2 py-2 bg-blue-300 rounded-lg sm:flex-row shadow-super-4">
+                <div className="flex flex-col flex-wrap justify-center w-full gap-2 px-1 py-2 bg-blue-300 rounded-lg sm:px-2 sm:flex-row shadow-super-4">
                     {kpis.map((kpi, index) => (
                         <div key={index} className="bg-blue-100 rounded-lg xl:w-76 shadow-super-4">
                             <div className="px-2 py-4 m-2 font-bold tracking-wider text-center text-blue-900 uppercase bg-white rounded-lg text-md shadow-super-4">

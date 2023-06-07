@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { Transition } from "react-transition-group";
+import DropdownButton from './DropdownButton';
 
-function SelectDropdown({ options, onOptionSelected, defaultValue  }) {
-    const [selectedOption, setSelectedOption] = useState(defaultValue );
+
+function SelectDropdown({ options, onOptionSelected, defaultValue }) {
+    const [selectedOption, setSelectedOption] = useState(defaultValue);
     const [isOpen, setIsOpen] = useState(false);
     const [contentHeight, setContentHeight] = useState(0);
     const dropdownRef = useRef(null);
@@ -62,18 +62,10 @@ function SelectDropdown({ options, onOptionSelected, defaultValue  }) {
     };
 
     return (
-        <div ref={dropdownRef} className="relative items-center dropdown">
-            <button
-                className="items-center w-40 h-8 min-w-0 px-2 mx-2 overflow-hidden text-sm text-left text-white align-middle bg-blue-900 rounded-md cursor-pointer shadow-super-4 max-w-xxs focus:outline-none focus:ring-2 focus:ring-blue-400 bg-opacity-80"
-                onClick={toggleOpen}
-            >
+        <div ref={dropdownRef} className="relative items-center text-xs dropdown sm:text-sm">
+            <DropdownButton onClick={toggleOpen} isOpen={isOpen}>
                 {selectedOption ? selectedOption : "Select..."}
-                <FontAwesomeIcon
-                    icon={faChevronDown}
-                    size="sm"
-                    className={`absolute text-white transition-transform duration-500 transform-gpu right-4 top-2 ${isOpen ? 'rotate-180' : ''}`}
-                />
-            </button>
+            </DropdownButton>
             <Transition in={isOpen} timeout={duration}>
                 {(state) => (
                     <div
