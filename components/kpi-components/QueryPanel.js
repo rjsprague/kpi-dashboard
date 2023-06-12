@@ -28,28 +28,30 @@ const QueryPanel = ({ query, height, setHeight, handleToggleQuery, handleGearIco
       <div className=''>
         {children}
       </div>
-      <button
-        className="flex h-7 items-center px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md right-0.5 shadow-super-4 hover:animate-pulse"
-        onClick={handleGearIconClick}
-      >
-        <FontAwesomeIcon
-          icon={faGear}
-          size="sm"
-          className="text-blue-900 transform-gpu"
-        />
-      </button>
-      {query.id !== 1 && (
+      <div className='flex flex-col justify-between gap-2 xs:flex-row'>
         <button
-          className="flex h-7 items-center absolute px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md right-0.5 shadow-super-4 hover:animate-pulse"
-          onClick={handleRemoveQuery}
+          className="flex h-7 items-center px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md right-0.5 shadow-super-4 hover:animate-pulse"
+          onClick={handleGearIconClick}
         >
           <FontAwesomeIcon
-            icon={faTimes}
+            icon={faGear}
             size="sm"
             className="text-blue-900 transform-gpu"
           />
         </button>
-      )}
+        {query.id !== 1 && (
+          <button
+            className="flex items-center px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md h-7 shadow-super-4 hover:animate-pulse"
+            onClick={handleRemoveQuery}
+          >
+            <FontAwesomeIcon
+              icon={faTimes}
+              size="sm"
+              className="text-blue-900 transform-gpu"
+            />
+          </button>
+        )}
+      </div>
     </div>
   </div>
 );

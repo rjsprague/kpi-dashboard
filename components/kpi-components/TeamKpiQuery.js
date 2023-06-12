@@ -24,7 +24,9 @@ const TeamKpiQuery = ({
     const [selectedResult, setSelectedResult] = useState(null);
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
 
-    console.log("query Team Member Dropdown", query)
+    console.log("view Team Member ", view)
+    console.log("VIEW_KPIS Team Member ", VIEW_KPIS)
+    console.log("query Team ", query)
 
     const handleCardInfoClick = (result) => {
         setSelectedResult(result);
@@ -55,7 +57,7 @@ const TeamKpiQuery = ({
             {/* Main KPI Results */}
             {/* ... similar to AcquisitionsKpiQuery */}
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
-                <div className='flex flex-row items-center justify-between gap-1 sm:gap-4'>
+                <div className='flex flex-col gap-2 sm:items-center sm:justify-between sm:flex-row sm:gap-4'>
                     {/* Seat, Team Member and Date Range Selectors */}
                     <div className=''>
                         <TeamComponent

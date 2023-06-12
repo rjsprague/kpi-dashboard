@@ -10,7 +10,7 @@ export const KPI_VIEWS = {
         "Cost Per Lead",
         "Lead Connections",
         "Triage Calls",
-        "Triage Qualifications",
+        "Qualified Triage Calls",
         "Triage Approval",
         "Deal Analysis",
         "Perfect Presentations",

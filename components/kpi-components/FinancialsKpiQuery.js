@@ -65,7 +65,7 @@ const FinancialsKpiQuery = ({
         <div className="mb-2">
             {/* Main KPI Results */}
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
-                <div className='flex flex-row gap-1 sm:gap-4'>
+                <div className='flex flex-col gap-1 xs:flex-row sm:gap-4'>
                     {/* Lead Source and Date Range Selectors */}
                     <LeadSourcesDropdown onOptionSelected={handleOptionSelected} queryId={query.id} />
                     <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />

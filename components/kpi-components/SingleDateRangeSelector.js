@@ -79,7 +79,7 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
                 {(state) => (
                     <div
                         ref={datePickerContentRef}
-                        className={` absolute -left-28 flex-1 mx-auto xl:left-2 z-50 flex w-72 sm:w-100 flex-col sm:flex-row translate-y-2 bg-blue-900 rounded-md bg-opacity-80 shadow-super-4`}
+                        className={` absolute -left-18 flex-1 mx-auto  z-50 flex w-72 sm:w-100 flex-col sm:flex-row  bg-blue-900 rounded-md bg-opacity-80 shadow-super-4`}
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],

@@ -1,35 +1,60 @@
 import React, { useState, useEffect } from "react";
 import DepartmentDropdown from "./DepartmentDropdown";
 import TeamMemberDropdown from "./TeamMemberDropdown";
+import fetchActiveTeamMembers from "../../lib/fetchActiveTeamMembers";
 
 function TeamComponent({ onTeamChange, queryId }) {
     const [selectedDepartment, setSelectedDepartment] = useState(['Lead Manager']);
     const [selectedTeamMembers, setSelectedTeamMembers] = useState([]);
+    const [departments, setDepartments] = useState([]);
 
-    const handleTeamSelected = (department, teamMembers) => {
-        setSelectedDepartment(department);
-    
-        // If the selected department has changed, reset the selected team members
+    // console.log("selectedDepartment", selectedDepartment)
+    // console.log("selectedTeamMembers", selectedTeamMembers)
+
+    useEffect(() => {
+        const getDepartments = async () => {
+            try {
+                const data = await fetchActiveTeamMembers();
+                setDepartments(data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        getDepartments();
+    }, []);
+
+    //console.log(Object.keys(departments[selectedDepartment]))
+
+    const handleDepartmentSelected = (department, departments) => {
+        
         if (department !== selectedDepartment) {
-            setSelectedTeamMembers([]);
+            setSelectedDepartment(department);
+            setSelectedTeamMembers(Object.keys(departments[selectedDepartment]))
             onTeamChange(department, [], queryId);
-        } else {
+        }
+
+    };
+
+    const handleTeamSelected = (teamMembers) => {
+        if (teamMembers !== selectedTeamMembers) {
             setSelectedTeamMembers(teamMembers);
-            onTeamChange(department, teamMembers, queryId);
+            onTeamChange(selectedDepartment, teamMembers, queryId);
         }
     };
 
+
+
     return (
-        <div className="flex flex-row gap-1 sm:gap-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
             <DepartmentDropdown
-                onOptionSelected={(department) => handleTeamSelected(department, selectedTeamMembers)}
+                onOptionSelected={(department) => handleDepartmentSelected(department, departments)}
                 selectedDepartment={selectedDepartment}
                 queryId={queryId}
                 defaultOption={selectedDepartment}
             />
             {selectedDepartment ? (
                 <TeamMemberDropdown
-                    onOptionSelected={(teamMembers) => handleTeamSelected(selectedDepartment, teamMembers)}
+                    onOptionSelected={(teamMembers) => handleTeamSelected(teamMembers)}
                     selectedDepartment={selectedDepartment}
                     defaultDepartment={selectedDepartment}
                     selectedTeamMembers={selectedTeamMembers}

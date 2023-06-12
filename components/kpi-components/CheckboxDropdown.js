@@ -1,17 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { Transition } from "react-transition-group";
 import DropdownButton from './DropdownButton';
+import LoadingIcon from "../LoadingIcon";
 
 
-function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }) {
-    const [selectedOptions, setSelectedOptions] = useState(options || []);
+function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect, loading, selectedOptions }) {
     const [isOpen, setIsOpen] = useState(false);
     const [contentHeight, setContentHeight] = useState(0);
-    const dropdownRef = useRef(null); // New ref for dropdown
+    const dropdownRef = useRef(null);
     const dropdownContentRef = useRef(null);
 
-    //console.log("options", options)
-    //console.log("Selected Options in CheckboxDropdown", selectedOptions)
 
     useEffect(() => {
         if (isOpen) {
@@ -57,12 +55,8 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }
                 newSelectedOptions.push(option);
             }
         }
-
         onOptionSelected(newSelectedOptions, queryId);
-        setSelectedOptions(newSelectedOptions);
     };
-
-
 
     const duration = 250;
     const defaultStyle = {
@@ -80,15 +74,16 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }
     };
 
     return (
-        <div ref={dropdownRef} className="text-xs sm:text-sm dropdown">
+        <div ref={dropdownRef} className=" dropdown">
             <DropdownButton onClick={toggleOpen} isOpen={isOpen}>
-                {selectedOptions.length === 0
-                    ? "No Filter"
-                    : isSingleSelect
-                        ? selectedOptions[0]
-                        : selectedOptions.length === options.length
-                            ? "All"
-                            : `${selectedOptions.length} selected`}
+                {loading ? <LoadingIcon /> :
+                    selectedOptions?.length === 0
+                        ? "No Filter"
+                        : isSingleSelect && selectedOptions || selectedOptions?.length === 1
+                            ? selectedOptions[0]
+                            : selectedOptions?.length === options.length
+                                ? "All"
+                                : `${selectedOptions?.length} selected`}
             </DropdownButton>
             <Transition in={isOpen} timeout={duration}>
                 {(state) => (
@@ -108,7 +103,7 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }
                                     <input
                                         type="checkbox"
                                         className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
-                                        checked={selectedOptions.length === options.length}
+                                        checked={selectedOptions?.length === options.length}
                                         onChange={() => handleCheckboxChange('All')}
                                     />
                                     All
@@ -121,7 +116,7 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect }
                                             <input
                                                 type="checkbox"
                                                 className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
-                                                checked={selectedOptions.includes(option)}
+                                                checked={selectedOptions?.includes(option)}
                                                 onChange={() => handleCheckboxChange(option)}
                                             />
                                             {option}
