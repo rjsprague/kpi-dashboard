@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import KpiSwiper from './KpiSwiper';
 import SingleDateRangeSelector from './SingleDateRangeSelector';
 import TeamComponent from './TeamComponent';
@@ -23,10 +23,39 @@ const TeamKpiQuery = ({
     const [modalType, setModalType] = useState("info");
     const [selectedResult, setSelectedResult] = useState(null);
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
+    const [teamKpiList, setTeamKpiList] = useState([]);
+    const [department, setDepartment] = useState("Lead Manager");
 
     console.log("view Team Member ", view)
-    console.log("VIEW_KPIS Team Member ", VIEW_KPIS)
-    console.log("query Team ", query)
+    console.log("VIEW_KPIS  ", VIEW_KPIS[view])
+    //console.log("query Team ", query)
+    console.log("kpiList Team ", kpiList)
+
+    useEffect(() => {
+        if (department === "Lead Manager") {
+            setTeamKpiList(kpiList[0]["Lead Manager"]);
+            console.log("team kpi list", teamKpiList)
+            setSelectedKpis(kpiList[0]["Lead Manager"]);
+            console.log("selected kpi list", selectedKpis)
+        } else if (department === "Acquisition Manager") {
+            setTeamKpiList(kpiList[0]["Acquisition Manager"]);
+            setSelectedKpis(kpiList[0]["Acquisition Manager"]);
+        }
+    }, [kpiList]);
+   
+
+    const handleDepartmentChange = (department) => {
+        setDepartment(department);
+        if (department === "Lead Manager") {
+            setTeamKpiList(kpiList[0]["Lead Manager"]);
+            console.log("team kpi list", teamKpiList)
+            setSelectedKpis(kpiList[0]["Lead Manager"]);
+            console.log("selected kpi list", selectedKpis)
+        } else if (department === "Acquisition Manager") {
+            setTeamKpiList(kpiList[0]["Acquisition Manager"]);
+            setSelectedKpis(kpiList[0]["Acquisition Manager"]);
+        }
+    };
 
     const handleCardInfoClick = (result) => {
         setSelectedResult(result);
@@ -63,6 +92,7 @@ const TeamKpiQuery = ({
                         <TeamComponent
                             onTeamChange={onTeamChange}
                             queryId={query.id}
+                            onDepartmentChange={handleDepartmentChange}
                         />
                     </div>
                     <div className="">
@@ -89,13 +119,14 @@ const TeamKpiQuery = ({
                                 isOpen={openModal}
                                 handleCloseModal={() => setOpenModal(false)}
                                 prop={selectedResult}
-                                viewKpis={kpiList}
+                                viewKpis={teamKpiList}
                                 VIEW_KPIS={VIEW_KPIS}
                                 selectedView={view}
                                 onKpiListChange={onKpiListChange}
                                 modalType={modalType}
                                 selectedKpis={selectedKpis}
                                 setSelectedKpis={setSelectedKpis}
+                                selectedDepartment={department}
                             />
                         </div>
                     </div>

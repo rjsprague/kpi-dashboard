@@ -3,7 +3,7 @@ import DepartmentDropdown from "./DepartmentDropdown";
 import TeamMemberDropdown from "./TeamMemberDropdown";
 import fetchActiveTeamMembers from "../../lib/fetchActiveTeamMembers";
 
-function TeamComponent({ onTeamChange, queryId }) {
+function TeamComponent({ onTeamChange, queryId, onDepartmentChange }) {
     const [selectedDepartment, setSelectedDepartment] = useState(['Lead Manager']);
     const [selectedTeamMembers, setSelectedTeamMembers] = useState([]);
     const [departments, setDepartments] = useState([]);
@@ -25,14 +25,13 @@ function TeamComponent({ onTeamChange, queryId }) {
 
     //console.log(Object.keys(departments[selectedDepartment]))
 
-    const handleDepartmentSelected = (department, departments) => {
-        
+    const handleDepartmentSelected = (department, departments) => {        
         if (department !== selectedDepartment) {
             setSelectedDepartment(department);
             setSelectedTeamMembers(Object.keys(departments[selectedDepartment]))
             onTeamChange(department, [], queryId);
-        }
-
+            onDepartmentChange(department);
+        }        
     };
 
     const handleTeamSelected = (teamMembers) => {

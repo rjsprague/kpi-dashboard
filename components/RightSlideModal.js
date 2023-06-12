@@ -11,12 +11,23 @@ const RightSlideModal = ({
   selectedView,
   modalType,
   selectedKpis,
-  setSelectedKpis
+  setSelectedKpis,
+  selectedDepartment,
 }) => {
 
+  const kpisForSelectedDepartment = selectedView === 'Team' ? VIEW_KPIS[selectedView][0][selectedDepartment] : VIEW_KPIS[selectedView];
+
+
+
   useEffect(() => {
-    setSelectedKpis(VIEW_KPIS[selectedView]);
-  }, [selectedView, setSelectedKpis]);
+    if (selectedView === 'Team') {
+      setSelectedKpis(VIEW_KPIS[selectedView][0][selectedDepartment]);
+    } else {
+      setSelectedKpis(VIEW_KPIS[selectedView]);
+    }
+  }, [selectedView, setSelectedKpis, selectedDepartment]);
+
+
 
   useEffect(() => {
     const handleEscape = (e) => {
@@ -37,13 +48,35 @@ const RightSlideModal = ({
     };
   }, []);
 
-  const handleKpiCheckboxChange = (e, kpi) => {
+  const handleKpiCheckboxChange = (e, kpi, department) => {
     if (e.target.checked) {
-      setSelectedKpis([...selectedKpis, kpi]);
+      setSelectedKpis(prevKpis => {
+        if (Array.isArray(prevKpis)) {
+          return [...prevKpis, kpi];
+        } else {
+          let updatedKpis = { ...prevKpis };
+          if (!updatedKpis[department]) {
+            updatedKpis[department] = [];
+          }
+          updatedKpis[department].push(kpi);
+          return updatedKpis;
+        }
+      });
     } else {
-      setSelectedKpis(selectedKpis.filter((item) => item !== kpi));
+      setSelectedKpis(prevKpis => {
+        if (Array.isArray(prevKpis)) {
+          return prevKpis.filter(item => item !== kpi);
+        } else {
+          let updatedKpis = { ...prevKpis };
+          if (updatedKpis[department]) {
+            updatedKpis[department] = updatedKpis[department].filter(item => item !== kpi);
+          }
+          return updatedKpis;
+        }
+      });
     }
   };
+
 
   const kpiList = viewKpis || [];
 
@@ -100,7 +133,7 @@ const RightSlideModal = ({
             <div className="mt-4 text-xl font-bold text-center">{selectedView}</div>
             <ul className="flex flex-wrap items-center gap-8 px-10 justify-evenly">
               {/* KPI checkboxes */}
-              {VIEW_KPIS[selectedView].map((kpi, index) => (
+              {kpisForSelectedDepartment.map((kpi, index) => (
                 <li key={index} className="flex items-center my-2">
                   <input
                     type="checkbox"

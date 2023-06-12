@@ -19,12 +19,18 @@ export const KPI_VIEWS = {
         "Deals",
         "Profit",
     ],
-    Team: [
-        "LM STL Median",
-        "AM STL Median",
-        "DA STL Median",
-        "BiG Checks",
+    Team: [{
+        "Lead Manager": [
+            "LM STL Median",
+            "DA STL Median",
+            "BiG Checks"
     ],
+        "Acquisition Manager": [
+            "AM STL Median",
+            "DA STL Median",
+            "BiG Checks",
+        ]
+    }],
     Financial: [
         "Ad Spend",
         "Cost Per Lead",
