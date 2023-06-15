@@ -6,12 +6,14 @@ import AnimateHeight from 'react-animate-height';
 import RightSlideModal from '../RightSlideModal';
 import QueryPanel from './QueryPanel';
 import ServiceUnavailable from '../ServiceUnavailable';
+import LoadingIcon from '../LoadingIcon';
 
 const AcquisitionsKpiQuery = ({
     view,
     VIEW_KPIS,
     query,
     kpiList,
+    leadSources,
     onKpiListChange,
     onDateRangeChange,
     onLeadSourceChange,
@@ -20,8 +22,8 @@ const AcquisitionsKpiQuery = ({
 }) => {
     //console.log("view: ", view)
     //console.log("VIEW_KPIS: ", VIEW_KPIS)
-    //console.log("query: ", query)
-    //console.log("kpiList: ", kpiList)
+    console.log("query: ", query)
+    console.log("kpiList: ", kpiList)
 
 
     const [height, setHeight] = useState('auto');
@@ -63,14 +65,24 @@ const AcquisitionsKpiQuery = ({
     //console.log("kpi list ", kpiList)
     //console.log("view ", view)
 
+    if (query.results === Error) {
+        return <ServiceUnavailable />
+    }
+
     return (
         <div className="mb-2">
             {/* Main KPI Results */}
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
                 <div className='flex flex-col gap-2 xs:flex-row'>
                     {/* Lead Source and Date Range Selectors */}
-                    <LeadSourcesDropdown onOptionSelected={handleOptionSelected} queryId={query.id}  />
-                    <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange}  />
+                    <LeadSourcesDropdown
+                        onOptionSelected={handleOptionSelected}
+                        queryId={query.id}
+                        leadSources={leadSources}
+                        loading={query.loading}
+                        isUnavailable={query.isUnavailable}
+                    />
+                    <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
                 </div>
             </QueryPanel>
             <AnimateHeight
@@ -85,7 +97,7 @@ const AcquisitionsKpiQuery = ({
                         <div className="relative px-4">
                             <KpiSwiper
                                 query={query}
-                                selectedKpis={selectedKpis}
+                                selectedKpis={kpiList}
                                 handleCardInfoClick={handleCardInfoClick}
                             />
                             <RightSlideModal

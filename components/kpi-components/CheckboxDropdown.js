@@ -10,6 +10,7 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect, 
     const dropdownRef = useRef(null);
     const dropdownContentRef = useRef(null);
 
+    console.log("selectedOptions", selectedOptions)
 
     useEffect(() => {
         if (isOpen) {
@@ -103,7 +104,7 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect, 
                                     <input
                                         type="checkbox"
                                         className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
-                                        checked={selectedOptions?.length === options.length}
+                                        checked={selectedOptions?.length === options.length && options.length > 0}
                                         onChange={() => handleCheckboxChange('All')}
                                     />
                                     All

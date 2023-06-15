@@ -5,9 +5,11 @@ import { VIEW_KPIS } from './constants';
 
 const KpiQueryContainer = ({ 
     view, 
-    kpiList, 
+    kpiList,
+    leadSources,
     queries,      
-    handleSetLoading,     
+    handleSetLoading,
+    handleSetLeadSourcesLoading,     
     handleFetchedKpiData,
     handleDateRangeChange,
     handleLeadSourceChange,
@@ -19,6 +21,8 @@ const KpiQueryContainer = ({
 
     //console.log("KpiViews view: ", view)
     //console.log("kpilist: ", kpiList)
+    //console.log("lead sources: ", leadSources)
+    //console.log("queries: ", queries)
 
     return (
         <div>
@@ -29,6 +33,7 @@ const KpiQueryContainer = ({
                     VIEW_KPIS={VIEW_KPIS}
                     query={query}
                     kpiList={kpiList}
+                    leadSources={leadSources}
                     teamMember={query.teamMember}
                     department={query.department}
                     onDateRangeChange={handleDateRangeChange}
@@ -37,6 +42,7 @@ const KpiQueryContainer = ({
                     onRemoveQuery={handleRemoveQuery}
                     onFetchedKpiData={handleFetchedKpiData}
                     onSetLoading={handleSetLoading}
+                    onSetLeadSourcesLoading={handleSetLeadSourcesLoading}
                     onTeamChange={handleTeamChange}
                 />
             ))}

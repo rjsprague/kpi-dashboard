@@ -3,59 +3,70 @@ import AcquisitionsKpiQuery from './AcquisitionsKpiQuery';
 import TeamKpiQuery from './TeamKpiQuery';
 import FinancialsKpiQuery from './FinancialsKpiQuery';
 import Leaderboard from './Leaderboard';
-import fetchKpiData from '../../lib/fetch-kpis';
+import fetchKpiData from '../../lib/fetch-kpis'
+import ServiceUnavailable from '../ServiceUnavailable';
 
-const KpiQuery = ({ ...props }) => {
-  //console.log("KpiQuery props query department", props.query.department)
-  //console.log("KpiQuery props query team member", props.query.teamMember)
-  //console.log("KpiQuery props query lead source", props.query.leadSource)
-  //console.log("KpiQuery props query date range", props.query.dateRange)
-  //console.log("On Team Change props", props.onTeamChange)
-  //console.log("KpiQuery props", props)
-
-
+const KpiQuery = ({
+  view,
+  kpiList,
+  query,
+  onSetLoading,
+  onFetchedKpiData,
+  onTeamChange,
+  ...props
+}) => {
+  const { id, dateRange, leadSource, department, teamMember } = query;
+  
   useEffect(() => {
     const fetchData = async () => {
-      props.onSetLoading(props.query.id, true);
+      onSetLoading(id, true);
 
-      const leadSource = props.query.leadSource || [];
-      const gte = props.query.dateRange?.gte || '';
-      const lte = props.query.dateRange?.lte || '';
-      const department = props.query.department || [];
-      const teamMember = props.query.teamMember || [];
+      const ls = Object.values(leadSource);
+      const gte = dateRange?.gte || '';
+      const lte = dateRange?.lte || '';
+      const dept = department || [];
+      const teamMem = teamMember || [];
 
-      //console.log("KpiQuery fetchData leadSource", leadSource)
-      //console.log("KpiQuery fetchData gte", gte)
-      //console.log("KpiQuery fetchData lte", lte)
-      //console.log("KpiQuery fetchData department", department)
-      //console.log("KpiQuery fetchData teamMember", teamMember)
+      // console.log("lead source values ", ls)
+      // console.log("var type of a lead source ", typeof(ls[0]))
 
-
-      const data = await fetchKpiData(props.view, props.kpiList, leadSource, gte, lte, department, teamMember);
-
-      props.onFetchedKpiData(props.query.id, data);
-      props.onSetLoading(props.query.id, false);
+      try {
+        const data = await fetchKpiData(view, kpiList, ls, gte, lte, dept, teamMem);
+        onFetchedKpiData(id, data);
+        // console.log("data in KpiQuery: ", data)
+      } catch (error) {
+        console.error(error);
+        // Handle the error appropriately
+        return <ServiceUnavailable />;
+      } finally {
+        onSetLoading(id, false);
+      }
     };
 
     fetchData();
-  }, [props.view, props.kpiList, props.query.dateRange, props.query.leadSource, props.query.department, props.query.teamMember]);
+  }, [view, kpiList, dateRange, leadSource.length, department, teamMember]);
 
-  switch (props.view) {
+  // console.log("queries in KpiQuery: ", query)
+
+  switch (view) {
     case 'Acquisitions':
-      return <AcquisitionsKpiQuery {...props} />;
+      return <AcquisitionsKpiQuery {...props} view={view} query={query} kpiList={kpiList} />;
     case 'Team':
       return (
         <TeamKpiQuery
           {...props}
-          onTeamChange={props.onTeamChange}
+          onTeamChange={onTeamChange}
+          view={view}
+          query={query}
+          kpiList={kpiList}
         />
       );
     case 'Financial':
-      return <FinancialsKpiQuery {...props} />;
+      return <FinancialsKpiQuery {...props} view={view} query={query} kpiList={kpiList} />;
     case 'Leaderboard':
-      return <Leaderboard {...props} />;
+      return <Leaderboard {...props} view={view} query={query} kpiList={kpiList} />;
     default:
-      return <AcquisitionsKpiQuery {...props} />;
+      return <AcquisitionsKpiQuery {...props} view={view} query={query} kpiList={kpiList} />;
   }
 };
 

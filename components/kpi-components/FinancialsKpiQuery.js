@@ -12,6 +12,7 @@ const FinancialsKpiQuery = ({
     VIEW_KPIS,
     query,
     kpiList,
+    leadSources,
     onKpiListChange,
     onDateRangeChange,
     onLeadSourceChange,
@@ -67,7 +68,13 @@ const FinancialsKpiQuery = ({
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
                 <div className='flex flex-col gap-1 xs:flex-row sm:gap-4'>
                     {/* Lead Source and Date Range Selectors */}
-                    <LeadSourcesDropdown onOptionSelected={handleOptionSelected} queryId={query.id} />
+                    <LeadSourcesDropdown 
+                        onOptionSelected={handleOptionSelected}
+                        queryId={query.id}
+                        leadSources={leadSources}
+                        loading={query.loading}
+                        isUnavailable={query.isUnavailable}
+                    />
                     <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
                 </div>
             </QueryPanel>

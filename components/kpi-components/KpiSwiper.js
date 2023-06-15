@@ -5,6 +5,8 @@ import LoadingIcon from '../LoadingIcon';
 const KpiSwiper = ({ query, selectedKpis, handleCardInfoClick }) => {
     const swiperRef = useRef(null);
 
+    console.log("selected Kpis ", selectedKpis)
+
     const slides = query.results.length > 0 && query.isOpen
     && query.results
         .filter((result) => selectedKpis.includes(result.name))
