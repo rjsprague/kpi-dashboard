@@ -20,9 +20,9 @@ const FinancialsKpiQuery = ({
     onRemoveQuery,
     isLoadingData
 }) => {
-    console.log("view: ", view)
-    console.log("query: ", query)
-    console.log("kpiList: ", kpiList)     
+    // console.log("view: ", view)
+    // console.log("query: ", query)
+    // console.log("kpiList: ", kpiList)     
 
     const [height, setHeight] = useState('auto');
     const [openModal, setOpenModal] = useState(false);

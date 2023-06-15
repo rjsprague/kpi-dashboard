@@ -22,14 +22,16 @@ const RightSlideModal = ({
   console.log("selectedKpis: ", selectedKpis)
   console.log("selectedDepartment: ", selectedDepartment)
 
-  const kpisForSelectedDepartment =  VIEW_KPIS[selectedView][selectedDepartment];
-  console.log("kpisForSelectedDepartment: ", kpisForSelectedDepartment)
+  const [selectedViewKpiList, setSelectedViewKpiList] = useState([]);
 
-  useEffect(() => {    
-      setSelectedKpis(kpisForSelectedDepartment);    
+  useEffect(() => {
+
+    if (selectedView === 'Team') {
+      setSelectedViewKpiList(VIEW_KPIS[selectedView][selectedDepartment]);
+    } else {
+      setSelectedViewKpiList(VIEW_KPIS[selectedView]);
+    }
   }, [selectedView, setSelectedKpis, selectedDepartment]);
-
-
 
   useEffect(() => {
     const handleEscape = (e) => {
@@ -50,38 +52,17 @@ const RightSlideModal = ({
     };
   }, []);
 
-  const handleKpiCheckboxChange = (e, kpi, department) => {
-    if (e.target.checked) {
-      setSelectedKpis(prevKpis => {
-        if (Array.isArray(prevKpis)) {
-          return [...prevKpis, kpi];
-        } else {
-          let updatedKpis = { ...prevKpis };
-          if (!updatedKpis[department]) {
-            updatedKpis[department] = [];
-          }
-          updatedKpis[department].push(kpi);
-          return updatedKpis;
-        }
-      });
-    } else {
-      setSelectedKpis(prevKpis => {
-        if (Array.isArray(prevKpis)) {
-          return prevKpis.filter(item => item !== kpi);
-        } else {
-          let updatedKpis = { ...prevKpis };
-          if (updatedKpis[department]) {
-            updatedKpis[department] = updatedKpis[department].filter(item => item !== kpi);
-          }
-          return updatedKpis;
-        }
-      });
-    }
+  const handleKpiCheckboxChange = (e, kpi) => {
+    setSelectedKpis(prevKpis => {
+      if (e.target.checked) {
+        return [...prevKpis, kpi];
+      } else {
+        return prevKpis.filter(item => item !== kpi);
+      }
+    });
   };
 
-
-  const kpiList = viewKpis || [];
-
+  
   return (
     <div
       className={`flex fixed top-0 right-0 w-screen sm:w-1/4 h-full transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'
@@ -135,27 +116,25 @@ const RightSlideModal = ({
             <div className="mt-4 text-xl font-bold text-center">{selectedView}</div>
             <ul className="flex flex-wrap items-center gap-8 px-10 justify-evenly">
               {/* KPI checkboxes */}
-              {kpisForSelectedDepartment.map((kpi, index) => (
-                <li key={index} className="flex items-center my-2">
-                  <input
-                    type="checkbox"
-                    id={`kpi-checkbox-${index}`}
-                    checked={selectedKpis.includes(kpi)}
-                    onChange={(e) => handleKpiCheckboxChange(e, kpi)}
-                    className="text-blue-600 form-checkbox"
-                  />
-                  <label htmlFor={`kpi-checkbox-${index}`} className="ml-2 text-gray-100">
-                    {kpi}
-                  </label>
-                </li>
-              ))}
+              { selectedViewKpiList.map((kpi, index) => (
+                  <li key={index} className="flex items-center my-2">
+                    <input
+                      type="checkbox"
+                      id={`kpi-checkbox-${index}`}
+                      checked={selectedKpis.includes(kpi)}
+                      onChange={(e) => handleKpiCheckboxChange(e, kpi)}
+                      className="text-blue-600 form-checkbox"
+                    />
+                    <label htmlFor={`kpi-checkbox-${index}`} className="ml-2 text-gray-100">
+                      {kpi}
+                    </label>
+                  </li>
+                ))}
             </ul>
           </div>
         )}
-
       </div>
     </div>
-
   );
 };
 

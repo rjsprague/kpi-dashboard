@@ -6,7 +6,6 @@ import AnimateHeight from 'react-animate-height';
 import RightSlideModal from '../RightSlideModal';
 import QueryPanel from './QueryPanel';
 import ServiceUnavailable from '../ServiceUnavailable';
-import LoadingIcon from '../LoadingIcon';
 
 const AcquisitionsKpiQuery = ({
     view,
@@ -23,8 +22,8 @@ const AcquisitionsKpiQuery = ({
 }) => {
     //console.log("view: ", view)
     //console.log("VIEW_KPIS: ", VIEW_KPIS)
-    console.log("query: ", query)
-    console.log("kpiList: ", kpiList)
+    // console.log("query: ", query)
+    // console.log("kpiList: ", kpiList)
 
 
     const [height, setHeight] = useState('auto');
@@ -98,7 +97,7 @@ const AcquisitionsKpiQuery = ({
                         <div className="relative px-4">
                             <KpiSwiper
                                 query={query}
-                                selectedKpis={kpiList}
+                                selectedKpis={selectedKpis}
                                 handleCardInfoClick={handleCardInfoClick}
                             />
                             <RightSlideModal
