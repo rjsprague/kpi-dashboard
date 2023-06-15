@@ -9,7 +9,7 @@ const KpiSwiper = ({ query, selectedKpis, handleCardInfoClick }) => {
 
     const slides = query.results.length > 0 && query.isOpen
     && query.results
-        .filter((result) => selectedKpis.includes(result.name))
+        .filter((result) => selectedKpis?.includes(result.name))
         .map((result) => (
             <swiper-slide key={result.name}>
                 <div className='absolute top-2'>

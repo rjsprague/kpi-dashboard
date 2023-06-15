@@ -1,63 +1,67 @@
+import { faCropSimple } from "@fortawesome/free-solid-svg-icons";
 import React, { useState, useEffect } from "react";
 import DepartmentDropdown from "./DepartmentDropdown";
 import TeamMemberDropdown from "./TeamMemberDropdown";
-import fetchActiveTeamMembers from "../../lib/fetchActiveTeamMembers";
 
-function TeamComponent({ onTeamChange, queryId, onDepartmentChange }) {
-    const [selectedDepartment, setSelectedDepartment] = useState(['Lead Manager']);
+function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, departments, teamMembers, isLoadingData }) {
+
+    const [selectedDepartment, setSelectedDepartment] = useState();
     const [selectedTeamMembers, setSelectedTeamMembers] = useState([]);
-    const [departments, setDepartments] = useState([]);
-
-    // console.log("selectedDepartment", selectedDepartment)
-    // console.log("selectedTeamMembers", selectedTeamMembers)
-
+    
     useEffect(() => {
-        const getDepartments = async () => {
-            try {
-                const data = await fetchActiveTeamMembers();
-                setDepartments(data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        getDepartments();
+        setSelectedDepartment(query.departments);
+        setSelectedTeamMembers([teamMembers[query.departments][query.teamMembers]]);
     }, []);
 
-    //console.log(Object.keys(departments[selectedDepartment]))
+    // console.log("query Team Members in TeamComponent: ", query.teamMembers)
+    // console.log("selectedDepartment in TeamComponent: ", selectedDepartment)
+    // console.log("selectedTeamMembers in TeamComponent: ", selectedTeamMembers)
+    // console.log(teamMembers[query.departments][query.teamMembers])
 
-    const handleDepartmentSelected = (department, departments) => {        
+    const teamMemberNames = Object.values(departments[query.departments]);
+    //console.log("teamMemberNames in TeamComponent: ", teamMemberNames)
+
+    const handleDepartmentSelected = (department, departments) => {
+        
         if (department !== selectedDepartment) {
             setSelectedDepartment(department);
-            setSelectedTeamMembers(Object.keys(departments[selectedDepartment]))
-            onTeamChange(department, [], queryId);
+            setSelectedTeamMembers(Object.values(departments[department]));
+            onTeamChange(department, Object.keys(departments[department]), queryId);
             onDepartmentChange(department);
-        }        
-    };
-
-    const handleTeamSelected = (teamMembers) => {
-        if (teamMembers !== selectedTeamMembers) {
-            setSelectedTeamMembers(teamMembers);
-            onTeamChange(selectedDepartment, teamMembers, queryId);
         }
     };
 
-
+    const handleTeamSelected = (teamMemberNames) => {
+        // Convert team member names to IDs
+        const teamMemberIDs = teamMemberNames.map((name) =>
+            Object.keys(departments[selectedDepartment]).find(
+                (key) => departments[selectedDepartment][key] === name
+            )
+        );
+        setSelectedTeamMembers(teamMemberNames);
+        console.log("teamMemberIDs", teamMemberIDs)
+        console.log("selectedTeamMembers", selectedTeamMembers)
+        // Pass team member IDs to the parent component handler
+        onTeamChange(selectedDepartment, teamMemberIDs, queryId);
+    };
 
     return (
         <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
             <DepartmentDropdown
+                departments={departments}
                 onOptionSelected={(department) => handleDepartmentSelected(department, departments)}
                 selectedDepartment={selectedDepartment}
                 queryId={queryId}
-                defaultOption={selectedDepartment}
+                isLoadingData={isLoadingData}
             />
             {selectedDepartment ? (
                 <TeamMemberDropdown
+                    teamMemberNames={teamMemberNames}
                     onOptionSelected={(teamMembers) => handleTeamSelected(teamMembers)}
                     selectedDepartment={selectedDepartment}
-                    defaultDepartment={selectedDepartment}
                     selectedTeamMembers={selectedTeamMembers}
                     queryId={queryId}
+                    isLoadingData={isLoadingData}
                 />
             ) :
                 (

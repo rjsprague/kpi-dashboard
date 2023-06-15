@@ -19,6 +19,7 @@ const AcquisitionsKpiQuery = ({
     onLeadSourceChange,
     onToggleQuery,
     onRemoveQuery,
+    isLoadingData
 }) => {
     //console.log("view: ", view)
     //console.log("VIEW_KPIS: ", VIEW_KPIS)
@@ -79,7 +80,7 @@ const AcquisitionsKpiQuery = ({
                         onOptionSelected={handleOptionSelected}
                         queryId={query.id}
                         leadSources={leadSources}
-                        loading={query.loading}
+                        isLoadingData={isLoadingData}
                         isUnavailable={query.isUnavailable}
                     />
                     <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />

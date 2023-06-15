@@ -13,9 +13,12 @@ const KpiQuery = ({
   onSetLoading,
   onFetchedKpiData,
   onTeamChange,
+  isLoadingData,
   ...props
 }) => {
-  const { id, dateRange, leadSource, department, teamMember } = query;
+  const { id, dateRange, leadSource, departments, teamMembers } = query;
+  //console.log("department in KpiQuery: ", departments)
+  //console.log("teamMember in KpiQuery: ", teamMembers)
   
   useEffect(() => {
     const fetchData = async () => {
@@ -24,16 +27,13 @@ const KpiQuery = ({
       const ls = Object.values(leadSource);
       const gte = dateRange?.gte || '';
       const lte = dateRange?.lte || '';
-      const dept = department || [];
-      const teamMem = teamMember || [];
-
-      // console.log("lead source values ", ls)
-      // console.log("var type of a lead source ", typeof(ls[0]))
+      const dept = departments || [];
+      const teamMem = teamMembers || [];
 
       try {
         const data = await fetchKpiData(view, kpiList, ls, gte, lte, dept, teamMem);
         onFetchedKpiData(id, data);
-        // console.log("data in KpiQuery: ", data)
+        console.log("data in KpiQuery: ", data)
       } catch (error) {
         console.error(error);
         // Handle the error appropriately
@@ -44,9 +44,10 @@ const KpiQuery = ({
     };
 
     fetchData();
-  }, [view, kpiList, dateRange, leadSource.length, department, teamMember]);
+  }, [view, kpiList, dateRange, leadSource.length, departments, teamMembers]);
 
   // console.log("queries in KpiQuery: ", query)
+  console.log("Kpi list in KpiQuery: ", kpiList)
 
   switch (view) {
     case 'Acquisitions':
@@ -59,14 +60,15 @@ const KpiQuery = ({
           view={view}
           query={query}
           kpiList={kpiList}
+          isLoadingData={isLoadingData}
         />
       );
     case 'Financial':
-      return <FinancialsKpiQuery {...props} view={view} query={query} kpiList={kpiList} />;
+      return <FinancialsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} />;
     case 'Leaderboard':
       return <Leaderboard {...props} view={view} query={query} kpiList={kpiList} />;
     default:
-      return <AcquisitionsKpiQuery {...props} view={view} query={query} kpiList={kpiList} />;
+      return <AcquisitionsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} />;
   }
 };
 

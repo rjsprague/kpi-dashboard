@@ -7,6 +7,8 @@ const KpiQueryContainer = ({
     view, 
     kpiList,
     leadSources,
+    departments,
+    teamMembers,
     queries,      
     handleSetLoading,
     handleSetLeadSourcesLoading,     
@@ -17,12 +19,13 @@ const KpiQueryContainer = ({
     handleRemoveQuery,
     handleAddQuery,
     handleTeamChange,
+    isLoadingData
 }) => {
 
-    //console.log("KpiViews view: ", view)
-    //console.log("kpilist: ", kpiList)
-    //console.log("lead sources: ", leadSources)
-    //console.log("queries: ", queries)
+    console.log("KpiViews view: ", view)
+    console.log("kpilist: ", kpiList)
+    console.log("lead sources: ", leadSources)
+    console.log("queries: ", queries)
 
     return (
         <div>
@@ -34,8 +37,8 @@ const KpiQueryContainer = ({
                     query={query}
                     kpiList={kpiList}
                     leadSources={leadSources}
-                    teamMember={query.teamMember}
-                    department={query.department}
+                    teamMembers={teamMembers}
+                    departments={departments}
                     onDateRangeChange={handleDateRangeChange}
                     onLeadSourceChange={handleLeadSourceChange}
                     onToggleQuery={handleToggleQuery}
@@ -44,6 +47,7 @@ const KpiQueryContainer = ({
                     onSetLoading={handleSetLoading}
                     onSetLeadSourcesLoading={handleSetLeadSourcesLoading}
                     onTeamChange={handleTeamChange}
+                    isLoadingData={isLoadingData}
                 />
             ))}
             <AddQueryButton handleAddQuery={handleAddQuery} />

@@ -1,45 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import CheckboxDropdown from './CheckboxDropdown';
-import fetchActiveTeamMembers from '../../lib/fetchActiveTeamMembers';
 import ServiceUnavailable from '../ServiceUnavailable';
 
 
-export default function TeamMemberDropdown({ onOptionSelected, selectedDepartment, selectedTeamMembers, queryId }) {
-  const [teamMembers, setTeamMembers] = useState([]);
+export default function TeamMemberDropdown({
+  teamMemberNames,
+  onOptionSelected,
+  selectedDepartment,
+  selectedTeamMembers,
+  queryId,
+  isLoadingData
+}) {
   const [isUnavailable, setIsUnavailable] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [selectedOptions, setSelectedOptions] = useState([]);
 
-  useEffect(() => {
-    async function getTeamMembers() {
-      try {
-        setLoading(true);
-        const members = await fetchActiveTeamMembers();
-        const membersObject = {};
-
-        for (const id in members[selectedDepartment]) {
-          membersObject[members[selectedDepartment][id]] = id;
-        }
-        setTeamMembers(membersObject);
-        const teamMemberArray = Object.keys(membersObject);
-        setSelectedOptions(teamMemberArray);
-        onOptionSelected(teamMemberArray.map((option) => parseInt(membersObject[option])));
-      } catch (error) {
-        console.error(error);
-        setIsUnavailable(true);
-      }
-      setLoading(false);
-    }
-    getTeamMembers();
-  }, [selectedDepartment]);
-
-  const teamMemberArray = Object.keys(teamMembers);
-
-  const handleOptionSelected = (selectedOptions) => {
-    const selectedIds = selectedOptions.map((option) => parseInt(teamMembers[option]));
-    setSelectedOptions(selectedOptions);
-    onOptionSelected(selectedIds);
-  };
+  const selectedOptions = selectedTeamMembers;
+  console.log("selectedTeamMembers in TeamMemberDropdown: ", selectedTeamMembers)
+  console.log("selectedDepartment in TeamMemberDropdown: ", selectedDepartment)
+  console.log("selectedOptions in TeamMemberDropdown: ", selectedOptions)
+  console.log("teamMemberNames in TeamMemberDropdown: ", teamMemberNames)
 
   if (isUnavailable) {
     return <ServiceUnavailable small={true} />;
@@ -47,12 +25,12 @@ export default function TeamMemberDropdown({ onOptionSelected, selectedDepartmen
 
   return (
     <CheckboxDropdown
-      options={teamMemberArray}
-      onOptionSelected={handleOptionSelected}
+      options={teamMemberNames}
+      onOptionSelected={onOptionSelected}
       selectedOptions={selectedOptions}
       queryId={queryId}
       isSingleSelect={false}
-      loading={loading}
+      isLoadingData={isLoadingData}
     />
   );
 }

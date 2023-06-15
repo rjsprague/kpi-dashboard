@@ -15,16 +15,18 @@ const RightSlideModal = ({
   selectedDepartment,
 }) => {
 
-  const kpisForSelectedDepartment = selectedView === 'Team' ? VIEW_KPIS[selectedView][0][selectedDepartment] : VIEW_KPIS[selectedView];
+  console.log("viewKpis: ", viewKpis)
+  console.log("VIEW_KPIS: ", VIEW_KPIS)
+  console.log("selectedView: ", selectedView)
+  console.log("modalType: ", modalType)
+  console.log("selectedKpis: ", selectedKpis)
+  console.log("selectedDepartment: ", selectedDepartment)
 
+  const kpisForSelectedDepartment =  VIEW_KPIS[selectedView][selectedDepartment];
+  console.log("kpisForSelectedDepartment: ", kpisForSelectedDepartment)
 
-
-  useEffect(() => {
-    if (selectedView === 'Team') {
-      setSelectedKpis(VIEW_KPIS[selectedView][0][selectedDepartment]);
-    } else {
-      setSelectedKpis(VIEW_KPIS[selectedView]);
-    }
+  useEffect(() => {    
+      setSelectedKpis(kpisForSelectedDepartment);    
   }, [selectedView, setSelectedKpis, selectedDepartment]);
 
 

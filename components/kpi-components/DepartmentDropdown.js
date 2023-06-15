@@ -1,45 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import CheckboxDropdown from './CheckboxDropdown';
-import fetchActiveTeamMembers from "../../lib/fetchActiveTeamMembers";
-import ServiceUnavailable from '../ServiceUnavailable';
 
-function DepartmentDropdown({ onOptionSelected, selectedDepartment, queryId, defaultOption }) {
-    const [departments, setDepartments] = useState(defaultOption);
-    const [isUnavailable, setIsUnavailable] = useState(false);
+function DepartmentDropdown({ departments, onOptionSelected, selectedDepartment, queryId, isLoadingData }) {
+    
+    console.log("departments", departments)
+    console.log("selectedDepartment", selectedDepartment)
+    const departmentsArray = Object.keys(departments);
 
-    useEffect(() => {
-        async function fetchDepartments() {
-            try {
-                const data = await fetchActiveTeamMembers();
-                //console.log("data", data)
-                const departments = Object.keys(data);
-                //console.log("departments", departments)
-                setDepartments(departments);
-            } catch (error) {
-                console.error(error);
-                setIsUnavailable(true);
-            }
-        }
-        fetchDepartments();
-    }, []);
-
-    const handleOptionSelected = (selectedOptions) => {
-        onOptionSelected(selectedOptions);
-    };
-
-    if (isUnavailable) {
-        return <ServiceUnavailable small={true} />;
-    }
-
-    //console.log("departments", departments)
+    
+    console.log("departments", departmentsArray)
 
     return (
         <CheckboxDropdown
-            options={departments}
-            onOptionSelected={handleOptionSelected}
+            options={departmentsArray}
+            onOptionSelected={onOptionSelected}
             selectedOptions={selectedDepartment}
             queryId={queryId}
             isSingleSelect={true}
+            isLoadingData={isLoadingData}
         />
     );
 }

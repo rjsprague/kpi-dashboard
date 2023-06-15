@@ -4,13 +4,14 @@ import DropdownButton from './DropdownButton';
 import LoadingIcon from "../LoadingIcon";
 
 
-function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect, loading, selectedOptions }) {
+function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId, isSingleSelect, isLoadingData }) {
     const [isOpen, setIsOpen] = useState(false);
     const [contentHeight, setContentHeight] = useState(0);
     const dropdownRef = useRef(null);
     const dropdownContentRef = useRef(null);
 
     console.log("selectedOptions", selectedOptions)
+    console.log("options ", options)
 
     useEffect(() => {
         if (isOpen) {
@@ -77,7 +78,7 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect, 
     return (
         <div ref={dropdownRef} className=" dropdown">
             <DropdownButton onClick={toggleOpen} isOpen={isOpen}>
-                {loading ? <LoadingIcon /> :
+                {isLoadingData ? <LoadingIcon /> :
                     selectedOptions?.length === 0
                         ? "No Filter"
                         : isSingleSelect && selectedOptions || selectedOptions?.length === 1
@@ -110,7 +111,7 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect, 
                                     All
                                 </label>
                             </li>
-                            {options && options.map((option) => {
+                            {Array.isArray(options) ? options.map((option) => {
                                 return (
                                     <li key={option} className="px-3 py-1 text-white cursor-pointer hover:bg-blue-800">
                                         <label className="inline-flex items-center">
@@ -124,7 +125,7 @@ function CheckboxDropdown({ options, onOptionSelected, queryId, isSingleSelect, 
                                         </label>
                                     </li>
                                 );
-                            })}
+                            }) : <LoadingIcon />}
                         </ul>
                     </div>
                 )}

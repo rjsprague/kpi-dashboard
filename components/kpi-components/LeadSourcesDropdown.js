@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import CheckboxDropdown from './CheckboxDropdown';
 import ServiceUnavailable from '../ServiceUnavailable';
 
-export default function LeadSourceDropdown({ onOptionSelected, queryId, leadSources, loading, isUnavailable }) {
+export default function LeadSourceDropdown({ onOptionSelected, queryId, leadSources, isLoadingData, isUnavailable}) {
     const [selectedOptions, setSelectedOptions] = useState(Object.keys(leadSources));
 
     console.log("lead sources dropdown: ", leadSources)
@@ -24,7 +24,7 @@ export default function LeadSourceDropdown({ onOptionSelected, queryId, leadSour
             selectedOptions={selectedOptions}
             queryId={queryId}
             isSingleSelect={false}
-            loading={loading}
+            isLoadingData={isLoadingData}
         />
     );
 }

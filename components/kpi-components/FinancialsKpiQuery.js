@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LeadSourcesDropdown from './LeadSourcesDropdown';
 import SingleDateRangeSelector from './SingleDateRangeSelector';
 import AnimateHeight from 'react-animate-height';
@@ -18,16 +18,21 @@ const FinancialsKpiQuery = ({
     onLeadSourceChange,
     onToggleQuery,
     onRemoveQuery,
+    isLoadingData
 }) => {
-    //console.log("view: ", view)
-    //console.log("query: ", query)
-    //console.log("kpiList: ", kpiList)     
+    console.log("view: ", view)
+    console.log("query: ", query)
+    console.log("kpiList: ", kpiList)     
 
     const [height, setHeight] = useState('auto');
     const [openModal, setOpenModal] = useState(false);
     const [modalType, setModalType] = useState("info");
     const [selectedResult, setSelectedResult] = useState(null);
-    const [selectedKpis, setSelectedKpis] = useState(kpiList);
+    const [selectedKpis, setSelectedKpis] = useState([]);
+
+    useEffect(() => {
+        setSelectedKpis(kpiList)
+    }, [kpiList])
 
     const handleCardInfoClick = (result) => {
         setSelectedResult(result);
@@ -72,7 +77,7 @@ const FinancialsKpiQuery = ({
                         onOptionSelected={handleOptionSelected}
                         queryId={query.id}
                         leadSources={leadSources}
-                        loading={query.loading}
+                        isLoadingData={isLoadingData}
                         isUnavailable={query.isUnavailable}
                     />
                     <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />

@@ -11,12 +11,15 @@ const TeamKpiQuery = ({
     view,
     VIEW_KPIS,
     query,
+    departments,
+    teamMembers,
     kpiList,
     onKpiListChange,
     onDateRangeChange,
     onToggleQuery,
     onRemoveQuery,
     onTeamChange,
+    isLoadingData
 }) => {
     const [height, setHeight] = useState('auto');
     const [openModal, setOpenModal] = useState(false);
@@ -24,37 +27,21 @@ const TeamKpiQuery = ({
     const [selectedResult, setSelectedResult] = useState(null);
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
     const [teamKpiList, setTeamKpiList] = useState([]);
-    const [department, setDepartment] = useState("Lead Manager");
+    const [department, setDepartment] = useState([]);
 
-    console.log("view Team Member ", view)
-    console.log("VIEW_KPIS  ", VIEW_KPIS[view])
-    //console.log("query Team ", query)
-    console.log("kpiList Team ", kpiList)
+    const updateKpiList = () => {
+        
+        setTeamKpiList(kpiList[query.departments[0]]);
+        setSelectedKpis(kpiList[query.departments[0]]);
+    };
 
     useEffect(() => {
-        if (department === "Lead Manager") {
-            setTeamKpiList(kpiList[0]["Lead Manager"]);
-            console.log("team kpi list", teamKpiList)
-            setSelectedKpis(kpiList[0]["Lead Manager"]);
-            console.log("selected kpi list", selectedKpis)
-        } else if (department === "Acquisition Manager") {
-            setTeamKpiList(kpiList[0]["Acquisition Manager"]);
-            setSelectedKpis(kpiList[0]["Acquisition Manager"]);
-        }
-    }, [kpiList]);
-   
+        updateKpiList(departments);
+    }, [kpiList, departments]);
 
     const handleDepartmentChange = (department) => {
         setDepartment(department);
-        if (department === "Lead Manager") {
-            setTeamKpiList(kpiList[0]["Lead Manager"]);
-            console.log("team kpi list", teamKpiList)
-            setSelectedKpis(kpiList[0]["Lead Manager"]);
-            console.log("selected kpi list", selectedKpis)
-        } else if (department === "Acquisition Manager") {
-            setTeamKpiList(kpiList[0]["Acquisition Manager"]);
-            setSelectedKpis(kpiList[0]["Acquisition Manager"]);
-        }
+        updateKpiList(department);
     };
 
     const handleCardInfoClick = (result) => {
@@ -91,8 +78,12 @@ const TeamKpiQuery = ({
                     <div className=''>
                         <TeamComponent
                             onTeamChange={onTeamChange}
+                            query={query}
                             queryId={query.id}
                             onDepartmentChange={handleDepartmentChange}
+                            departments={departments}
+                            teamMembers={teamMembers}
+                            isLoadingData={isLoadingData}
                         />
                     </div>
                     <div className="">
@@ -126,7 +117,7 @@ const TeamKpiQuery = ({
                                 modalType={modalType}
                                 selectedKpis={selectedKpis}
                                 setSelectedKpis={setSelectedKpis}
-                                selectedDepartment={department}
+                                selectedDepartment={query.departments}
                             />
                         </div>
                     </div>

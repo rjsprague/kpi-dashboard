@@ -4,17 +4,25 @@ import NavigationBar from './kpi-components/NavigationBar';
 import { KPI_VIEWS, VIEW_KPIS } from './kpi-components/constants';
 import { getDatePresets } from "../lib/date-utils";
 import fetchLeadSources from '../lib/fetchLeadSources';
+import fetchActiveTeamMembers from '../lib/fetchActiveTeamMembers';
 
 export default function KpiDashboard() {
+  const [isLoadingData, setIsLoadingData] = useState(true);
   const [queryType, setQueryType] = useState(KPI_VIEWS.Acquisitions);
   const [leadSources, setLeadSources] = useState({});
+  const [teamMembers, setTeamMembers] = useState();
+  const [departments, setDepartments] = useState();
   const [kpiList, setKpiList] = useState(VIEW_KPIS[queryType]);
   const datePresets = getDatePresets();
   const [idCounter, setIdCounter] = useState(2);
   const [queries, setQueries] = useState([]);
 
 
-  const createInitialQueries = (leadSourcesObject, datePresets) => {
+  const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets) => {
+    const firstDepartment = Object.keys(departmentsDataObject)[0]
+    //console.log("first department ", firstDepartment)
+    const firstDeptTeamMembers = Object.keys(departmentsDataObject[firstDepartment])
+    console.log("first department team members ", firstDeptTeamMembers)
     return [
       {
         id: 1,
@@ -24,28 +32,33 @@ export default function KpiDashboard() {
         isUnavailable: false,
         leadSource: leadSourcesObject,
         dateRange: { gte: datePresets['All Time'].startDate, lte: datePresets['All Time'].endDate },
-        department: ["Lead Manager"],
-        teamMember: [],
+        departments: [firstDepartment],
+        teamMembers: firstDeptTeamMembers,
       },
     ];
   };
 
   // Fetch lead sources on component mount
   useEffect(() => {
-  async function getLeadSources() {
-    try {
-      const sources = await fetchLeadSources();
-      setLeadSources(sources);
-      const leadSourcesObject = sources;
-
-      setQueries(createInitialQueries(leadSourcesObject, datePresets));
-
-    } catch (error) {
-      console.error(error);
+    async function getLeadSources() {
+      setIsLoadingData(true);
+      try {
+        const leadSourcesData = await fetchLeadSources();        
+        setLeadSources(leadSourcesData);
+        const leadSourcesObject = leadSourcesData;
+        const departmentsData = await fetchActiveTeamMembers();
+        setDepartments(departmentsData)
+        setTeamMembers(departmentsData)
+        const departmentsDataObject = departmentsData;
+        setQueries(createInitialQueries(leadSourcesObject, departmentsDataObject, datePresets));
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoadingData(false);
+      }
     }
-  }
-  getLeadSources();
-}, []);
+    getLeadSources();
+  }, []);
 
 
   const handleSetLoading = (queryId, isLoading) => {
@@ -102,13 +115,17 @@ export default function KpiDashboard() {
   };
 
   const handleTeamChange = (department, teamMembers, queryId) => {
+    console.log("department", department)
+    console.log("teamMembers", teamMembers)
+    
+
     setQueries((prevQueries) =>
       prevQueries.map((query) =>
         query.id === queryId
           ? {
             ...query,
-            department: department,
-            teamMember: teamMembers,
+            departments: department,
+            teamMembers: teamMembers,
           }
           : query
       )
@@ -133,25 +150,16 @@ export default function KpiDashboard() {
   };
 
   const handleAddQuery = () => {
-    const newQuery = {
-      id: idCounter,
-      results: [],
-      isOpen: true,
-      isLoading: false,
-      isUnavailable: false,
-      leadSource: [],
-      dateRange: { gte: datePresets['All Time'].startDate, lte: datePresets['All Time'].endDate },
-      department: ["Lead Manager"],
-      teamMember: [],
-    };
     setIdCounter(idCounter + 1);
-    setQueries([...queries, newQuery]);
+    setQueries([...queries, createInitialQueries(leadSources, departments, datePresets)]);
   };
 
   const handleQueryTypeChange = (type) => {
+    console.log("type", type)
     setQueryType(type);
     setKpiList(VIEW_KPIS[type]);
-    setQueries(createInitialQueries(leadSources, datePresets));
+    console.log("VIEW_KPIS[type]", VIEW_KPIS[type])
+    setQueries(createInitialQueries(leadSources, departments, datePresets));
   };
 
   const renderKpiResultsSection = () => {
@@ -159,6 +167,8 @@ export default function KpiDashboard() {
       view={queryType}
       kpiList={kpiList}
       leadSources={leadSources}
+      departments={departments}
+      teamMembers={teamMembers}
       queries={queries}
       setQueries={setQueries}
       datePresets={datePresets}
@@ -171,11 +181,9 @@ export default function KpiDashboard() {
       handleToggleQuery={handleToggleQuery}
       handleRemoveQuery={handleRemoveQuery}
       handleAddQuery={handleAddQuery}
+      isLoadingData={isLoadingData}
     />;
   };
-
-  console.log("lead sources are: ", leadSources)
-  console.log("queries are: ", queries)
 
   return (
     <>
