@@ -1,4 +1,3 @@
-import { faCropSimple } from "@fortawesome/free-solid-svg-icons";
 import React, { useState, useEffect } from "react";
 import DepartmentDropdown from "./DepartmentDropdown";
 import TeamMemberDropdown from "./TeamMemberDropdown";
@@ -19,6 +18,7 @@ function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, depar
     // console.log(teamMembers[query.departments][query.teamMembers])
 
     const teamMemberNames = Object.values(departments[query.departments]);
+    
     //console.log("teamMemberNames in TeamComponent: ", teamMemberNames)
 
     const handleDepartmentSelected = (department, departments) => {

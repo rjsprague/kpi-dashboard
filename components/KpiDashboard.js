@@ -14,18 +14,20 @@ export default function KpiDashboard() {
   const [departments, setDepartments] = useState();
   const [kpiList, setKpiList] = useState(VIEW_KPIS[queryType]);
   const datePresets = getDatePresets();
-  const [idCounter, setIdCounter] = useState(2);
+  const [idCounter, setIdCounter] = useState(0);
   const [queries, setQueries] = useState([]);
 
+  // console.log("lead sources object ", leadSources)
+  // console.log("Queries ", queries.map((query) => query.id))
 
-  const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets) => {
+  const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId=0) => {
     const firstDepartment = Object.keys(departmentsDataObject)[0]
     //console.log("first department ", firstDepartment)
     const firstDeptTeamMembers = Object.keys(departmentsDataObject[firstDepartment])
-    console.log("first department team members ", firstDeptTeamMembers)
+    //console.log("first department team members ", firstDeptTeamMembers)
     return [
       {
-        id: 1,
+        id: 1+newQueryId,
         results: [],
         isOpen: true,
         isLoading: false,
@@ -151,14 +153,12 @@ export default function KpiDashboard() {
 
   const handleAddQuery = () => {
     setIdCounter(idCounter + 1);
-    setQueries([...queries, createInitialQueries(leadSources, departments, datePresets)]);
+    setQueries([...queries, ...createInitialQueries(leadSources, departments, datePresets, idCounter + 1)]);
   };
 
   const handleQueryTypeChange = (type) => {
-    console.log("type", type)
     setQueryType(type);
     setKpiList(VIEW_KPIS[type]);
-    console.log("VIEW_KPIS[type]", VIEW_KPIS[type])
     setQueries(createInitialQueries(leadSources, departments, datePresets));
   };
 

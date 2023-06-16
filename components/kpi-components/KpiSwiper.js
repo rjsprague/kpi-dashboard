@@ -7,7 +7,7 @@ const KpiSwiper = ({ query, selectedKpis, handleCardInfoClick }) => {
 
     console.log("selected Kpis ", selectedKpis)
 
-    const slides = query.results.length > 0 && query.isOpen
+    const slides = query?.results?.length > 0 && query.isOpen
     && query.results
         .filter((result) => selectedKpis?.includes(result.name))
         .map((result) => (

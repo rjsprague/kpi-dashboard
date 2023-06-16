@@ -39,18 +39,16 @@ const QueryPanel = ({ query, height, setHeight, handleToggleQuery, handleGearIco
             className="text-blue-900 transform-gpu"
           />
         </button>
-        {query.id !== 1 && (
-          <button
-            className="flex items-center px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md h-7 shadow-super-4 hover:animate-pulse"
-            onClick={handleRemoveQuery}
-          >
-            <FontAwesomeIcon
-              icon={faTimes}
-              size="sm"
-              className="text-blue-900 transform-gpu"
-            />
-          </button>
-        )}
+        <button
+          className="flex items-center px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md h-7 shadow-super-4 hover:animate-pulse"
+          onClick={handleRemoveQuery}
+        >
+          <FontAwesomeIcon
+            icon={faTimes}
+            size="sm"
+            className="text-blue-900 transform-gpu"
+          />
+        </button>
       </div>
     </div>
   </div>

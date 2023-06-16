@@ -19,10 +19,13 @@ const KpiQuery = ({
   const { id, dateRange, leadSource, departments, teamMembers } = query;
   //console.log("department in KpiQuery: ", departments)
   //console.log("teamMember in KpiQuery: ", teamMembers)
+  //console.log("id in KpiQuery: ", id)
   
   useEffect(() => {
     const fetchData = async () => {
       onSetLoading(id, true);
+    
+      if (!leadSource || !dateRange || !departments || !teamMembers) return;
 
       const ls = Object.values(leadSource);
       const gte = dateRange?.gte || '';
@@ -33,7 +36,7 @@ const KpiQuery = ({
       try {
         const data = await fetchKpiData(view, kpiList, ls, gte, lte, dept, teamMem);
         onFetchedKpiData(id, data);
-        console.log("data in KpiQuery: ", data)
+        //console.log("data in KpiQuery: ", data)
       } catch (error) {
         console.error(error);
         // Handle the error appropriately
@@ -44,10 +47,10 @@ const KpiQuery = ({
     };
 
     fetchData();
-  }, [view, kpiList, dateRange, leadSource.length, departments, teamMembers]);
+  }, [view, kpiList, dateRange, leadSource, departments, teamMembers]);
 
   // console.log("queries in KpiQuery: ", query)
-  console.log("Kpi list in KpiQuery: ", kpiList)
+  //console.log("Kpi list in KpiQuery: ", kpiList)
 
   switch (view) {
     case 'Acquisitions':

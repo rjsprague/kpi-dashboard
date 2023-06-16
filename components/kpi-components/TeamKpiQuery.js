@@ -29,17 +29,19 @@ const TeamKpiQuery = ({
     const [teamKpiList, setTeamKpiList] = useState([]);
     const [department, setDepartment] = useState([]);
 
-    const updateKpiList = () => {
-        
-        setTeamKpiList(kpiList[query.departments[0]]);
-        setSelectedKpis(kpiList[query.departments[0]]);
+    const updateKpiList = (department) => {
+        // console.log("department ", department)
+        // console.log("updateKpiList: ", kpiList[department])
+        setTeamKpiList(kpiList[department]);
+        setSelectedKpis(kpiList[department]);
     };
 
     useEffect(() => {
-        updateKpiList(departments);
+        updateKpiList(query.departments);
     }, [kpiList, departments]);
 
     const handleDepartmentChange = (department) => {
+        //console.log("department ", department)
         setDepartment(department);
         updateKpiList(department);
     };
