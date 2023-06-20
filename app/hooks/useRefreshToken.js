@@ -16,10 +16,7 @@ const useRefreshToken = () => {
                     Authorization: `Bearer ${auth.accessToken}`,
                 },
                 withCredentials: true
-            });
-            // Remove the old access token from the cookie
-            Cookies.remove('accessToken');
-            //console.log("response.data.token", response.data.token)
+            });           
             // Store the new access token in the state
             setAuth({ accessToken: response.data.token });
             return response.data.token;

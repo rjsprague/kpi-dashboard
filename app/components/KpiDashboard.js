@@ -22,14 +22,14 @@ export default function KpiDashboard() {
   // console.log("lead sources object ", leadSources)
   // console.log("Queries ", queries.map((query) => query.id))
 
-  const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId = 0) => {
+  const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId) => {
     const firstDepartment = Object.keys(departmentsDataObject)[0]
     //console.log("first department ", firstDepartment)
     const firstDeptTeamMembers = Object.keys(departmentsDataObject[firstDepartment])
     //console.log("first department team members ", firstDeptTeamMembers)
     return [
       {
-        id: 1 + newQueryId,
+        id: newQueryId ? 1 + newQueryId : 1,
         results: [],
         isOpen: true,
         isLoading: false,
@@ -106,8 +106,8 @@ export default function KpiDashboard() {
   };
 
   const handleLeadSourceChange = (values, queryId) => {
-    console.log("values", values)
-    console.log("queryId", queryId)
+    //console.log("values", values)
+    //console.log("queryId", queryId)
     
     setQueries((prevQueries) =>
       prevQueries.map((query) =>
@@ -192,11 +192,11 @@ export default function KpiDashboard() {
   };
 
   return (
-    <section className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen">
       <NavigationBar onQueryTypeChange={handleQueryTypeChange} />
       <div className="flex flex-col h-full px-2 py-2 sm:px-4">
         {renderKpiResultsSection()}
       </div>
-    </section>
+    </div>
   );
 }
