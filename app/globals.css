@@ -68,28 +68,28 @@ body {
 .backface {
   backface-visibility: hidden;
 }
-
+/* 
 .swiper-container {
   position: relative;
   width: 100%;
   height: 100%;
-}
-
+} */
+/* 
 .swiper-button-prev,
 .swiper-button-next {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-}
+} */
 
-.swiper-button-prev {
+/* .swiper-button-prev {
   left: 10px;
 }
 
 .swiper-button-next {
   right: 10px;
-}
+} */
 
 
 .swiper-scrollbar {

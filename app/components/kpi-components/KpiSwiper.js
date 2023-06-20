@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Controller, Scrollbar, Mousewheel } from 'swiper/core';
-import 'swiper/swiper.min.css';
+import 'swiper/css/bundle';
 import KpiCard from './KpiCard';
 import LoadingIcon from '../LoadingIcon';
 
@@ -32,7 +32,7 @@ const KpiSwiper = ({ query, selectedKpis, handleCardInfoClick }) => {
 
     return (
         <Swiper
-            ref={swiperRef}            
+            ref={swiperRef}          
             spaceBetween={10}
             speed={100}
             controller={false}
@@ -45,47 +45,52 @@ const KpiSwiper = ({ query, selectedKpis, handleCardInfoClick }) => {
                 300: {
                     slidesPerView: 1,
                     spaceBetween: 10,
-                    slidesOffsetBefore: 0,
-                    slidesOffsetAfter: 0,
-                },
+                    slidesOffsetBefore: 25,
+                    slidesOffsetAfter: 25,                },
                 374: {
                     slidesPerView: 1,
                     spaceBetween: 20,
-                    slidesOffsetBefore: 10,
-                    slidesOffsetAfter: 10,
+                    slidesOffsetBefore: 40,
+                    slidesOffsetAfter: 40,
                 },
                 424: {
                     slidesPerView: 1,
                     spaceBetween: 20,
-                    slidesOffsetBefore: 20,
-                    slidesOffsetAfter: 20,
+                    slidesOffsetBefore: 60,
+                    slidesOffsetAfter: 60,
                 },
-                768: {
+                650: {
                     slidesPerView: 2,
-                    spaceBetween: 0,
+                    spaceBetween: 5,
                     slidesOffsetBefore: 10,
                     slidesOffsetAfter: 10,
                 },
                 1023: {
                     slidesPerView: 2,
-                    spaceBetween: 0,
+                    spaceBetween: 5,
                     slidesOffsetBefore: 5,
                     slidesOffsetAfter: 5,
                 },
-                1400: {
+                1250: {
                     slidesPerView: 3,
-                    spaceBetween: 10,
+                    spaceBetween: 5,
                     slidesOffsetBefore: 10,
                     slidesOffsetAfter: 10,
                 },
-                1750: {
+                1550: {
                     slidesPerView: 4,
-                    spaceBetween: 10,
-                    slidesOffsetBefore: 20,
-                    slidesOffsetAfter: 20,
+                    spaceBetween: 5,
+                    slidesOffsetBefore: 5,
+                    slidesOffsetAfter: 5,
+                },
+                1900: {
+                    slidesPerView: 5,
+                    spaceBetween: 5,
+                    slidesOffsetBefore: 10,
+                    slidesOffsetAfter: 10,
                 },
             }}
-            className="lg:max-w-8xl h-60"
+            className="h-60"
         >
             {slides}
         </Swiper>

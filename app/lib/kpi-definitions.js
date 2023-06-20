@@ -366,7 +366,6 @@ const KPI_DEFINITIONS = {
                 return acc;
             }, []) : [];
             stlArray.sort((a, b) => a - b);
-            //console.log("length of stlArray mod 2", stlArray.length)
             let lmStlMedianSorted = stlArray.length % 2 === 0 ? (stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2 : stlArray[(stlArray.length - 1) / 2];
             return Number((lmStlMedianSorted / 60).toFixed(2));
         },
