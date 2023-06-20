@@ -8,7 +8,7 @@ import Link from 'next/link';
 
 const USER_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const REGISTER_URL = '/dashboard/admins/new';
+const REGISTER_URL = '/';
 
 const Register = () => {
     const userRef = useRef();
