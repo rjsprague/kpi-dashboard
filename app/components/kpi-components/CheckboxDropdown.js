@@ -46,21 +46,31 @@ function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId,
 
     const handleCheckboxChange = (option) => {
         let newSelectedOptions = [...selectedOptions];
-
+    
         if (isSingleSelect) {
             newSelectedOptions = [option];
         } else if (option === 'All') {
+            // When 'All' is selected, if all options are already selected, deselect all. Otherwise, select all.
             newSelectedOptions = newSelectedOptions.length === options.length ? [] : [...options];
         } else {
             const isSelected = selectedOptions.includes(option);
-            if (isSelected) {
+    
+            if (newSelectedOptions.length === options.length) {
+                // If all options are selected, and the user tries to select another option,
+                // deselect all options and only select the new option
+                newSelectedOptions = [option];
+            } else if (isSelected) {
+                // If the option is already selected, deselect it
                 newSelectedOptions = newSelectedOptions.filter(selectedOption => selectedOption !== option);
             } else {
+                // Otherwise, add the option to the selected options
                 newSelectedOptions.push(option);
             }
         }
+    
         onOptionSelected(newSelectedOptions, queryId);
     };
+    
 
     const duration = 250;
     const defaultStyle = {
