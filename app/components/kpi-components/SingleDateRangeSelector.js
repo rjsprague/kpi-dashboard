@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { getDatePresets } from "../../lib/date-utils";
+import { getDatePresets, getWeekRange } from "../../lib/date-utils";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Transition } from "react-transition-group";
@@ -26,6 +26,11 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
             setContentHeight(0);
         }
     }, [showDatePicker]);
+
+    const handleWeekSelect = (year, weekNumber) => {
+        const range = getWeekRange(year, weekNumber);
+        handleDateRangeChange([range.startDate, range.endDate]);
+    };
 
     const handleDateRangeChange = (dates) => {
         setDateRange(dates);
@@ -72,7 +77,7 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
     return (
         <div className="relative justify-center text-xs sm:text-sm bg-opacity-80 date-picker">
             <DropdownButton onClick={toggleDatePicker} isOpen={showDatePicker}>
-            {dateRange && dateRange[0] instanceof Date && !isNaN(dateRange[0]) && dateRange[0] === datePresets['All Time'].startDate ? 'All Time' :
+                {dateRange && dateRange[0] instanceof Date && !isNaN(dateRange[0]) && dateRange[0] === datePresets['All Time'].startDate ? 'All Time' :
                     dateRange && dateRange[0] instanceof Date && !isNaN(dateRange[0]) && dateRange[1] && dateRange[0].toLocaleDateString() === dateRange[1]?.toLocaleDateString() ? dateRange[0]?.toLocaleDateString() :
                         dateRange && dateRange[0] instanceof Date && !isNaN(dateRange[0]) && dateRange[1] instanceof Date && !isNaN(dateRange[1]) ? `${dateRange[0].toLocaleDateString()} - ${dateRange[1].toLocaleDateString()}`
                             : "Select Date Range"}
@@ -85,7 +90,7 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],
-                            maxHeight: "320px", // Limit the height of the dropdown
+                            maxHeight: "370px", // Limit the height of the dropdown
                             overflowY: "auto", // Enable scrolling if the content is too long
                         }}
                     >
@@ -101,6 +106,18 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
                             ))}
                         </div>
                         <div className="p-2">
+                            <div className="flex flex-row gap-2 pb-2">
+                                <label>Year:</label>
+                                <input type="number" defaultValue={new Date().getFullYear()} id="year-input" className="px-1 text-blue-900 w-13" />
+                                <label>Week:</label>
+                                <select onChange={(e) => handleWeekSelect(document.getElementById('year-input').value, e.target.value)} className="text-blue-900">
+                                    {Array.from({ length: 53 }, (_, i) => i + 1).map((weekNumber) => (
+                                        <option key={weekNumber} value={weekNumber}>
+                                            {weekNumber}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                             <DatePicker
                                 key={`${dateRange[0]}-${dateRange[1]}`}
                                 onChange={handleDateRangeChange}
@@ -111,6 +128,7 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
                                 showMonthDropdown
                                 showYearDropdown
                             />
+
                         </div>
                     </div>
                 )}

@@ -133,3 +133,16 @@ export function getDatePresets() {
   };
   
 }
+
+export function getWeekRange(year, weekNumber) {
+  // Create a date object set to the first day of the year
+  const firstDayOfYear = new Date(year, 0, 1);
+  // Get the first day of the week
+  const start = new Date(firstDayOfYear);
+  start.setDate(firstDayOfYear.getDate() + (weekNumber - 1) * 7 - firstDayOfYear.getDay());
+  // Get the last day of the week
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+  // Return the start and end dates
+  return { startDate: start, endDate: end };
+}
