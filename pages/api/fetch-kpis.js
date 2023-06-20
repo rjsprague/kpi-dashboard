@@ -1,4 +1,4 @@
-import fetchKpiData from '../../lib/fetch-kpis';
+import fetchKpiData from '../../app/lib/fetch-kpis'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
