@@ -1,24 +1,38 @@
 // lib/withAuth.js
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import useAuth from '../hooks/useAuth';
 import Cookies from 'js-cookie';
 import useRefreshToken from '../hooks/useRefreshToken';
+import LoadingQuotes from '../components/LoadingQuotes'
 
 export default function withAuth(Component) {
   return function AuthenticatedComponent(props) {
-    const { auth } = useAuth();
+    const { auth, setAuth } = useAuth();
     const router = useRouter();
+    const pathname = usePathname()
     const refresh = useRefreshToken();
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-      if (Cookies.get('accessToken')) {
-        refresh();
-      } else if (!auth?.accessToken) {
-        router.replace('/login');
-      }
+        if (!auth?.accessToken) {
+            const accessToken = Cookies.get('accessToken');
+            if (accessToken) {
+                refresh().then(() => setIsLoading(false));
+            } else {
+                // Store the current location in the cookie
+                Cookies.set('preLoginRoute', pathname);
+                router.push('/login');
+            }
+        } else {
+            setIsLoading(false);
+        }
     }, [auth]);
 
-    return auth?.accessToken ? <Component {...props} /> : null;
+    if (isLoading) {
+      return <LoadingQuotes mode={'light'} />;
+    }
+
+    return <Component {...props} />;
   }
 }

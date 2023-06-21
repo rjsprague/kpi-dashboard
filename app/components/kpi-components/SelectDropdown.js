@@ -72,7 +72,7 @@ function SelectDropdown({ options, onOptionSelected, defaultValue }) {
                 {(state) => (
                     <div
                         ref={dropdownContentRef}
-                        className="absolute right-0 z-50 w-full text-white bg-blue-900 rounded-md shadow-lg bg-opacity-80 top-10"
+                        className="absolute right-0 z-50 w-24 text-white bg-blue-900 rounded-md shadow-lg bg-opacity-80 top-10"
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],

@@ -6,6 +6,7 @@ import SwiperCore, { Controller, Scrollbar, Mousewheel } from 'swiper/core';
 import 'swiper/css/bundle';
 import KpiCard from './KpiCard';
 import LoadingIcon from '../LoadingIcon';
+import LoadingQuotes from '../LoadingQuotes';
 
 SwiperCore.use([Controller, Scrollbar, Mousewheel]);
 
@@ -27,7 +28,7 @@ const KpiSwiper = ({ query, selectedKpis, handleCardInfoClick }) => {
             ));
 
     if (query.isLoading) {
-        return <LoadingIcon size="large" />
+        return <LoadingQuotes mode={'light'} />
     }
 
     return (

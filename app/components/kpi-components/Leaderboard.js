@@ -8,6 +8,7 @@ import ServiceUnavailable from '../ServiceUnavailable';
 import RightSlideModal from '../RightSlideModal';
 import SelectDropdown from './SelectDropdown';
 import LoadingIcon from '../LoadingIcon';
+import LoadingQuotes from '../LoadingQuotes';
 
 const currencyToNumber = (str) => {
     if (!str) return 0;
@@ -185,40 +186,41 @@ export default function Leaderboard({
             </QueryPanel>
             <AnimateHeight duration={500} height={height}>
                 <div className="flex flex-col flex-wrap justify-center w-full gap-2 px-1 py-2 bg-blue-300 rounded-lg sm:px-2 sm:flex-row shadow-super-4">
-                    {kpis
-                        .filter((kpi) => selectedKpis.includes(kpi.name))
-                        .map((kpi, index) => (
-                            <div key={index} className="bg-blue-100 rounded-lg xl:w-76 shadow-super-4">
-                                <div className="px-2 py-4 m-2 font-bold tracking-wider text-center text-blue-900 uppercase bg-white rounded-lg text-md shadow-super-4">
-                                    {kpi.name}
-                                </div>
-                                {['1st', '2nd', '3rd'].map((rank, i) => (
-                                    <div key={i} className="flex flex-row justify-between gap-2 px-4 py-3 mx-3 my-2 text-sm text-blue-800 bg-white rounded-lg shadow-super-4">
-                                        <div className={` mr-1 ${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>{rank}</div>
-                                        <div className='w-40 overflow-clip whitespace-nowrap'>
-                                            {loading ? (
-                                                <LoadingIcon />
-                                            ) : kpi.data[i]?.metric ? (
-                                                <span className={`${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>{kpi.data[i]?.workspace}</span>
-                                            ) : (
-                                                <span className={`${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>-</span>
-                                            )}
+                    <div className="flex flex-col flex-wrap justify-center w-full gap-2 px-1 py-2 bg-white rounded-lg min-h-62 sm:px-2 sm:flex-row shadow-super-4">
+                        {
+                            loading ? <LoadingQuotes mode={'light'} /> : (
+                                kpis
+                                    .filter((kpi) => selectedKpis.includes(kpi.name))
+                                    .map((kpi, index) => (
+                                        <div key={index} className="bg-blue-100 rounded-lg xl:w-76 shadow-super-4">
+                                            <div className="px-2 py-4 m-2 font-bold tracking-wider text-center text-blue-900 uppercase bg-white rounded-lg text-md shadow-super-4">
+                                                {kpi.name}
+                                            </div>
+                                            {['1st', '2nd', '3rd'].map((rank, i) => (
+                                                <div key={i} className="flex flex-row justify-between gap-2 px-4 py-3 mx-3 my-2 text-sm text-blue-800 bg-white rounded-lg shadow-super-4">
+                                                    <div className={` mr-1 ${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>{rank}</div>
+                                                    <div className='w-40 overflow-clip whitespace-nowrap'>
+                                                        { kpi.data[i]?.metric ? (
+                                                            <span className={`${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>{kpi.data[i]?.workspace}</span>
+                                                        ) : (
+                                                            <span className={`${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>-</span>
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        { kpi.data[i]?.metric ? (
+                                                            <span className={`${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>{kpi.name === "Cost Per Contract" || kpi.name === "Cost Per Qualified Lead" ? " $" + kpi.data[i]?.metric : " " + kpi.data[i]?.metric}</span>
+                                                        ) : (
+                                                            <span className={`${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>-</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
-                                        <div>
-                                            {loading ? (
-                                                <LoadingIcon />
-                                            ) : kpi.data[i]?.metric ? (
-                                                <span className={`${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>{kpi.name === "Cost Per Contract" || kpi.name === "Cost Per Qualified Lead" ? " $" + kpi.data[i]?.metric : " " + kpi.data[i]?.metric}</span>
-                                            ) : (
-                                                <span className={`${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>-</span>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        ))}
+                                    ))
+                            )
+                        }
+                    </div>
                 </div>
-
                 <RightSlideModal
                     isOpen={openModal}
                     handleCloseModal={() => setOpenModal(false)}

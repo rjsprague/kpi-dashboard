@@ -37,28 +37,21 @@ const LoginPage = () => {
           withCredentials: true
         }
       );
-      //console.log('response received', response);
       const accessToken = response?.data?.token;
-      Cookies.set('accessToken', accessToken, { secure: true });
+      Cookies.set('accessToken', accessToken, { expires: 120 / (24 * 60), secure: true });
 
-      //console.log('setting auth', accessToken);
       setAuth({ accessToken });
-      //console.log('setting email and password');
       setEmail('');
       setPassword('');
-      //console.log('redirecting');
 
-      // After successful login
-      const preLoginRoute = sessionStorage.getItem('preLoginRoute');
+      const preLoginRoute = Cookies.get('preLoginRoute');
+      
       if (preLoginRoute) {
         router.push(preLoginRoute);
-        sessionStorage.removeItem('preLoginRoute');
+        Cookies.remove('preLoginRoute');
       } else {
-        //console.log('redirecting to kpi-dashboard')
-        //console.log("auth.accessToken", auth.accessToken)
         router.push('/kpi-dashboard');
       }
-     // console.log('end of try block');
     } catch (err) {
       console.log('catch block', err);
       if (!err?.response) {
