@@ -26,7 +26,7 @@ function calculateKPIs(startDate, endDate, endpointData) {
   return kpiData;
 }
 
-function createKpiObject(name, current, redFlag, target, data1, data2, kpiType, kpiFactors) {
+function createKpiObject(name, current, redFlag, target, data1, data2, unit, kpiType, kpiFactors) {
   return {
     name,
     current,
@@ -34,6 +34,7 @@ function createKpiObject(name, current, redFlag, target, data1, data2, kpiType, 
     target,
     data1,
     data2,
+    unit,
     kpiType,
     kpiFactors,
   };
@@ -101,7 +102,7 @@ async function fetchKpiData(kpiView, requestedKpiList, leadSource, gte, lte, dep
     //console.log("start date ", startDate);
     //console.log("end date ", endDate);
 
-    const generateFilters = (fieldName, dateFieldName, extraFilters) => {
+    const generateFilters = (leadSourceFieldName, dateFieldName, extraFilters) => {
       const filters = [];
 
       if (startDate && endDate) {
@@ -116,7 +117,7 @@ async function fetchKpiData(kpiView, requestedKpiList, leadSource, gte, lte, dep
       if (leadSource && leadSource.length > 0 && kpiView !== "Team") {
         filters.push({
           "type": "app",
-          "fieldName": fieldName,
+          "fieldName": leadSourceFieldName,
           "values": leadSource,
         });
       }
@@ -408,33 +409,33 @@ async function fetchKpiData(kpiView, requestedKpiList, leadSource, gte, lte, dep
 
     // Helper function for creating data strings
     const createDataString = (dataLabel, value) => {
-      //console.log("value: ", value)
-      // If there is a space before the data label, put the label AFTER the value, else put it BEFORE
-      // Use regex to check for a space at the beginning of the string
-      if (!dataLabel) { // Add this line
+      if (value > 999) {
+        value = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+      if (!dataLabel) {
         return value;
       }
       if (/^\s/.test(dataLabel)) {
         return value + dataLabel;
       }
-      return dataLabel + (dataLabel.includes('$') ? '$' : '') + value;
+      return dataLabel + value;
     };
 
     const kpiObjects = kpiDefinitionsArray.filter((kpiDefinition) => kpiList.includes(kpiDefinition.name))
       .map((kpiDefinition) => {
         const current = calculatedKPIs[kpiDefinition.name];
-        const { redFlag, target, dataLabels, kpiFactors, dataKeys, kpiType } = kpiDefinition;
-        //console.log("data keys: ", dataKeys)
-        //console.log("is data keys empty: ", dataKeys.length > 0)
-        //console.log("is data keys length > 1?: ", dataKeys.length > 1)
-        //console.log("data keys 0 is " + dataKeys[0] + " and data keys 1 is " + dataKeys[1])
+        const { redFlag, target, dataLabels, kpiFactors, dataKeys, kpiType, unit } = kpiDefinition;
+        // console.log("data keys: ", dataKeys)
+        // console.log("is data keys empty: ", dataKeys.length > 0)
+        // console.log("is data keys length > 1?: ", dataKeys.length > 1)
+        // console.log("data keys 0 is " + dataKeys[0] + " and data keys 1 is " + dataKeys[1])
         const data1 = dataKeys.length > 0 && dataLabels[0] !== undefined ? createDataString(dataLabels[0], getKpiValue(calculatedKPIs, endpointData, dataKeys[0])) : 0;
         const data2 = dataKeys.length > 1 && dataLabels[1] !== undefined ? createDataString(dataLabels[1], getKpiValue(calculatedKPIs, endpointData, dataKeys[1])) : 0;
 
-        //console.log("data1: ", data1)
-        //console.log("data2: ", data2)
-
-        return createKpiObject(kpiDefinition.name, current, redFlag, target, data1, data2, kpiType, kpiFactors);
+        // console.log("data1: ", data1)
+        // console.log("data2: ", data2)
+          
+        return createKpiObject(kpiDefinition.name, current, redFlag, target, data1, data2, unit, kpiType, kpiFactors);
       });
 
     //console.log(kpiObjects);

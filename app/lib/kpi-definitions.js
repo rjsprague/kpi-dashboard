@@ -8,7 +8,9 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 0,
         target: 0,
-        dataLabels: ["Ad Spend: "],
+        dataLabels: ["Ad Spend: $"],
+        kpiType: "",
+        unit: "$",
         kpiFactors: [
             {
                 id: 0,
@@ -31,7 +33,9 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 60,
         target: 35,
-        dataLabels: ["Marketing: ", "Leads: "],
+        dataLabels: ["Marketing: $", "Leads: "],
+        kpiType: "meter",
+        unit: "$",
         kpiFactors: [
             {
                 id: 0,
@@ -55,6 +59,8 @@ const KPI_DEFINITIONS = {
         redFlag: 70,
         target: 80,
         dataLabels: ["Leads: ", "Connections: "],
+        kpiType: "meter",
+        unit: "%",
         kpiFactors: [
             {
                 id: 0,
@@ -78,6 +84,8 @@ const KPI_DEFINITIONS = {
         redFlag: 60,
         target: 75,
         dataLabels: ["Connections: ", "Triages: "],
+        kpiType: "meter",
+        unit: "%",
         kpiFactors: [
             {
                 id: 0,
@@ -119,6 +127,8 @@ const KPI_DEFINITIONS = {
         redFlag: 50,
         target: 70,
         dataLabels: ["Triages: ", "Qualified: "],
+        kpiType: "meter",
+        unit: "%",
         kpiFactors: [
             {
                 id: 0,
@@ -154,22 +164,18 @@ const KPI_DEFINITIONS = {
         redFlag: 50,
         target: 70,
         dataLabels: ["Qualified: ", "Approved: "],
+        kpiType: "meter",
+        unit: "%",
         kpiFactors: [
             {
                 id: 0,
-                title: "How to Optimize Triage Approvals",
+                title: "How to Define Triage Approvals",
             },
             {
                 id: 1,
-                desc: "Speed to Lead",
+                desc: "Results of a Triage Call",
                 linkName: "Learn More",
-                link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235788-speed-to-lead-the-most-important-metric"
-            },
-            {
-                id: 2,
-                desc: "Big Checks",
-                linkName: "Learn More",
-                link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235790-the-big-check-philosophy"
+                link: "https://knowledge.reiautomated.io/courses/take/scaling/multimedia/42977342-triage-call-results"
             }
         ],
     },
@@ -183,6 +189,8 @@ const KPI_DEFINITIONS = {
         redFlag: 65,
         target: 80,
         dataLabels: ["Approved: ", "Analyzed: "],
+        kpiType: "meter",
+        unit: "%",
         kpiFactors: [
             {
                 id: 0,
@@ -190,15 +198,21 @@ const KPI_DEFINITIONS = {
             },
             {
                 id: 1,
-                desc: "Speed to Lead",
+                desc: "Deal Analyzer Template Overview",
                 linkName: "Learn More",
                 link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/42977803-deal-analyzer-template-overview"
             },
             {
                 id: 2,
-                desc: "Big Checks",
+                desc: "Deal Analyzer Masterclass #1",
                 linkName: "Learn More",
-                link: "https://knowledge.reiautomated.io/courses/take/scaling/multimedia/42977841-deal-analysis-checklist"
+                link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/42977824-deal-analyzer-masterclass"
+            },
+            {
+                id: 3,
+                desc: "Deal Analyzer Masterclass #2",
+                linkName: "Learn More",
+                link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/42977830-deal-analyzer-masterclass-2"
             }
         ],
     },
@@ -212,6 +226,8 @@ const KPI_DEFINITIONS = {
         redFlag: 65,
         target: 80,
         dataLabels: ["Analyzed: ", "Presentations: "],
+        kpiType: "meter",
+        unit: "%",
         kpiFactors: [
             {
                 id: 0,
@@ -253,6 +269,8 @@ const KPI_DEFINITIONS = {
         redFlag: 10,
         target: 25,
         dataLabels: ["Presentations: ", "Contracts: "],
+        kpiType: "meter",
+        unit: "%",
         kpiFactors: [
             {
                 id: 0,
@@ -288,6 +306,8 @@ const KPI_DEFINITIONS = {
         redFlag: 50,
         target: 75,
         dataLabels: ["Contracts: ", "Acquisitions: "],
+        kpiType: "meter",
+        unit: "%",
         kpiFactors: [
             {
                 id: 0,
@@ -296,20 +316,20 @@ const KPI_DEFINITIONS = {
             {
                 id: 1,
                 desc: "Renegotiation after inspections.",
-                linkName: "Learn More",
-                link: "#"
+                linkName: "",
+                link: ""
             },
             {
                 id: 2,
                 desc: "Regular Seller Update, Professionalism, Preparedness.",
-                linkName: "Learn More",
-                link: "#"
+                linkName: "",
+                link: ""
             },
             {
                 id: 3,
                 desc: "Give the seller confidence in your ability to solve their problem.",
-                linkName: "Learn More",
-                link: "#"
+                linkName: "",
+                link: ""
             }
         ],
     },
@@ -323,10 +343,12 @@ const KPI_DEFINITIONS = {
         redFlag: 0,
         target: 0,
         dataLabels: ["Acquisitions: ", "Deals: "],
+        kpiType: "",
+        unit: " Deals",
         kpiFactors: [
             {
                 id: 0,
-                title: "TBD",
+                title: "",
             },
         ],
     },
@@ -345,11 +367,13 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 0,
         target: 0,
-        dataLabels: ["Deals: ", "Profit: "],
+        dataLabels: ["Deals: ", "Profit: $"],
+        kpiType: "",
+        unit: "$",
         kpiFactors: [
             {
                 id: 0,
-                title: "TBD",
+                title: "",
             },
         ],
     },
@@ -470,9 +494,11 @@ const KPI_DEFINITIONS = {
             const { totalMarketingExpenses, contracts } = apiData;
             return totalMarketingExpenses != null && totalMarketingExpenses != NaN ? Math.round(totalMarketingExpenses / contracts) : "NA";
         },
-        redFlag: 0,
-        target: 0,
-        dataLabels: ["Ad Spend: ", "Contracts: "],
+        redFlag: 1200,
+        target: 400,
+        dataLabels: ["Ad Spend: $", "Contracts: "],
+        kpiType: "meter",
+        unit: "$",
         kpiFactors: [
             {
                 id: 0,
@@ -493,9 +519,11 @@ const KPI_DEFINITIONS = {
             const { totalMarketingExpenses, acquisitions } = apiData;
             return totalMarketingExpenses != null && totalMarketingExpenses != NaN ? Math.round(totalMarketingExpenses / acquisitions) : "NA";
         },
-        redFlag: 0,
-        target: 0,
-        dataLabels: ["Ad Spend: ", "Acquisitions: "],
+        redFlag: 1800,
+        target: 600,
+        dataLabels: ["Ad Spend: $", "Acquisitions: "],
+        kpiType: "meter",
+        unit: "$",
         kpiFactors: [
             {
                 id: 0,
@@ -518,7 +546,9 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 0,
         target: 0,
-        dataLabels: ["Ad Spend: ", "Deals: "],
+        dataLabels: ["Ad Spend: $", "Deals: "],
+        kpiType: "",
+        unit: "$",
         kpiFactors: [
             {
                 id: 0,
@@ -541,7 +571,9 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 0,
         target: 0,
-        dataLabels: ["Actualized Profit: "],
+        dataLabels: ["Actualized Profit: $"],
+        kpiType: "",
+        unit: "$",
         kpiFactors: [
             {
                 id: 0,
@@ -564,7 +596,9 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 0,
         target: 0,
-        dataLabels: ["Projected Profit: "],
+        dataLabels: ["Projected Profit: $"],
+        kpiType: "",
+        unit: "$",
         kpiFactors: [
             {
                 id: 0,
@@ -587,7 +621,9 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 0,
         target: 0,
-        dataLabels: ["Actualized Profit: ", "Projected Profit: "],
+        dataLabels: ["Actualized Profit: $", "Projected Profit: $"],
+        kpiType: "",
+        unit: "$",
         kpiFactors: [
             {
                 id: 0,
@@ -610,7 +646,9 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 0,
         target: 0,
-        dataLabels: ["Ad Spend: ", "Actualized Profit: "],
+        dataLabels: ["Ad Spend: $", "Actualized Profit: $"],
+        kpiType: "",
+        unit: "%",
         kpiFactors: [
             {
                 id: 0,
@@ -633,7 +671,9 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 0,
         target: 0,
-        dataLabels: ["Ad Spend: ", "Projected Profit: "],
+        dataLabels: ["Ad Spend: $", "Projected Profit: $"],
+        kpiType: "",
+        unit: "%",
         kpiFactors: [
             {
                 id: 0,
@@ -654,9 +694,11 @@ const KPI_DEFINITIONS = {
             const { totalMarketingExpenses, totalProfit } = apiData;
             return totalProfit / totalMarketingExpenses * 100;
         },
-        redFlag: 0,
-        target: 0,
-        dataLabels: ["Ad Spend: ", "Total Profit: "],
+        redFlag: 600,
+        target: 1200,
+        dataLabels: ["Ad Spend: $", "Total Profit: $"],
+        kpiType: "meter",
+        unit: "%",
         kpiFactors: [
             {
                 id: 0,
@@ -673,13 +715,28 @@ const KPI_DEFINITIONS = {
     "ROAS Total APR": {
         name: "ROAS Total APR",
         dataKeys: ["marketingExpenses", "totalProfit"],
-        formula: (apiData) => {
+        createFormula: (startDate, endDate) => (apiData) => {
             const { totalMarketingExpenses, projectedProfit, actualizedProfit } = apiData;
-            return (projectedProfit + actualizedProfit) / totalMarketingExpenses * 100;
+
+            // Calculate the ROAS for the date range
+            const roas = (projectedProfit + actualizedProfit) / totalMarketingExpenses * 100;
+
+            // Calculate the number of days in the date range
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const timeDifference = Math.abs(end.getTime() - start.getTime());
+            const daysInRange = Math.ceil(timeDifference / (1000 * 3600 * 24));
+
+            // Annualize the ROAS
+            const annualizedRoas = roas * (365 / daysInRange);
+
+            return annualizedRoas;
         },
-        redFlag: 0,
-        target: 0,
-        dataLabels: ["Ad Spend: ", "Total Profit: "],
+        redFlag: 600,
+        target: 1200,
+        dataLabels: ["Ad Spend: $", "Total Profit: $"],
+        kpiType: "meter",
+        unit: "%",
         kpiFactors: [
             {
                 id: 0,

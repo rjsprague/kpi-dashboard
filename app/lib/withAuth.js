@@ -30,7 +30,7 @@ export default function withAuth(Component) {
     }, [auth]);
 
     if (isLoading) {
-      return <LoadingQuotes mode={'light'} />;
+      return <LoadingQuotes mode={'dark'} />;
     }
 
     return <Component {...props} />;

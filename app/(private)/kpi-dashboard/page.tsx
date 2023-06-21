@@ -16,9 +16,7 @@ function KpiDashboardPage() {
     // }
 
     return (
-        <Suspense fallback={<LoadingQuotes mode={'dark'} />}>
-            <KpiDashboard />
-        </Suspense>
+        <KpiDashboard />
     )
 }
 
