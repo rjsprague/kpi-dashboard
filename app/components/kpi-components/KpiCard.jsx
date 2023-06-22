@@ -41,7 +41,7 @@ export default function KpiCard({ prop, handleCardInfoClick }) {
         />
       );
     } else {
-      return (<div className="flex items-center self-center justify-center my-10 text-3xl font-semibold align-middle">
+      return (<div className="flex items-center self-center justify-center text-3xl font-semibold align-middle my-15">
         {
           prop.unit === "$" && prop.current !== Infinity ? (
             <span>$<CountUp delay={2} start={0} end={prop.current} /></span>
@@ -72,7 +72,7 @@ export default function KpiCard({ prop, handleCardInfoClick }) {
             ''
           )}
         </div>
-        <div className="relative bottom-4">{renderMeter()}</div>
+        <div className="relative bottom-2">{renderMeter()}</div>
         <button
           onClick={() => {
             handleCardInfoClick(prop);

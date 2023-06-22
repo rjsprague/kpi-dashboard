@@ -37,8 +37,8 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
     }, [current, currentNum, dollarFill, percentFill]);
 
     return (
-        <div className="relative right-3.5">
-            <svg xmlns="http://www.w3.org/2000/svg" version="2" viewBox="0 0 300 150" width="300" height="150" className="flex overflow-visible">
+        <div className="relative -right-3 -bottom-4">
+            <svg xmlns="http://www.w3.org/2000/svg" version="2" viewBox="0 0 300 150" width="250" height="125" className="flex overflow-visible">
                 <defs>
                     <clipPath id="theClipPath">
                         <rect x="25" y="60" rx="12" ry="12" width="250" height="40" fill="gray" stroke="none" strokeWidth="0" />
@@ -61,8 +61,9 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
 
                 <text ref={valRef} x="27" y="47" textAnchor="middle" fontSize="12" className="text-lg">
                     {
-                        unit === "$" ?
-                            "$" + prettyCurNum : prettyCurNum + "%"
+                        current === Infinity ? prettyCurNum.toString().slice(0, 3).toUpperCase() :
+                        unit === "$" ? "$" + prettyCurNum : 
+                        prettyCurNum + "%"
                     }
                 </text>
                 

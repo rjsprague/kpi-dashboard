@@ -145,8 +145,8 @@ const Dial = ({ target, redFlag, max, value }) => {
           strokeDashoffset="235.62"
         />
       </g>
-      <polygon id="redFlagTriangle" points={`${redFlagTriangle[0].x},${redFlagTriangle[0].y} ${redFlagTriangle[1].x},${redFlagTriangle[1].y} ${redFlagTriangle[2].x},${redFlagTriangle[2].y}`} fill="black" />
-      <polygon id="targetTriangle" points={`${targetTriangle[0].x},${targetTriangle[0].y} ${targetTriangle[1].x},${targetTriangle[1].y} ${targetTriangle[2].x},${targetTriangle[2].y}`} fill="black" />
+      <polygon id="redFlagTriangle" points={`${redFlagTriangle[0].x},${redFlagTriangle[0].y} ${redFlagTriangle[1].x},${redFlagTriangle[1].y} ${redFlagTriangle[2].x},${redFlagTriangle[2].y}`} fill="red" />
+      <polygon id="targetTriangle" points={`${targetTriangle[0].x},${targetTriangle[0].y} ${targetTriangle[1].x},${targetTriangle[1].y} ${targetTriangle[2].x},${targetTriangle[2].y}`} fill="green" />
       <path ref={needleRef} id="needle" d="M209.44,191,67,200l142.44,9a18,18,0,1,0,0-18Z" />
       <circle r="4" fill="white" cx="225" cy="200" />
       {drawTicks(36, 30, "black")}
