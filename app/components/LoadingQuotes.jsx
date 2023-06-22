@@ -26,7 +26,7 @@ export default function LoadingQuotes({mode}) {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center my-4 space-y-8 align-middle">
+    <div className="flex flex-col items-center justify-center space-y-8 align-middle min-h-60">
   <div className="relative w-24 h-24">
     <svg ref={circle1} className="absolute top-0 left-0 w-full h-full" viewBox="0 0 50 50" style={{ transform: 'rotate(120deg)'}}>
       <path d="M25 25 m -20, 0 a 20,20 0 1,0 40,0" fill="none" stroke={mode === 'light' ? 'blue' : 'white'} strokeWidth="2" strokeOpacity={0.8} />

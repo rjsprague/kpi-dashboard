@@ -8,7 +8,7 @@ import { FiInfo } from 'react-icons/fi';
 import CountUp from 'react-countup';
 
 export default function KpiCard({ prop, handleCardInfoClick }) {
-  //console.log('KpiCard: ', prop);
+  console.log('KpiCard: ', typeof(prop.current));
   const [isFlipped, setIsFlipped] = useState(false);
 
   const renderMeter = () => {
@@ -43,12 +43,14 @@ export default function KpiCard({ prop, handleCardInfoClick }) {
     } else {
       return (<div className="flex items-center self-center justify-center my-10 text-3xl font-semibold align-middle">
         {
-          prop.unit === "$" ? (
-            <span>${''}<CountUp delay={2} start={0} end={prop.current} /></span>
-          ) : prop.unit === "%" ? (
+          prop.unit === "$" && prop.current !== Infinity ? (
+            <span>$<CountUp delay={2} start={0} end={prop.current} /></span>
+          ) : prop.unit === "%" && prop.current !== Infinity ? (
             <span><CountUp delay={2} start={0} end={prop.current} />{'%'}</span>
-          ) : (
+          ) : prop.current !== Infinity ? (
             <span><CountUp delay={2} start={0} end={prop.current} />{' '}{prop.unit}</span>
+          ) : (
+            <span>{prop.current}</span>
           )
         }
       </div>)
@@ -62,7 +64,7 @@ export default function KpiCard({ prop, handleCardInfoClick }) {
         <h1 className="text-2xl font-semibold tracking-tighter align-top">{prop.name}</h1>
         <div className="mt-1 font-medium text-md">
           {prop.data1 !== null && prop.data2 !== null ? (
-            <div className="flex flex-row justify-center gap-6 mx-2">
+            <div className="flex flex-row justify-center gap-4 text-sm">
               <div>{prop.data1.length > 1 && prop.data1}</div>
               <div>{prop.data2.length > 1 && prop.data2}</div>
             </div>
@@ -70,7 +72,7 @@ export default function KpiCard({ prop, handleCardInfoClick }) {
             ''
           )}
         </div>
-        <div className="">{renderMeter()}</div>
+        <div className="relative bottom-4">{renderMeter()}</div>
         <button
           onClick={() => {
             handleCardInfoClick(prop);

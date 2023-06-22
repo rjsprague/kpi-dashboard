@@ -5,7 +5,7 @@ import { gsap } from 'gsap';
 
 const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
     const currentNum = Math.floor(Number(current));
-    const prettyCurNum = current > 999 ? currentNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : currentNum;
+    const prettyCurNum = current > 999 && current !== Infinity ? currentNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : currentNum;
 
 
     const rectRef = useRef(null);
@@ -17,11 +17,11 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
     let percentFill = currentNum >= target ? "green" : currentNum >= redFlag ? "yellow" : "red";
 
     // Calculating maximum scale for the meter
-    const maxValue = Math.max(redFlag, currentNum, target);
-    const meterScale = maxValue * 1.2; // 1.2 is for giving some space at the end of the bar
+    const maxValue = current !== Infinity ? Math.max(redFlag, currentNum, target) : Math.max(redFlag, target);
+    const meterScale = maxValue * 1.4;
 
     // Calculating positions in percentage
-    const currentPosition = (currentNum / meterScale) * 250;
+    const currentPosition = current === Infinity ? 250 : (currentNum / meterScale) * 250;
     const redFlagPosition = (redFlag / meterScale) * 250;
     const targetPosition = (target / meterScale) * 250;
 
@@ -37,8 +37,8 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
     }, [current, currentNum, dollarFill, percentFill]);
 
     return (
-        <div className="absolute bottom-0 overflow-visible -right-1">
-            <svg xmlns="http://www.w3.org/2000/svg" version="2" viewBox="0 0 300 150" width="280" height="130" className="flex overflow-visible">
+        <div className="relative right-3.5">
+            <svg xmlns="http://www.w3.org/2000/svg" version="2" viewBox="0 0 300 150" width="300" height="150" className="flex overflow-visible">
                 <defs>
                     <clipPath id="theClipPath">
                         <rect x="25" y="60" rx="12" ry="12" width="250" height="40" fill="gray" stroke="none" strokeWidth="0" />

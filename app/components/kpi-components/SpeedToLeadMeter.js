@@ -14,6 +14,44 @@ const SpeedToLeadMeter = ({ value, unit, target, redFlag }) => {
   );
 };
 
+// Helper function to create SVG lines for each tick
+const drawTicks = (numberOfTicks, tickLength, tickColor) => {
+  const ticks = [];
+  const maxAngle = 180; // as it's a semi-circle
+  const angleStep = maxAngle / (numberOfTicks - 1);
+  
+  for(let i = 0; i < numberOfTicks; i++) {
+    const angle = i * angleStep;
+    const innerRadius = 125; // The radius of the semi-circle
+    let outerRadius = innerRadius + (i % 5 === 0 ? tickLength : tickLength / 2);
+
+    // Extend the first and the last ticks
+    if (i === 0 || i === numberOfTicks - 1) {
+      outerRadius = innerRadius + 50;
+    }
+
+    const startX = 225 + innerRadius * Math.cos(Math.PI * angle / 180);
+    const startY = 200 - innerRadius * Math.sin(Math.PI * angle / 180);
+    const endX = 225 + outerRadius * Math.cos(Math.PI * angle / 180);
+    const endY = 200 - outerRadius * Math.sin(Math.PI * angle / 180);
+
+    ticks.push(
+      <line
+        key={i}
+        x1={startX}
+        y1={startY}
+        x2={endX}
+        y2={endY}
+        stroke={tickColor}
+        strokeWidth="2"
+      />
+    );
+  }
+  
+  return ticks;
+};
+
+
 const Dial = ({ target, redFlag, max, value }) => {
 
   const needleRef = useRef(null);
@@ -103,14 +141,15 @@ const Dial = ({ target, redFlag, max, value }) => {
           stroke="#5cceee"
           strokeMiterlimit="10"
           strokeWidth="50"
-          strokeDasharray="471.24" // Add this line
-          strokeDashoffset="235.62" // Add this line
+          strokeDasharray="471.24"
+          strokeDashoffset="235.62"
         />
       </g>
       <polygon id="redFlagTriangle" points={`${redFlagTriangle[0].x},${redFlagTriangle[0].y} ${redFlagTriangle[1].x},${redFlagTriangle[1].y} ${redFlagTriangle[2].x},${redFlagTriangle[2].y}`} fill="black" />
       <polygon id="targetTriangle" points={`${targetTriangle[0].x},${targetTriangle[0].y} ${targetTriangle[1].x},${targetTriangle[1].y} ${targetTriangle[2].x},${targetTriangle[2].y}`} fill="black" />
       <path ref={needleRef} id="needle" d="M209.44,191,67,200l142.44,9a18,18,0,1,0,0-18Z" />
       <circle r="4" fill="white" cx="225" cy="200" />
+      {drawTicks(36, 30, "black")}
     </svg>
   );
 };
