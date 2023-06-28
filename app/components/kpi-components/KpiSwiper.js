@@ -5,13 +5,14 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Controller, Scrollbar, Mousewheel } from 'swiper/core';
 import 'swiper/css/bundle';
 import KpiCard from './KpiCard';
-import LoadingIcon from '../LoadingIcon';
 import LoadingQuotes from '../LoadingQuotes';
 
 SwiperCore.use([Controller, Scrollbar, Mousewheel]);
 
-const KpiSwiper = ({ query, selectedKpis, handleCardInfoClick }) => {
+const KpiSwiper = ({ query, view, selectedKpis, handleCardInfoClick, handleKpiCardClick }) => {
     const swiperRef = useRef(null);
+
+    //console.log("query: ", query)
 
     const slides = query?.results?.length > 0 && query.isOpen
         && query.results
@@ -20,8 +21,13 @@ const KpiSwiper = ({ query, selectedKpis, handleCardInfoClick }) => {
                 <SwiperSlide key={result.name}>
                     <div className='absolute top-2'>
                         <KpiCard
+                            dateRange={query.dateRange}
+                            leadSource={query.leadSource}
+                            kpiView={view}
+                            teamMembers={query.teamMembers}
                             prop={result}
                             handleCardInfoClick={() => handleCardInfoClick(result)}
+                            handleKpiCardClick={handleKpiCardClick}
                         />
                     </div>
                 </SwiperSlide>

@@ -1,5 +1,6 @@
 import fetchKPIs from "./api-utils";
 import KPI_DEFINITIONS from "./kpi-definitions";
+import kpiToEndpointMapping from "./kpiToEndpointMapping";
 
 function formatDate(date) {
   const year = date.getFullYear();
@@ -40,34 +41,6 @@ function createKpiObject(name, current, redFlag, target, data1, data2, unit, kpi
   };
 }
 
-const kpiToEndpointMapping = {
-  'Cost Per Lead': ['marketingExpenses', 'leads'],
-  'Lead Connections': ['leads', 'leadConnections'],
-  'Triage Calls': ['leadConnections', 'triageCalls'],
-  'Qualified Triage Calls': ['triageCalls', 'qualifiedTriageCalls'],
-  'Triage Approval': ['qualifiedTriageCalls', 'triageApproval'],
-  'Deal Analysis': ['triageApproval', 'dealAnalysis'],
-  'Perfect Presentations': ['dealAnalysis', 'perfectPresentations'],
-  'Contracts': ['perfectPresentations', 'contracts'],
-  'Acquisitions': ['contracts', 'acquisitions'],
-  'Deals': ['acquisitions', 'deals'],
-  'Profit': ['deals', 'profit'],
-  'LM STL Median': ['lmStlMedian'],
-  'AM STL Median': ['amStlMedian'],
-  'DA STL Median': ['daStlMedian'],
-  'BiG Checks': ['bigChecks'],
-  'Ad Spend': ['marketingExpenses'],
-  'Cost Per Contract': ['marketingExpenses', 'contracts'],
-  'Cost Per Acquisition': ['marketingExpenses', 'acquisitions'],
-  'Cost Per Deal': ['marketingExpenses', 'deals'],
-  'Actualized Profit': ['profit'],
-  'Projected Profit': ['projectedProfit'],
-  'Total Profit': ['profit', 'projectedProfit'],
-  'ROAS Actualized': ['profit', 'marketingExpenses'],
-  'ROAS Projected': ['projectedProfit', 'marketingExpenses'],
-  'ROAS Total': ['profit', 'projectedProfit', 'marketingExpenses'],
-};
-
 async function fetchKpiData(kpiView, requestedKpiList, leadSource, gte, lte, department, teamMemberStrings) {
 
   //console.log("kpiView ", kpiView);
@@ -87,7 +60,7 @@ async function fetchKpiData(kpiView, requestedKpiList, leadSource, gte, lte, dep
     //console.log("kpi list ", kpiList)
   } else if (kpiView === "Team" && department[0] === "Acquisition Manager") {
     kpiList = requestedKpiList['Acquisition Manager']
-    console.log("kpi list ", kpiList)
+    //console.log("kpi list ", kpiList)
   } else {
     kpiList = requestedKpiList
   }

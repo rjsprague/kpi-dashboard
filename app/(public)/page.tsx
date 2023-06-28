@@ -15,7 +15,6 @@ function Home() {
               alt="REI Automated Logo"
               height={100}
               width={500}
-              objectFit="cover"
               quality={100}
             />
           </div>

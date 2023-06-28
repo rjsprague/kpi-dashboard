@@ -3,13 +3,101 @@
 import KpiMeter from './KpiMeter';
 import SpeedToLeadMeter from './SpeedToLeadMeter';
 import BigChecksMeter from './BigChecksMeter';
-import { useState } from 'react';
-import { FiInfo } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { FiInfo, FiList } from 'react-icons/fi';
 import CountUp from 'react-countup';
+import kpiToEndpointMapping from '../../lib/kpiToEndpointMapping';
+import apiEndpoints from '../../lib/apiEndpoints';
 
-export default function KpiCard({ prop, handleCardInfoClick }) {
-  console.log('KpiCard: ', typeof(prop.current));
-  const [isFlipped, setIsFlipped] = useState(false);
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick, dateRange, leadSource, kpiView, teamMembers }) {
+  const [fetchedData, setFetchedData] = useState(null);
+
+  const startDate = dateRange.gte ? formatDate(new Date(dateRange.gte)) : null;
+  const endDate = dateRange.lte ? formatDate(new Date(dateRange.lte)) : null;
+
+  //console.log('KpiCard: ', dateRange, leadSource, kpiView, teamMembers);
+  //console.log(fetchedData)
+
+  const handleSingleKpiFetch = async () => {
+    let apiName = prop.name;
+    //console.log("apiName: ", apiName)
+    const apiEndpointsKeys = kpiToEndpointMapping[apiName];
+    if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
+      return;
+    }
+    //console.log("apiEndpointsKeys: ", apiEndpointsKeys)
+    // Call the apiEndpoints function
+    const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMembers);
+    //console.log("apiEndpointsObj: ", apiEndpointsObj)
+    for (const apiEndpointKey of apiEndpointsKeys) {
+      let requestObject = apiEndpointsObj[apiEndpointKey];
+      //console.log("requestObject: ", requestObject)
+
+      // Make a request for each endpoint
+      try {
+        const response = await fetch(requestObject.url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            "filters": requestObject.filters
+          }),
+        });
+
+        if (!response.ok) {
+          console.error(`Error fetching data from ${requestObject.url}: ${response.status} ${response.statusText}`);
+          throw new Error(`Server responded with an error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        //console.log("data: ", data)
+        let fetchedResults = data.data ? data.data : [];
+        let offset = fetchedResults.length;
+
+        while (data.total > fetchedResults.length) {
+          const fetchMoreData = await fetch(requestObject.url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              "filters": requestObject.filters,
+              "offset": offset,
+              "limit": 1000,
+            }),
+          });
+
+          const moreData = await fetchMoreData.json();
+          fetchedResults = fetchedResults.concat(moreData.data);
+          offset += moreData.data.length;
+        }
+        //console.log("fetchedResults: ", fetchedResults)
+
+        fetchedResults = fetchedResults.map((result) => {
+          return {
+            name: result["Seller Contact Name"] ? result["Seller Contact Name"] : result["First"] && result["Last"] ? result["First"] + " " + result["Last"] : result.Title ? result.Title : "No Name",
+            address: result["Property Address"] ? result["Property Address"] : "No address",
+            podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+          };
+        });
+
+
+        setFetchedData(fetchedResults);
+        return fetchedResults;
+      } catch (error) {
+        console.error(error);
+        throw new Error("Error fetching data. Please try again later.");
+      }
+    }
+  };
 
   const renderMeter = () => {
     if (prop.kpiType === 'STL') {
@@ -81,33 +169,19 @@ export default function KpiCard({ prop, handleCardInfoClick }) {
         >
           <FiInfo />
         </button>
-      </div>
-      <div className="box-border py-2 ml-8 overflow-hidden transition-all delay-500 bg-white rounded w-68 xs:w-76 sm:w-80 transform-gpu back shadow-super-3">
-        {prop.kpiFactors ?
-          prop.kpiFactors.map((factor) => {
-            return (
-              <li
-                key={factor.id}
-                className="flex flex-row justify-between px-4 py-2 text-sm font-medium text-gray-700 border-b border-gray-200"
-              >
-                <div className="flex flex-row items-center">
-                  <div className="flex-shrink-0 w-2 h-2 mr-2 bg-green-400 rounded-full"></div>
-                  <div>{factor.desc}</div>
-                </div>
-                <div className="flex flex-row items-center">
-                  <div className="flex-shrink-0 w-2 h-2 mr-2 bg-green-400 rounded-full"></div>
-                  <div>
-                    <a href={factor.link} target="_blank">
-                      {factor.linkName}
-                    </a>
-                  </div>
-                </div>
-              </li>
-            );
-          })
-          : 'TBD'}
+        {kpiView !== 'Team' && (
+          <button
+            onClick={async () => {
+              const data = await handleSingleKpiFetch();
+              handleKpiCardClick(data);
+            }}
+            className="absolute info-icon left-2 bottom-2"
+          >
+            <FiList />
+          </button>
+        )}
+
       </div>
     </div>
-
   );
 }

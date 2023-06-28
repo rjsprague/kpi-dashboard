@@ -31,6 +31,7 @@ const FinancialsKpiQuery = ({
     const [modalType, setModalType] = useState("info");
     const [selectedResult, setSelectedResult] = useState(null);
     const [selectedKpis, setSelectedKpis] = useState([]);
+    const [tableData, setTableData] = useState(null);
 
     useEffect(() => {
         setSelectedKpis(kpiList)
@@ -46,6 +47,12 @@ const FinancialsKpiQuery = ({
         setModalType("settings");
         setOpenModal(true);
     };
+
+    const handleKpiCardClick = async (data) => {
+        setTableData(data)
+        setModalType("table")
+        setOpenModal(true)
+      };
 
     const handleDateRangeChange = (startDate, endDate) => {
         onDateRangeChange(startDate, endDate, query.id);
@@ -98,8 +105,10 @@ const FinancialsKpiQuery = ({
                         <div className="relative px-4">
                             <KpiSwiper
                                 query={query}
+                                view={view}
                                 selectedKpis={selectedKpis}
                                 handleCardInfoClick={handleCardInfoClick}
+                                handleKpiCardClick={handleKpiCardClick}
                             />
                             <RightSlideModal
                                 isOpen={openModal}
@@ -112,6 +121,7 @@ const FinancialsKpiQuery = ({
                                 modalType={modalType}
                                 selectedKpis={selectedKpis}
                                 setSelectedKpis={setSelectedKpis}
+                                tableData={tableData}
                             />
                         </div>
                     </div>

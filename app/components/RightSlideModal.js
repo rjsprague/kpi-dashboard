@@ -1,8 +1,7 @@
 "use client";
-
 import React, { useState, useEffect } from 'react'
 import { FiX } from 'react-icons/fi';
-
+import DataTable from './kpi-components/dataTable';
 
 const RightSlideModal = ({
   isOpen,
@@ -15,14 +14,17 @@ const RightSlideModal = ({
   selectedKpis,
   setSelectedKpis,
   selectedDepartment,
+  className,
+  tableData,
 }) => {
 
-  // console.log("viewKpis: ", viewKpis)
-  // console.log("VIEW_KPIS: ", VIEW_KPIS)
-  // console.log("selectedView: ", selectedView)
-  // console.log("modalType: ", modalType)
-  // console.log("selectedKpis: ", selectedKpis)
-  // console.log("selectedDepartment: ", selectedDepartment)
+  let columns = tableData && tableData.length > 0 && typeof(tableData[0]) === 'object' && Object.keys(tableData[0]).map(key => {
+    return {
+      Header: key,
+      accessor: key // This is the key to the data
+    }
+  });
+  
 
   const [selectedViewKpiList, setSelectedViewKpiList] = useState([]);
 
@@ -64,11 +66,11 @@ const RightSlideModal = ({
     });
   };
 
-  
+
+
   return (
     <div
-      className={`flex fixed top-0 right-0 w-screen sm:w-1/4 h-full transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
+      className={`flex fixed top-0 right-0 w-screen sm:w-1/4 h-full transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', zIndex: 1000 }}
     >
       <div className="absolute top-0 right-0 flex-col w-full h-screen bg-blue-900 bg-opacity-50 infoModal">
@@ -118,23 +120,24 @@ const RightSlideModal = ({
             <div className="mt-4 text-xl font-bold text-center">{selectedView}</div>
             <ul className="flex flex-wrap items-center gap-8 px-10 justify-evenly">
               {/* KPI checkboxes */}
-              { selectedViewKpiList.map((kpi, index) => (
-                  <li key={index} className="flex items-center my-2">
-                    <input
-                      type="checkbox"
-                      id={`kpi-checkbox-${index}`}
-                      checked={selectedKpis.includes(kpi)}
-                      onChange={(e) => handleKpiCheckboxChange(e, kpi)}
-                      className="text-blue-600 form-checkbox"
-                    />
-                    <label htmlFor={`kpi-checkbox-${index}`} className="ml-2 text-gray-100">
-                      {kpi}
-                    </label>
-                  </li>
-                ))}
+              {selectedViewKpiList.map((kpi, index) => (
+                <li key={index} className="flex items-center my-2">
+                  <input
+                    type="checkbox"
+                    id={`kpi-checkbox-${index}`}
+                    checked={selectedKpis.includes(kpi)}
+                    onChange={(e) => handleKpiCheckboxChange(e, kpi)}
+                    className="text-blue-600 form-checkbox"
+                  />
+                  <label htmlFor={`kpi-checkbox-${index}`} className="ml-2 text-gray-100">
+                    {kpi}
+                  </label>
+                </li>
+              ))}
             </ul>
           </div>
         )}
+        {modalType === "table" && <DataTable data={tableData} columns={columns} />}
       </div>
     </div>
   );

@@ -144,3 +144,48 @@ body {
   overflow: hidden;
   max-height: 65px;
 }
+
+
+.table {
+  display: table;
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.tr {
+  display: table-row;
+  vertical-align: middle;
+  border-bottom:rgba(255, 255, 255, 0.5) solid 1px;
+}
+
+.th,
+.td {
+  display: table-cell;
+  vertical-align: middle;
+  width: 150px;
+  max-width: 150px;
+  min-width: 150px;
+  box-sizing: border-box;
+  padding: 3px;
+  white-space: nowrap;
+  border-right:rgba(255, 255, 255, 0.5) solid 1px;
+  height: 30px;
+  max-height: 30px;
+  min-height: 30px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.th {
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  border-top:rgba(255, 255, 255, 0.5) solid 1px;
+  border-bottom:rgba(255, 255, 255, 0.5) solid 1px;
+}
+
+.cursor-col-resize {
+  cursor: col-resize;
+}
+

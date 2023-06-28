@@ -7,7 +7,7 @@ import ServiceUnavailable from '../ServiceUnavailable';
 export default function LeadSourceDropdown({ onOptionSelected, queryId, leadSources, isLoadingData, isUnavailable}) {
     const [selectedOptions, setSelectedOptions] = useState(Object.keys(leadSources));
 
-    console.log("lead sources dropdown: ", leadSources)
+    //console.log("lead sources dropdown: ", leadSources)
 
     const handleOptionSelected = (selectedOptions) => {
         console.log("selected options: ", selectedOptions)

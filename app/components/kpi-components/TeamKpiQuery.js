@@ -30,6 +30,7 @@ const TeamKpiQuery = ({
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
     const [teamKpiList, setTeamKpiList] = useState([]);
     const [department, setDepartment] = useState([]);
+    const [tableData, setTableData] = useState(null);
 
     const updateKpiList = (department) => {
         // console.log("department ", department)
@@ -58,6 +59,12 @@ const TeamKpiQuery = ({
         setModalType("settings");
         setOpenModal(true);
     };
+
+    const handleKpiCardClick = async (data) => {
+        setTableData(data)
+        setModalType("table")
+        setOpenModal(true)
+      };
 
     const handleDateRangeChange = (startDate, endDate) => {
         onDateRangeChange(startDate, endDate, query.id);
@@ -107,8 +114,10 @@ const TeamKpiQuery = ({
                         <div className="relative px-4">
                             <KpiSwiper
                                 query={query}
+                                view={view}
                                 selectedKpis={selectedKpis}
                                 handleCardInfoClick={handleCardInfoClick}
+                                handleKpiCardClick={handleKpiCardClick}
                             />
                             <RightSlideModal
                                 isOpen={openModal}
@@ -122,6 +131,7 @@ const TeamKpiQuery = ({
                                 selectedKpis={selectedKpis}
                                 setSelectedKpis={setSelectedKpis}
                                 selectedDepartment={query.departments}
+                                tableData={tableData}
                             />
                         </div>
                     </div>

@@ -26,13 +26,12 @@ const AcquisitionsKpiQuery = ({
     //console.log("VIEW_KPIS: ", VIEW_KPIS)
     // console.log("query: ", query)
     // console.log("kpiList: ", kpiList)
-
-
     const [height, setHeight] = useState('auto');
     const [openModal, setOpenModal] = useState(false);
     const [modalType, setModalType] = useState("info");
     const [selectedResult, setSelectedResult] = useState(null);
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
+    const [tableData, setTableData] = useState(null);
 
     const handleCardInfoClick = (result) => {
         setSelectedResult(result);
@@ -44,6 +43,12 @@ const AcquisitionsKpiQuery = ({
         setModalType("settings");
         setOpenModal(true);
     };
+
+    const handleKpiCardClick = async (data) => {
+        setTableData(data)
+        setModalType("table")
+        setOpenModal(true)
+      };
 
     const handleDateRangeChange = (startDate, endDate) => {
         onDateRangeChange(startDate, endDate, query.id);
@@ -57,11 +62,6 @@ const AcquisitionsKpiQuery = ({
     const handleRemoveQuery = () => {
         onRemoveQuery && onRemoveQuery(query.id);
     };
-
-    //console.log("query result ", query.results)
-    //console.log("selected kpis ", selectedKpis)
-    //console.log("kpi list ", kpiList)
-    //console.log("view ", view)
 
     if (query.results === Error) {
         return <ServiceUnavailable />
@@ -95,8 +95,10 @@ const AcquisitionsKpiQuery = ({
                         <div className="relative">
                             <KpiSwiper
                                 query={query}
+                                view={view}
                                 selectedKpis={selectedKpis}
                                 handleCardInfoClick={handleCardInfoClick}
+                                handleKpiCardClick={handleKpiCardClick}
                             />
                             <RightSlideModal
                                 isOpen={openModal}
@@ -109,6 +111,7 @@ const AcquisitionsKpiQuery = ({
                                 modalType={modalType}
                                 selectedKpis={selectedKpis}
                                 setSelectedKpis={setSelectedKpis}
+                                tableData={tableData}
                             />
                         </div>
                     </div>
