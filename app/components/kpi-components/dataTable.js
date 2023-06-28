@@ -29,7 +29,7 @@ const DataTable = ({ data, columns }) => {
     if (!data || data.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center w-full h-full">
-                <div className="text-2xl font-bold text-gray-500">No data</div>
+                <div className="text-2xl font-bold text-gray-200">No data</div>
             </div>
         );
     }
@@ -48,8 +48,8 @@ const DataTable = ({ data, columns }) => {
     });
 
     return (
-        <div className="max-h-screen px-2 py-2 mt-6 overflow-auto">
-            <div className="table w-full">
+        <div className="flex h-auto px-2 py-10 overflow-auto max-h-screen9">
+            <div className="table w-full h-auto overflow-y-scroll max-h-screen9">
                 <div>
                     {table.getHeaderGroups().map(headerGroup => (
                         <div className="uppercase bg-blue-700 border-l border-gray-200 tr">

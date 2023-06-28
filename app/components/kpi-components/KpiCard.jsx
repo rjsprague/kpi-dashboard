@@ -79,11 +79,16 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
           fetchedResults = fetchedResults.concat(moreData.data);
           offset += moreData.data.length;
         }
-        //console.log("fetchedResults: ", fetchedResults)
+        console.log("fetchedResults: ", fetchedResults)
 
         fetchedResults = fetchedResults.map((result) => {
           return {
-            name: result["Seller Contact Name"] ? result["Seller Contact Name"] : result["First"] && result["Last"] ? result["First"] + " " + result["Last"] : result.Title ? result.Title : "No Name",
+            name: result["Seller Contact Name"] ? result["Seller Contact Name"] 
+              : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
+                : result["First"] ? result["First"]
+                  : result["Last"] ? result["Last"]
+                    : result.Title ? result.Title 
+                      : "No Name",
             address: result["Property Address"] ? result["Property Address"] : "No address",
             podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
           };
