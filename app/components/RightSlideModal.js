@@ -70,7 +70,7 @@ const RightSlideModal = ({
 
   return (
     <div
-      className={`flex fixed top-0 right-0 w-screen sm:w-1/4 h-full transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      className={`flex fixed top-0 right-0 w-screen sm:w-2/3 lg:w-1/2 xl:w-1/3 h-full transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', zIndex: 1000 }}
     >
       <div className="absolute top-0 right-0 flex-col w-full h-screen bg-blue-900 bg-opacity-50 infoModal">
