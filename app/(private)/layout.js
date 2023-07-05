@@ -13,10 +13,10 @@ export default function RootLayout({ children }) {
         <AuthProvider>
                 <html lang="en">
                     <head />
-                    <body className='absolute inset-0 h-screen max-h-screen overflow-hidden'>
+                    <body className='absolute inset-0 h-screen max-h-screen'>
                         <div className=''>
                             <SideNav />
-                            <div className=''>
+                            <div className='relative z-0 h-[90vh]'>
                                 <Header />
                                 {children}
                             </div>

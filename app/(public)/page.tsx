@@ -8,7 +8,7 @@ function Home() {
   return (
     <>
       <main className='flex items-center w-screen h-screen'>
-        <section className='flex flex-col items-center gap-20 mx-auto'>
+        <section className='flex flex-col items-center gap-20 px-10 mx-auto'>
           <div>
             <Image
               src="/reia-logo.png"

@@ -76,7 +76,7 @@ function SideNavDropdown({ options, selectedOption, onOptionSelected, defaultVal
                 {(state) => (
                     <div
                         ref={dropdownContentRef}
-                        className="absolute right-0 z-50 min-w-[70px] max-w-[200px] text-white bg-blue-900 rounded-md shadow-lg bg-opacity-80 border border-white"
+                        className="absolute right-0 min-w-[70px] max-w-[200px] text-white bg-blue-900 rounded-md shadow-lg bg-opacity-80 border border-white"
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],

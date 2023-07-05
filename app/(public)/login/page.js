@@ -68,8 +68,7 @@ const LoginPage = () => {
   }
 
   return (
-    <section className='flex items-center justify-center min-h-screen bg-blue-900'>
-
+    <section className='flex items-center justify-center min-h-screen px-4 bg-blue-900'>
       <div className='flex-col items-center p-8 text-blue-900 bg-white rounded shadow-super-3'>
         <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
         <h1 className='mb-6 text-2xl'>Sign In</h1>

@@ -1,9 +1,9 @@
 "use client"
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { FiGrid, FiCpu, FiPlayCircle, FiUsers, FiSettings, FiArrowRightCircle, FiMenu, FiChevronsRight } from 'react-icons/fi';
+import { FiPlayCircle, FiUsers, FiSettings, FiArrowRightCircle, FiMenu, FiChevronsRight } from 'react-icons/fi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckDouble, faGaugeHigh, faScrewdriverWrench } from '@fortawesome/free-solid-svg-icons';
+import { faRobot, faCheckDouble, faGaugeHigh, faScrewdriverWrench, faThLarge, faChalkboardTeacher } from '@fortawesome/free-solid-svg-icons';
 import fetchClients from '../lib/fetchClients';
 import SideNavDropdown from './SideNavDropdown';
 
@@ -71,12 +71,12 @@ export default function SideNav() {
 
 
     const navItems = [
-        { icon: <FiGrid className='text-xl' />, text: 'Overview', link: '/' },
+        { icon: <FontAwesomeIcon icon={faThLarge} size="lg" />, text: 'Overview', link: '/' },
         { icon: <FontAwesomeIcon icon={faCheckDouble} size="lg" />, text: 'To Dos', link: '/' },
         { icon: <FontAwesomeIcon icon={faGaugeHigh} size="lg" />, text: 'KPIs', link: '/kpi-dashboard' },
-        { icon: <FiCpu className='text-xl' />, text: 'Automations', link: '/' },
+        { icon: <FontAwesomeIcon icon={faRobot} size="lg" />, text: 'Automations', link: '/' },
         { icon: <FontAwesomeIcon icon={faScrewdriverWrench} size="lg" />, text: 'Tools', link: '/' },
-        { icon: <FiPlayCircle className='text-xl' />, text: 'Training', link: '/' },
+        { icon: <FontAwesomeIcon icon={faChalkboardTeacher} size="lg" />, text: 'Training', link: '/' },
         { icon: <FiUsers className='text-xl' />, text: 'Clients', link: '/', dropdown: true, onClick: () => setClientsOpen(!clientsOpen) },
     ];
 
@@ -89,38 +89,32 @@ export default function SideNav() {
 
     return (
 
-        <div className="relative z-10">
+        <div className="relative z-10 overflow-visible">
             <div
-                className={`relative flex z-20 transition-all duration-500 ease-out`}
+                className={`relative flex`}
                 ref={sideNavRef}
             >
                 <div className="relative">
-                    <nav className={`absolute top-0 bottom-0 left-0 z-30 flex flex-col px-4 overflow-hidden bg-gradient-to-r from-blue-900 to-blue-700 shadow-super-2 lg:shadow-black transition-all duration-500 ease-out ${isOpen ? 'w-68 h-screen' : 'w-20 h-20 lg:h-screen'}`}>
-                        <div className="relative flex flex-col flex-grow">
-                            <Link className="flex items-center justify-center gap-2 pt-4 pb-2 mx-auto text-xl font-semibold text-white" href="#">
-                                <img src="/reia-icon.webp" className="w-6 h-6 mx-auto" alt="" />
-                                <p className={`transition-opacity duration-200 ease-in-out whitespace-nowrap ${isOpen ? 'flex opacity-100 overflow-hidden' : 'hidden transition-opacity opacity-0'}`}>REI AUTOMATED</p>
-                            </Link>
-                            <div>
-                                <FiChevronsRight className={`flex text-2xl text-white transition-all duration-300 ease-in-out ${isOpen ? 'transform rotate-180 ml-1.5' : 'mx-auto'}`} onClick={toggleOpen} />
+                    <nav className={`overflow-visible absolute top-0 bottom-0 left-0 flex flex-col px-4 bg-gradient-to-r from-blue-900 to-blue-700 shadow-super-2 lg:shadow-black transition-all duration-300 ease-in-out ${isOpen ? 'w-60 h-screen' : 'w-20 h-20 lg:h-screen'}`}>
+                        <div className={`relative flex flex-col flex-grow`}>
+                            <div className={`relative flex flex-row py-5 items-center`}>
+                                <img src="/reia-icon.webp" alt="REI Automated Logo" className={`w-8 h-8 text-white transition-all duration-300 ease-in-out ${isOpen ? 'transform rotate-180' : ''}`} onClick={toggleOpen} />
+                                <p className={`text-xl transition-all duration-300 ease-in-out whitespace-nowrap ${isOpen ? 'ml-2 w-40 opacity-100' : 'w-0 opacity-0'}`}>REI AUTOMATED</p> 
                             </div>
-                            <ul className={`relative flex flex-col mt-4 lg:mt-8 lg:space-y-2 ${isOpen ? '' : 'items-center'}`}>
+                            <ul className={`relative flex flex-col mt-4 lg:mt-8 lg:space-y-2 gap-2 ${isOpen ? '' : ''}`}>
                                 {navItems.map((item, index) => (
                                     <li key={index}>
                                         {item.dropdown ? (
-                                            <button className="relative flex items-center w-full p-2 space-x-2 text-gray-100 transition-colors duration-200 ease-in-out hover:bg-blue-500 rounded-xl"
-                                                onClick={item.onClick}
-                                            >
-                                                <div className='flex flex-row gap-2 '>
-                                                    {item.icon}
-                                                    <div className={`flex items-center transition-opacity duration-200 ease-in-out overflow-hidden whitespace-nowrap ${isOpen ? 'opacity-100 w-40' : 'hidden transition-opacity opacity-0'}`}>
-                                                        <span className="truncate">{item.text}{selectedClient && `: ` + selectedClient}</span>
-                                                    </div>
+                                            <button className="relative flex w-full rounded-md hover:bg-blue-500"
+                                                onClick={item.onClick}>
+                                                <div className='flex flex-row gap-2 p-1 text-left whitespace-nowrap '>
+                                                    <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}>{item.icon}</span>
+                                                    <span className={`truncate transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>{item.text}{selectedClient && `: ` + selectedClient}</span>
                                                 </div>
                                                 {clientsOpen && (
-                                                    <div className='absolute top-0 z-40 left-[90%]' onClick={(e) => e.stopPropagation()}>
+                                                    <div className='absolute top-0 left-[50%]' onClick={(e) => e.stopPropagation()}>
                                                         <SideNavDropdown
-                                                            className="z-50 dropdown"
+                                                            className="dropdown"
                                                             options={clientsNamesArray}
                                                             selectedOption={selectedClient}
                                                             onOptionSelected={handleClientSelect}
@@ -131,45 +125,42 @@ export default function SideNav() {
                                             </button>
 
                                         ) : (
-                                            <Link href={item.link} className="flex items-center p-2 space-x-2 text-gray-100 transition-colors duration-200 ease-in-out hover:bg-blue-500 rounded-xl">
-                                                {item.icon}
-                                                <span className={`transition-opacity duration-200 ease-in-out whitespace-nowrap ${isOpen ? 'flex opacity-100 overflow-hidden' : 'hidden transition-opacity opacity-0'}`}>{item.text}</span>
+                                            <Link href={item.link} className={`flex flex-row gap-2 whitespace-nowrap hover:bg-blue-500 rounded-md ${isOpen ? '' : ''}`}>
+                                                <div className='flex flex-row gap-2 p-1 text-left whitespace-nowrap '>
+                                                    <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}>{item.icon}</span>
+                                                    <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>{item.text}</span>
+                                                </div>
                                             </Link>
                                         )}
                                     </li>
                                 ))}
                             </ul>
-                            <div className="flex flex-col items-center mt-4 lg:mt-8">
-                                <span className="block mb-2 text-xs font-semibold text-gray-100 uppercase lg:mb-4">Teams</span>
-                                <ul>
-                                    {teamItems.map((item, index) => (
-                                        <li key={index}>
-                                            <Link
-                                                href={item.link}
-                                                className="flex items-center p-2 space-x-2 text-gray-100 transition-colors duration-200 ease-in-out hover:bg-blue-500 rounded-xl"
-                                            >
-                                                <div className={`w-2 h-2 mr-2 rounded-full ${item.color}`}></div>
-                                                <span className={`transition-opacity duration-200 ease-in-out whitespace-nowrap ${isOpen ? 'flex opacity-100 overflow-hidden' : 'hidden transition-opacity opacity-0'}`}>{item.text}</span>
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                            <span className={`block mt-4 mb-2 text-xs font-semibold uppercase lg:mb-4`}>Teams</span>
+                            <ul className='flex flex-col gap-2'>
+                                {teamItems.map((item, index) => (
+                                    <li key={index}>
+                                        <Link href={item.link} className="flex flex-row items-center rounded-md hover:bg-blue-500">
+                                            <div className='flex flex-row gap-1 text-left whitespace-nowrap '>
+                                                <div className={`w-2 h-2 m-2 rounded-full transition-all duration-300 ease-out ${item.color} ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}></div>
+                                                <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>{item.text}</span>
+                                            </div>
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
-                        <div className="flex flex-col lg:space-y-2">
-                            <Link
-                                href="/"
-                                className="flex items-center p-2 space-x-2 text-gray-100 transition-colors duration-200 ease-in-out hover:bg-blue-500 rounded-xl"
-                            >
-                                <FiSettings className='text-xl' />
-                                <span className={`transition-opacity duration-200 ease-in-out whitespace-nowrap ${isOpen ? 'flex opacity-100 overflow-auto' : 'hidden opacity-0'}`}>Settings</span>
+                        <div className="flex flex-col mb-4 space-y-2 lg:space-y-4">
+                            <Link href="/" className="flex items-center gap-2 rounded-md hover:bg-blue-500">
+                                <div className='flex flex-row gap-2 text-left whitespace-nowrap '>
+                                    <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}><FiSettings className='text-xl' /></span>
+                                    <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>Settings</span>
+                                </div>
                             </Link>
-                            <Link
-                                href="/"
-                                className="flex items-center p-2 space-x-2 text-gray-100 transition-colors duration-200 ease-in-out hover:bg-blue-500 rounded-xl"
-                            >
-                                <FiArrowRightCircle className='text-xl' />
-                                <span className={`transition-opacity duration-200 ease-in-out whitespace-nowrap ${isOpen ? 'flex opacity-100 overflow-auto' : 'hidden opacity-0'}`}>Log Out</span>
+                            <Link href="/" className="flex items-center gap-2 rounded-md hover:bg-blue-500">
+                                <div className='flex flex-row gap-2 text-left whitespace-nowrap '>
+                                    <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}><FiArrowRightCircle className='text-xl' /></span>
+                                    <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>Log Out</span>
+                                </div>
                             </Link>
                         </div>
                     </nav>
