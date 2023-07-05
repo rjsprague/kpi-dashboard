@@ -95,7 +95,7 @@ export default function SideNav() {
                 ref={sideNavRef}
             >
                 <div className="relative">
-                    <nav className={`overflow-visible absolute top-0 bottom-0 left-0 flex flex-col px-4 bg-gradient-to-r from-blue-900 to-blue-700 shadow-super-2 lg:shadow-black transition-all duration-300 ease-in-out ${isOpen ? 'w-60 h-screen' : 'w-20 h-20 lg:h-screen'}`}>
+                    <nav className={`overflow-visible absolute top-0 bottom-0 left-0 flex flex-col pl-5 bg-gradient-to-r from-blue-900 to-blue-700 shadow-super-2 lg:shadow-black transition-all duration-300 ease-in-out ${isOpen ? 'w-60 h-screen' : 'w-20 h-20 lg:h-screen'}`}>
                         <div className={`relative flex flex-col flex-grow`}>
                             <div className={`relative flex flex-row py-5 items-center`}>
                                 <img src="/reia-icon.webp" alt="REI Automated Logo" className={`w-8 h-8 text-white transition-all duration-300 ease-in-out ${isOpen ? 'transform rotate-180' : ''}`} onClick={toggleOpen} />
@@ -135,13 +135,13 @@ export default function SideNav() {
                                     </li>
                                 ))}
                             </ul>
-                            <span className={`block mt-4 mb-2 text-xs font-semibold uppercase lg:mb-4`}>Teams</span>
+                            <span className={`block mt-4 mb-2 text-xs font-semibold uppercase lg:mb-4 transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>Teams</span>
                             <ul className='flex flex-col gap-2'>
                                 {teamItems.map((item, index) => (
                                     <li key={index}>
                                         <Link href={item.link} className="flex flex-row items-center rounded-md hover:bg-blue-500">
                                             <div className='flex flex-row gap-1 text-left whitespace-nowrap '>
-                                                <div className={`w-2 h-2 m-2 rounded-full transition-all duration-300 ease-out ${item.color} ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}></div>
+                                                <div className={`w-2 h-2 m-2 rounded-full transition-all duration-300 ease-out ${item.color} ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100 overflow-hidden'}`}></div>
                                                 <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>{item.text}</span>
                                             </div>
                                         </Link>
@@ -152,13 +152,13 @@ export default function SideNav() {
                         <div className="flex flex-col mb-4 space-y-2 lg:space-y-4">
                             <Link href="/" className="flex items-center gap-2 rounded-md hover:bg-blue-500">
                                 <div className='flex flex-row gap-2 text-left whitespace-nowrap '>
-                                    <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}><FiSettings className='text-xl' /></span>
+                                    <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100 overflow-hidden'}`}><FiSettings className='text-xl' /></span>
                                     <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>Settings</span>
                                 </div>
                             </Link>
                             <Link href="/" className="flex items-center gap-2 rounded-md hover:bg-blue-500">
                                 <div className='flex flex-row gap-2 text-left whitespace-nowrap '>
-                                    <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}><FiArrowRightCircle className='text-xl' /></span>
+                                    <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100 overflow-hidden'}`}><FiArrowRightCircle className='text-xl' /></span>
                                     <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>Log Out</span>
                                 </div>
                             </Link>

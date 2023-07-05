@@ -92,7 +92,7 @@ export default function Leaderboard({
                 data.forEach(item => {
                     const costPerContract = currencyToNumber(item.cost_per_contract);
                     const costPerQualifiedLead = currencyToNumber(item.cost_per_qualified_lead);
-                    const speedToLeadMedian = parseInt(item.speed_to_lead_median || 0, 10);
+                    const speedToLeadMedian = parseFloat(item.speed_to_lead_median || 0, 10);
                     const contracts = parseInt(item.contracts || 0, 10);
                     const deals = parseInt(item.deals || 0, 10);
 

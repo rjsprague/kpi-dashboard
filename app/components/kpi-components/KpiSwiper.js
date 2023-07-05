@@ -52,19 +52,20 @@ const KpiSwiper = ({ query, view, selectedKpis, handleCardInfoClick, handleKpiCa
                 300: {
                     slidesPerView: 1,
                     spaceBetween: 10,
-                    slidesOffsetBefore: 25,
-                    slidesOffsetAfter: 25,                },
+                    slidesOffsetBefore: 0,
+                    slidesOffsetAfter: 0,                
+                },
                 374: {
                     slidesPerView: 1,
-                    spaceBetween: 20,
-                    slidesOffsetBefore: 40,
-                    slidesOffsetAfter: 40,
+                    spaceBetween: 10,
+                    slidesOffsetBefore: 0,
+                    slidesOffsetAfter: 0,
                 },
                 424: {
                     slidesPerView: 1,
                     spaceBetween: 20,
-                    slidesOffsetBefore: 60,
-                    slidesOffsetAfter: 60,
+                    slidesOffsetBefore: 10,
+                    slidesOffsetAfter: 10,
                 },
                 650: {
                     slidesPerView: 2,

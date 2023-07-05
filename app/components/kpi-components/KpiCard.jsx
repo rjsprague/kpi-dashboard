@@ -79,7 +79,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
           fetchedResults = fetchedResults.concat(moreData.data);
           offset += moreData.data.length;
         }
-        console.log("fetchedResults: ", fetchedResults)
+        //console.log("fetchedResults: ", fetchedResults)
 
         fetchedResults = fetchedResults.map((result) => {
           return {
@@ -152,8 +152,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
 
   return (
     <div className="">
-
-      <div className="flex flex-col w-64 px-2 py-1 text-center text-black delay-500 rounded h-52 xs:w-72 sm:w-72 shadow-super-3 transform-gpu front">
+      <div className="flex flex-col px-2 py-1 text-center text-black delay-500 rounded w-72 h-52 shadow-super-3 transform-gpu front">
         <h1 className="text-2xl font-semibold tracking-tighter align-top">{prop.name}</h1>
         <div className="mt-1 font-medium text-md">
           {prop.data1 !== null && prop.data2 !== null ? (
