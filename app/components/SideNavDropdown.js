@@ -2,11 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Transition } from "react-transition-group";
-import DropdownButton from './DropdownButton';
+import SidenavDropdownButton from './SidenavDropdownButton';
 
-
-function SelectDropdown({ options, onOptionSelected, defaultValue, className }) {
-    const [selectedOption, setSelectedOption] = useState(defaultValue);
+function SideNavDropdown({ options, selectedOption, onOptionSelected, defaultValue, className }) {
     const [isOpen, setIsOpen] = useState(false);
     const [contentHeight, setContentHeight] = useState(0);
     const [searchTerm, setSearchTerm] = useState("");
@@ -45,7 +43,6 @@ function SelectDropdown({ options, onOptionSelected, defaultValue, className }) 
     };
 
     const handleSelectChange = (option) => {
-        setSelectedOption(option);
         onOptionSelected(option);
         setIsOpen(false);
     };
@@ -72,9 +69,9 @@ function SelectDropdown({ options, onOptionSelected, defaultValue, className }) 
 
     return (
         <div ref={dropdownRef} className="relative items-center text-xs dropdown sm:text-sm">
-            <DropdownButton onClick={toggleOpen} isOpen={isOpen} className={className}>
-                {selectedOption ? selectedOption : "Select..."}
-            </DropdownButton>
+            <SidenavDropdownButton onClick={toggleOpen} isOpen={isOpen} className={className}>
+                <span className="truncate">{selectedOption ? selectedOption : defaultValue}</span>
+            </SidenavDropdownButton>
             <Transition in={isOpen} timeout={duration}>
                 {(state) => (
                     <div
@@ -113,4 +110,4 @@ function SelectDropdown({ options, onOptionSelected, defaultValue, className }) 
     );
 }
 
-export default SelectDropdown;
+export default SideNavDropdown;

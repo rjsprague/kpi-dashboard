@@ -5,7 +5,7 @@ import '@fortawesome/fontawesome-svg-core/styles.css'
 config.autoAddCss = false
 import { AuthProvider } from '../context/AuthProvider';
 import SideNav from '../components/SideNav'
-import TopNav from '../components/TopNav'
+import Header from '../components/Header'
 
 
 export default function RootLayout({ children }) {
@@ -13,11 +13,11 @@ export default function RootLayout({ children }) {
         <AuthProvider>
                 <html lang="en">
                     <head />
-                    <body>
-                        <div className='relative flex flex-col w-full gap-0'>
+                    <body className='absolute inset-0 h-screen max-h-screen overflow-hidden'>
+                        <div className=''>
                             <SideNav />
-                            <div className='absolute left-0 right-0 flex flex-col lg:left-72'>
-                                <TopNav />
+                            <div className=''>
+                                <Header />
                                 {children}
                             </div>
                         </div>

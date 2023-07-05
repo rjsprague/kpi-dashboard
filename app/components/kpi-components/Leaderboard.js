@@ -199,7 +199,7 @@ export default function Leaderboard({
                                             {['1st', '2nd', '3rd'].map((rank, i) => (
                                                 <div key={i} className="flex flex-row justify-between gap-2 px-4 py-3 mx-3 my-2 text-sm text-blue-800 bg-white rounded-lg shadow-super-4">
                                                     <div className={` mr-1 ${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>{rank}</div>
-                                                    <div className='w-40 overflow-clip whitespace-nowrap'>
+                                                    <div className='w-40 overflow-hidden overflow-ellipsis whitespace-nowrap'>
                                                         { kpi.data[i]?.metric ? (
                                                             <span className={`${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>{kpi.data[i]?.workspace}</span>
                                                         ) : (

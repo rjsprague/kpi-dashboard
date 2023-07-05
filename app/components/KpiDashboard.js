@@ -192,9 +192,9 @@ export default function KpiDashboard() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="absolute left-0 right-0 flex flex-col h-full top-20 max-w-screen lg:left-20">
       <NavigationBar onQueryTypeChange={handleQueryTypeChange} />
-      <div className="flex flex-col h-full px-2 py-2 sm:px-4">
+      <div className="flex flex-col h-full px-3 pt-2 pb-24 overflow-y-auto">
         {renderKpiResultsSection()}
       </div>
     </div>
