@@ -15,22 +15,27 @@ export default function withAuth(Component) {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (!auth?.accessToken) {
-            const accessToken = Cookies.get('accessToken');
-            if (accessToken) {
-                refresh().then(() => setIsLoading(false));
-            } else {
-                // Store the current location in the cookie
-                Cookies.set('preLoginRoute', pathname);
-                router.push('/login');
-            }
+      if (!auth?.accessToken) {
+        const accessToken = Cookies.get('accessToken');
+        if (accessToken) {
+          refresh().then(() => setIsLoading(false));
         } else {
-            setIsLoading(false);
+          // Store the current location in the cookie
+          Cookies.set('preLoginRoute', pathname);
+          router.push('/login');
         }
+      } else {
+        setIsLoading(false);
+      }
     }, [auth]);
 
     if (isLoading) {
-      return <LoadingQuotes mode={'dark'} />;
+      return (
+        <div className='absolute inset-0 flex items-center justify-center w-screen h-screen'>
+          <LoadingQuotes mode={'dark'} />
+        </div>
+      )
+
     }
 
     return <Component {...props} />;

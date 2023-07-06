@@ -17,7 +17,7 @@ const useRefreshToken = () => {
                 withCredentials: true
             });           
             setAuth({ accessToken: response.data.token });
-            Cookies.set('accessToken', response.data.token, { expires: 120 / (24 * 60), secure: true });
+            Cookies.set('accessToken', response.data.token, { expires: 7, secure: true });
             return response.data.token;
         } catch (err) {
             // If refresh token is expired or invalid, redirect to login

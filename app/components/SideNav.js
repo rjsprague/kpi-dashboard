@@ -113,13 +113,13 @@ export default function SideNav() {
                 ref={sideNavRef}
             >
                 <div className="relative">
-                    <nav className={`overflow-visible absolute top-0 bottom-0 left-0 flex flex-col pl-5 bg-gradient-to-r from-blue-900 to-blue-700 shadow-super-2 lg:shadow-black transition-all duration-300 ease-in-out ${isOpen ? 'w-60 h-screen' : 'w-20 h-20 lg:h-screen'}`}>
+                    <nav className={`absolute top-0 bottom-0 left-0 flex flex-col pl-5 pr-2 bg-gradient-to-r from-blue-900 to-blue-700 shadow-super-2 lg:shadow-black transition-all duration-300 ease-in-out ${isOpen ? 'w-60 h-screen' : 'w-20 h-20 lg:h-screen overflow-hidden'}`}>
                         <div className={`relative flex flex-col flex-grow`}>
-                            <div className={`relative flex flex-row py-5 items-center`}>
+                            <div className={`relative flex flex-row top-5 left-1`}>
                                 <img src="/reia-icon.webp" alt="REI Automated Logo" className={`w-8 h-8 text-white transition-all duration-300 ease-in-out ${isOpen ? 'transform rotate-180' : ''}`} onClick={toggleOpen} />
                                 <p className={`text-xl transition-all duration-300 ease-in-out whitespace-nowrap ${isOpen ? 'ml-2 w-40 opacity-100' : 'w-0 opacity-0'}`}>REI AUTOMATED</p>
                             </div>
-                            <ul className={`relative flex flex-col mt-4 lg:mt-8 lg:space-y-2 gap-2 ${isOpen ? '' : ''}`}>
+                            <ul className={`relative flex flex-col mt-8 lg:space-y-2 gap-2 ${isOpen ? '' : ''}`}>
                                 {navItems.map((item, index) => (
                                     <li key={index}>
                                         {item.dropdown ? (

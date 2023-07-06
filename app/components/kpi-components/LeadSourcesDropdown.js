@@ -10,9 +10,9 @@ export default function LeadSourceDropdown({ onOptionSelected, queryId, leadSour
     //console.log("lead sources dropdown: ", leadSources)
 
     const handleOptionSelected = (selectedOptions) => {
-        console.log("selected options: ", selectedOptions)
+        //console.log("selected options: ", selectedOptions)
         const selectedIds = selectedOptions.map(option => leadSources[option]);
-        console.log("selected ids: ", selectedIds)
+        //console.log("selected ids: ", selectedIds)
         onOptionSelected(selectedIds, queryId);
         setSelectedOptions(selectedOptions);
     };

@@ -8,6 +8,8 @@ import { FiInfo, FiList } from 'react-icons/fi';
 import CountUp from 'react-countup';
 import kpiToEndpointMapping from '../../lib/kpiToEndpointMapping';
 import apiEndpoints from '../../lib/apiEndpoints';
+import LoadingQuotes from '../LoadingQuotes';
+import ReactDOM from 'react-dom';
 
 function formatDate(date) {
   const year = date.getFullYear();
@@ -18,7 +20,7 @@ function formatDate(date) {
 
 export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick, dateRange, leadSource, kpiView, teamMembers }) {
   const [fetchedData, setFetchedData] = useState(null);
-
+  const [isLoading, setIsLoading] = useState(false);
   const startDate = dateRange.gte ? formatDate(new Date(dateRange.gte)) : null;
   const endDate = dateRange.lte ? formatDate(new Date(dateRange.lte)) : null;
 
@@ -27,6 +29,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
 
   const handleSingleKpiFetch = async () => {
     let apiName = prop.name;
+    setIsLoading(true);
     //console.log("apiName: ", apiName)
     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
@@ -83,26 +86,36 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
 
         fetchedResults = fetchedResults.map((result) => {
           return {
-            name: result["Seller Contact Name"] ? result["Seller Contact Name"] 
+            name: result["Seller Contact Name"] ? result["Seller Contact Name"]
               : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
                 : result["First"] ? result["First"]
                   : result["Last"] ? result["Last"]
-                    : result.Title ? result.Title 
+                    : result.Title ? result.Title
                       : "No Name",
             address: result["Property Address"] ? result["Property Address"] : "No address",
             podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
           };
         });
 
-
         setFetchedData(fetchedResults);
         return fetchedResults;
       } catch (error) {
         console.error(error);
         throw new Error("Error fetching data. Please try again later.");
+      } finally {
+        setIsLoading(false);
       }
     }
   };
+
+  if (isLoading) {
+    return ReactDOM.createPortal(
+      <div className='absolute inset-0 flex items-center justify-center w-screen h-screen'>
+        <LoadingQuotes mode={'light'} />
+      </div>,
+      document.getElementById('loading-portal')
+    );
+  }
 
   const renderMeter = () => {
     if (prop.kpiType === 'STL') {
@@ -152,7 +165,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
 
   return (
     <div className="">
-      <div className="flex flex-col px-2 py-1 text-center text-black delay-500 rounded w-72 h-52 shadow-super-3 transform-gpu front">
+      <div className="flex flex-col px-2 py-1 text-center text-black delay-500 rounded h-52 shadow-super-3 transform-gpu ">
         <h1 className="text-2xl font-semibold tracking-tighter align-top">{prop.name}</h1>
         <div className="mt-1 font-medium text-md">
           {prop.data1 !== null && prop.data2 !== null ? (

@@ -7,7 +7,6 @@ import { AuthProvider } from '../context/AuthProvider';
 import SideNav from '../components/SideNav'
 import Header from '../components/Header'
 
-
 export default function RootLayout({ children }) {
     return (
         <AuthProvider>
@@ -21,6 +20,9 @@ export default function RootLayout({ children }) {
                                 {children}
                             </div>
                         </div>
+                        <div id="modal-root"></div>
+                        <div id="root"></div>
+                        <div id="loading-portal"></div>
                     </body>
                 </html>
         </AuthProvider>

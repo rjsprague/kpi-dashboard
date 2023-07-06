@@ -102,7 +102,7 @@ function SideNavDropdown({ options, selectedOption, onOptionSelected, defaultVal
     };
 
     const transitionStyles = {
-        entering: { height: "0", opacity: 1 },
+        entering: { height: 0, opacity: 1 },
         entered: { height: contentHeight, opacity: 1 },
         exiting: { height: 0, opacity: 1 },
         exited: { height: 0, opacity: 0 },

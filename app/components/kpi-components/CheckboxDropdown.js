@@ -74,22 +74,27 @@ function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId,
         if (isSingleSelect) {
             newSelectedOptions = [option];
         } else if (option === 'All') {
-            newSelectedOptions = newSelectedOptions.length === options.length ? [] : [...options];
+            // When 'All' is selected, if all filteredOptions are already selected, deselect all. Otherwise, select all.
+            newSelectedOptions = newSelectedOptions.length === filteredOptions.length ? [] : [...filteredOptions];
         } else {
             const isSelected = selectedOptions.includes(option);
 
-            if (newSelectedOptions.length === options.length) {
+            if (newSelectedOptions.length === filteredOptions.length) {
+                // If all options are selected, and the user tries to select another option,
+                // deselect all options and only select the new option
                 newSelectedOptions = [option];
             } else if (isSelected) {
+                // If the option is already selected, deselect it
                 newSelectedOptions = newSelectedOptions.filter(selectedOption => selectedOption !== option);
             } else {
+                // Otherwise, add the option to the selected options
                 newSelectedOptions.push(option);
             }
         }
+
         onOptionSelected(newSelectedOptions, queryId);
-        setSearchTerm("");
-        setHighlightedIndex(-1);
     };
+
 
     const handleKeyDown = (event) => {
         switch (event.key) {
@@ -125,11 +130,13 @@ function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId,
     };
 
     const transitionStyles = {
-        entering: { height: "0", opacity: 1 },
+        entering: { height: 0, opacity: 1 },
         entered: { height: contentHeight, opacity: 1 },
         exiting: { height: 0, opacity: 1 },
         exited: { height: 0, opacity: 0 },
     };
+
+    console.log("filteredOptions", filteredOptions)
 
     return (
         <div ref={dropdownRef} className=" dropdown">

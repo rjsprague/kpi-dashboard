@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { FiX } from 'react-icons/fi';
 import DataTable from './kpi-components/dataTable';
+import ReactDOM from 'react-dom';
 
 const RightSlideModal = ({
   isOpen,
@@ -18,13 +19,13 @@ const RightSlideModal = ({
   tableData,
 }) => {
 
-  let columns = tableData && tableData.length > 0 && typeof(tableData[0]) === 'object' && Object.keys(tableData[0]).map(key => {
+  let columns = tableData && tableData.length > 0 && typeof (tableData[0]) === 'object' && Object.keys(tableData[0]).map(key => {
     return {
       Header: key,
       accessor: key // This is the key to the data
     }
   });
-  
+
 
   const [selectedViewKpiList, setSelectedViewKpiList] = useState([]);
 
@@ -68,10 +69,15 @@ const RightSlideModal = ({
 
 
 
-  return (
+  return ReactDOM.createPortal(
     <div
-      className={`z-50 flex fixed top-0 right-0 w-screen sm:w-2/3 lg:w-1/2 xl:w-1/3 h-full transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
-      style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', zIndex: 1000 }}
+      className={`z-[9999] flex fixed top-0 right-0 w-screen sm:w-2/3 lg:w-1/2 xl:w-1/3 h-full transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', zIndex: 9999 }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          handleCloseModal();
+        }
+      }}
     >
       <div className="absolute top-0 right-0 flex-col w-full h-screen bg-blue-900 bg-opacity-50 infoModal">
         <button className="absolute right-2 top-2" onClick={handleCloseModal}>
@@ -139,7 +145,8 @@ const RightSlideModal = ({
         )}
         {modalType === "table" && <DataTable data={tableData} columns={columns} />}
       </div>
-    </div>
+    </div>,
+    document.getElementById('modal-root')
   );
 };
 

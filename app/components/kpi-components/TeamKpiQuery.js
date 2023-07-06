@@ -111,7 +111,7 @@ const TeamKpiQuery = ({
                 {query.isUnavailable ? <ServiceUnavailable />
                     :
                     <div key={query.id} className={`relative p-2 bg-white shadow-super-3 rounded-lg`}>
-                        <div className="relative px-4">
+                        <div className="relative">
                             <KpiSwiper
                                 query={query}
                                 view={view}
