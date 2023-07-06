@@ -17,7 +17,7 @@ export default function SideNav() {
     const sideNavContentRef = useRef(null);
     const [clientsOpen, setClientsOpen] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
-
+    const buttonRef = useRef(null);
 
     useEffect(() => {
         if (isOpen) {
@@ -32,14 +32,10 @@ export default function SideNav() {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            // Use dropdownRef to check if click was inside or outside
             if (sideNavRef.current && !sideNavRef.current.contains(event.target)) {
-                // Check if the click was on the dropdown
                 if (clientsOpen && event.target.closest('.dropdown')) {
-                    // Click was on the dropdown, do nothing
                 } else {
-                    setClientsOpen(false); // Close dropdown
-                    setIsOpen(false); // Close sidebar
+                    setIsOpen(false);
                 }
             }
         };
@@ -47,7 +43,22 @@ export default function SideNav() {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [clientsOpen, isOpen]);
+    }, [isOpen]);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (buttonRef.current && !buttonRef.current.contains(event.target)) {
+                if (clientsOpen && event.target.closest('.dropdown')) {
+                } else {
+                    setClientsOpen(false);
+                }
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [clientsOpen]);
 
     const toggleOpen = () => {
         setIsOpen(!isOpen);
@@ -67,6 +78,13 @@ export default function SideNav() {
         const spaceid = clients[clientName];
         setSelectedClient(clientName);
         console.log(clientName, spaceid);
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Escape') {
+            setIsOpen(false);
+            setClientsOpen(false);
+        }
     };
 
 
@@ -99,26 +117,34 @@ export default function SideNav() {
                         <div className={`relative flex flex-col flex-grow`}>
                             <div className={`relative flex flex-row py-5 items-center`}>
                                 <img src="/reia-icon.webp" alt="REI Automated Logo" className={`w-8 h-8 text-white transition-all duration-300 ease-in-out ${isOpen ? 'transform rotate-180' : ''}`} onClick={toggleOpen} />
-                                <p className={`text-xl transition-all duration-300 ease-in-out whitespace-nowrap ${isOpen ? 'ml-2 w-40 opacity-100' : 'w-0 opacity-0'}`}>REI AUTOMATED</p> 
+                                <p className={`text-xl transition-all duration-300 ease-in-out whitespace-nowrap ${isOpen ? 'ml-2 w-40 opacity-100' : 'w-0 opacity-0'}`}>REI AUTOMATED</p>
                             </div>
                             <ul className={`relative flex flex-col mt-4 lg:mt-8 lg:space-y-2 gap-2 ${isOpen ? '' : ''}`}>
                                 {navItems.map((item, index) => (
                                     <li key={index}>
                                         {item.dropdown ? (
-                                            <button className="relative flex w-full rounded-md hover:bg-blue-500"
-                                                onClick={item.onClick}>
+                                            <button
+                                                ref={buttonRef}
+                                                className="relative flex w-full rounded-md hover:bg-blue-500"
+                                                onClick={item.onClick}
+                                                onKeyDown={handleKeyDown}
+                                            >
                                                 <div className='flex flex-row gap-2 p-1 text-left whitespace-nowrap '>
                                                     <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}>{item.icon}</span>
                                                     <span className={`truncate transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>{item.text}{selectedClient && `: ` + selectedClient}</span>
                                                 </div>
                                                 {clientsOpen && (
-                                                    <div className='absolute top-0 left-[50%]' onClick={(e) => e.stopPropagation()}>
+                                                    <div
+                                                        className='absolute top-0 left-[50%]'
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    >
                                                         <SideNavDropdown
                                                             className="dropdown"
                                                             options={clientsNamesArray}
                                                             selectedOption={selectedClient}
                                                             onOptionSelected={handleClientSelect}
                                                             defaultValue="Select a client..."
+                                                            clientsOpen={clientsOpen}
                                                         />
                                                     </div>
                                                 )}
