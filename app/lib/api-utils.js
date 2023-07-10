@@ -38,7 +38,7 @@ const handleAcquisitionKpis = async (apiName, apiEndpoint, filters) => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        "spaceid": clientSpaceId,
+                        "spaceid": 6830538,
                         "filters": filters,
                         "offset": offset,
                         "limit": 1000,
@@ -93,7 +93,7 @@ const handleTeamKpis = async (apiName, apiEndpoint, filters) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    "spaceid": clientSpaceId,
+                    "spaceid": 6830538,
                     "filters": filters,
                     "offset": offset,
                     "limit": 1000,
@@ -148,7 +148,7 @@ const handleFinancialKpis = async (apiName, apiEndpoint, filters) => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        "spaceid": clientSpaceId,
+                        "spaceid": 6830538,
                         "filters": filters,
                         "offset": offset,
                         "limit": 1000,
