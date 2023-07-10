@@ -5,7 +5,9 @@ export default async function handler(req, res) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({}),
+        body: JSON.stringify({
+            spaceid: 6830538,
+        }),
       });
       
       const data = await response.json();

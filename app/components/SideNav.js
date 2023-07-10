@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRobot, faCheckDouble, faGaugeHigh, faScrewdriverWrench, faThLarge, faChalkboardTeacher } from '@fortawesome/free-solid-svg-icons';
 import fetchClients from '../lib/fetchClients';
 import SideNavDropdown from './SideNavDropdown';
+import { setClientName, setSpaceId } from '../GlobalRedux/Features/client/clientSlice'
+import { useDispatch } from 'react-redux';
 
 
 export default function SideNav() {
@@ -18,6 +20,8 @@ export default function SideNav() {
     const [clientsOpen, setClientsOpen] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
     const buttonRef = useRef(null);
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (isOpen) {
@@ -77,7 +81,8 @@ export default function SideNav() {
         // Do something with the selected client name and spaceid
         const spaceid = clients[clientName];
         setSelectedClient(clientName);
-        console.log(clientName, spaceid);
+        dispatch(setClientName(clientName));
+        dispatch(setSpaceId(spaceid));
     };
 
     const handleKeyDown = (event) => {

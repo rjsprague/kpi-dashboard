@@ -6,13 +6,17 @@ config.autoAddCss = false
 import { AuthProvider } from '../context/AuthProvider';
 import SideNav from '../components/SideNav'
 import Header from '../components/Header'
+import { ReduxProvider } from '../GlobalRedux/provider';
+
 
 export default function RootLayout({ children }) {
+
     return (
         <AuthProvider>
-                <html lang="en">
-                    <head />
-                    <body className='absolute inset-0 h-screen max-h-screen'>
+            <html lang="en">
+                <head />
+                <body className='absolute inset-0 h-screen max-h-screen'>
+                    <ReduxProvider>
                         <div className=''>
                             <SideNav />
                             <div className='relative z-0 h-[90vh]'>
@@ -23,8 +27,9 @@ export default function RootLayout({ children }) {
                         <div id="modal-root"></div>
                         <div id="root"></div>
                         <div id="loading-portal"></div>
-                    </body>
-                </html>
+                    </ReduxProvider>
+                </body>
+            </html>
         </AuthProvider>
     )
 }

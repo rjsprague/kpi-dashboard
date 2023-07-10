@@ -2,7 +2,16 @@ import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
   try {
-    const response = await fetch('https://db.reiautomated.io/lead-sources');
+    const response = await fetch('https://db.reiautomated.io/lead-sources', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            spaceid: 6830538,
+        }),
+      });
+
     const data = await response.json();
 
     if (response.ok) {

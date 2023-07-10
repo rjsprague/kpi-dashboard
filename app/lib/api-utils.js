@@ -1,3 +1,6 @@
+import { useSelector } from 'react-redux';
+import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
+
 const handleAcquisitionKpis = async (apiName, apiEndpoint, filters) => {
     //console.log("filters: ", filters)
     //console.log("apiEndpoint: ", apiEndpoint)
@@ -8,6 +11,7 @@ const handleAcquisitionKpis = async (apiName, apiEndpoint, filters) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
+                "spaceid": 6830538,
                 "filters": filters
             }),
         });
@@ -34,6 +38,7 @@ const handleAcquisitionKpis = async (apiName, apiEndpoint, filters) => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
+                        "spaceid": clientSpaceId,
                         "filters": filters,
                         "offset": offset,
                         "limit": 1000,
@@ -66,6 +71,7 @@ const handleTeamKpis = async (apiName, apiEndpoint, filters) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
+                "spaceid": 6830538,
                 "filters": filters,
                 "limit": 1000,
             }),
@@ -87,6 +93,7 @@ const handleTeamKpis = async (apiName, apiEndpoint, filters) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    "spaceid": clientSpaceId,
                     "filters": filters,
                     "offset": offset,
                     "limit": 1000,
@@ -114,6 +121,7 @@ const handleFinancialKpis = async (apiName, apiEndpoint, filters) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
+                "spaceid": 6830538,
                 "filters": filters
             }),
         });
@@ -140,6 +148,7 @@ const handleFinancialKpis = async (apiName, apiEndpoint, filters) => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
+                        "spaceid": clientSpaceId,
                         "filters": filters,
                         "offset": offset,
                         "limit": 1000,
@@ -160,8 +169,10 @@ const handleFinancialKpis = async (apiName, apiEndpoint, filters) => {
 };
 
 export default async function fetchKPIs(apiName, apiEndpoint, filters, kpiView) {
-
-    //console.log("apiName: ", apiName)
+    // const useAppSelector = useSelector;
+    // const clientSpaceId = useAppSelector(state => state.client.clientSpaceId);
+    // console.log("clientSpaceId: ", clientSpaceId)
+    // //console.log("apiName: ", apiName)
     //console.log("apiEndpoint: ", apiEndpoint)
     //console.log("filters: ", filters)
     //console.log("kpiView: ", kpiView)
