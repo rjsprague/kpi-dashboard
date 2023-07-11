@@ -4,9 +4,9 @@ import React, { useRef, useEffect } from "react";
 import { gsap } from 'gsap';
 
 const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
+        
     const currentNum = Math.floor(Number(current));
     const prettyCurNum = current > 999 && current !== Infinity ? currentNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : currentNum;
-
 
     const rectRef = useRef(null);
     const triRef = useRef(null);
@@ -17,8 +17,9 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
     let percentFill = currentNum >= target ? "green" : currentNum >= redFlag ? "yellow" : "red";
 
     // Calculating maximum scale for the meter
-    const maxValue = current !== Infinity ? Math.max(redFlag, currentNum, target) : Math.max(redFlag, target);
+    const maxValue = current !== Infinity && current !== 0 ? Math.max(redFlag, current, target) : Math.max(redFlag, target);
     const meterScale = maxValue * 1.4;
+
 
     // Calculating positions in percentage
     const currentPosition = current === Infinity ? 250 : (currentNum / meterScale) * 250;
@@ -52,7 +53,7 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
                 <path d={`M ${redFlag * 2 + 10} 40 L ${redFlag * 2 + 10} 70 M ${target * 2 + 10} 40 L ${target * 2 + 10} 70`} fill="none" stroke="black" strokeWidth="1" />*/}
                 <polygon ref={triRef} points="26,60 21,50 31,50" fill="black" />
                 {
-                    redFlag !== 0 && ( <polygon points={`${redFlagPosition + 25},100 ${redFlagPosition + 20},110 ${redFlagPosition + 30},110`} fill="red" /> )
+                    redFlag !== 0 && <polygon points={`${redFlagPosition + 25},100 ${redFlagPosition + 20},110 ${redFlagPosition + 30},110`} fill="red" />
                 }
                 {
                     target !== 0 && <polygon points={`${targetPosition + 25},100 ${targetPosition + 20},110 ${targetPosition + 30},110`} fill="green" />

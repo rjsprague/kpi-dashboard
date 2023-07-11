@@ -4,7 +4,7 @@ const KPI_DEFINITIONS = {
         dataKeys: ["marketingExpenses"],
         formula: (apiData) => {
             const { totalMarketingExpenses } = apiData;
-            return totalMarketingExpenses != null && totalMarketingExpenses != NaN ? Math.round(totalMarketingExpenses) : "NA";
+            return totalMarketingExpenses != null && totalMarketingExpenses != NaN ? Math.round(totalMarketingExpenses) : 0;
         },
         redFlag: 0,
         target: 0,
@@ -492,7 +492,7 @@ const KPI_DEFINITIONS = {
         dataKeys: ["marketingExpenses", "contracts"],
         formula: (apiData) => {
             const { totalMarketingExpenses, contracts } = apiData;
-            return totalMarketingExpenses != null && totalMarketingExpenses != NaN ? Math.round(totalMarketingExpenses / contracts) : "NA";
+            return totalMarketingExpenses != null && totalMarketingExpenses != NaN && contracts !== 0 ? Math.round(totalMarketingExpenses / contracts) : 0;
         },
         redFlag: 1200,
         target: 400,
@@ -517,7 +517,7 @@ const KPI_DEFINITIONS = {
         dataKeys: ["marketingExpenses", "acquisitions"],
         formula: (apiData) => {
             const { totalMarketingExpenses, acquisitions } = apiData;
-            return totalMarketingExpenses != null && totalMarketingExpenses != NaN ? Math.round(totalMarketingExpenses / acquisitions) : "NA";
+            return totalMarketingExpenses != null && totalMarketingExpenses != NaN && acquisitions !== 0 ? Math.round(totalMarketingExpenses / acquisitions) : 0;
         },
         redFlag: 1800,
         target: 600,
@@ -542,7 +542,7 @@ const KPI_DEFINITIONS = {
         dataKeys: ["marketingExpenses", "deals"],
         formula: (apiData) => {
             const { totalMarketingExpenses, deals } = apiData;
-            return totalMarketingExpenses != null && totalMarketingExpenses != NaN ? Math.round(totalMarketingExpenses / deals) : "NA";
+            return totalMarketingExpenses != null && totalMarketingExpenses != NaN && deals !== 0 ? Math.round(totalMarketingExpenses / deals) : 0;
         },
         redFlag: 0,
         target: 0,
@@ -692,7 +692,7 @@ const KPI_DEFINITIONS = {
         dataKeys: ["marketingExpenses", "totalProfit"],
         formula: (apiData) => {
             const { totalMarketingExpenses, totalProfit } = apiData;
-            return totalProfit / totalMarketingExpenses * 100;
+            return totalMarketingExpenses !== 0 ? totalProfit / totalMarketingExpenses * 100 : 0;
         },
         redFlag: 600,
         target: 1200,
@@ -719,7 +719,7 @@ const KPI_DEFINITIONS = {
             const { totalMarketingExpenses, projectedProfit, actualizedProfit } = apiData;
 
             // Calculate the ROAS for the date range
-            const roas = (projectedProfit + actualizedProfit) / totalMarketingExpenses * 100;
+            const roas = totalMarketingExpenses !== 0 ? (projectedProfit + actualizedProfit) / totalMarketingExpenses * 100 : 0;
 
             // Calculate the number of days in the date range
             const start = new Date(startDate);

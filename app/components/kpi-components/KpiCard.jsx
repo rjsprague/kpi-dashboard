@@ -12,6 +12,8 @@ import LoadingQuotes from '../LoadingQuotes';
 import ReactDOM from 'react-dom';
 import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../../app/GlobalRedux/Features/client/clientSlice'
+import fetchKpiData from '../../lib/fetchSingleKpi';
+
 
 function formatDate(date) {
     const year = date.getFullYear();
@@ -21,7 +23,6 @@ function formatDate(date) {
 }
 
 export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick, dateRange, leadSource, kpiView, teamMembers }) {
-    const [fetchedData, setFetchedData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const startDate = dateRange.gte ? formatDate(new Date(dateRange.gte)) : null;
     const endDate = dateRange.lte ? formatDate(new Date(dateRange.lte)) : null;
@@ -31,87 +32,100 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
     //console.log('KpiCard: ', dateRange, leadSource, kpiView, teamMembers);
     //console.log(fetchedData)
 
+    // const handleSingleKpiFetch = async () => {
+    //     let apiName = prop.name;
+    //     setIsLoading(true);
+    //     //console.log("apiName: ", apiName)
+    //     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
+    //     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
+    //         return;
+    //     }
+    //     //console.log("apiEndpointsKeys: ", apiEndpointsKeys)
+    //     // Call the apiEndpoints function
+    //     const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMembers);
+    //     //console.log("apiEndpointsObj: ", apiEndpointsObj)
+    //     for (const apiEndpointKey of apiEndpointsKeys) {
+    //         let requestObject = apiEndpointsObj[apiEndpointKey];
+    //         //console.log("requestObject: ", requestObject)
+
+    //         // Make a request for each endpoint
+    //         try {
+    //             const response = await fetch(requestObject.url, {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 body: JSON.stringify({
+    //                     "spaceid": clientSpaceId,
+    //                     "filters": requestObject.filters
+    //                 }),
+    //             });
+
+    //             if (!response.ok) {
+    //                 console.error(`Error fetching data from ${requestObject.url}: ${response.status} ${response.statusText}`);
+    //                 throw new Error(`Server responded with an error: ${response.statusText}`);
+    //             }
+
+    //             const data = await response.json();
+    //             //console.log("data: ", data)
+    //             let fetchedResults = data.data ? data.data : [];
+    //             let offset = fetchedResults.length;
+
+    //             while (data.total > fetchedResults.length) {
+    //                 const fetchMoreData = await fetch(requestObject.url, {
+    //                     method: 'POST',
+    //                     headers: {
+    //                         'Content-Type': 'application/json',
+    //                     },
+    //                     body: JSON.stringify({
+    //                         "spaceid": clientSpaceId,
+    //                         "filters": requestObject.filters,
+    //                         "offset": offset,
+    //                         "limit": 1000,
+    //                     }),
+    //                 });
+
+    //                 const moreData = await fetchMoreData.json();
+    //                 fetchedResults = fetchedResults.concat(moreData.data);
+    //                 offset += moreData.data.length;
+    //             }
+    //             //console.log("fetchedResults: ", fetchedResults)
+
+    //             fetchedResults = fetchedResults.map((result) => {
+    //                 return {
+    //                     name: result["Seller Contact Name"] ? result["Seller Contact Name"]
+    //                         : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
+    //                             : result["First"] ? result["First"]
+    //                                 : result["Last"] ? result["Last"]
+    //                                     : result.Title ? result.Title
+    //                                         : "No Name",
+    //                     address: result["Property Address"] ? result["Property Address"] : "No address",
+    //                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+    //                 };
+    //             });
+
+    //             setFetchedData(fetchedResults);
+    //             return fetchedResults;
+    //         } catch (error) {
+    //             console.error(error);
+    //             throw new Error("Error fetching data. Please try again later.");
+    //         } finally {
+    //             setIsLoading(false);
+    //         }
+    //     }
+    // };
+
     const handleSingleKpiFetch = async () => {
-        let apiName = prop.name;
-        setIsLoading(true);
-        //console.log("apiName: ", apiName)
-        const apiEndpointsKeys = kpiToEndpointMapping[apiName];
-        if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
-            return;
-        }
-        //console.log("apiEndpointsKeys: ", apiEndpointsKeys)
-        // Call the apiEndpoints function
-        const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMembers);
-        //console.log("apiEndpointsObj: ", apiEndpointsObj)
-        for (const apiEndpointKey of apiEndpointsKeys) {
-            let requestObject = apiEndpointsObj[apiEndpointKey];
-            //console.log("requestObject: ", requestObject)
-
-            // Make a request for each endpoint
-            try {
-                const response = await fetch(requestObject.url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        "spaceid": clientSpaceId,
-                        "filters": requestObject.filters
-                    }),
-                });
-
-                if (!response.ok) {
-                    console.error(`Error fetching data from ${requestObject.url}: ${response.status} ${response.statusText}`);
-                    throw new Error(`Server responded with an error: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-                //console.log("data: ", data)
-                let fetchedResults = data.data ? data.data : [];
-                let offset = fetchedResults.length;
-
-                while (data.total > fetchedResults.length) {
-                    const fetchMoreData = await fetch(requestObject.url, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            "spaceid": clientSpaceId,
-                            "filters": requestObject.filters,
-                            "offset": offset,
-                            "limit": 1000,
-                        }),
-                    });
-
-                    const moreData = await fetchMoreData.json();
-                    fetchedResults = fetchedResults.concat(moreData.data);
-                    offset += moreData.data.length;
-                }
-                //console.log("fetchedResults: ", fetchedResults)
-
-                fetchedResults = fetchedResults.map((result) => {
-                    return {
-                        name: result["Seller Contact Name"] ? result["Seller Contact Name"]
-                            : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
-                                : result["First"] ? result["First"]
-                                    : result["Last"] ? result["Last"]
-                                        : result.Title ? result.Title
-                                            : "No Name",
-                        address: result["Property Address"] ? result["Property Address"] : "No address",
-                        podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
-                    };
-                });
-
-                setFetchedData(fetchedResults);
-                return fetchedResults;
-            } catch (error) {
-                console.error(error);
-                throw new Error("Error fetching data. Please try again later.");
-            } finally {
-                setIsLoading(false);
-            }
-        }
+        const data = await fetchKpiData({
+            startDate,
+            endDate,
+            leadSource,
+            kpiView,
+            teamMembers,
+            clientSpaceId,
+            apiName: prop.name,
+        });
+        return data;
     };
 
     if (isLoading) {

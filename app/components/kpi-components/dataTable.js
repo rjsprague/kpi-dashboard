@@ -51,10 +51,10 @@ const DataTable = ({ data, columns }) => {
         <div className="flex h-auto px-2 py-10 overflow-auto max-h-screen9">
             <div className="table w-full h-auto overflow-y-scroll max-h-screen9">
                 <div>
-                    {table.getHeaderGroups().map(headerGroup => (
-                        <div className="uppercase bg-blue-700 border-l border-gray-200 tr">
-                            {headerGroup.headers.map(header => (
-                                <div className="th">
+                    {table.getHeaderGroups().map((headerGroup, i) => (
+                        <div key={i} className="uppercase bg-blue-700 border-l border-gray-200 tr">
+                            {headerGroup.headers.map((header, j) => (
+                                <div key={j} className="th">
                                     {flexRender(header.column.columnDef.header, header.getContext())}
                                 </div>
                             ))}
@@ -65,13 +65,14 @@ const DataTable = ({ data, columns }) => {
                     {
                         table.getRowModel().rows.map((row, i) => (
                             <a
+                                key={row.original.podio_item_id}
                                 href={`https://podio.com/x/y/item/${row.original.podio_item_id}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className={`tr border-l border-gray-200 tr ${i % 2 === 0 ? 'bg-blue-400' : 'bg-blue-500'}`}
                             >
-                                {row.getVisibleCells().map(cell => (
-                                    <div className="td">
+                                {row.getVisibleCells().map((cell, j) => (
+                                    <div key={j} className="td">
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </div>
                                 ))}
