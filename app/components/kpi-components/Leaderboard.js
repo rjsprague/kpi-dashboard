@@ -6,9 +6,9 @@ import QueryPanel from './QueryPanel';
 import AnimateHeight from 'react-animate-height';
 import ServiceUnavailable from '../ServiceUnavailable';
 import RightSlideModal from '../RightSlideModal';
-import SelectDropdown from './SelectDropdown';
-import LoadingIcon from '../LoadingIcon';
 import LoadingQuotes from '../LoadingQuotes';
+import UniversalDropdown from './UniversalDropdown';
+import DropdownButton from './DropdownButton';
 
 const currencyToNumber = (str) => {
     if (!str) return 0;
@@ -71,7 +71,7 @@ export default function Leaderboard({
         },
     ];
 
-    const years = ['2023'];  // update this list as needed
+    const years = ['2023'];
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
     useEffect(() => {
@@ -172,14 +172,26 @@ export default function Leaderboard({
         <div className="mb-2">
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
                 <div className="flex flex-row gap-1 sm:gap-4">
-                    <SelectDropdown
+                    <UniversalDropdown
                         options={years}
                         onOptionSelected={handleYearChange}
+                        selectedOptions={year}
+                        queryId={null}
+                        isSingleSelect={true}
+                        isLoadingData={null}
+                        className={""}
+                        ButtonComponent={DropdownButton}
                         defaultValue={year}
                     />
-                    <SelectDropdown
+                    <UniversalDropdown
                         options={months}
                         onOptionSelected={handleMonthChange}
+                        selectedOptions={month}
+                        queryId={null}
+                        isSingleSelect={true}
+                        isLoadingData={null}
+                        className={""}
+                        ButtonComponent={DropdownButton}
                         defaultValue={month}
                     />
                 </div>
@@ -200,19 +212,19 @@ export default function Leaderboard({
                                                 <div key={i} className="flex flex-row justify-between gap-2 px-4 py-3 mx-3 my-2 text-sm text-blue-800 bg-white rounded-lg shadow-super-4">
                                                     <div className={` mr-1 ${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>{rank}</div>
                                                     <div className='flex w-32 overflow-hidden whitespace-nowrap'>
-                                                        { kpi.data[i]?.metric ? (
+                                                        {kpi.data[i]?.metric ? (
                                                             <span className={`truncate ${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>{kpi.data[i]?.workspace}</span>
                                                         ) : (
                                                             <span className={`${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>-</span>
                                                         )}
                                                     </div>
                                                     <div>
-                                                        { kpi.data[i]?.metric ? (
+                                                        {kpi.data[i]?.metric ? (
                                                             <span className={`flex whitespace-nowrap w-16 justify-end ${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>
-                                                                { kpi.name === "Cost Per Contract" || kpi.name === "Cost Per Qualified Lead" ?
-                                                                 "$" + kpi.data[i]?.metric : kpi.name === "Speed to Lead" ?
-                                                                    kpi.data[i]?.metric + " min" : 
-                                                                 " " + kpi.data[i]?.metric }
+                                                                {kpi.name === "Cost Per Contract" || kpi.name === "Cost Per Qualified Lead" ?
+                                                                    "$" + kpi.data[i]?.metric : kpi.name === "Speed to Lead" ?
+                                                                        kpi.data[i]?.metric + " min" :
+                                                                        " " + kpi.data[i]?.metric}
                                                             </span>
                                                         ) : (
                                                             <span className={`flex whitespace-nowrap w-16 justify-end ${i === 0 ? 'font-extrabold' : i === 1 ? 'font-bold' : 'font-semibold'}`}>-</span>

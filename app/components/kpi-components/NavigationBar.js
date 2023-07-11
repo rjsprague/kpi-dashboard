@@ -6,7 +6,7 @@ export default function NavigationBar({ onQueryTypeChange }) {
   
   const [activeButton, setActiveButton] = useState('Acquisitions');
 
-  const views = ['Acquisitions', 'Team', 'Financial', 'Leaderboard']; // New array to store the names of the views
+  const views = ['Acquisitions', 'Team', 'Financial', 'Leaderboard'];
 
   const handleQueryTypeClick = (type) => {
     setActiveButton(type);

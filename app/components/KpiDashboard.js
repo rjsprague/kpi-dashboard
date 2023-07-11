@@ -15,15 +15,15 @@ export default function KpiDashboard() {
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [queryType, setQueryType] = useState(KPI_VIEWS.Acquisitions);
     const [leadSources, setLeadSources] = useState({});
-    const [teamMembers, setTeamMembers] = useState();
-    const [departments, setDepartments] = useState();
+    const [teamMembers, setTeamMembers] = useState([]);
+    const [departments, setDepartments] = useState([]);
     const [kpiList, setKpiList] = useState(VIEW_KPIS[queryType]);
     const datePresets = getDatePresets();
     const [idCounter, setIdCounter] = useState(0);
     const [queries, setQueries] = useState([]);
     const clientSpaceId = useSelector(selectSpaceId);
 
-    console.log("clientSpaceId: ", clientSpaceId)
+    //console.log("clientSpaceId: ", clientSpaceId)
 
     // console.log("lead sources object ", leadSources)
     // console.log("Queries ", queries.map((query) => query.id))
@@ -53,11 +53,10 @@ export default function KpiDashboard() {
         async function getLeadSources() {
             setIsLoadingData(true);
             try {
-                
 
-                console.log("clientSpaceId: ", clientSpaceId)
+                // console.log("clientSpaceId: ", clientSpaceId)
                 const leadSourcesData = await fetchLeadSources(clientSpaceId);
-                console.log("lead sources data ", leadSourcesData)
+                // console.log("lead sources data ", leadSourcesData)
                 setLeadSources(leadSourcesData);
                 const leadSourcesObject = leadSourcesData;
                 const departmentsData = await fetchActiveTeamMembers(clientSpaceId);
@@ -145,10 +144,7 @@ export default function KpiDashboard() {
     };
 
     const handleTeamChange = (department, teamMembers, queryId) => {
-        console.log("department", department)
-        console.log("teamMembers", teamMembers)
-
-
+       
         setQueries((prevQueries) =>
             prevQueries.map((query) =>
                 query.id === queryId
@@ -196,7 +192,6 @@ export default function KpiDashboard() {
             kpiList={kpiList}
             leadSources={leadSources}
             departments={departments}
-            teamMembers={teamMembers}
             queries={queries}
             setQueries={setQueries}
             datePresets={datePresets}

@@ -1,7 +1,7 @@
 
 async function fetchLeadSources(clientSpaceId) {
 
-    console.log("clientSpaceId: ", clientSpaceId)
+    //console.log("clientSpaceId: ", clientSpaceId)
 
     try {
         const response = await fetch('/api/lead-sources', {
@@ -14,7 +14,7 @@ async function fetchLeadSources(clientSpaceId) {
             })
         });
 
-        console.log('Lead Sources Response:', response);
+        //console.log('Lead Sources Response:', response);
 
         if (!response.ok) {
             throw new Error("Something went wrong on api server!");
@@ -22,7 +22,7 @@ async function fetchLeadSources(clientSpaceId) {
 
         const data = await response.json();
 
-        console.log("data", data)
+        //console.log("data", data)
 
         const filteredData = data.data.filter(
             (source) => source.Status !== "Inactive"
@@ -39,8 +39,8 @@ async function fetchLeadSources(clientSpaceId) {
                 leadSourceMap[source.Title] = parseInt(source.itemid, 10);
             }
         }
-        console.log("leadSourceMap", leadSourceMap)
-        console.log("lead sources values ", Object.values(leadSourceMap))
+        // console.log("leadSourceMap", leadSourceMap)
+        // console.log("lead sources values ", Object.values(leadSourceMap))
         return leadSourceMap;
 
     } catch (error) {

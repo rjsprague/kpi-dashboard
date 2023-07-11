@@ -15,7 +15,6 @@ const AcquisitionsKpiQuery = ({
     query,
     kpiList,
     leadSources,
-    onKpiListChange,
     onDateRangeChange,
     onLeadSourceChange,
     onToggleQuery,
@@ -107,7 +106,6 @@ const AcquisitionsKpiQuery = ({
                                 viewKpis={kpiList}
                                 VIEW_KPIS={VIEW_KPIS}
                                 selectedView={view}
-                                onKpiListChange={onKpiListChange}
                                 modalType={modalType}
                                 selectedKpis={selectedKpis}
                                 setSelectedKpis={setSelectedKpis}

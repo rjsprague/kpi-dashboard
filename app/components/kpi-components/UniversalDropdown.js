@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Transition } from "react-transition-group";
-import DropdownButton from './DropdownButton';
 import LoadingIcon from "../LoadingIcon";
+import { FiCheck, FiCheckSquare, FiSquare } from 'react-icons/fi';
 
-
-function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId, isSingleSelect, isLoadingData }) {
+function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId, isSingleSelect, isLoadingData, className, ButtonComponent, showButton, defaultValue }) {
+    const [selectedOption, setSelectedOption] = useState(defaultValue || (isSingleSelect && selectedOptions[0]) || "");
     const [searchTerm, setSearchTerm] = useState("");
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
     const [isOpen, setIsOpen] = useState(false);
@@ -16,9 +16,11 @@ function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId,
     const dropdownContentRef = useRef(null);
     const searchInputRef = useRef(null);
 
-
-    // console.log("selectedOptions", selectedOptions)
-    // console.log("options ", options)
+    useEffect(() => {
+        if (showButton) {
+            setIsOpen(true);
+        }
+    }, [showButton]);
 
     useEffect(() => {
         if (isOpen) {
@@ -36,9 +38,8 @@ function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId,
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            // Use dropdownRef to check if click was inside or outside
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsOpen(false); // Close dropdown
+                setIsOpen(false);
             }
         };
 
@@ -73,28 +74,23 @@ function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId,
 
         if (isSingleSelect) {
             newSelectedOptions = [option];
+            setSelectedOption(option);
         } else if (option === 'All') {
-            // When 'All' is selected, if all options are already selected, deselect all. Otherwise, select all.
             newSelectedOptions = newSelectedOptions.length === options.length ? [] : [...options];
         } else {
             const isSelected = selectedOptions.includes(option);
 
             if (newSelectedOptions.length === options.length) {
-                // If all options are selected, and the user tries to select another option,
-                // deselect all options and only select the new option
                 newSelectedOptions = [option];
             } else if (isSelected) {
-                // If the option is already selected, deselect it
                 newSelectedOptions = newSelectedOptions.filter(selectedOption => selectedOption !== option);
             } else {
-                // Otherwise, add the option to the selected options
                 newSelectedOptions.push(option);
             }
         }
 
         onOptionSelected(newSelectedOptions, queryId);
     };
-
 
 
     const handleKeyDown = (event) => {
@@ -137,20 +133,19 @@ function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId,
         exited: { height: 0, opacity: 0 },
     };
 
-    console.log("filteredOptions", filteredOptions)
-
     return (
-        <div ref={dropdownRef} className=" dropdown">
-            <DropdownButton onClick={toggleOpen} isOpen={isOpen}>
+        <div ref={dropdownRef} className={`relative items-center text-xs dropdown sm:text-sm ${className}`}>
+            <ButtonComponent onClick={toggleOpen} isOpen={isOpen}>
                 {isLoadingData ? <LoadingIcon /> :
-                    selectedOptions?.length === 0
-                        ? "No Filter"
+                    selectedOption
+                        ? selectedOption
                         : isSingleSelect && selectedOptions || selectedOptions?.length === 1
                             ? selectedOptions[0]
                             : selectedOptions?.length === options.length
                                 ? "All"
                                 : `${selectedOptions?.length} selected`}
-            </DropdownButton>
+            </ButtonComponent>
+
             <Transition in={isOpen} timeout={duration}>
                 {(state) => (
                     <div
@@ -172,36 +167,24 @@ function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId,
                             className="z-10 w-full px-3 py-1 text-blue-900 rounded-md"
                             placeholder="Search..."
                         />
-                        <ul className="py-1">
-                            <li className="px-3 py-1 text-white cursor-pointer hover:bg-blue-800">
-                                <label className="inline-flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
-                                        checked={selectedOptions?.length === options.length && options.length > 0}
-                                        onChange={() => handleCheckboxChange('All')}
-                                        value={'All'}
-                                    />
-                                    All
-                                </label>
-                            </li>
+                        <ul className="py-1 ">
+                            {!isSingleSelect && (
+                                <li className="py-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400">
+                                    <label className="inline-flex items-center" onClick={() => handleCheckboxChange('All')}>
+                                        {selectedOptions?.length === options.length && options.length > 0 ? <FiCheckSquare size="20px" /> : <FiSquare size="20px" />}
+                                        <span className="ml-2">All</span>
+                                    </label>
+                                </li>
+                            )}
                             {Array.isArray(filteredOptions) ? filteredOptions.map((option, index) => (
                                 <li
                                     key={option}
-                                    className={`px-3 py-1 text-white cursor-pointer hover:bg-blue-800 ${index === highlightedIndex ? 'bg-blue-800' : ''}`}
+                                    onClick={() => handleCheckboxChange(option)}
+                                    className={`w-full truncate py-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400 ${index === highlightedIndex ? 'bg-blue-400' : ''}`}
                                 >
-                                    <label
-                                        className="inline-flex items-center"
-                                        onClick={() => handleCheckboxChange(option)}
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
-                                            checked={selectedOptions?.includes(option)}
-                                            value={option}
-                                            onClick={(e) => e.stopPropagation()} // Stop propagation of native click event
-                                        />
-                                        {option}
+                                    <label className="inline-flex items-center truncate">
+                                        {selectedOptions?.includes(option) ? isSingleSelect ? <FiCheck size="20px" /> : <FiCheckSquare size="20px" /> : !isSingleSelect && <FiSquare size="20px" />}
+                                        <span className="ml-2 truncate">{option}</span>
                                     </label>
                                 </li>
                             )) : <LoadingIcon />}
@@ -213,4 +196,4 @@ function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId,
     );
 }
 
-export default CheckboxDropdown;
+export default UniversalDropdown;

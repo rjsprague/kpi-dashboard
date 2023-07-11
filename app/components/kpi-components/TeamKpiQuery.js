@@ -14,9 +14,7 @@ const TeamKpiQuery = ({
     VIEW_KPIS,
     query,
     departments,
-    teamMembers,
     kpiList,
-    onKpiListChange,
     onDateRangeChange,
     onToggleQuery,
     onRemoveQuery,
@@ -32,16 +30,21 @@ const TeamKpiQuery = ({
     const [department, setDepartment] = useState([]);
     const [tableData, setTableData] = useState(null);
 
+    console.log(kpiList)
+
+
     const updateKpiList = (department) => {
-        // console.log("department ", department)
-        // console.log("updateKpiList: ", kpiList[department])
+        
+
+        console.log("department ", department)
+        console.log("updateKpiList: ", kpiList[department])
         setTeamKpiList(kpiList[department]);
         setSelectedKpis(kpiList[department]);
     };
 
     useEffect(() => {
         updateKpiList(query.departments);
-    }, [kpiList, departments]);
+    }, [kpiList]);
 
     const handleDepartmentChange = (department) => {
         //console.log("department ", department)
@@ -93,7 +96,6 @@ const TeamKpiQuery = ({
                             queryId={query.id}
                             onDepartmentChange={handleDepartmentChange}
                             departments={departments}
-                            teamMembers={teamMembers}
                             isLoadingData={isLoadingData}
                         />
                     </div>
@@ -126,7 +128,6 @@ const TeamKpiQuery = ({
                                 viewKpis={teamKpiList}
                                 VIEW_KPIS={VIEW_KPIS}
                                 selectedView={view}
-                                onKpiListChange={onKpiListChange}
                                 modalType={modalType}
                                 selectedKpis={selectedKpis}
                                 setSelectedKpis={setSelectedKpis}

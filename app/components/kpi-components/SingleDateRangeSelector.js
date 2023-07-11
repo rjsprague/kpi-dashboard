@@ -6,10 +6,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Transition } from "react-transition-group";
 import DropdownButton from "./DropdownButton";
-//import { fetchEarliestLeadDate } from "../../lib/api-utils";
 
 function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
-    //const [fetchedEarliestDate, setFetchedEarliestDate] = useState(null);
     const [datePresets, setDatePresets] = useState(getDatePresets());
     const [dateRange, setDateRange] = useState([datePresets["Previous Week"].startDate, datePresets["Previous Week"].endDate]);
     const [showDatePicker, setShowDatePicker] = useState(false);

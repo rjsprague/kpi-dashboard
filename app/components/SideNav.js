@@ -5,9 +5,10 @@ import { FiPlayCircle, FiUsers, FiSettings, FiArrowRightCircle, FiMenu, FiChevro
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRobot, faCheckDouble, faGaugeHigh, faScrewdriverWrench, faThLarge, faChalkboardTeacher } from '@fortawesome/free-solid-svg-icons';
 import fetchClients from '../lib/fetchClients';
-import SideNavDropdown from './SideNavDropdown';
 import { setClientName, setSpaceId } from '../GlobalRedux/Features/client/clientSlice'
 import { useDispatch } from 'react-redux';
+import UniversalDropdown from './kpi-components/UniversalDropdown';
+import SidenavDropdownButton from './SidenavDropdownButton';
 
 
 export default function SideNav() {
@@ -134,7 +135,7 @@ export default function SideNav() {
                                 {navItems.map((item, index) => (
                                     <li key={index}>
                                         {item.dropdown ? (
-                                            <button
+                                            <div
                                                 ref={buttonRef}
                                                 className="relative flex w-full rounded-md hover:bg-blue-500"
                                                 onClick={item.onClick}
@@ -149,17 +150,21 @@ export default function SideNav() {
                                                         className='absolute top-0 left-[50%]'
                                                         onClick={(e) => e.stopPropagation()}
                                                     >
-                                                        <SideNavDropdown
-                                                            className="dropdown"
+                                                        <UniversalDropdown
                                                             options={clientsNamesArray}
-                                                            selectedOption={selectedClient}
                                                             onOptionSelected={handleClientSelect}
-                                                            defaultValue="Select a client..."
-                                                            clientsOpen={clientsOpen}
+                                                            selectedOptions={selectedClient ? [selectedClient] : []}
+                                                            queryId={null}
+                                                            isSingleSelect={true}
+                                                            isLoadingData={null}
+                                                            className={"dropdown"}
+                                                            ButtonComponent={SidenavDropdownButton}
+                                                            defaultValue={"Select a client..."}
+                                                            showButton={clientsOpen}
                                                         />
                                                     </div>
                                                 )}
-                                            </button>
+                                            </div>
 
                                         ) : (
                                             <Link href={item.link} className={`flex flex-row gap-2 whitespace-nowrap hover:bg-blue-500 rounded-md ${isOpen ? '' : ''}`}>

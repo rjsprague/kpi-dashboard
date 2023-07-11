@@ -1,5 +1,3 @@
-import { useSelector } from 'react-redux';
-import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
 
 const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
     //console.log("filters: ", filters)
@@ -159,7 +157,6 @@ const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters)
                 fetchedResults = fetchedResults.concat(moreData.data);
                 offset += moreData.data.length;
             }
-            //console.log("fetchedResults: ", fetchedResults)
             return fetchedResults;
         }
     } catch (error) {
@@ -169,31 +166,20 @@ const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters)
 };
 
 export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, filters, kpiView) {
-    // const useAppSelector = useSelector;
-    // const clientSpaceId = useAppSelector(state => state.client.clientSpaceId);
-    // console.log("clientSpaceId: ", clientSpaceId)
-    // //console.log("apiName: ", apiName)
-    //console.log("apiEndpoint: ", apiEndpoint)
-    //console.log("filters: ", filters)
-    //console.log("kpiView: ", kpiView)
+ 
 
     try {
-        // Process the data based on the kpiView
         switch (kpiView) {
             case 'Financial':
-                // Process and return data for Financial KPI view
                 return await handleFinancialKpis(clientSpaceId, apiName, apiEndpoint, filters);
 
             case 'Acquisitions':
-                // Process and return data for Acquisition KPI view
                 return await handleAcquisitionKpis(clientSpaceId, apiName, apiEndpoint, filters);
 
             case 'Leaderboard':
-                // Process and return data for Disposition KPI view
                 return null;
 
             case 'Team':
-                // Process and return data for Team KPI view
                 return await handleTeamKpis(clientSpaceId, apiName, apiEndpoint, filters);
 
             default:

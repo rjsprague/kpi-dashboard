@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-import CheckboxDropdown from './CheckboxDropdown';
+import CheckboxDropdown from './UniversalDropdown';
 import ServiceUnavailable from '../ServiceUnavailable';
+import DropdownButton from './DropdownButton';
+
 
 export default function LeadSourceDropdown({ onOptionSelected, queryId, leadSources, isLoadingData, isUnavailable}) {
     const [selectedOptions, setSelectedOptions] = useState(Object.keys(leadSources));
@@ -29,6 +31,8 @@ export default function LeadSourceDropdown({ onOptionSelected, queryId, leadSour
             queryId={queryId}
             isSingleSelect={false}
             isLoadingData={isLoadingData}
+            ButtonComponent={DropdownButton}
+            className={""}
         />
     );
 }

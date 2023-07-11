@@ -1,15 +1,10 @@
-import { useSelector } from 'react-redux';
-import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
 
 async function fetchActiveTeamMembers(clientSpaceId) {
     
-    // const useAppSelector = useSelector;
-    // const clientSpaceId = useAppSelector(state => state.client.clientSpaceId);
-    // console.log("clientSpaceId: ", clientSpaceId)
 
     try {
         const response = await fetch('/api/team-members', {
-            method: 'POST', // Specifying method as POST
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },

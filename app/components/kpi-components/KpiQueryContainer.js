@@ -10,7 +10,6 @@ const KpiQueryContainer = ({
     kpiList,
     leadSources,
     departments,
-    teamMembers,
     queries,      
     handleSetLoading,
     handleSetLeadSourcesLoading,     
@@ -39,7 +38,6 @@ const KpiQueryContainer = ({
                     query={query}
                     kpiList={kpiList}
                     leadSources={leadSources}
-                    teamMembers={teamMembers}
                     departments={departments}
                     onDateRangeChange={handleDateRangeChange}
                     onLeadSourceChange={handleLeadSourceChange}
