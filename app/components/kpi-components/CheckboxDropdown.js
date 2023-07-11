@@ -74,12 +74,12 @@ function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId,
         if (isSingleSelect) {
             newSelectedOptions = [option];
         } else if (option === 'All') {
-            // When 'All' is selected, if all filteredOptions are already selected, deselect all. Otherwise, select all.
-            newSelectedOptions = newSelectedOptions.length === filteredOptions.length ? [] : [...filteredOptions];
+            // When 'All' is selected, if all options are already selected, deselect all. Otherwise, select all.
+            newSelectedOptions = newSelectedOptions.length === options.length ? [] : [...options];
         } else {
             const isSelected = selectedOptions.includes(option);
 
-            if (newSelectedOptions.length === filteredOptions.length) {
+            if (newSelectedOptions.length === options.length) {
                 // If all options are selected, and the user tries to select another option,
                 // deselect all options and only select the new option
                 newSelectedOptions = [option];
@@ -94,6 +94,7 @@ function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId,
 
         onOptionSelected(newSelectedOptions, queryId);
     };
+
 
 
     const handleKeyDown = (event) => {
@@ -154,7 +155,7 @@ function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId,
                 {(state) => (
                     <div
                         ref={dropdownContentRef}
-                        className="absolute z-50 text-white bg-blue-900 rounded-md shadow-lg sm:w-44 bg-opacity-80"
+                        className="absolute z-50 p-1 text-white bg-blue-800 rounded-md shadow-lg sm:w-44 bg-opacity-80"
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],
@@ -168,7 +169,7 @@ function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId,
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
                             onKeyDown={handleKeyDown}
-                            className="w-full px-3 py-1 text-white bg-blue-800 rounded-md"
+                            className="z-10 w-full px-3 py-1 text-blue-900 rounded-md"
                             placeholder="Search..."
                         />
                         <ul className="py-1">
@@ -188,15 +189,17 @@ function CheckboxDropdown({ options, onOptionSelected, selectedOptions, queryId,
                                 <li
                                     key={option}
                                     className={`px-3 py-1 text-white cursor-pointer hover:bg-blue-800 ${index === highlightedIndex ? 'bg-blue-800' : ''}`}
-                                    onClick={() => handleCheckboxChange(option)}
                                 >
-                                    <label className="inline-flex items-center">
+                                    <label
+                                        className="inline-flex items-center"
+                                        onClick={() => handleCheckboxChange(option)}
+                                    >
                                         <input
                                             type="checkbox"
                                             className="w-3 h-3 mr-2 text-blue-900 border-gray-300 rounded"
                                             checked={selectedOptions?.includes(option)}
-                                            onChange={() => handleCheckboxChange(option)}
                                             value={option}
+                                            onClick={(e) => e.stopPropagation()} // Stop propagation of native click event
                                         />
                                         {option}
                                     </label>

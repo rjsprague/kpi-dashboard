@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
 
-async function fetchActiveTeamMembers() {
+async function fetchActiveTeamMembers(clientSpaceId) {
     
     // const useAppSelector = useSelector;
     // const clientSpaceId = useAppSelector(state => state.client.clientSpaceId);
@@ -14,7 +14,7 @@ async function fetchActiveTeamMembers() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "spaceid": 6830538,
+                "spaceid": clientSpaceId,
             })
         });
 

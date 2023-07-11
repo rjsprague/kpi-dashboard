@@ -41,7 +41,7 @@ function createKpiObject(name, current, redFlag, target, data1, data2, unit, kpi
   };
 }
 
-async function fetchKpiData(kpiView, requestedKpiList, leadSource, gte, lte, department, teamMemberStrings) {
+async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource, gte, lte, department, teamMemberStrings) {
 
   //console.log("kpiView ", kpiView);
   //console.log("Requested KPI List ", requestedKpiList);
@@ -275,7 +275,7 @@ async function fetchKpiData(kpiView, requestedKpiList, leadSource, gte, lte, dep
 
     const kpiPromises = uniqueEndpoints.map((endpointKey) => {
       const { name, url, filters } = apiEndpoints[endpointKey];
-      return fetchKPIs(name, url, filters, kpiView);
+      return fetchKPIs(clientSpaceId, name, url, filters, kpiView);
     });
 
     //console.log("KPI Promises: ", kpiPromises)

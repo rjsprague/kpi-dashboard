@@ -10,6 +10,8 @@ import kpiToEndpointMapping from '../../lib/kpiToEndpointMapping';
 import apiEndpoints from '../../lib/apiEndpoints';
 import LoadingQuotes from '../LoadingQuotes';
 import ReactDOM from 'react-dom';
+import { useSelector } from 'react-redux';
+import { selectSpaceId } from '../../../app/GlobalRedux/Features/client/clientSlice'
 
 function formatDate(date) {
     const year = date.getFullYear();
@@ -23,6 +25,8 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
     const [isLoading, setIsLoading] = useState(false);
     const startDate = dateRange.gte ? formatDate(new Date(dateRange.gte)) : null;
     const endDate = dateRange.lte ? formatDate(new Date(dateRange.lte)) : null;
+    const clientSpaceId = useSelector(selectSpaceId);
+
 
     //console.log('KpiCard: ', dateRange, leadSource, kpiView, teamMembers);
     //console.log(fetchedData)
@@ -51,7 +55,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        "spaceid": 6830538,
+                        "spaceid": clientSpaceId,
                         "filters": requestObject.filters
                     }),
                 });
@@ -73,7 +77,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            "spaceid": 6830538,
+                            "spaceid": clientSpaceId,
                             "filters": requestObject.filters,
                             "offset": offset,
                             "limit": 1000,

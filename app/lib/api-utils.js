@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
 
-const handleAcquisitionKpis = async (apiName, apiEndpoint, filters) => {
+const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
     //console.log("filters: ", filters)
     //console.log("apiEndpoint: ", apiEndpoint)
     try {
@@ -11,7 +11,7 @@ const handleAcquisitionKpis = async (apiName, apiEndpoint, filters) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "spaceid": 6830538,
+                "spaceid": clientSpaceId,
                 "filters": filters
             }),
         });
@@ -38,7 +38,7 @@ const handleAcquisitionKpis = async (apiName, apiEndpoint, filters) => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        "spaceid": 6830538,
+                        "spaceid": clientSpaceId,
                         "filters": filters,
                         "offset": offset,
                         "limit": 1000,
@@ -58,7 +58,7 @@ const handleAcquisitionKpis = async (apiName, apiEndpoint, filters) => {
     }
 };
 
-const handleTeamKpis = async (apiName, apiEndpoint, filters) => {
+const handleTeamKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
     // console.log("apiName: ", apiName)
     // console.log("apiEndpoint: ", apiEndpoint)
     // console.log("filters: ", filters)
@@ -71,7 +71,7 @@ const handleTeamKpis = async (apiName, apiEndpoint, filters) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "spaceid": 6830538,
+                "spaceid": clientSpaceId,
                 "filters": filters,
                 "limit": 1000,
             }),
@@ -93,7 +93,7 @@ const handleTeamKpis = async (apiName, apiEndpoint, filters) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    "spaceid": 6830538,
+                    "spaceid": clientSpaceId,
                     "filters": filters,
                     "offset": offset,
                     "limit": 1000,
@@ -113,7 +113,7 @@ const handleTeamKpis = async (apiName, apiEndpoint, filters) => {
     }
 };
 
-const handleFinancialKpis = async (apiName, apiEndpoint, filters) => {
+const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
     try {
         const response = await fetch(apiEndpoint, {
             method: 'POST',
@@ -121,7 +121,7 @@ const handleFinancialKpis = async (apiName, apiEndpoint, filters) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "spaceid": 6830538,
+                "spaceid": clientSpaceId,
                 "filters": filters
             }),
         });
@@ -148,7 +148,7 @@ const handleFinancialKpis = async (apiName, apiEndpoint, filters) => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        "spaceid": 6830538,
+                        "spaceid": clientSpaceId,
                         "filters": filters,
                         "offset": offset,
                         "limit": 1000,
@@ -168,7 +168,7 @@ const handleFinancialKpis = async (apiName, apiEndpoint, filters) => {
     }
 };
 
-export default async function fetchKPIs(apiName, apiEndpoint, filters, kpiView) {
+export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, filters, kpiView) {
     // const useAppSelector = useSelector;
     // const clientSpaceId = useAppSelector(state => state.client.clientSpaceId);
     // console.log("clientSpaceId: ", clientSpaceId)
@@ -182,11 +182,11 @@ export default async function fetchKPIs(apiName, apiEndpoint, filters, kpiView) 
         switch (kpiView) {
             case 'Financial':
                 // Process and return data for Financial KPI view
-                return await handleFinancialKpis(apiName, apiEndpoint, filters);
+                return await handleFinancialKpis(clientSpaceId, apiName, apiEndpoint, filters);
 
             case 'Acquisitions':
                 // Process and return data for Acquisition KPI view
-                return await handleAcquisitionKpis(apiName, apiEndpoint, filters);
+                return await handleAcquisitionKpis(clientSpaceId, apiName, apiEndpoint, filters);
 
             case 'Leaderboard':
                 // Process and return data for Disposition KPI view
@@ -194,7 +194,7 @@ export default async function fetchKPIs(apiName, apiEndpoint, filters, kpiView) 
 
             case 'Team':
                 // Process and return data for Team KPI view
-                return await handleTeamKpis(apiName, apiEndpoint, filters);
+                return await handleTeamKpis(clientSpaceId, apiName, apiEndpoint, filters);
 
             default:
                 console.error(`Unsupported KPI view: ${kpiView}`);
@@ -202,76 +202,6 @@ export default async function fetchKPIs(apiName, apiEndpoint, filters, kpiView) 
         }
     } catch (error) {
         console.error(error);
-        throw new Error("Error fetching data. Please try again later.");
-    }
-};
-
-export const fetchEarliestLeadDate = async () => {
-    const apiEndpoint = "/api/seller-leads";
-    const today = new Date();
-    //console.log("today: ", today.toISOString().split('T')[0])
-    const filters = [{
-        "type": 'date',
-        "fieldName": "Lead Created On",
-        "gte": "2000-01-01",
-        "lte": today.toISOString().split('T')[0]
-    }];
-
-    try {
-        const response = await fetch(apiEndpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                "filters": filters,
-                "limit": 10000,
-            }),
-        });
-
-        if (!response.ok) {
-            console.error(`Error fetching data from ${apiEndpoint}: ${response.status} ${response.statusText}`);
-            throw new Error(`Server responded with an error: ${response.statusText}`);
-        }
-        const data = await response.json();
-
-        console.log("data: ", data.total)
-
-        let fetchedResults = data.data ? data.data : [];
-        let offset = fetchedResults.length;
-
-        while (data.total > fetchedResults.length) {
-            const fetchMoreData = await fetch(apiEndpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    "filters": filters,
-                    "offset": offset,
-                    "limit": 1000,
-                }),
-            });
-            const moreData = await fetchMoreData.json();
-            fetchedResults = fetchedResults.concat(moreData.data);
-            offset += moreData.data.length;
-            console.log("fetchedResults: ", fetchedResults.length)
-        }
-
-        console.log("fetchedResults: ", fetchedResults.length)
-
-
-        const earliestLeadCreatedOn = fetchedResults.length > 0 ? fetchedResults.reduce((earliest, lead) => {
-            const leadDate = new Date(lead['Lead Created On'].start_utc);
-            return leadDate < earliest ? leadDate : earliest;
-        }, new Date(fetchedResults[0]['Lead Created On'].start_utc)) : new Date();
-        
-        console.log("earliestLeadCreatedOn: ", earliestLeadCreatedOn)
-
-        return earliestLeadCreatedOn;
-
-    } catch (error) {
-        console.error('Error in fetchEarliestLeadDate:', error.message);
         throw new Error("Error fetching data. Please try again later.");
     }
 };

@@ -8,6 +8,8 @@ import { getDatePresets } from '../lib/date-utils'
 import fetchLeadSources from '../lib/fetchLeadSources';
 import fetchActiveTeamMembers from '../lib/fetchActiveTeamMembers';
 import LoadingQuotes from './LoadingQuotes';
+import { useSelector } from 'react-redux';
+import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
 
 export default function KpiDashboard() {
     const [isLoadingData, setIsLoadingData] = useState(true);
@@ -19,6 +21,9 @@ export default function KpiDashboard() {
     const datePresets = getDatePresets();
     const [idCounter, setIdCounter] = useState(0);
     const [queries, setQueries] = useState([]);
+    const clientSpaceId = useSelector(selectSpaceId);
+
+    console.log("clientSpaceId: ", clientSpaceId)
 
     // console.log("lead sources object ", leadSources)
     // console.log("Queries ", queries.map((query) => query.id))
@@ -48,11 +53,14 @@ export default function KpiDashboard() {
         async function getLeadSources() {
             setIsLoadingData(true);
             try {
-                const leadSourcesData = await fetchLeadSources();
+                
+
+                console.log("clientSpaceId: ", clientSpaceId)
+                const leadSourcesData = await fetchLeadSources(clientSpaceId);
                 console.log("lead sources data ", leadSourcesData)
                 setLeadSources(leadSourcesData);
                 const leadSourcesObject = leadSourcesData;
-                const departmentsData = await fetchActiveTeamMembers();
+                const departmentsData = await fetchActiveTeamMembers(clientSpaceId);
                 setDepartments(departmentsData)
                 setTeamMembers(departmentsData)
                 const departmentsDataObject = departmentsData;
@@ -64,7 +72,7 @@ export default function KpiDashboard() {
             }
         }
         getLeadSources();
-    }, []);
+    }, [clientSpaceId]);
 
 
 

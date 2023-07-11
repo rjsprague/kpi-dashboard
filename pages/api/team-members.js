@@ -1,4 +1,7 @@
 export default async function handler(req, res) {
+
+    const { spaceid } = req.body;
+
     try {
       const response = await fetch('https://db.reiautomated.io/team-members', {
         method: 'POST',
@@ -6,7 +9,7 @@ export default async function handler(req, res) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            spaceid: 6830538,
+            spaceid: spaceid,
         }),
       });
       

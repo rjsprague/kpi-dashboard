@@ -7,6 +7,8 @@ import FinancialsKpiQuery from './FinancialsKpiQuery';
 import Leaderboard from './Leaderboard';
 import fetchKpiData from '../../lib/fetch-kpis';
 import ServiceUnavailable from '../ServiceUnavailable';
+import { useSelector } from 'react-redux';
+import { selectSpaceId } from '../../../app/GlobalRedux/Features/client/clientSlice'
 
 const KpiQuery = ({
     view,
@@ -19,6 +21,8 @@ const KpiQuery = ({
     ...props
 }) => {
     const { id, dateRange, leadSource, departments, teamMembers } = query;
+    const clientSpaceId = useSelector(selectSpaceId);
+
     //console.log("department in KpiQuery: ", departments)
     //console.log("teamMember in KpiQuery: ", teamMembers)
     //console.log("id in KpiQuery: ", id)
@@ -30,7 +34,7 @@ const KpiQuery = ({
         const fetchData = async () => {
             onSetLoading(id, true);
 
-            if (!leadSource || !dateRange || !departments || !teamMembers) return;
+            if (!clientSpaceId || !leadSource || !dateRange || !departments || !teamMembers) return;
 
             const ls = Object.values(leadSource);
             const gte = dateRange?.gte || '';
@@ -41,7 +45,7 @@ const KpiQuery = ({
             //console.log("lead sources in KpiQuery: ", ls)
 
             try {
-                const data = await fetchKpiData(view, kpiList, ls, gte, lte, dept, teamMem);
+                const data = await fetchKpiData(clientSpaceId, view, kpiList, ls, gte, lte, dept, teamMem);
                 onFetchedKpiData(id, data);
                 //console.log("data in KpiQuery: ", data)
             } catch (error) {
