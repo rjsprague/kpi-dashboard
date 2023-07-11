@@ -61,7 +61,7 @@ export default async function fetchKpiData({ startDate, endDate, leadSource, kpi
                                 : result["Last"] ? result["Last"]
                                     : result.Title ? result.Title
                                         : "No Name",
-                    address: result["Property Address"] ? result["Property Address"] : "No address",
+                    address: result["Property Address"] ? result["Property Address"] : result["*AS Address"] ? result["*AS Address"] : "No address",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                 };
             });
