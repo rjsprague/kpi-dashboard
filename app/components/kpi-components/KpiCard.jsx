@@ -116,6 +116,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
     // };
 
     const handleSingleKpiFetch = async () => {
+        setIsLoading(true);
         const data = await fetchKpiData({
             startDate,
             endDate,
@@ -125,6 +126,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
             clientSpaceId,
             apiName: prop.name,
         });
+        setIsLoading(false);
         return data;
     };
 

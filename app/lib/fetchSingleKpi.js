@@ -26,7 +26,7 @@ export default async function fetchKpiData({ startDate, endDate, leadSource, kpi
             });
 
             if (!response.ok) {
-                console.error(`Error fetching data from /api/${requestObject.url}: ${response.status} ${response.statusText}`);
+                console.error(`Error fetching data from ${requestObject.url}: ${response.status} ${response.statusText}`);
                 throw new Error(`Server responded with an error: ${response.statusText}`);
             }
 
@@ -35,7 +35,7 @@ export default async function fetchKpiData({ startDate, endDate, leadSource, kpi
             let offset = fetchedResults.length;
 
             while (data.total > fetchedResults.length) {
-                const fetchMoreData = await fetch(`/api/${requestObject.url}`, {
+                const fetchMoreData = await fetch(`${requestObject.url}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
