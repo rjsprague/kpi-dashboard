@@ -6,6 +6,8 @@ import axios from '../../../pages/api/axios';
 import Link from 'next/link';
 import useAuth from '../../hooks/useAuth';
 import Cookies from 'js-cookie';
+import useRefreshToken from '../../hooks/useRefreshToken';
+
 
 const LoginPage = () => {
   const router = useRouter();
@@ -17,6 +19,7 @@ const LoginPage = () => {
   const [errMsg, setErrMsg] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const { auth, setAuth } = useAuth();
+  const refreshToken = useRefreshToken();
 
   useEffect(() => {
     emailRef.current.focus();
@@ -25,6 +28,17 @@ const LoginPage = () => {
   useEffect(() => {
     setErrMsg('');
   }, [email, password])
+
+  useEffect(() => {
+    const accessToken = Cookies.get('accessToken');
+    if (accessToken) {
+      refreshToken().then((newToken) => {
+        if (newToken) {
+          router.push('/kpi-dashboard');
+        }
+      });
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,7 +52,7 @@ const LoginPage = () => {
         }
       );
       const accessToken = response?.data?.token;
-      Cookies.set('accessToken', accessToken, { expires: 120 / (24 * 60), secure: true });
+      Cookies.set('accessToken', accessToken, { expires: 7, secure: true });
 
       setAuth({ accessToken });
       setEmail('');

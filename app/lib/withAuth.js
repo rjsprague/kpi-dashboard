@@ -31,7 +31,7 @@ export default function withAuth(Component) {
 
     if (isLoading) {
       return (
-        <div className='absolute inset-0 flex items-center justify-center w-screen h-screen'>
+        <div className='absolute inset-0 flex items-center justify-center w-screen h-screen bg-black bg-opacity-20'>
           <LoadingQuotes mode={'dark'} />
         </div>
       )
