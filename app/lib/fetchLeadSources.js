@@ -1,7 +1,7 @@
 
 async function fetchLeadSources(clientSpaceId) {
 
-    //console.log("clientSpaceId: ", clientSpaceId)
+    console.log("clientSpaceId: ", clientSpaceId)
 
     try {
         const response = await fetch('/api/lead-sources', {
