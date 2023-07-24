@@ -136,7 +136,7 @@ const KPI_DEFINITIONS = {
             },
             {
                 id: 1,
-                desc: "#How to Optimize your Ad Spend",
+                desc: "How to Optimize your Ad Spend",
                 linkName: "Learn More",
                 link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235797-how-to-optimize-your-ad-spend-this-will-change-your-life"
             },

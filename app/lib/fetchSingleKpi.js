@@ -10,6 +10,15 @@ export default async function fetchKpiData({ startDate, endDate, leadSource, kpi
     }
 
     const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMembers);
+
+    console.log(apiEndpointsKeys)
+
+    let results = {
+        [apiEndpointsKeys[0]]: [],
+        [apiEndpointsKeys[1]]: []
+    };
+
+
     for (const apiEndpointKey of apiEndpointsKeys) {
         let requestObject = apiEndpointsObj[apiEndpointKey];
 
@@ -53,7 +62,35 @@ export default async function fetchKpiData({ startDate, endDate, leadSource, kpi
                 offset += moreData.data.length;
             }
 
-            fetchedResults = fetchedResults.map((result) => {
+            const filteredResults = filterResults(fetchedResults, apiEndpointKey)
+
+
+            results[apiEndpointKey] = filteredResults;
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error fetching data. Please try again later.");
+        }
+    }
+    console.log(results)
+    return results;
+}
+
+function filterResults(results, apiEndpointKey) {
+
+    try {
+        if (apiEndpointKey === "marketingExpenses") {
+            console.log("marketingExpenses")
+            return results.map((result) => {
+                return {
+                    week: result["Week Number"] ? result["Week Number"] : "No Week Number",
+                    leadSource: result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
+                    amount: result["Amount"] ? result["Amount"] : "No Amount",
+                    podio_item_id: result.itemid ? result.itemid : "No itemid",
+                }
+            })
+        } else if (apiEndpointKey === "leads" || apiEndpointKey === "leadConnections" || apiEndpointKey === "triageCalls" || apiEndpointKey === "qualifiedTriageCalls" || apiEndpointKey === "triageApproval" || apiEndpointKey === "perfectPresentations") {
+            //console.log("leads")
+            return results.map((result) => {
                 return {
                     name: result["Seller Contact Name"] ? result["Seller Contact Name"]
                         : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
@@ -63,13 +100,20 @@ export default async function fetchKpiData({ startDate, endDate, leadSource, kpi
                                         : "No Name",
                     address: result["Property Address"] ? result["Property Address"] : result["*AS Address"] ? result["*AS Address"] : "No address",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
-                };
-            });
-
-            return fetchedResults;
-        } catch (error) {
-            console.error(error);
-            throw new Error("Error fetching data. Please try again later.");
+                }
+            })
+        } else if (apiEndpointKey === "lmStlMedian" || apiEndpointKey === "amStlMedian" || apiEndpointKey === "daStlMedian" || apiEndpointKey === "bigChecks" || apiEndpointKey === "dealAnalysis") {
+            return null
+        } else if (apiEndpointKey === "contracts" || apiEndpointKey === "acquisitions") {
+            return null
+        } else if (apiEndpointKey === "deals" || apiEndpointKey === "profit" || apiEndpointKey === "projectedProfit") {
+            return null
+        } else {
+            throw new Error("Invalid API name");
         }
+
+    } catch (error) {
+        console.error(error);
+        throw new Error("Error fetching data. Please try again later.");
     }
 }

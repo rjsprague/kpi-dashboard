@@ -110,6 +110,7 @@ const AcquisitionsKpiQuery = ({
                                 selectedKpis={selectedKpis}
                                 setSelectedKpis={setSelectedKpis}
                                 tableData={tableData}
+                                leadSources={leadSources}
                             />
                         </div>
                     </div>

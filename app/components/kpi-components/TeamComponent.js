@@ -7,7 +7,7 @@ import DropdownButton from './DropdownButton';
 function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, departments, isLoadingData }) {
     const [selectedDepartment, setSelectedDepartment] = useState(query.departments);
     const [selectedTeamMembers, setSelectedTeamMembers] = useState([]);
-
+    
     useEffect(() => {
         setSelectedTeamMembers(query.teamMembers.map(id => getTeamMemberNameById(id)));
     }, [query.teamMembers]);
@@ -55,6 +55,7 @@ function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, depar
                 options={Object.keys(departments)}
                 onOptionSelected={handleDepartmentSelected}
                 selectedOptions={selectedDepartment ? [selectedDepartment] : []}
+                queryId={queryId}
                 isSingleSelect={true}
                 isLoadingData={isLoadingData}
                 ButtonComponent={DropdownButton}
@@ -64,6 +65,7 @@ function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, depar
                     options={Object.values(departments[selectedDepartment])}
                     onOptionSelected={handleTeamSelected}
                     selectedOptions={selectedTeamMembers}
+                    queryId={queryId}
                     isSingleSelect={false}
                     isLoadingData={isLoadingData}
                     ButtonComponent={DropdownButton}

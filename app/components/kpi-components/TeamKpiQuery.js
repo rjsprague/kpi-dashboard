@@ -30,14 +30,7 @@ const TeamKpiQuery = ({
     const [department, setDepartment] = useState([]);
     const [tableData, setTableData] = useState(null);
 
-    console.log(kpiList)
-
-
     const updateKpiList = (department) => {
-        
-
-        console.log("department ", department)
-        console.log("updateKpiList: ", kpiList[department])
         setTeamKpiList(kpiList[department]);
         setSelectedKpis(kpiList[department]);
     };
@@ -47,7 +40,6 @@ const TeamKpiQuery = ({
     }, [kpiList]);
 
     const handleDepartmentChange = (department) => {
-        //console.log("department ", department)
         setDepartment(department);
         updateKpiList(department);
     };
@@ -133,6 +125,7 @@ const TeamKpiQuery = ({
                                 setSelectedKpis={setSelectedKpis}
                                 selectedDepartment={query.departments}
                                 tableData={tableData}
+                                departments={departments}
                             />
                         </div>
                     </div>

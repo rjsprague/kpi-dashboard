@@ -1051,9 +1051,15 @@ module.exports = {
     width: ['responsive', 'group-hover'],
     wordBreak: ['responsive'],
     zIndex: ['responsive', 'focus-within', 'focus'],
+    extend: {
+        backgroundColors: ['ui-open', 'ui-active'],
+        textColor: ['ui-open', 'ui-active'],
+        display: ['ui-open'],
+    },
   },
   plugins: [
     require('tailwindcss-gradients'),
+    require('@headlessui/tailwindcss')
   ],
   corePlugins: {
     transform: true,

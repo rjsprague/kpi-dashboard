@@ -17,14 +17,11 @@ const RightSlideModal = ({
   selectedDepartment,
   className,
   tableData,
+  leadSources,
+  departments
 }) => {
 
-  let columns = tableData && tableData.length > 0 && typeof (tableData[0]) === 'object' && Object.keys(tableData[0]).map(key => {
-    return {
-      Header: key,
-      accessor: key // This is the key to the data
-    }
-  });
+  
 
 
   const [selectedViewKpiList, setSelectedViewKpiList] = useState([]);
@@ -71,7 +68,7 @@ const RightSlideModal = ({
 
   return ReactDOM.createPortal(
     <div
-      className={`z-[9999] flex fixed top-0 right-0 w-screen sm:w-2/3 lg:w-1/2 xl:w-1/3 h-full transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      className={`z-[9999] flex fixed top-0 right-0 w-screen sm:w-2/3 lg:w-1/2 4xl:w-1/3 h-full transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', zIndex: 9999 }}
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
@@ -143,7 +140,7 @@ const RightSlideModal = ({
             </ul>
           </div>
         )}
-        {modalType === "table" && <DataTable data={tableData} columns={columns} />}
+        {modalType === "table" && <DataTable data={tableData} leadSources={leadSources} departments={departments} />}
       </div>
     </div>,
     document.getElementById('modal-root')

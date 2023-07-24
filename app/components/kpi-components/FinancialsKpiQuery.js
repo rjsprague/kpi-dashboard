@@ -120,6 +120,7 @@ const FinancialsKpiQuery = ({
                                 selectedKpis={selectedKpis}
                                 setSelectedKpis={setSelectedKpis}
                                 tableData={tableData}
+                                leadSources={leadSources}
                             />
                         </div>
                     </div>
