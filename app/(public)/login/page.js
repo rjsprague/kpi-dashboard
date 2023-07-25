@@ -62,7 +62,7 @@ const LoginPage = () => {
 
             console.log(preLoginRoute)
 
-            if (preLoginRoute) {
+            if (preLoginRoute && preLoginRoute !== '/login') {
                 router.push(preLoginRoute);
                 Cookies.remove('preLoginRoute');
             } else {

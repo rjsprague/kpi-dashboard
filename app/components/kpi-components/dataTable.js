@@ -55,24 +55,50 @@ function formatWords(str) {
     return result;
 }
 
-function getKeyByValue(object, value) {
-    return Object.keys(object).find(key => object[key] === value);
+const generateColumns = (selectedTable, columnHelper, invertedLeadSources) => {
+    return Object.keys(selectedTable[0]).map(key => {
+        if (key !== 'podio_item_id') {
+            return columnHelper.accessor(key, {
+                id: `column_${key}`,
+                header: key,
+                cell: info => {
+                    const cellValue = info.getValue();
+                    // If the cell is a leadSource cell, replace the cellValue with the corresponding name
+                    if (info.column.columnDef.header === 'leadSource') {
+                        if (cellValue && Array.isArray(cellValue)) {
+                            return invertedLeadSources[cellValue[0]];
+                        } else {
+                            console.log("cellValue: ", cellValue)
+                            return null;
+                        }
+                    }
+
+                    if (Array.isArray(cellValue)) {
+                        return cellValue.join(', ');
+                    } else if (typeof cellValue === 'string' || typeof cellValue === 'number') {
+                        return cellValue;
+                    } else {
+                        return stringifyObject(cellValue);
+                    }
+                },
+                enableSorting: true,
+                sortingFn: 'basic',
+            });
+        }
+    }).filter(Boolean);
 }
+
 
 const DataTable = ({ tableProps, leadSources, departments }) => {
     const { startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName } = tableProps;
 
+    console.log("tableProps: ", tableProps)
 
-    const { data = {}, error } = useSWR({startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName}, fetchSingleKpi);
+    const { data, error } = useSWR({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }, fetchSingleKpi);
 
-    if (error){
-        console.log("error: ", error)
-        return <div>Error loading data</div>
-    }
-    if (!data) return <div><LoadingQuotes /></div>
+    console.log("data: ", data)
 
-
-    const [selectedTableKey, setSelectedTableKey] = useState(Object.keys(data)[0]);
+    const [selectedTableKey, setSelectedTableKey] = useState('');
     const [columns, setColumns] = useState([]);
     const [sorting, setSorting] = useState([]);
 
@@ -80,80 +106,43 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
         Object.entries(leadSources).map(([key, value]) => [value, key])
     );
 
+    const columnHelper = useMemo(() => createColumnHelper(), []);
+    const newColumns = useMemo(() => columns, [columns]);
+
+    // First useEffect to set initial selectedTableKey and columns
     useEffect(() => {
-        setSelectedTableKey(Object.keys(data)[0]);
-      }, [data]);
-      
+        if (data) {
+            const keys = Object.keys(data);
+            const firstTableKey = keys[0];
+            if (!keys.includes(selectedTableKey)) {
+                setSelectedTableKey(firstTableKey);
+            }
 
-    useEffect(() => {
-        const selectedTable = data[selectedTableKey];
-
-        if (selectedTable && selectedTable.length > 0) {
-            const newColumns = Object.keys(selectedTable[0]).map(key => {
-                if (key !== 'podio_item_id') {
-                    return {
-                        Header: key,
-                        accessor: key
-                    };
-                }
-            }).filter(Boolean);
-
-            setColumns(newColumns);
+            const selectedTable = data[selectedTableKey || firstTableKey];
+            if (selectedTable && selectedTable.length > 0) {
+                const newColumns = generateColumns(selectedTable, columnHelper, invertedLeadSources);
+                setColumns(newColumns);
+            }
         }
+    }, [data]);
 
+
+    // Second useEffect to update columns when selectedTableKey changes
+    useEffect(() => {
+        if (data && selectedTableKey) {
+            const selectedTable = data[selectedTableKey];
+            if (selectedTable && selectedTable.length > 0) {
+                const newColumns = generateColumns(selectedTable, columnHelper, invertedLeadSources);
+                setColumns(newColumns);
+            }
+        }
     }, [data, selectedTableKey]);
 
-    useEffect(() => {
-        handleTableSelect(selectedTableKey)
-    }, [])
-
-    const handleTableSelect = (key) => {
-        setSelectedTableKey(key);
-        const selectedTable = data[key];
-
-        if (selectedTable && selectedTable.length > 0) {
-            const newColumns = Object.keys(selectedTable[0]).map(key => {
-                if (key !== 'podio_item_id') {
-                    return {
-                        Header: key,
-                        accessor: key
-                    };
-                }
-            }).filter(Boolean); // This filters out any undefined values that may have been introduced by the filter on podio_item_id
-            setColumns(newColumns);
-        }
-    }
-
-    const columnHelper = createColumnHelper();
-
-    const newColumns = useMemo(() => columns.length > 0 ? columns.map((column, index) => {
-        return columnHelper.accessor(column.accessor, {
-            id: `column_${index}`,
-            header: column.Header,
-            cell: info => {
-                const cellValue = info.getValue();
-                // If the cell is a leadSource cell, replace the cellValue with the corresponding name
-                if (info.column.columnDef.header === 'leadSource') {
-                    return invertedLeadSources[cellValue[0]];
-                }
-
-                if (Array.isArray(cellValue)) {
-                    return cellValue.join(', ');
-                } else if (typeof cellValue === 'string' || typeof cellValue === 'number') {
-                    return cellValue;
-                } else {
-                    return stringifyObject(cellValue);
-                }
-            },
-            enableSorting: true,
-            sortingFn: 'basic',
-        });
-    }) : [], [columns, columnHelper]);
 
 
 
     const table = useReactTable({
-        data: data[selectedTableKey],
+        data: data && data[selectedTableKey] ? data[selectedTableKey] : [],
         columns: newColumns,
         state: { sorting },
         onSortingChange: setSorting,
@@ -161,10 +150,20 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
         getSortedRowModel: getSortedRowModel(),
     });
 
+    if (error) {
+        console.log("error: ", error)
+        return <div>Error loading data</div>
+    }
+
+    if (!data) return <div><LoadingQuotes /></div>
 
     return (
         <div className="flex flex-col items-center mt-4">
-            <Listbox value={selectedTableKey} onChange={handleTableSelect}>
+            <Listbox value={selectedTableKey} onChange={value => {
+                if (selectedTableKey !== value) {
+                    setSelectedTableKey(value);
+                }
+            }}>
                 <div>
                     <Listbox.Button className="flex flex-row items-center gap-4 px-4 py-2 border border-white rounded-md btn btn-primary ">
                         {
