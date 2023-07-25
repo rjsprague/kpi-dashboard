@@ -30,7 +30,7 @@ const AcquisitionsKpiQuery = ({
     const [modalType, setModalType] = useState("info");
     const [selectedResult, setSelectedResult] = useState(null);
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
-    const [tableData, setTableData] = useState(null);
+    const [tableProps, setTableProps] = useState(null);
 
     const handleCardInfoClick = (result) => {
         setSelectedResult(result);
@@ -43,8 +43,9 @@ const AcquisitionsKpiQuery = ({
         setOpenModal(true);
     };
 
-    const handleKpiCardClick = async (data) => {
-        setTableData(data)
+    const handleKpiCardClick = async (startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName) => {
+        console.log("handleKpiCardClick: ", startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
+        setTableProps({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName });
         setModalType("table")
         setOpenModal(true)
       };
@@ -109,7 +110,7 @@ const AcquisitionsKpiQuery = ({
                                 modalType={modalType}
                                 selectedKpis={selectedKpis}
                                 setSelectedKpis={setSelectedKpis}
-                                tableData={tableData}
+                                tableProps={tableProps}
                                 leadSources={leadSources}
                             />
                         </div>

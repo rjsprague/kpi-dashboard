@@ -1,8 +1,10 @@
 import kpiToEndpointMapping from './kpiToEndpointMapping';
 import apiEndpoints from './apiEndpoints';
 
-export default async function fetchKpiData({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }) {
+export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }) {
 
+    console.log("fetchSingleKpi: ", startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
+    
     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
 
     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
@@ -11,71 +13,66 @@ export default async function fetchKpiData({ startDate, endDate, leadSource, kpi
 
     const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMembers);
 
-    console.log(apiEndpointsKeys)
-
     let results = {
         [apiEndpointsKeys[0]]: [],
         [apiEndpointsKeys[1]]: []
     };
 
+    const fetchPage = async (requestObject, offset = 0) => {
+        const response = await fetch(`${requestObject.url}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "spaceid": clientSpaceId,
+                "filters": requestObject.filters,
+                "offset": offset,
+                "limit": 1000,
+            }),
+        });
 
-    for (const apiEndpointKey of apiEndpointsKeys) {
+        if (!response.ok) {
+            console.error(`Error fetching data from ${requestObject.url}: ${response.status} ${response.statusText}`);
+            throw new Error(`Server responded with an error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        let fetchedResults = data.data ? data.data : [];
+
+        if (data.total > fetchedResults.length) {
+            const moreData = await fetchPage(requestObject, offset + fetchedResults.length);
+            fetchedResults = fetchedResults.concat(moreData);
+        }
+
+        return fetchedResults;
+    };
+
+    const promises = apiEndpointsKeys.map(async apiEndpointKey => {
         let requestObject = apiEndpointsObj[apiEndpointKey];
-
         try {
-            const response = await fetch(`${requestObject.url}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    "spaceid": clientSpaceId,
-                    "filters": requestObject.filters
-                }),
-            });
-
-            if (!response.ok) {
-                console.error(`Error fetching data from ${requestObject.url}: ${response.status} ${response.statusText}`);
-                throw new Error(`Server responded with an error: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            let fetchedResults = data.data ? data.data : [];
-            let offset = fetchedResults.length;
-
-            while (data.total > fetchedResults.length) {
-                const fetchMoreData = await fetch(`${requestObject.url}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        "spaceid": clientSpaceId,
-                        "filters": requestObject.filters,
-                        "offset": offset,
-                        "limit": 1000,
-                    }),
-                });
-
-                const moreData = await fetchMoreData.json();
-                fetchedResults = fetchedResults.concat(moreData.data);
-                offset += moreData.data.length;
-            }
-
-            const filteredResults = filterResults(fetchedResults, apiEndpointKey)
-
-
-            results[apiEndpointKey] = filteredResults;
+            const fetchedResults = await fetchPage(requestObject);
+            const filteredResults = filterResults(fetchedResults, apiEndpointKey);
+            return { [apiEndpointKey]: filteredResults };
         } catch (error) {
             console.error(error);
             throw new Error("Error fetching data. Please try again later.");
         }
-    }
-    console.log(results)
+    });
+
+    const promiseResults = await Promise.all(promises);
+    promiseResults.forEach(result => {
+        const key = Object.keys(result)[0];
+        results[key] = result[key];
+    });
+
+
     return results;
-}
+};
 
 function filterResults(results, apiEndpointKey) {
+
+    console.log(results)
 
     try {
         if (apiEndpointKey === "marketingExpenses") {

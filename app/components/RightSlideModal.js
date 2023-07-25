@@ -16,13 +16,10 @@ const RightSlideModal = ({
   setSelectedKpis,
   selectedDepartment,
   className,
-  tableData,
+  tableProps,
   leadSources,
   departments
 }) => {
-
-  
-
 
   const [selectedViewKpiList, setSelectedViewKpiList] = useState([]);
 
@@ -140,7 +137,7 @@ const RightSlideModal = ({
             </ul>
           </div>
         )}
-        {modalType === "table" && <DataTable data={tableData} leadSources={leadSources} departments={departments} />}
+        {modalType === "table" && <DataTable tableProps={tableProps} leadSources={leadSources} departments={departments} />}
       </div>
     </div>,
     document.getElementById('modal-root')

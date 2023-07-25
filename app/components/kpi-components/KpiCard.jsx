@@ -10,7 +10,7 @@ import LoadingQuotes from '../LoadingQuotes';
 import ReactDOM from 'react-dom';
 import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../../app/GlobalRedux/Features/client/clientSlice'
-import fetchKpiData from '../../lib/fetchSingleKpi';
+import fetchSingleKpi from '../../lib/fetchSingleKpi';
 
 
 function formatDate(date) {
@@ -26,20 +26,20 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
     const endDate = dateRange.lte ? formatDate(new Date(dateRange.lte)) : null;
     const clientSpaceId = useSelector(selectSpaceId);
 
-    const handleSingleKpiFetch = async () => {
-        setIsLoading(true);
-        const data = await fetchKpiData({
-            startDate,
-            endDate,
-            leadSource,
-            kpiView,
-            teamMembers,
-            clientSpaceId,
-            apiName: prop.name,
-        });
-        setIsLoading(false);
-        return data;
-    };
+    // const handleSingleKpiFetch = async () => {
+    //     //setIsLoading(true);
+    //     const data = await fetchSingleKpi({
+    //         startDate,
+    //         endDate,
+    //         leadSource,
+    //         kpiView,
+    //         teamMembers,
+    //         clientSpaceId,
+    //         apiName: prop.name,
+    //     });
+    //     //setIsLoading(false);
+    //     return data;
+    // };
 
     if (isLoading) {
         return ReactDOM.createPortal(
@@ -96,6 +96,9 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
         }
     };
 
+    //console.log("KpiCard.jsx: handleKpiCardClick: ", startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, prop.name)
+
+
     return (
         <div className="">
             <div className="flex flex-col px-2 py-1 text-center text-black delay-500 rounded h-52 shadow-super-3 transform-gpu ">
@@ -119,18 +122,12 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
                 >
                     <FiInfo />
                 </button>
-                {
-                    <button
-                        onClick={async () => {
-                            const data = await handleSingleKpiFetch();
-                            handleKpiCardClick(data);
-                        }}
-                        className="absolute info-icon left-2 bottom-2"
-                    >
-                        <FiList />
-                    </button>
-                }
-
+                <button
+                    onClick={() => handleKpiCardClick(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, prop.name)}
+                    className="absolute info-icon left-2 bottom-2"
+                >
+                    <FiList />
+                </button>
             </div>
         </div>
     );

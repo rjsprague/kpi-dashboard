@@ -1,9 +1,13 @@
+"use client"
+
 import React, { useMemo, Fragment, useState, useEffect } from 'react';
 import { createColumnHelper, getCoreRowModel, useReactTable, flexRender, getSortedRowModel } from '@tanstack/react-table';
 import { Listbox, Transition } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-
+import LoadingQuotes from '../LoadingQuotes';
+import useSWR from 'swr';
+import fetchSingleKpi from '../../lib/fetchSingleKpi';
 
 function stringifyObject(obj) {
     let output = '';
@@ -55,7 +59,18 @@ function getKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);
 }
 
-const DataTable = ({ data, leadSources }) => {
+const DataTable = ({ tableProps, leadSources, departments }) => {
+    const { startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName } = tableProps;
+
+
+    const { data = {}, error } = useSWR({startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName}, fetchSingleKpi);
+
+    if (error){
+        console.log("error: ", error)
+        return <div>Error loading data</div>
+    }
+    if (!data) return <div><LoadingQuotes /></div>
+
 
     const [selectedTableKey, setSelectedTableKey] = useState(Object.keys(data)[0]);
     const [columns, setColumns] = useState([]);
@@ -63,7 +78,12 @@ const DataTable = ({ data, leadSources }) => {
 
     const invertedLeadSources = leadSources && Object.fromEntries(
         Object.entries(leadSources).map(([key, value]) => [value, key])
-      );
+    );
+
+    useEffect(() => {
+        setSelectedTableKey(Object.keys(data)[0]);
+      }, [data]);
+      
 
     useEffect(() => {
         const selectedTable = data[selectedTableKey];
@@ -213,7 +233,7 @@ const DataTable = ({ data, leadSources }) => {
                         ))}
                     </div>
                     <div>
-                        {data[selectedTableKey]  && table.getRowModel().rows && table.getRowModel().rows.length > 0 ? (
+                        {data[selectedTableKey] && table.getRowModel().rows && table.getRowModel().rows.length > 0 ? (
                             table.getRowModel().rows.map((row, i) => (
                                 <a
                                     key={row.original.podio_item_id}
