@@ -64,7 +64,7 @@ const generateColumns = (selectedTable, columnHelper, invertedLeadSources) => {
                 cell: info => {
                     const cellValue = info.getValue();
                     // If the cell is a leadSource cell, replace the cellValue with the corresponding name
-                    if (info.column.columnDef.header === 'leadSource') {
+                    if (info.column.columnDef.header === 'Lead Source') {
                         if (cellValue && Array.isArray(cellValue)) {
                             return invertedLeadSources[cellValue[0]];
                         } else {
@@ -92,11 +92,11 @@ const generateColumns = (selectedTable, columnHelper, invertedLeadSources) => {
 const DataTable = ({ tableProps, leadSources, departments }) => {
     const { startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName } = tableProps;
 
-    console.log("tableProps: ", tableProps)
+    // console.log("tableProps: ", tableProps)
 
     const { data, error } = useSWR({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }, fetchSingleKpi);
 
-    console.log("data: ", data)
+    // console.log("data: ", data)
 
     const [selectedTableKey, setSelectedTableKey] = useState('');
     const [columns, setColumns] = useState([]);
@@ -167,7 +167,7 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
                 <div>
                     <Listbox.Button className="flex flex-row items-center gap-4 px-4 py-2 border border-white rounded-md btn btn-primary ">
                         {
-                            selectedTableKey ? `${formatWords(selectedTableKey)} Table` :
+                            selectedTableKey ? `${formatWords(selectedTableKey)}` :
                                 `Select table...`
                         }
                         <FontAwesomeIcon
@@ -192,7 +192,7 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
                                     {({ selected, active }) => (
                                         <>
                                             <span className={`${selected ? 'font-medium' : 'font-normal'} block truncate`}>
-                                                {formatWords(key)} Table
+                                                {formatWords(key)}
                                             </span>
                                             {selected ? (
                                                 <span className={`${active ? 'text-gray-600' : 'text-gray-600'} absolute inset-y-0 left-0 flex items-center pl-3`}>

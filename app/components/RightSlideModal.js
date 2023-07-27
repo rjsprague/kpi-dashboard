@@ -65,7 +65,7 @@ const RightSlideModal = ({
 
     return ReactDOM.createPortal(
         <div
-            className={`z-[9999] flex fixed top-0 right-0 w-screen sm:w-2/3 lg:w-1/2 4xl:w-1/3 h-full transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+            className={`z-[9999] flex fixed top-0 right-0 w-screen h-full transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
             style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', zIndex: 9999 }}
             onKeyDown={(e) => {
                 if (e.key === 'Escape') {
