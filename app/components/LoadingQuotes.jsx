@@ -20,9 +20,9 @@ export default function LoadingQuotes({ mode }) {
   }, []);
 
   useEffect(() => {
-    gsap.to(circle1.current, { rotation: 1280, repeat: -1, duration: 5 });
-    gsap.to(circle2.current, { rotation: -1280, repeat: -1, duration: 5 });
-    gsap.to(circle3.current, { rotation: 1280, repeat: -1, duration: 5 });
+    gsap.to(circle1.current, { rotation: 1280, repeat: -1, duration: 5, ease: 'none' });
+    gsap.to(circle2.current, { rotation: -1280, repeat: -1, duration: 5, ease: 'none' });
+    gsap.to(circle3.current, { rotation: 1280, repeat: -1, duration: 5, ease: 'none' });
   }, []);
 
   return (

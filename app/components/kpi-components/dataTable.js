@@ -55,9 +55,27 @@ function formatWords(str) {
     return result;
 }
 
-const generateColumns = (selectedTable, columnHelper, invertedLeadSources) => {
+const dateColumnKeys = {
+    marketingExpenses: 'Week',
+    leads: 'Date',
+    leadConnections: 'Date Connected',
+    triageCalls: 'Date SLS Submitted',
+    qualifiedTriageCalls: 'Date SLS Submitted',
+    triageApproval: 'Date SLS Submitted',
+    dealAnalysis: 'Date DA Submitted',
+    perfectPresentations: 'Date AS Submitted',
+    contracts: 'Date Contracted',
+    acquisitions: 'Date Acquired',
+    deals: 'Date Deal Sold',
+    profit: 'Date Deal Sold',
+};
+
+const generateColumns = (selectedTableKey, selectedTable, columnHelper, invertedLeadSources) => {
+
     return Object.keys(selectedTable[0]).map(key => {
         if (key !== 'podio_item_id') {
+            const dateColumnKey = dateColumnKeys[selectedTableKey];
+
             return columnHelper.accessor(key, {
                 id: `column_${key}`,
                 header: key,
@@ -82,7 +100,8 @@ const generateColumns = (selectedTable, columnHelper, invertedLeadSources) => {
                     }
                 },
                 enableSorting: true,
-                sortingFn: 'basic',
+                sortingFn: key === dateColumnKey ? 'datetime' : 'alphanumeric',
+                sortDescFirst: true,
             });
         }
     }).filter(Boolean);
@@ -91,6 +110,7 @@ const generateColumns = (selectedTable, columnHelper, invertedLeadSources) => {
 
 const DataTable = ({ tableProps, leadSources, departments }) => {
     const { startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName } = tableProps;
+
 
     // console.log("tableProps: ", tableProps)
 
@@ -109,7 +129,6 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
     const columnHelper = useMemo(() => createColumnHelper(), []);
     const newColumns = useMemo(() => columns, [columns]);
 
-    // First useEffect to set initial selectedTableKey and columns
     useEffect(() => {
         if (data) {
             const keys = Object.keys(data);
@@ -120,31 +139,49 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
 
             const selectedTable = data[selectedTableKey || firstTableKey];
             if (selectedTable && selectedTable.length > 0) {
-                const newColumns = generateColumns(selectedTable, columnHelper, invertedLeadSources);
-                setColumns(newColumns);
+                const newColumns = generateColumns(selectedTableKey, selectedTable, columnHelper, invertedLeadSources);
+                setColumns(prevColumns => {
+                    // Only update columns if they have changed
+                    const prevColumnIds = new Set(prevColumns.map(column => column.id));
+                    const newColumnIds = new Set(newColumns.map(column => column.id));
+                    if (newColumns.length !== prevColumns.length || [...prevColumnIds].some(id => !newColumnIds.has(id))) {
+                        return newColumns;
+                    }
+                    return prevColumns;
+                });
             }
         }
     }, [data]);
-
 
     // Second useEffect to update columns when selectedTableKey changes
     useEffect(() => {
         if (data && selectedTableKey) {
             const selectedTable = data[selectedTableKey];
             if (selectedTable && selectedTable.length > 0) {
-                const newColumns = generateColumns(selectedTable, columnHelper, invertedLeadSources);
+                const newColumns = generateColumns(selectedTableKey, selectedTable, columnHelper, invertedLeadSources);
                 setColumns(newColumns);
+                const dateColumnKey = "column_" + dateColumnKeys[selectedTableKey];
+                const hasDateColumn = selectedTable[0].hasOwnProperty(dateColumnKeys[selectedTableKey]);
+                if (hasDateColumn) {
+                    setSorting([{ id: dateColumnKey, desc: true }]);
+                } else {
+                    // Clear sorting state or set it to sort by a default column
+                    setSorting([]);
+                }
             }
         }
     }, [data, selectedTableKey]);
 
 
 
+    console.log('selectedTableKey:', selectedTableKey);
+    console.log('dateColumnKey:', dateColumnKeys[selectedTableKey]);
+    console.log('column ids:', newColumns.map(column => column.id));
 
     const table = useReactTable({
         data: data && data[selectedTableKey] ? data[selectedTableKey] : [],
         columns: newColumns,
-        state: { sorting },
+        state: { sorting }, // set initial sorting state
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -207,9 +244,6 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
                     </Transition>
                 </div>
             </Listbox>
-
-
-
             <div className="flex h-auto px-2 py-4 overflow-auto max-h-screen9">
                 <div className="table w-full h-auto overflow-y-scroll max-h-screen9">
                     <div>
@@ -221,11 +255,11 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
                                         className={header.column.getCanSort() ? "th cursor-pointer" : "th"}
                                         onClick={header.column.getCanSort() ? header.column.getToggleSortingHandler() : undefined}
                                     >
-                                        {flexRender(header.column.columnDef.header, header.getContext())}
                                         {{
-                                            asc: ' 🔼',
-                                            desc: ' 🔽',
+                                            asc: '🔼 ',
+                                            desc: '🔽 ',
                                         }[header.column.getIsSorted()] ?? null}
+                                        {flexRender(header.column.columnDef.header, header.getContext())}
                                     </div>
                                 ))}
                             </div>

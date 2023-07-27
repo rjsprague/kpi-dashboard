@@ -13,12 +13,15 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         throw new Error('Invalid API name');
     }
 
+    let results = {};
+
     const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMembers);
 
-    let results = {
+    results = {
         [apiEndpointsKeys[0]]: [],
         [apiEndpointsKeys[1]]: [],
     };
+
 
     const fetchPage = async (requestObject, offset = 0) => {
         const response = await fetch(`${requestObject.url}`, {
@@ -67,12 +70,12 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         results[key] = result[key];
     });
 
-    console.log("results: ", results)
+    //console.log("results: ", results)
     // filter "Seller Lead" and "Related Lead" from each of the objects in the results object
     let leadsArray = [];
 
     let resultsValues = Object.values(results).flat();
-    console.log(resultsValues)
+    //console.log(resultsValues)
 
     resultsValues.forEach(item => {
         if (item["Seller Lead"]) {
@@ -82,14 +85,14 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         }
     });
 
-    console.log(leadsArray.flat());
+    //console.log(leadsArray.flat());
 
     // query the leads endpoint for each of the leads in the leadsArray
     const leadsEndpoint = apiEndpointsObj["leads"];
-    leadsEndpoint.filters = [{type: "app", fieldName: "itemid", values:leadsArray.flat()}];
-    console.log(leadsEndpoint)
+    leadsEndpoint.filters = [{ type: "app", fieldName: "itemid", values: leadsArray.flat() }];
+    //console.log(leadsEndpoint)
     const leads = await fetchPage(leadsEndpoint);
-    console.log(leads)
+    //console.log(leads)
 
     let namesAddresses = {};
     leads.forEach(lead => {
@@ -104,12 +107,13 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         }
     });
 
-    console.log(namesAddresses)
+    //console.log(namesAddresses)
 
     Object.keys(results).forEach(key => {
         results[key] = filterResults(results[key], key, namesAddresses);
     });
 
+    console.log(results)
     return results;
 };
 
@@ -215,7 +219,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                 }
             })
-        } else if (apiEndpointKey === "dealAnalysis") {        
+        } else if (apiEndpointKey === "dealAnalysis") {
             return results.map((result) => {
                 return {
                     "Date DA Submitted": result["Timestamp"] && result["Timestamp"]["start_utc"] ? result["Timestamp"]["start_utc"] : "Not an SLS",
