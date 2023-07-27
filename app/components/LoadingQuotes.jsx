@@ -15,14 +15,14 @@ export default function LoadingQuotes({ mode }) {
 
     const interval = setInterval(() => {
       setQuote(loadingQuotes[Math.floor(Math.random() * loadingQuotes.length)]);
-    }, 5000);
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    gsap.to(circle1.current, { rotation: 1280, repeat: -1, duration: 5, ease: 'none' });
-    gsap.to(circle2.current, { rotation: -1280, repeat: -1, duration: 5, ease: 'none' });
-    gsap.to(circle3.current, { rotation: 1280, repeat: -1, duration: 5, ease: 'none' });
+    gsap.to(circle1.current, { rotation: 1280, repeat: -1, duration: 3, ease: 'none' });
+    gsap.to(circle2.current, { rotation: -1280, repeat: -1, duration: 3, ease: 'none' });
+    gsap.to(circle3.current, { rotation: 1280, repeat: -1, duration: 3, ease: 'none' });
   }, []);
 
   return (

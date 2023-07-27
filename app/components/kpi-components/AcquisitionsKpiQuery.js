@@ -21,8 +21,8 @@ const AcquisitionsKpiQuery = ({
     onRemoveQuery,
     isLoadingData
 }) => {
-    //console.log("view: ", view)
-    //console.log("VIEW_KPIS: ", VIEW_KPIS)
+    // console.log("view: ", view)
+    // console.log("VIEW_KPIS: ", VIEW_KPIS)
     // console.log("query: ", query)
     // console.log("kpiList: ", kpiList)
     const [height, setHeight] = useState('auto');
@@ -48,7 +48,7 @@ const AcquisitionsKpiQuery = ({
         setTableProps({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName });
         setModalType("table")
         setOpenModal(true)
-      };
+    };
 
     const handleDateRangeChange = (startDate, endDate) => {
         onDateRangeChange(startDate, endDate, query.id);

@@ -83,9 +83,6 @@ export default function KpiDashboard() {
         )
     }
 
-
-
-
     const handleSetLoading = (queryId, isLoading) => {
         setQueries((prevQueries) =>
             prevQueries.map((query) =>

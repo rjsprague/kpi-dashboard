@@ -17,7 +17,9 @@ export const KPI_VIEWS = {
         "Contracts",
         "Acquisitions",
         "Deals",
+        "Projected Profit",
         "Profit",
+        "Total Profit",
     ],
     Team: {
         "Lead Manager": [

@@ -100,6 +100,11 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
             url: "/api/acquisitions",
             filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Date Acquired")
         },
+        // pendingDeals: {
+        //     name: "Pending Deals",
+        //     url: "/api/acquisitions",
+        //     filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Date Acquired")
+        // },
         deals: {
             name: "Deals",
             url: "/api/deals",

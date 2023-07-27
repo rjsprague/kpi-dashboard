@@ -22,7 +22,7 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
         const data = await response.json();
         if (data.total === 0) {
             return 0;
-        } else if (apiName !== "Marketing Expenses" && apiName !== "Profit") {
+        } else if (apiName !== "Marketing Expenses" && apiName !== "Profit" && apiName !== "Projected Profit") {
             return data.total;
         } else {
 
