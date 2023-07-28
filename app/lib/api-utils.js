@@ -1,7 +1,8 @@
 
 const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
     //console.log("filters: ", filters)
-    //console.log("apiEndpoint: ", apiEndpoint)
+    console.log("apiEndpoint: ", apiEndpoint)
+    console.log("apiName: ", apiName)
     try {
         const response = await fetch(apiEndpoint, {
             method: 'POST',
@@ -22,9 +23,12 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
         const data = await response.json();
         if (data.total === 0) {
             return 0;
-        } else if (apiName !== "Marketing Expenses" && apiName !== "Profit" && apiName !== "Projected Profit") {
+        } else if (apiName !== "Marketing Expenses" && apiName !== "Profit" && apiName !== "Projected Profit" && apiName !== "Pending Deals") {
             return data.total;
         } else {
+
+            console.log(apiName)
+            console.log(data)
 
             let fetchedResults = data.data ? data.data : [];
             let offset = fetchedResults.length;
@@ -167,7 +171,6 @@ const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters)
 
 export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, filters, kpiView) {
  
-
     try {
         switch (kpiView) {
             case 'Financial':

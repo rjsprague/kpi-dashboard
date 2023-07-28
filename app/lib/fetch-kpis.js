@@ -19,7 +19,7 @@ function calculateKPIs(startDate, endDate, endpointData) {
             } else {
                 kpiData[kpiName] = kpiDefinition.formula(endpointData);
             }
-            //console.log("kpi data: ", kpiData)
+            console.log("kpi data: ", kpiData)
         } catch (error) {
             console.error(`Error calculating ${kpiName}:`, error);
         }
@@ -44,6 +44,8 @@ function createKpiObject(name, current, redFlag, target, data1, data2, unit, kpi
 
 async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource, gte, lte, department, teamMemberStrings) {
 
+    //console.log(requestedKpiList)
+
     const teamMember = teamMemberStrings.map(Number);
 
     let kpiList = [];
@@ -63,6 +65,8 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
         const startDate = gte ? formatDate(new Date(gte)) : null;
         const endDate = lte ? formatDate(new Date(lte)) : null;
         const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMember);
+        //console.log("api endpoints obj: ", apiEndpointsObj)
+
         const requiredEndpoints = new Set();
 
         kpiList.forEach((kpi) => {
@@ -71,9 +75,9 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
                 requiredEndpoints.add(endpoint);
             });
         });
-
+        //console.log("required endpoints: ", requiredEndpoints)
         const uniqueEndpoints = Array.from(requiredEndpoints);
-
+        //console.log("unique endpoints: ", uniqueEndpoints)
         const kpiPromises = uniqueEndpoints.map((endpointKey) => {
             const { name, url, filters } = apiEndpointsObj[endpointKey];
             return fetchKPIs(clientSpaceId, name, url, filters, kpiView);
@@ -91,6 +95,8 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
                 console.error(error);
                 throw new Error("Error fetching endpoint data. Please try again later.");
             });
+
+        //console.log("endpoint data: ", endpointData)
 
         if (kpiView === 'Financial' || kpiView === 'Acquisitions') {
             const totalMarketingExpenses = endpointData.marketingExpenses && Array.isArray(endpointData.marketingExpenses) && endpointData.marketingExpenses.reduce((acc, curr) => {
@@ -110,7 +116,7 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
             }, 0);
 
             const projectedProfit = endpointData.projectedProfit && Array.isArray(endpointData.projectedProfit) && endpointData.projectedProfit.reduce((acc, curr) => {
-                if ("Expected Profit Center" in curr) {
+                if ("Expected Profit Center" in curr && !curr.hasOwnProperty("*Deal")) {
                     return acc + parseInt(curr["Expected Profit Center"], 10);
                 } else {
                     return acc;
@@ -135,6 +141,8 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
                 return calculatedKPIs.Deals;
             } else if (dataKey === 'profit') {
                 return calculatedKPIs.Profit;
+            } else if (dataKey === 'pendingDeals') {
+                return calculatedKPIs["Pending Deals"];
             } else if (dataKey === 'lmStlMedian') {
                 return calculatedKPIs["LM STL Median"];
             } else if (dataKey === 'amStlMedian') {

@@ -10,8 +10,6 @@ import LoadingQuotes from '../LoadingQuotes';
 import ReactDOM from 'react-dom';
 import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../../app/GlobalRedux/Features/client/clientSlice'
-import fetchSingleKpi from '../../lib/fetchSingleKpi';
-
 
 function formatDate(date) {
     const year = date.getFullYear();
@@ -25,21 +23,6 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
     const startDate = dateRange.gte ? formatDate(new Date(dateRange.gte)) : null;
     const endDate = dateRange.lte ? formatDate(new Date(dateRange.lte)) : null;
     const clientSpaceId = useSelector(selectSpaceId);
-
-    // const handleSingleKpiFetch = async () => {
-    //     //setIsLoading(true);
-    //     const data = await fetchSingleKpi({
-    //         startDate,
-    //         endDate,
-    //         leadSource,
-    //         kpiView,
-    //         teamMembers,
-    //         clientSpaceId,
-    //         apiName: prop.name,
-    //     });
-    //     //setIsLoading(false);
-    //     return data;
-    // };
 
     if (isLoading) {
         return ReactDOM.createPortal(

@@ -1,8 +1,6 @@
 import kpiToEndpointMapping from './kpiToEndpointMapping';
 import apiEndpoints from './apiEndpoints';
 
-
-
 export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }) {
 
     // console.log("fetchSingleKpi: ", startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
@@ -13,15 +11,17 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         throw new Error('Invalid API name');
     }
 
-    let results = {};
+    let results = apiEndpointsKeys.reduce((acc, key) => {
+        return {
+            ...acc,
+            [key]: [],
+        };
+    }, {});
+
+
+    // console.log("results: ", results)
 
     const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMembers);
-
-    results = {
-        [apiEndpointsKeys[0]]: [],
-        [apiEndpointsKeys[1]]: [],
-    };
-
 
     const fetchPage = async (requestObject, offset = 0) => {
         const response = await fetch(`${requestObject.url}`, {
@@ -70,12 +70,12 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         results[key] = result[key];
     });
 
-    //console.log("results: ", results)
+    // console.log("results: ", results)
     // filter "Seller Lead" and "Related Lead" from each of the objects in the results object
     let leadsArray = [];
 
     let resultsValues = Object.values(results).flat();
-    //console.log(resultsValues)
+    // console.log(resultsValues)
 
     resultsValues.forEach(item => {
         if (item["Seller Lead"]) {
@@ -108,12 +108,13 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     });
 
     //console.log(namesAddresses)
+    // console.log(results)
 
     Object.keys(results).forEach(key => {
         results[key] = filterResults(results[key], key, namesAddresses);
     });
 
-    console.log(results)
+    // console.log(results)
     return results;
 };
 
@@ -266,6 +267,26 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                 }
             })
+        } else if (apiEndpointKey === "pendingDeals") {
+            // console.log(apiEndpointKey)
+            // console.log(results)
+            const calcResults = results.reduce((acc, curr) => {
+                if (!curr.hasOwnProperty("*Deal")) {
+                    acc.push(curr)
+                }
+                return acc
+            }, [])
+            // console.log(calcResults)
+            return calcResults.map((result) => {
+                return {
+                    "Date Acquired": result["Date Acquired"]["start_utc"] ? result["Date Acquired"]["start_utc"] : "No Date",
+                    "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
+                    "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
+                    "Projected Profit": result["Expected Profit Center"] ? result["Expected Profit Center"] : "No Projected Profit",
+                    "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
+                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                }
+            })
         } else if (apiEndpointKey === "deals") {
             return results.map((result) => {
                 return {
@@ -287,18 +308,27 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                 }
             })
+        } else if (apiEndpointKey === "projectedProfit") {
+            // console.log(apiEndpointKey)
+            // console.log(results)
+            const calcResults = results.reduce((acc, curr) => {
+                if (!curr.hasOwnProperty("*Deal")) {
+                    acc.push(curr)
+                }
+                return acc
+            }, [])
+            // console.log(calcResults)
+            return calcResults.map((result) => {
+                return {
+                    "Date Acquired": result["Date Acquired"]["start_utc"] ? result["Date Acquired"]["start_utc"] : "No Date",
+                    "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
+                    "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
+                    "Projected Profit": result["Expected Profit Center"] ? result["Expected Profit Center"] : "No Projected Profit",
+                    "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
+                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                }
+            })
         }
-        // else if (apiEndpointKey === "projectedProfit") {
-        //     return results.map((result) => {
-        //         return {
-        //             "Date Deal Sold": result["Closing (Sell)"]["start_utc"] ? result["Closing (Sell)"]["start_utc"] : "No Date",
-        //             "Lead Name": result["Seller Lead"] ? result["Seller Lead"] : "No Lead",
-        //             "Address": result["*AS Address"] ? result["*AS Address"] : "No address",
-        //             "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
-        //             podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
-        //         }
-        //     })
-        // } 
         else {
             throw new Error("Invalid API name");
         }

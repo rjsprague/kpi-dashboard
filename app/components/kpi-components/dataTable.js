@@ -67,6 +67,8 @@ const dateColumnKeys = {
     contracts: 'Date Contracted',
     acquisitions: 'Date Acquired',
     deals: 'Date Deal Sold',
+    projectedProfit: 'Date Acquired',
+    pendingDeals: 'Date Acquired',
     profit: 'Date Deal Sold',
 };
 
@@ -174,9 +176,9 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
 
 
 
-    console.log('selectedTableKey:', selectedTableKey);
-    console.log('dateColumnKey:', dateColumnKeys[selectedTableKey]);
-    console.log('column ids:', newColumns.map(column => column.id));
+    // console.log('selectedTableKey:', selectedTableKey);
+    // console.log('dateColumnKey:', dateColumnKeys[selectedTableKey]);
+    // console.log('column ids:', newColumns.map(column => column.id));
 
     const table = useReactTable({
         data: data && data[selectedTableKey] ? data[selectedTableKey] : [],

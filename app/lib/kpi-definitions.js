@@ -333,16 +333,60 @@ const KPI_DEFINITIONS = {
             }
         ],
     },
+    "Pending Deals": {
+        name: "Pending Deals",
+        dataKeys: ["acquisitions", "pendingDeals"],
+        formula: (apiData) => {
+            const { pendingDeals } = apiData;
+            // reduce pendingDeals to only objects that do not have a "*Deal" property
+            let pendingDealsReduced = pendingDeals.reduce((acc, curr) => {
+                if (!curr.hasOwnProperty("*Deal")) {
+                    acc.push(curr)
+                }
+                return acc
+            }, [])
+            return pendingDealsReduced.length;
+        },
+        redFlag: 0,
+        target: 0,
+        dataLabels: ["Acquisitions: ", "Pending Deals: "],
+        kpiType: "",
+        unit: " Pending Deals",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Pending Deals",
+            },
+            {
+                id: 1,
+                desc: "Renegotiation after inspections.",
+                linkName: "",
+                link: ""
+            },
+            {
+                id: 2,
+                desc: "Regular Seller Update, Professionalism, Preparedness.",
+                linkName: "",
+                link: ""
+            },
+            {
+                id: 3,
+                desc: "Give the seller confidence in your ability to solve their problem.",
+                linkName: "",
+                link: ""
+            }
+        ],
+    },
     "Deals": {
         name: "Deals",
-        dataKeys: ["acquisitions", "deals"],
+        dataKeys: ["pendingDeals", "deals"],
         formula: (apiData) => {
             const { deals } = apiData;
             return deals ? deals : 0;
         },
         redFlag: 0,
         target: 0,
-        dataLabels: ["Acquisitions: ", "Deals: "],
+        dataLabels: ["Pending Deals: ", "Deals: "],
         kpiType: "",
         unit: " Deals",
         kpiFactors: [
@@ -592,6 +636,7 @@ const KPI_DEFINITIONS = {
         dataKeys: ["projectedProfit"],
         formula: (apiData) => {
             const { projectedProfit } = apiData;
+            console.log("Projected Profit: ", projectedProfit)
             return projectedProfit;
         },
         redFlag: 0,

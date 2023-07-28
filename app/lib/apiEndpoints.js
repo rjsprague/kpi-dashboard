@@ -100,11 +100,11 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
             url: "/api/acquisitions",
             filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Date Acquired")
         },
-        // pendingDeals: {
-        //     name: "Pending Deals",
-        //     url: "/api/acquisitions",
-        //     filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Date Acquired")
-        // },
+        pendingDeals: {
+            name: "Pending Deals",
+            url: "/api/acquisitions",
+            filters: generateFilters(null, null, leadSource, kpiView, "Lead Source", "Date Acquired")
+        },
         deals: {
             name: "Deals",
             url: "/api/deals",
@@ -182,7 +182,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
         projectedProfit: {
             name: "Projected Profit",
             url: "/api/acquisitions",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Date Acquired")
+            filters: generateFilters(null, null, leadSource, kpiView, "Lead Source", "Date Acquired")
         },
     };
 };

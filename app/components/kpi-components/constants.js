@@ -16,6 +16,7 @@ export const KPI_VIEWS = {
         "Perfect Presentations",
         "Contracts",
         "Acquisitions",
+        "Pending Deals",
         "Deals",
         "Projected Profit",
         "Profit",
