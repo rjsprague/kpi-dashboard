@@ -19,7 +19,7 @@ function calculateKPIs(startDate, endDate, endpointData) {
             } else {
                 kpiData[kpiName] = kpiDefinition.formula(endpointData);
             }
-            console.log("kpi data: ", kpiData)
+            //console.log("kpi data: ", kpiData)
         } catch (error) {
             console.error(`Error calculating ${kpiName}:`, error);
         }
@@ -47,7 +47,7 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
     //console.log(requestedKpiList)
 
     const teamMember = teamMemberStrings.map(Number);
-
+    console.log(teamMember)
     let kpiList = [];
 
     if (kpiView === "Team" && department[0] === "Lead Manager") {

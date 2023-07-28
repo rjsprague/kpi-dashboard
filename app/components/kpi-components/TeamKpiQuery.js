@@ -28,7 +28,7 @@ const TeamKpiQuery = ({
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
     const [teamKpiList, setTeamKpiList] = useState([]);
     const [department, setDepartment] = useState([]);
-    const [tableData, setTableData] = useState(null);
+    const [tableProps, setTableProps] = useState(null);
 
     const updateKpiList = (department) => {
         setTeamKpiList(kpiList[department]);
@@ -55,11 +55,12 @@ const TeamKpiQuery = ({
         setOpenModal(true);
     };
 
-    const handleKpiCardClick = async (data) => {
-        setTableData(data)
+    const handleKpiCardClick = async (startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName) => {
+        console.log("handleKpiCardClick: ", startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
+        setTableProps({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName });
         setModalType("table")
         setOpenModal(true)
-      };
+    };
 
     const handleDateRangeChange = (startDate, endDate) => {
         onDateRangeChange(startDate, endDate, query.id);
@@ -124,7 +125,7 @@ const TeamKpiQuery = ({
                                 selectedKpis={selectedKpis}
                                 setSelectedKpis={setSelectedKpis}
                                 selectedDepartment={query.departments}
-                                tableData={tableData}
+                                tableProps={tableProps}
                                 departments={departments}
                             />
                         </div>

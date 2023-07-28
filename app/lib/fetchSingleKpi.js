@@ -2,10 +2,10 @@ import kpiToEndpointMapping from './kpiToEndpointMapping';
 import apiEndpoints from './apiEndpoints';
 
 export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }) {
-
-    // console.log("fetchSingleKpi: ", startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
+    let teamMembersNum = teamMembers.map(Number);
+    console.log("fetchSingleKpi: ", startDate, endDate, leadSource, kpiView, teamMembersNum, clientSpaceId, apiName)
     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
-    // console.log("apiEndpointsKeys: ", apiEndpointsKeys)
+    console.log("apiEndpointsKeys: ", apiEndpointsKeys)
 
     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
         throw new Error('Invalid API name');
@@ -19,9 +19,9 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     }, {});
 
 
-    // console.log("results: ", results)
+    console.log("results: ", results)
 
-    const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMembers);
+    const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMembersNum);
 
     const fetchPage = async (requestObject, offset = 0) => {
         const response = await fetch(`${requestObject.url}`, {
@@ -55,6 +55,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
 
     const promises = apiEndpointsKeys.map(async apiEndpointKey => {
         let requestObject = apiEndpointsObj[apiEndpointKey];
+        console.log("requestObject: ", requestObject)
         try {
             const fetchedResults = await fetchPage(requestObject);
             return { [apiEndpointKey]: fetchedResults };
@@ -70,13 +71,12 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         results[key] = result[key];
     });
 
-    // console.log("results: ", results)
+
+    console.log("results: ", results)
     // filter "Seller Lead" and "Related Lead" from each of the objects in the results object
     let leadsArray = [];
-
     let resultsValues = Object.values(results).flat();
-    // console.log(resultsValues)
-
+    console.log(resultsValues)
     resultsValues.forEach(item => {
         if (item["Seller Lead"]) {
             leadsArray.push(item["Seller Lead"]);
@@ -84,15 +84,13 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
             leadsArray.push(item["Related Lead"]);
         }
     });
-
-    //console.log(leadsArray.flat());
-
+    // console.log(leadsArray.flat());
     // query the leads endpoint for each of the leads in the leadsArray
     const leadsEndpoint = apiEndpointsObj["leads"];
     leadsEndpoint.filters = [{ type: "app", fieldName: "itemid", values: leadsArray.flat() }];
-    //console.log(leadsEndpoint)
+    console.log(leadsEndpoint)
     const leads = await fetchPage(leadsEndpoint);
-    //console.log(leads)
+    console.log(leads)
 
     let namesAddresses = {};
     leads.forEach(lead => {
@@ -107,22 +105,22 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         }
     });
 
-    //console.log(namesAddresses)
-    // console.log(results)
+    console.log(namesAddresses)
+    console.log(results)
 
     Object.keys(results).forEach(key => {
         results[key] = filterResults(results[key], key, namesAddresses);
     });
 
-    // console.log(results)
+    console.log(results)
     return results;
 };
 
 function filterResults(results, apiEndpointKey, namesAddresses) {
 
-    // console.log(results)
-    // console.log(apiEndpointKey)
-    //console.log(namesAddresses)
+    console.log(results)
+    console.log(apiEndpointKey)
+    console.log(namesAddresses)
 
     try {
         if (apiEndpointKey === "marketingExpenses") {
@@ -245,8 +243,55 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                 }
             })
-        } else if (apiEndpointKey === "lmStlMedian" || apiEndpointKey === "amStlMedian" || apiEndpointKey === "daStlMedian" || apiEndpointKey === "bigChecks") {
-            return null
+        } else if (apiEndpointKey === "lmStlMedian") {
+            
+            return results.map((result) => {
+                return {
+                    "Date": result["Timestamp"]["start_utc"] ? result["Timestamp"]["start_utc"] : "No Date",
+                    "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
+                    "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
+                    "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"]/60)+" mins" : "No LM STL Median",
+                    //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
+                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                }
+            })
+        } else if (apiEndpointKey === "amStlMedian") {
+            console.log(apiEndpointKey)
+            console.log(results)            
+            return results.map((result) => {
+                return {
+                    "Date": result["Timestamp"]["start_utc"] ? result["Timestamp"]["start_utc"] : "No Date",
+                    "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
+                    "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
+                    "AM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"]/3600).toFixed(2)+" hours" : "No AM STL Median",
+                    //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
+                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                }
+            })
+        } else if (apiEndpointKey === "daStlMedian") {
+            console.log(apiEndpointKey)
+            console.log(results)            
+            return results.map((result) => {
+                return {
+                    "Date": result["Timestamp"]["start_utc"] ? result["Timestamp"]["start_utc"] : "No Date",
+                    "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
+                    "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
+                    "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"]/3600).toFixed(2)+" hours" : "No DA STL Median",
+                    //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
+                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                }
+            })
+        } else if (apiEndpointKey === "bigChecks") {
+            console.log(apiEndpointKey)
+            console.log(results)            
+            return results.map((result) => {
+                return {
+                    "Date": result["Timestamp"]["start_utc"] ? result["Timestamp"]["start_utc"] : "No Date",
+                    "Team Member": result["Team Member Responsible"] ? result["Team Member Responsible"] : "No Team Member",
+                    //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
+                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                }
+            })
         } else if (apiEndpointKey === "contracts") {
             return results.map((result) => {
                 return {

@@ -72,7 +72,9 @@ const dateColumnKeys = {
     profit: 'Date Deal Sold',
 };
 
-const generateColumns = (selectedTableKey, selectedTable, columnHelper, invertedLeadSources) => {
+const generateColumns = (selectedTableKey, selectedTable, columnHelper, invertedLeadSources, teamMembersMap) => {
+
+    console.log(teamMembersMap)
 
     return Object.keys(selectedTable[0]).map(key => {
         if (key !== 'podio_item_id') {
@@ -87,6 +89,13 @@ const generateColumns = (selectedTableKey, selectedTable, columnHelper, inverted
                     if (info.column.columnDef.header === 'Lead Source') {
                         if (cellValue && Array.isArray(cellValue)) {
                             return invertedLeadSources[cellValue[0]];
+                        } else {
+                            console.log("cellValue: ", cellValue)
+                            return null;
+                        }
+                    } else if (info.column.columnDef.header === 'Team Member') {
+                        if (cellValue && Array.isArray(cellValue)) {
+                            return teamMembersMap[cellValue[0]];
                         } else {
                             console.log("cellValue: ", cellValue)
                             return null;
@@ -109,15 +118,10 @@ const generateColumns = (selectedTableKey, selectedTable, columnHelper, inverted
     }).filter(Boolean);
 }
 
-
 const DataTable = ({ tableProps, leadSources, departments }) => {
     const { startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName } = tableProps;
-
-
     // console.log("tableProps: ", tableProps)
-
     const { data, error } = useSWR({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }, fetchSingleKpi);
-
     // console.log("data: ", data)
 
     const [selectedTableKey, setSelectedTableKey] = useState('');
@@ -127,7 +131,9 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
     const invertedLeadSources = leadSources && Object.fromEntries(
         Object.entries(leadSources).map(([key, value]) => [value, key])
     );
-
+    
+    let teamMembersMap = Object.assign({}, ...Object.values(departments));
+    console.log("teamMembersMap: ", teamMembersMap)
     const columnHelper = useMemo(() => createColumnHelper(), []);
     const newColumns = useMemo(() => columns, [columns]);
 
@@ -141,7 +147,7 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
 
             const selectedTable = data[selectedTableKey || firstTableKey];
             if (selectedTable && selectedTable.length > 0) {
-                const newColumns = generateColumns(selectedTableKey, selectedTable, columnHelper, invertedLeadSources);
+                const newColumns = generateColumns(selectedTableKey, selectedTable, columnHelper, invertedLeadSources, teamMembersMap);
                 setColumns(prevColumns => {
                     // Only update columns if they have changed
                     const prevColumnIds = new Set(prevColumns.map(column => column.id));
@@ -160,7 +166,7 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
         if (data && selectedTableKey) {
             const selectedTable = data[selectedTableKey];
             if (selectedTable && selectedTable.length > 0) {
-                const newColumns = generateColumns(selectedTableKey, selectedTable, columnHelper, invertedLeadSources);
+                const newColumns = generateColumns(selectedTableKey, selectedTable, columnHelper, invertedLeadSources, teamMembersMap);
                 setColumns(newColumns);
                 const dateColumnKey = "column_" + dateColumnKeys[selectedTableKey];
                 const hasDateColumn = selectedTable[0].hasOwnProperty(dateColumnKeys[selectedTableKey]);
