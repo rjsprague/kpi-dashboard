@@ -1,7 +1,15 @@
 "use client"
 
 import React, { useMemo, Fragment, useState, useEffect } from 'react';
-import { createColumnHelper, getCoreRowModel, useReactTable, flexRender, getSortedRowModel } from '@tanstack/react-table';
+import {
+    createColumnHelper,
+    getCoreRowModel,
+    useReactTable,
+    flexRender,
+    getSortedRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+} from '@tanstack/react-table';
 import { Listbox, Transition } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
@@ -70,11 +78,15 @@ const dateColumnKeys = {
     projectedProfit: 'Date Acquired',
     pendingDeals: 'Date Acquired',
     profit: 'Date Deal Sold',
+    lmStlMedian: "Date",
+    amStlMedian: "Date",
+    daStlMedian: "Date",
+    bigChecks: "Date",
 };
 
 const generateColumns = (selectedTableKey, selectedTable, columnHelper, invertedLeadSources, teamMembersMap) => {
 
-    console.log(teamMembersMap)
+    //console.log(teamMembersMap)
 
     return Object.keys(selectedTable[0]).map(key => {
         if (key !== 'podio_item_id') {
@@ -90,15 +102,15 @@ const generateColumns = (selectedTableKey, selectedTable, columnHelper, inverted
                         if (cellValue && Array.isArray(cellValue)) {
                             return invertedLeadSources[cellValue[0]];
                         } else {
-                            console.log("cellValue: ", cellValue)
-                            return null;
+                            // console.log("cellValue: ", cellValue)
+                            return cellValue;
                         }
                     } else if (info.column.columnDef.header === 'Team Member') {
                         if (cellValue && Array.isArray(cellValue)) {
                             return teamMembersMap[cellValue[0]];
                         } else {
-                            console.log("cellValue: ", cellValue)
-                            return null;
+                            // console.log("cellValue: ", cellValue)
+                            return cellValue;
                         }
                     }
 
@@ -131,9 +143,9 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
     const invertedLeadSources = leadSources && Object.fromEntries(
         Object.entries(leadSources).map(([key, value]) => [value, key])
     );
-    
-    let teamMembersMap = Object.assign({}, ...Object.values(departments));
-    console.log("teamMembersMap: ", teamMembersMap)
+
+    let teamMembersMap = departments ? Object.assign({}, ...Object.values(departments)) : null;
+    //console.log("teamMembersMap: ", teamMembersMap)
     const columnHelper = useMemo(() => createColumnHelper(), []);
     const newColumns = useMemo(() => columns, [columns]);
 
@@ -180,8 +192,6 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
         }
     }, [data, selectedTableKey]);
 
-
-
     // console.log('selectedTableKey:', selectedTableKey);
     // console.log('dateColumnKey:', dateColumnKeys[selectedTableKey]);
     // console.log('column ids:', newColumns.map(column => column.id));
@@ -189,10 +199,12 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
     const table = useReactTable({
         data: data && data[selectedTableKey] ? data[selectedTableKey] : [],
         columns: newColumns,
-        state: { sorting }, // set initial sorting state
+        state: { sorting },
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
     });
 
     if (error) {
@@ -296,6 +308,70 @@ const DataTable = ({ tableProps, leadSources, departments }) => {
                     </div>
                 </div>
             </div>
+            <div className="h-2" />
+            <div className="flex items-center gap-2">
+                <button
+                    className="p-1 border rounded"
+                    onClick={() => table.setPageIndex(0)}
+                    disabled={!table.getCanPreviousPage()}
+                >
+                    {'<<'}
+                </button>
+                <button
+                    className="p-1 border rounded"
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                >
+                    {'<'}
+                </button>
+                <button
+                    className="p-1 border rounded"
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                >
+                    {'>'}
+                </button>
+                <button
+                    className="p-1 border rounded"
+                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                    disabled={!table.getCanNextPage()}
+                >
+                    {'>>'}
+                </button>
+                <span className="flex items-center gap-1">
+                    <div>Page</div>
+                    <strong>
+                        {table.getState().pagination.pageIndex + 1} of{' '}
+                        {table.getPageCount()}
+                    </strong>
+                </span>
+                <span className="flex items-center gap-1 text-white">
+                    | Go to page:
+                    <input
+                        type="number"
+                        defaultValue={table.getState().pagination.pageIndex + 1}
+                        onChange={e => {
+                            const page = e.target.value ? Number(e.target.value) - 1 : 0
+                            table.setPageIndex(page)
+                        }}
+                        className="w-16 p-1 text-black border rounded"
+                    />
+                </span>
+                <select
+                    className="text-black"
+                    value={table.getState().pagination.pageSize}
+                    onChange={e => {
+                        table.setPageSize(Number(e.target.value))
+                    }}
+                >
+                    {[10, 20, 30, 40, 50].map(pageSize => (
+                        <option key={pageSize} value={pageSize}>
+                            Show {pageSize}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <div>{table.getRowModel().rows.length} Rows</div>
         </div>
     );
 };

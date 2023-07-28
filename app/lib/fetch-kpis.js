@@ -10,21 +10,21 @@ function formatDate(date) {
     return `${year}-${month}-${day}`;
 }
 
-function calculateKPIs(startDate, endDate, endpointData) {
+function calculateKPIs(startDate, endDate, endpointData, kpiList) {
     const kpiData = {};
-    for (const [kpiName, kpiDefinition] of Object.entries(KPI_DEFINITIONS)) {
+    for (const kpiName of kpiList) {
+        const kpiDefinition = KPI_DEFINITIONS[kpiName];
+        if (!kpiDefinition) continue;
         try {
             if (kpiDefinition.createFormula) {
                 kpiData[kpiName] = kpiDefinition.createFormula(startDate, endDate)(endpointData);
             } else {
                 kpiData[kpiName] = kpiDefinition.formula(endpointData);
             }
-            //console.log("kpi data: ", kpiData)
         } catch (error) {
             console.error(`Error calculating ${kpiName}:`, error);
         }
     }
-    //console.log("kpi data: ", kpiData)
     return kpiData;
 }
 
@@ -44,10 +44,7 @@ function createKpiObject(name, current, redFlag, target, data1, data2, unit, kpi
 
 async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource, gte, lte, department, teamMemberStrings) {
 
-    //console.log(requestedKpiList)
-
     const teamMember = teamMemberStrings.map(Number);
-    console.log(teamMember)
     let kpiList = [];
 
     if (kpiView === "Team" && department[0] === "Lead Manager") {
@@ -61,7 +58,6 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
     }
 
     try {
-
         const startDate = gte ? formatDate(new Date(gte)) : null;
         const endDate = lte ? formatDate(new Date(lte)) : null;
         const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMember);
@@ -127,20 +123,21 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
             endpointData.actualizedProfit = actualizedProfit;
             endpointData.projectedProfit = projectedProfit;
             endpointData.totalProfit = actualizedProfit + projectedProfit;
-
         }
 
-        const calculatedKPIs = calculateKPIs(startDate, endDate, endpointData);
+        //console.log("endpoint data: ", endpointData)
+
+        const calculatedKPIs = calculateKPIs(startDate, endDate, endpointData, kpiList);
+        //console.log("calculated kpis: ", calculatedKPIs)
 
         function getKpiValue(calculatedKPIs, endpointData, dataKey) {
             const data = endpointData[dataKey];
-
             if (dataKey === 'marketingExpenses') {
                 return endpointData.totalMarketingExpenses;
             } else if (dataKey === 'deals') {
-                return calculatedKPIs.Deals;
+                return endpointData.deals;
             } else if (dataKey === 'profit') {
-                return calculatedKPIs.Profit;
+                return endpointData.actualizedProfit;
             } else if (dataKey === 'pendingDeals') {
                 return calculatedKPIs["Pending Deals"];
             } else if (dataKey === 'lmStlMedian') {
@@ -179,16 +176,8 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
             .map((kpiDefinition) => {
                 const current = calculatedKPIs[kpiDefinition.name];
                 const { redFlag, target, dataLabels, kpiFactors, dataKeys, kpiType, unit } = kpiDefinition;
-                // console.log("data keys: ", dataKeys)
-                // console.log("is data keys empty: ", dataKeys.length > 0)
-                // console.log("is data keys length > 1?: ", dataKeys.length > 1)
-                // console.log("data keys 0 is " + dataKeys[0] + " and data keys 1 is " + dataKeys[1])
                 const data1 = dataKeys.length > 0 && dataLabels[0] !== undefined ? createDataString(dataLabels[0], getKpiValue(calculatedKPIs, endpointData, dataKeys[0])) : 0;
                 const data2 = dataKeys.length > 1 && dataLabels[1] !== undefined ? createDataString(dataLabels[1], getKpiValue(calculatedKPIs, endpointData, dataKeys[1])) : 0;
-
-                // console.log("data1: ", data1)
-                // console.log("data2: ", data2)
-
                 return createKpiObject(kpiDefinition.name, current, redFlag, target, data1, data2, unit, kpiType, kpiFactors);
             });
 

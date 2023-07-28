@@ -3,9 +3,7 @@ import apiEndpoints from './apiEndpoints';
 
 export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }) {
     let teamMembersNum = teamMembers.map(Number);
-    console.log("fetchSingleKpi: ", startDate, endDate, leadSource, kpiView, teamMembersNum, clientSpaceId, apiName)
     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
-    console.log("apiEndpointsKeys: ", apiEndpointsKeys)
 
     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
         throw new Error('Invalid API name');
@@ -18,10 +16,31 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         };
     }, {});
 
-
-    console.log("results: ", results)
-
     const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMembersNum);
+
+    const getInitialData = async (requestObject) => {
+        const response = await fetch(`${requestObject.url}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "spaceid": clientSpaceId,
+                "filters": requestObject.filters,
+                "offset": 0,
+                "limit": 1,
+            }),
+        });
+
+        if (!response.ok) {
+            console.error(`Error fetching data from ${requestObject.url}: ${response.status} ${response.statusText}`);
+            throw new Error(`Server responded with an error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        return data.total;
+    };
 
     const fetchPage = async (requestObject, offset = 0) => {
         const response = await fetch(`${requestObject.url}`, {
@@ -33,7 +52,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
                 "spaceid": clientSpaceId,
                 "filters": requestObject.filters,
                 "offset": offset,
-                "limit": 10000,
+                "limit": 1000,
             }),
         });
 
@@ -45,20 +64,21 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         const data = await response.json();
         let fetchedResults = data.data ? data.data : [];
 
-        if (data.total > fetchedResults.length) {
-            const moreData = await fetchPage(requestObject, offset + fetchedResults.length);
-            fetchedResults = fetchedResults.concat(moreData);
-        }
-
         return fetchedResults;
     };
 
     const promises = apiEndpointsKeys.map(async apiEndpointKey => {
         let requestObject = apiEndpointsObj[apiEndpointKey];
-        console.log("requestObject: ", requestObject)
         try {
-            const fetchedResults = await fetchPage(requestObject);
-            return { [apiEndpointKey]: fetchedResults };
+            const total = await getInitialData(requestObject);
+            const limit = 1000;
+            const offsets = Array.from({ length: Math.ceil(total / limit) }, (_, i) => i * limit);
+
+            const dataPromises = offsets.map(offset => fetchPage(requestObject, offset));
+            const data = await Promise.all(dataPromises);
+
+            return { [apiEndpointKey]: data.flat() };
+
         } catch (error) {
             console.error(error);
             throw new Error("Error fetching data. Please try again later.");
@@ -72,11 +92,9 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     });
 
 
-    console.log("results: ", results)
     // filter "Seller Lead" and "Related Lead" from each of the objects in the results object
     let leadsArray = [];
     let resultsValues = Object.values(results).flat();
-    console.log(resultsValues)
     resultsValues.forEach(item => {
         if (item["Seller Lead"]) {
             leadsArray.push(item["Seller Lead"]);
@@ -84,13 +102,10 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
             leadsArray.push(item["Related Lead"]);
         }
     });
-    // console.log(leadsArray.flat());
     // query the leads endpoint for each of the leads in the leadsArray
     const leadsEndpoint = apiEndpointsObj["leads"];
     leadsEndpoint.filters = [{ type: "app", fieldName: "itemid", values: leadsArray.flat() }];
-    console.log(leadsEndpoint)
     const leads = await fetchPage(leadsEndpoint);
-    console.log(leads)
 
     let namesAddresses = {};
     leads.forEach(lead => {
@@ -105,36 +120,26 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         }
     });
 
-    console.log(namesAddresses)
-    console.log(results)
-
     Object.keys(results).forEach(key => {
         results[key] = filterResults(results[key], key, namesAddresses);
     });
 
-    console.log(results)
     return results;
 };
 
 function filterResults(results, apiEndpointKey, namesAddresses) {
 
-    console.log(results)
-    console.log(apiEndpointKey)
-    console.log(namesAddresses)
-
     try {
         if (apiEndpointKey === "marketingExpenses") {
             return results.map((result) => {
                 return {
-                    "Week": result["Week Number"] ? result["Week Number"] : "No Week Number",
+                    "Week": result["Week Number"] ? parseInt(result["Week Number"], 10) : "No Week Number",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     "Amount": result["Amount"] ? result["Amount"] : "No Amount",
                     podio_item_id: result.itemid ? result.itemid : "No itemid",
                 }
             })
         } else if (apiEndpointKey === "leads") {
-            // console.log(apiEndpointKey)
-            // console.log(results)
             return results.map((result) => {
                 return {
                     "Date": result["Lead Created On"]["start_utc"] ? result["Lead Created On"]["start_utc"] : "Not a Lead",
@@ -150,8 +155,6 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                 }
             })
         } else if (apiEndpointKey === "leadConnections") {
-            // console.log(apiEndpointKey)
-            // console.log(results)
             return results.map((result) => {
                 return {
                     "Date Connected": result["First lead connection"]["start_utc"] ? result["First lead connection"]["start_utc"] : "Not a Lead Connection",
@@ -167,8 +170,6 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                 }
             })
         } else if (apiEndpointKey === "triageCalls") {
-            // console.log(apiEndpointKey)
-            // console.log(results)
             return results.map((result) => {
                 return {
                     "Date SLS Submitted": result["SLS Created On"]["start_utc"] ? result["SLS Created On"]["start_utc"] : "Not an SLS",
@@ -185,8 +186,6 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                 }
             })
         } else if (apiEndpointKey === "qualifiedTriageCalls") {
-            // console.log(apiEndpointKey)
-            // console.log(results)
             return results.map((result) => {
                 return {
                     "Date SLS Submitted": result["SLS Created On"]["start_utc"] ? result["SLS Created On"]["start_utc"] : "Not an SLS",
@@ -202,8 +201,6 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                 }
             })
         } else if (apiEndpointKey === "triageApproval") {
-            console.log(apiEndpointKey)
-            console.log(results)
             return results.map((result) => {
                 return {
                     "Date SLS Submitted": result["SLS Created On"]["start_utc"] ? result["SLS Created On"]["start_utc"] : "Not an SLS",
@@ -230,10 +227,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                 }
             })
         } else if (apiEndpointKey === "perfectPresentations") {
-            // console.log(apiEndpointKey)
-            // console.log(results)
             return results.map((result) => {
-                console.log(result)
                 return {
                     "Date AS Submitted": result["AS Created On"]["start_utc"] ? result["AS Created On"]["start_utc"] : "Not an SLS",
                     "Lead Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "Ask Ryan",
@@ -244,46 +238,40 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                 }
             })
         } else if (apiEndpointKey === "lmStlMedian") {
-            
+
             return results.map((result) => {
                 return {
                     "Date": result["Timestamp"]["start_utc"] ? result["Timestamp"]["start_utc"] : "No Date",
                     "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
-                    "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"]/60)+" mins" : "No LM STL Median",
+                    "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 60) + " mins" : "No LM STL Median",
                     //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                 }
             })
         } else if (apiEndpointKey === "amStlMedian") {
-            console.log(apiEndpointKey)
-            console.log(results)            
             return results.map((result) => {
                 return {
                     "Date": result["Timestamp"]["start_utc"] ? result["Timestamp"]["start_utc"] : "No Date",
                     "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
-                    "AM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"]/3600).toFixed(2)+" hours" : "No AM STL Median",
+                    "AM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 3600).toFixed(2) + " hours" : "No AM STL Median",
                     //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                 }
             })
         } else if (apiEndpointKey === "daStlMedian") {
-            console.log(apiEndpointKey)
-            console.log(results)            
             return results.map((result) => {
                 return {
                     "Date": result["Timestamp"]["start_utc"] ? result["Timestamp"]["start_utc"] : "No Date",
                     "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
-                    "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"]/3600).toFixed(2)+" hours" : "No DA STL Median",
+                    "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 3600).toFixed(2) + " hours" : "No DA STL Median",
                     //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                 }
             })
         } else if (apiEndpointKey === "bigChecks") {
-            console.log(apiEndpointKey)
-            console.log(results)            
             return results.map((result) => {
                 return {
                     "Date": result["Timestamp"]["start_utc"] ? result["Timestamp"]["start_utc"] : "No Date",
@@ -313,15 +301,12 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                 }
             })
         } else if (apiEndpointKey === "pendingDeals") {
-            // console.log(apiEndpointKey)
-            // console.log(results)
             const calcResults = results.reduce((acc, curr) => {
                 if (!curr.hasOwnProperty("*Deal")) {
                     acc.push(curr)
                 }
                 return acc
             }, [])
-            // console.log(calcResults)
             return calcResults.map((result) => {
                 return {
                     "Date Acquired": result["Date Acquired"]["start_utc"] ? result["Date Acquired"]["start_utc"] : "No Date",
@@ -354,15 +339,12 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                 }
             })
         } else if (apiEndpointKey === "projectedProfit") {
-            // console.log(apiEndpointKey)
-            // console.log(results)
             const calcResults = results.reduce((acc, curr) => {
                 if (!curr.hasOwnProperty("*Deal")) {
                     acc.push(curr)
                 }
                 return acc
             }, [])
-            // console.log(calcResults)
             return calcResults.map((result) => {
                 return {
                     "Date Acquired": result["Date Acquired"]["start_utc"] ? result["Date Acquired"]["start_utc"] : "No Date",

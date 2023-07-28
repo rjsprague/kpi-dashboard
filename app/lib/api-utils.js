@@ -1,8 +1,8 @@
 
 const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
     //console.log("filters: ", filters)
-    console.log("apiEndpoint: ", apiEndpoint)
-    console.log("apiName: ", apiName)
+    // console.log("apiEndpoint: ", apiEndpoint)
+    // console.log("apiName: ", apiName)
     try {
         const response = await fetch(apiEndpoint, {
             method: 'POST',
@@ -27,8 +27,8 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
             return data.total;
         } else {
 
-            console.log(apiName)
-            console.log(data)
+            // console.log(apiName)
+            // console.log(data)
 
             let fetchedResults = data.data ? data.data : [];
             let offset = fetchedResults.length;
