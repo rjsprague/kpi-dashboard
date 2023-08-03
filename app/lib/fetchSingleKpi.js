@@ -170,6 +170,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                 }
             })
         } else if (apiEndpointKey === "triageCalls") {
+            console.log(results);
             return results.map((result) => {
                 return {
                     "Date SLS Submitted": result["SLS Created On"]["start_utc"] ? result["SLS Created On"]["start_utc"] : "Not an SLS",

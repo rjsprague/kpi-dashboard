@@ -105,7 +105,7 @@ const generateColumns = (selectedTableKey, selectedTable, columnHelper, inverted
                             // console.log("cellValue: ", cellValue)
                             return cellValue;
                         }
-                    } else if (info.column.columnDef.header === 'Team Member') {
+                    } else if (info.column.columnDef.header === 'Team Member' || info.column.columnDef.header === 'Lead Manager') {
                         if (cellValue && Array.isArray(cellValue)) {
                             return teamMembersMap[cellValue[0]];
                         } else {

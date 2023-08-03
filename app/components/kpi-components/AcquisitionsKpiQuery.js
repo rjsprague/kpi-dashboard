@@ -13,6 +13,7 @@ const AcquisitionsKpiQuery = ({
     view,
     VIEW_KPIS,
     query,
+    departments,
     kpiList,
     leadSources,
     onDateRangeChange,
@@ -112,6 +113,7 @@ const AcquisitionsKpiQuery = ({
                                 setSelectedKpis={setSelectedKpis}
                                 tableProps={tableProps}
                                 leadSources={leadSources}
+                                departments={departments}
                             />
                         </div>
                     </div>

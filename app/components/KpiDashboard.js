@@ -13,17 +13,17 @@ import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice
 
 export default function KpiDashboard() {
     const [isLoadingData, setIsLoadingData] = useState(true);
-    const [queryType, setQueryType] = useState(KPI_VIEWS.Acquisitions);
+    const [queryType, setQueryType] = useState();
     const [leadSources, setLeadSources] = useState({});
     const [teamMembers, setTeamMembers] = useState([]);
     const [departments, setDepartments] = useState([]);
-    const [kpiList, setKpiList] = useState(VIEW_KPIS[queryType]);
+    const [kpiList, setKpiList] = useState();
     const datePresets = getDatePresets();
     const [idCounter, setIdCounter] = useState(0);
     const [queries, setQueries] = useState([]);
     const clientSpaceId = useSelector(selectSpaceId);
 
-    //console.log("clientSpaceId: ", clientSpaceId)
+    console.log("clientSpaceId: ", clientSpaceId)
 
     // console.log("lead sources object ", leadSources)
     // console.log("Queries ", queries.map((query) => query.id))
@@ -63,6 +63,8 @@ export default function KpiDashboard() {
                 setDepartments(departmentsData)
                 setTeamMembers(departmentsData)
                 const departmentsDataObject = departmentsData;
+                setQueryType(KPI_VIEWS.Acquisitions);
+                setKpiList(VIEW_KPIS["Acquisitions"]);
                 setQueries(createInitialQueries(leadSourcesObject, departmentsDataObject, datePresets));
             } catch (error) {
                 console.error(error);
@@ -141,7 +143,7 @@ export default function KpiDashboard() {
     };
 
     const handleTeamChange = (department, teamMembers, queryId) => {
-       
+
         setQueries((prevQueries) =>
             prevQueries.map((query) =>
                 query.id === queryId
