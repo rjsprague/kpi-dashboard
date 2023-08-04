@@ -339,12 +339,12 @@ const KPI_DEFINITIONS = {
         formula: (apiData) => {
             const { pendingDeals } = apiData;
             // reduce pendingDeals to only objects that do not have a "*Deal" property
-            let pendingDealsReduced = pendingDeals.reduce((acc, curr) => {
+            let pendingDealsReduced = pendingDeals && pendingDeals > 0 ? pendingDeals.reduce((acc, curr) => {
                 if (!curr.hasOwnProperty("*Deal")) {
                     acc.push(curr)
                 }
                 return acc
-            }, [])
+            }, []) : [];
             return pendingDealsReduced.length;
         },
         redFlag: 0,
@@ -636,7 +636,7 @@ const KPI_DEFINITIONS = {
         dataKeys: ["projectedProfit"],
         formula: (apiData) => {
             const { projectedProfit } = apiData;
-            console.log("Projected Profit: ", projectedProfit)
+            //console.log("Projected Profit: ", projectedProfit)
             return projectedProfit;
         },
         redFlag: 0,
