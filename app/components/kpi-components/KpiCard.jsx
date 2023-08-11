@@ -38,7 +38,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
             return (
                 <SpeedToLeadMeter
                     value={prop.current}
-                    unit="min"
+                    unit={prop.unit}
                     target={prop.target}
                     redFlag={prop.redFlag}
                 />
@@ -47,7 +47,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
             return (
                 <BigChecksMeter
                     value={prop.current}
-                    unit="min"
+                    unit={prop.unit}
                     target={prop.target}
                     redFlag={prop.redFlag}
                 />

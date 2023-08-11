@@ -441,6 +441,7 @@ const KPI_DEFINITIONS = {
         target: 5,
         dataLabels: [" minutes", "NA: "],
         kpiType: "STL",
+        unit: " mins",
         kpiFactors: [
             {
                 id: 0,
@@ -467,6 +468,7 @@ const KPI_DEFINITIONS = {
         target: 3,
         dataLabels: [" hours", "NA: "],
         kpiType: "STL",
+        unit: " hrs",
         kpiFactors: [
             {
                 id: 0,
@@ -493,6 +495,7 @@ const KPI_DEFINITIONS = {
         target: 1,
         dataLabels: [" hours", "NA: "],
         kpiType: "STL",
+        unit: " hrs",
         kpiFactors: [
             {
                 id: 0,
@@ -524,6 +527,7 @@ const KPI_DEFINITIONS = {
         target: 5,
         dataLabels: [" checks per week", "NA: "],
         kpiType: "BigChecks",
+        unit: " checks",
         kpiFactors: [
             {
                 id: 0,
