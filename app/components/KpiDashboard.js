@@ -23,8 +23,6 @@ export default function KpiDashboard() {
     const [queries, setQueries] = useState([]);
     const clientSpaceId = useSelector(selectSpaceId);
 
-    console.log("clientSpaceId: ", clientSpaceId)
-
     // console.log("lead sources object ", leadSources)
     // console.log("Queries ", queries.map((query) => query.id))
 
