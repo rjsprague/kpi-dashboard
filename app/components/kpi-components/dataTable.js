@@ -84,7 +84,7 @@ const dateColumnKeys = {
     bigChecks: "Date",
 };
 
-const generateColumns = (selectedTableKey ,data, columnHelper, invertedLeadSources, teamMembersMap) => {
+const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap) => {
 
     console.log(teamMembersMap)
     console.log(data)
@@ -132,15 +132,23 @@ const generateColumns = (selectedTableKey ,data, columnHelper, invertedLeadSourc
     }).filter(Boolean);
 }
 
-const DataTable = ({selectedTableKey, data, leadSources, departments }) => {
+const DataTable = ({ selectedTableKey, data, leadSources, departments }) => {
     //const { startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName } = tableProps;
     // console.log("tableProps: ", tableProps)
     //const { data, error } = useSWR({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }, fetchSingleKpi);
-    
     const [tableTitle, setTableTitle] = useState('');
 
+    if (data.length === 0) {
+        return (
+            <div className="flex items-center justify-center w-1/3 m-10 border h-1/4">
+                <h2 className="text-2xl font-bold text-center text-gray-100">No Data</h2>
+            </div>
+        )
+    }
+
+
     console.log("data: ", data)
-    
+
     const [columns, setColumns] = useState([]);
     const [sorting, setSorting] = useState([]);
 
@@ -161,7 +169,7 @@ const DataTable = ({selectedTableKey, data, leadSources, departments }) => {
 
     useEffect(() => {
         if (data) {
-            const newColumns = generateColumns(selectedTableKey ,data, columnHelper, invertedLeadSources, teamMembersMap);
+            const newColumns = generateColumns(selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap);
             setColumns(prevColumns => {
                 // Only update columns if they have changed
                 const prevColumnIds = new Set(prevColumns.map(column => column.id));
@@ -200,7 +208,7 @@ const DataTable = ({selectedTableKey, data, leadSources, departments }) => {
         <div className="flex flex-col items-center mt-4">
             <div className="flex h-auto px-2 py-4 overflow-auto max-h-screen9">
                 <div className="table w-full h-auto overflow-y-scroll max-h-screen9">
-                <div className='flex justify-center mb-2 text-xl font-semibold'>{tableTitle} ({data.length})</div>
+                    <div className='flex justify-center mb-2 text-xl font-semibold'>{tableTitle} ({data.length})</div>
                     <div>
                         {table.getHeaderGroups().map((headerGroup, i) => (
                             <div key={i} className="uppercase bg-blue-700 border-l border-gray-200 tr">
