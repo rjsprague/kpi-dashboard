@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react'
 import { FiX } from 'react-icons/fi';
 import DataTable from './kpi-components/dataTable';
 import ReactDOM from 'react-dom';
+import useSWR from 'swr';
+import fetchSingleKpi from '../lib/fetchSingleKpi';
+import LoadingQuotes from './LoadingQuotes';
 
 const RightSlideModal = ({
     isOpen,
@@ -20,8 +23,23 @@ const RightSlideModal = ({
     leadSources,
     departments
 }) => {
-
     const [selectedViewKpiList, setSelectedViewKpiList] = useState([]);
+    const [dataTable1, setDataTable1] = useState(null);
+    const [dataTable1Key, setDataTable1Key] = useState(null);
+    const [dataTable2, setDataTable2] = useState(null);
+    const [dataTable2Key, setDataTable2Key] = useState(null);
+    const { startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName } = tableProps;
+    const { data, error } = useSWR({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }, fetchSingleKpi);
+    console.log(data)
+
+    useEffect(() => {
+        if (data) {
+            setDataTable1(Object.values(data)[0])
+            setDataTable1Key(Object.keys(data)[0])
+            setDataTable2(Object.values(data)[1])
+            setDataTable2Key(Object.keys(data)[1])
+        }
+    }, [data])
 
     useEffect(() => {
 
@@ -65,7 +83,7 @@ const RightSlideModal = ({
 
     return ReactDOM.createPortal(
         <div
-            className={`z-[9999] flex fixed top-0 right-0 w-screen 2xl:w-2/3 h-full transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+            className={`z-[9999] flex fixed top-0 right-0 ${modalType === 'table' ? 'w-screen' : 'w-screen md:w-3/4 xl:w-2/3 4xl:2-1/2'} h-full transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
             style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', zIndex: 9999 }}
             onKeyDown={(e) => {
                 if (e.key === 'Escape') {
@@ -137,7 +155,18 @@ const RightSlideModal = ({
                         </ul>
                     </div>
                 )}
-                {modalType === "table" && <DataTable tableProps={tableProps} leadSources={leadSources} departments={departments} />}
+                {modalType === "table" && dataTable1 && dataTable2 ? (
+
+                    <div className="flex flex-row justify-center">
+                        <DataTable className="flex" selectedTableKey={dataTable1Key} data={dataTable1} leadSources={leadSources} departments={departments} />
+                        <DataTable className="flex" selectedTableKey={dataTable2Key} data={dataTable2} leadSources={leadSources} departments={departments} />
+                    </div>
+                )
+                    : (
+                        <LoadingQuotes />
+                    )
+                }
+
             </div>
         </div>,
         document.getElementById('modal-root')

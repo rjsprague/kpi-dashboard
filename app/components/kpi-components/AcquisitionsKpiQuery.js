@@ -101,20 +101,24 @@ const AcquisitionsKpiQuery = ({
                                 handleCardInfoClick={handleCardInfoClick}
                                 handleKpiCardClick={handleKpiCardClick}
                             />
-                            <RightSlideModal
-                                isOpen={openModal}
-                                handleCloseModal={() => setOpenModal(false)}
-                                prop={selectedResult}
-                                viewKpis={kpiList}
-                                VIEW_KPIS={VIEW_KPIS}
-                                selectedView={view}
-                                modalType={modalType}
-                                selectedKpis={selectedKpis}
-                                setSelectedKpis={setSelectedKpis}
-                                tableProps={tableProps}
-                                leadSources={leadSources}
-                                departments={departments}
-                            />
+                            {
+                                !isLoadingData && openModal &&
+                                <RightSlideModal
+                                    isOpen={openModal}
+                                    handleCloseModal={() => setOpenModal(false)}
+                                    prop={selectedResult}
+                                    viewKpis={kpiList}
+                                    VIEW_KPIS={VIEW_KPIS}
+                                    selectedView={view}
+                                    modalType={modalType}
+                                    selectedKpis={selectedKpis}
+                                    setSelectedKpis={setSelectedKpis}
+                                    tableProps={tableProps}
+                                    leadSources={leadSources}
+                                    departments={departments}
+                                />
+                            }
+
                         </div>
                     </div>
                 }

@@ -1,8 +1,8 @@
-async function fetchClients() {
+async function fetchClients(url='/api/spaces') {
     try {
-        const data = await fetch('/api/spaces');
+        const data = await fetch(url);
 
-        //console.log('Lead Sources Response:', data);
+        console.log('Clients Response:', data);
 
         if (!data.ok) {
             throw new Error("Something went wrong on api server!");
@@ -17,7 +17,7 @@ async function fetchClients() {
             return acc;
         }, {});
 
-        //console.log("clientsMap", clientsMap)
+        console.log("clientsMap", clientsMap)
 
         return clientsMap;
 
