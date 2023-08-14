@@ -114,20 +114,23 @@ const TeamKpiQuery = ({
                                 handleCardInfoClick={handleCardInfoClick}
                                 handleKpiCardClick={handleKpiCardClick}
                             />
-                            <RightSlideModal
-                                isOpen={openModal}
-                                handleCloseModal={() => setOpenModal(false)}
-                                prop={selectedResult}
-                                viewKpis={teamKpiList}
-                                VIEW_KPIS={VIEW_KPIS}
-                                selectedView={view}
-                                modalType={modalType}
-                                selectedKpis={selectedKpis}
-                                setSelectedKpis={setSelectedKpis}
-                                selectedDepartment={query.departments}
-                                tableProps={tableProps}
-                                departments={departments}
-                            />
+                            {
+                                !isLoadingData && openModal &&
+                                <RightSlideModal
+                                    isOpen={openModal}
+                                    handleCloseModal={() => setOpenModal(false)}
+                                    prop={selectedResult}
+                                    viewKpis={teamKpiList}
+                                    VIEW_KPIS={VIEW_KPIS}
+                                    selectedView={view}
+                                    modalType={modalType}
+                                    selectedKpis={selectedKpis}
+                                    setSelectedKpis={setSelectedKpis}
+                                    selectedDepartment={query.departments}
+                                    tableProps={tableProps}
+                                    departments={departments}
+                                />
+                            }
                         </div>
                     </div>
                 }

@@ -82,7 +82,7 @@ const FinancialsKpiQuery = ({
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
                 <div className='flex flex-col gap-1 xs:flex-row sm:gap-4'>
                     {/* Lead Source and Date Range Selectors */}
-                    <LeadSourcesDropdown 
+                    <LeadSourcesDropdown
                         onOptionSelected={handleOptionSelected}
                         queryId={query.id}
                         leadSources={leadSources}
@@ -110,19 +110,21 @@ const FinancialsKpiQuery = ({
                                 handleCardInfoClick={handleCardInfoClick}
                                 handleKpiCardClick={handleKpiCardClick}
                             />
-                            <RightSlideModal
-                                isOpen={openModal}
-                                handleCloseModal={() => setOpenModal(false)}
-                                prop={selectedResult}
-                                viewKpis={kpiList}
-                                VIEW_KPIS={VIEW_KPIS}
-                                selectedView={view}
-                                modalType={modalType}
-                                selectedKpis={selectedKpis}
-                                setSelectedKpis={setSelectedKpis}
-                                tableProps={tableProps}
-                                leadSources={leadSources}
-                            />
+                            {!isLoadingData && openModal &&
+                                <RightSlideModal
+                                    isOpen={openModal}
+                                    handleCloseModal={() => setOpenModal(false)}
+                                    prop={selectedResult}
+                                    viewKpis={kpiList}
+                                    VIEW_KPIS={VIEW_KPIS}
+                                    selectedView={view}
+                                    modalType={modalType}
+                                    selectedKpis={selectedKpis}
+                                    setSelectedKpis={setSelectedKpis}
+                                    tableProps={tableProps}
+                                    leadSources={leadSources}
+                                />
+                            }
                         </div>
                     </div>
                 }
