@@ -799,6 +799,331 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
+    "Closers Ad Spend": {
+        name: "Closers Ad Spend",
+        dataKeys: ["closersAdSpend"],
+        formula: (apiData) => {
+            const { closersAdSpend } = apiData;
+            let marketingExpenses = closersAdSpend && Array.isArray(closersAdSpend) && closersAdSpend.reduce((acc, curr) => {
+                if ("Amount" in curr) {
+                    return acc + parseInt(curr["Amount"], 10);
+                } else {
+                    return acc;
+                }
+            }, 0);
+            return marketingExpenses;
+        },
+        redFlag: 0,
+        target: 0,
+        dataLabels: ["Ad Spend: $"],
+        kpiType: "",
+        unit: "$",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Ad Spend",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closers Leads Created": {
+        name: "Closers Leads Created",
+        dataKeys: ["closersLeadsCreated"],
+        formula: (apiData) => {
+            const { closersLeadsCreated } = apiData;
+            return closersLeadsCreated;
+        },
+        redFlag: 0,
+        target: 0,
+        dataLabels: ["Leads Created: "],
+        kpiType: "",
+        unit: "",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Leads Created",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closers Leads Set Prequalified": {
+        name: "Closers Leads Set Prequalified",
+        dataKeys: ["closersLeadsSetPrequalified"],
+        formula: (apiData) => {
+            const { closersLeadsSetPrequalified } = apiData;
+            return closersLeadsSetPrequalified;
+        },
+        redFlag: 0,
+        target: 0,
+        dataLabels: ["Leads Set Prequalified: "],
+        kpiType: "",
+        unit: "",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Leads Set Prequalified",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closers Bookings": {
+        name: "Closers Bookings",
+        dataKeys: ["closersLeadsCreated", "closersBookings"],
+        formula: (apiData) => {
+            const { closersLeadsCreated, closersBookings } = apiData;
+            return closersLeadsCreated > 0 ? closersBookings / closersLeadsCreated * 100 : 0;
+        },
+        redFlag: 20,
+        target: 40,
+        dataLabels: ["Leads: ", "Bookings: "],
+        kpiType: "meter",
+        unit: "%",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Bookings",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closers Bookings Confirmed": {
+        name: "Closers Bookings Confirmed",
+        dataKeys: ["closersBookings", "closersBookingsConfirmed"],
+        formula: (apiData) => {
+            const { closersBookings, closersBookingsConfirmed } = apiData;
+            return closersBookings > 0 ? closersBookingsConfirmed / closersBookings * 100 : 0;
+        },
+        redFlag: 70,
+        target: 90,
+        dataLabels: ["Bookings: ", "Bookings Confirmed: "],
+        kpiType: "meter",
+        unit: "%",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Bookings Confirmed",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closers Bookings Canceled": {
+        name: "Closers Bookings Canceled",
+        dataKeys: ["closersBookings", "closersBookingsCanceled"],
+        formula: (apiData) => {
+            const { closersBookings, closersBookingsCanceled } = apiData;
+            return closersBookings > 0 ? closersBookingsCanceled / closersBookings * 100 : 0;
+        },
+        redFlag: 30,
+        target: 10,
+        dataLabels: ["Bookings: ", "Bookings Canceled: "],
+        kpiType: "meter",
+        unit: "%",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Bookings Canceled",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closers Bookings No-Show": {
+        name: "Closers Bookings No-Show",
+        dataKeys: ["closersBookings", "closersBookingsNoShow"],
+        formula: (apiData) => {
+            const { closersBookings, closersBookingsNoShow } = apiData;
+            return closersBookings > 0 ? closersBookingsNoShow / closersBookings * 100 : 0;
+        },
+        redFlag: 30,
+        target: 10,
+        dataLabels: ["Bookings: ", "Bookings No-Show: "],
+        kpiType: "meter",
+        unit: "%",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Bookings No-Show",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closers DC Showed": {
+        name: "Closers DC Showed",
+        dataKeys: ["closersBookings", "closersDcShowed"],
+        formula: (apiData) => {
+            const { closersBookings, closersDcShowed } = apiData;
+            return closersBookings > 0 ? closersDcShowed / closersBookings * 100 : 0;
+        },
+        redFlag: 70,
+        target: 90,
+        dataLabels: ["Bookings: ", "DC Showed: "],
+        kpiType: "meter",
+        unit: "%",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize DC Showed",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closers DC Offers": {
+        name: "Closers DC Offers",
+        dataKeys: ["closersDcShowed", "closersDcOffers"],
+        formula: (apiData) => {
+            const { closersDcShowed, closersDcOffers } = apiData;
+            return closersDcShowed > 0 ? closersDcOffers / closersDcShowed * 100 : 0;
+        },
+        redFlag: 40,
+        target: 60,
+        dataLabels: ["DC Showed: ", "DC Offers: "],
+        kpiType: "meter",
+        unit: "%",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize DC Offers",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closers DC Closed": {
+        name: "Closers DC Closed",
+        dataKeys: ["closersDcShowed", "closersDcClosed"],
+        formula: (apiData) => {
+            const { closersDcShowed, closersDcClosed } = apiData;
+            return closersDcClosed ? closersDcClosed / closersDcShowed * 100 : 0;
+        },
+        redFlag: 20,
+        target: 40,
+        dataLabels: ["DC Showed: ", "DC Closed: "],
+        kpiType: "meter",
+        unit: "%",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize DC Closed",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closers Cash Collected": {
+        name: "Closers Cash Collected",
+        dataKeys: ["closersCashCollected"],
+        formula: (apiData) => {
+            const { closersPayments } = apiData;
+            console.log("closersPayments", closersPayments)
+            let cashCollectedUpFront = closersPayments && Array.isArray(closersPayments) && closersPayments.reduce((acc, curr) => {
+                if ("Cash Collected Up Front" in curr) {
+                    acc += parseFloat(curr["Cash Collected Up Front"]);
+                }
+                return acc;
+            }, 0);
+            console.log("cashCollectedUpFront", cashCollectedUpFront)
+            return closersPayments && closersPayments.length > 0 ? (cashCollectedUpFront / closersPayments.length).toFixed(2) : 0;
+        },
+        redFlag: 4000,
+        target: 10000,
+        dataLabels: [],
+        kpiType: "",
+        unit: "$",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Cash Collected",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closers Revenue Contracted": {
+        name: "Closers Revenue Contracted",
+        dataKeys: ["closersRevenueContracted"],
+        formula: (apiData) => {
+            const { closersPayments } = apiData;
+            console.log(closersPayments)
+
+            let revenueContracted = closersPayments && Array.isArray(closersPayments) && closersPayments.reduce((acc, curr) => {
+                if ("Contract Total" in curr) {
+                    console.log(curr["Contract Total"])
+                    acc += parseFloat(curr["Contract Total"]);
+                }
+                return acc;
+            }, 0);
+            console.log("revenueContracted", revenueContracted)
+            return closersPayments && closersPayments.length > 0 ? revenueContracted / closersPayments.length : 0;
+        },
+        redFlag: 0,
+        target: 0,
+        dataLabels: [],
+        kpiType: "",
+        unit: "$",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Revenue Contracted",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    }
 };
 
 export default KPI_DEFINITIONS;

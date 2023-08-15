@@ -25,6 +25,24 @@ const kpiToEndpointMapping = {
     'ROAS Actualized': ['profit', 'marketingExpenses'],
     'ROAS Projected': ['projectedProfit', 'marketingExpenses'],
     'ROAS Total': ['profit', 'projectedProfit', 'marketingExpenses'],
-  };
+    'Closers Ad Spend': ['closersAdSpend'],
+    'Closers Leads Created': ['closersLeadsCreated'],
+    'Closers Leads Set Prequalified': ['closersLeadsSetPrequalified'],
+    'Closers Bookings': ['closersBookings'],
+    'Closers Bookings Confirmed': ['closersBookingsConfirmed'],
+    'Closers Bookings Canceled': ['closersBookingsCanceled'],
+    'Closers Bookings No-Show': ['closersBookingsNoShow'],
+    'Closers DC Showed': ['closersDcShowed'],
+    'Closers DC Offers': ['closersDcOffers'],
+    'Closers DC Closed': ['closersDcClosed'],
+    'Closers Cash Collected': ['closersPayments'],
+    'Closers Revenue Contracted': ['closersPayments'],
+    'Closers Setter STL': ['closersSetterSTL'],
+    'Closers Cost Per Lead': ['closersAdSpend', 'closersLeadsCreated'],
+    'Closers Cost Per Close': ['closersAdSpend', 'closersDcClosed'],
+    'Closers ROAS Actualized': ['closersAdSpend', 'closersPayments'],
+    'Closers ROAS Projected': ['closersAdSpend', 'closersPayments'],
+    'Closers ROAS Total': ['closersAdSpend', 'closersPayments'],
+};
 
 export default kpiToEndpointMapping;

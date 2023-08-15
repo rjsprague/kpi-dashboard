@@ -14,7 +14,13 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
     const valRef = useRef(null);
 
     let dollarFill = currentNum <= target ? "green" : currentNum <= redFlag ? "yellow" : "red";
-    let percentFill = currentNum >= target ? "green" : currentNum >= redFlag ? "yellow" : "red";
+    
+    let percentFill;
+    if (target > redFlag) {
+        percentFill = currentNum >= target ? "green" : currentNum >= redFlag ? "yellow" : "red";
+    } else {
+        percentFill = currentNum <= target ? "green" : currentNum <= redFlag ? "yellow" : "red";
+    }
 
     let currentPosition = 0;
     let redFlagPosition = 0;

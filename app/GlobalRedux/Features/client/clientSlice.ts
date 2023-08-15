@@ -9,7 +9,7 @@ type ClientState = {
 
 const initialState: ClientState = {
     clientName: 'Crowne Properties Inc.',
-    spaceId: 6830538,
+    spaceId: 8108305,
 };
 
 export const client = createSlice({

@@ -184,6 +184,128 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
             url: "/api/acquisitions",
             filters: generateFilters(null, null, leadSource, kpiView, "Lead Source", "Date Acquired")
         },
+        closersAdSpend: {
+            name: "Closers Ad Spend",
+            url: "/api/closers/acquisitions/marketing-expenses",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Date")
+        },
+        closersLeadsCreated: {
+            name: "Closers Leads Created",
+            url: "/api/closers/acquisitions/reia-leads",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source Item", "Lead Created On")
+        },
+        closersLeadsSetPrequalified: {
+            name: "Closers Leads Set Prequalified",
+            url: "/api/closers/acquisitions/lead-events",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
+                {
+                    "type": "category",
+                    "fieldName": "Event",
+                    "values": ["Prequalified"]
+                },
+                {
+                    "type": "category",
+                    "fieldName": "lead_event #",
+                    "values": ["1.0000"]
+                }
+            ])
+        },
+        closersBookings: {
+            name: "Closers Bookings",
+            url: "/api/closers/acquisitions/lead-events",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
+                {
+                    "type": "category",
+                    "fieldName": "Event",
+                    "values": ["Discovery Call Scheduled"]
+                },
+                {
+                    "type": "category",
+                    "fieldName": "lead_event #",
+                    "values": ["1.0000"]
+                }
+            ])
+        },
+        closersBookingsConfirmed: {
+            name: "Closers Bookings Confirmed",
+            url: "/api/closers/acquisitions/lead-events",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
+                {
+                    "type": "category",
+                    "fieldName": "Event",
+                    "values": ["Discovery Call Confirmed"]
+                },
+                {
+                    "type": "category",
+                    "fieldName": "lead_event #",
+                    "values": ["1.0000"]
+                }
+            ])
+        },
+        closersBookingsCanceled: {
+            name: "Closers Bookings Canceled",
+            url: "/api/closers/acquisitions/lead-events",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
+                {
+                    "type": "category",
+                    "fieldName": "Event",
+                    "values": ["Discovery Call Canceled"]
+                },
+                {
+                    "type": "category",
+                    "fieldName": "lead_event #",
+                    "values": ["1.0000"]
+                }
+            ])
+        },
+        closersBookingsNoShow: {
+            name: "Closers Bookings No-Show",
+            url: "/api/closers/acquisitions/lead-events",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
+                {
+                    "type": "category",
+                    "fieldName": "Event",
+                    "values": ["Discovery Call NO-SHOW"]
+                },
+                {
+                    "type": "category",
+                    "fieldName": "lead_event #",
+                    "values": ["1.0000"]
+                }
+            ])
+        },
+        closersDcShowed: {
+            name: "Closers DC Showed",
+            url: "/api/closers/acquisitions/discovery-calls",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "created_on")
+        },
+        closersDcOffers: {
+            name: "Closers DC Offers",
+            url: "/api/closers/acquisitions/discovery-calls",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "created_on", [
+                {
+                    "type": "category",
+                    "fieldName": "Status of the Call",
+                    "values": ["Closed", "Interested", "Lost"]
+                }
+            ])
+        },
+        closersDcClosed: {
+            name: "Closers DC Closed",
+            url: "/api/closers/acquisitions/discovery-calls",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "created_on", [
+                {
+                    "type": "category",
+                    "fieldName": "Status of the Call",
+                    "values": ["Closed"]
+                }
+            ])
+        },
+        closersPayments: {
+            name: "Closers Payments",
+            url: "/api/closers/management/payment-plans",
+            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date")
+        },
     };
 };
 

@@ -18,6 +18,11 @@ function formatDate(date) {
     return `${year}-${month}-${day}`;
 }
 
+function removeWord(str, word) {
+    const regex = new RegExp(`\\b${word}\\s*`, 'g')
+    return str.replace(regex, '');
+}
+
 export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick, dateRange, leadSource, kpiView, teamMembers }) {
     const [isLoading, setIsLoading] = useState(false);
     const startDate = dateRange.gte ? formatDate(new Date(dateRange.gte)) : null;
@@ -85,7 +90,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
     return (
         <div className="">
             <div className="flex flex-col px-2 py-1 text-center text-black delay-500 rounded h-52 shadow-super-3 transform-gpu ">
-                <h1 className="text-2xl font-semibold tracking-tighter align-top">{prop.name}</h1>
+                <h1 className="text-2xl font-semibold tracking-tighter align-top">{prop.name.includes("Closers") ? removeWord(prop.name, "Closers") : prop.name}</h1>
                 <div className="mt-1 font-medium text-md">
                     {prop.data1 !== null && prop.data2 !== null ? (
                         <div className="flex flex-row justify-center gap-4 text-sm">

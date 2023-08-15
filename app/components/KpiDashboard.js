@@ -22,6 +22,10 @@ export default function KpiDashboard() {
     const [idCounter, setIdCounter] = useState(0);
     const [queries, setQueries] = useState([]);
     const clientSpaceId = useSelector(selectSpaceId);
+    const closersSpaceId = process.env.NEXT_PUBLIC_CLOSERS_SPACEID;
+    console.log(clientSpaceId)
+    console.log(closersSpaceId)
+    console.log(clientSpaceId == closersSpaceId)
 
 
     //console.log("clientSpaceId: ", clientSpaceId)
@@ -64,7 +68,11 @@ export default function KpiDashboard() {
                 setTeamMembers(departmentsData)
                 const departmentsDataObject = departmentsData;
                 setQueryType(KPI_VIEWS.Acquisitions);
-                setKpiList(VIEW_KPIS["Acquisitions"]);
+                if (clientSpaceId == closersSpaceId) {
+                    setKpiList(VIEW_KPIS["Acquisitions"]["Closers"]);
+                } else {
+                    setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
+                }
                 setQueries(createInitialQueries(leadSourcesObject, departmentsDataObject, datePresets));
             } catch (error) {
                 console.error(error);
@@ -181,7 +189,11 @@ export default function KpiDashboard() {
 
     const handleQueryTypeChange = (type) => {
         setQueryType(type);
-        setKpiList(VIEW_KPIS[type]);
+        if (clientSpaceId == closersSpaceId) {
+            setKpiList(VIEW_KPIS[type]["Closers"]);
+        } else {
+            setKpiList(VIEW_KPIS[type]["Clients"]);
+        }
         setQueries(createInitialQueries(leadSources, departments, datePresets));
     };
 

@@ -6,6 +6,8 @@ import ReactDOM from 'react-dom';
 import useSWR from 'swr';
 import fetchSingleKpi from '../lib/fetchSingleKpi';
 import LoadingQuotes from './LoadingQuotes';
+import { useSelector } from 'react-redux';
+import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
 
 const RightSlideModal = ({
     isOpen,
@@ -28,9 +30,13 @@ const RightSlideModal = ({
     const [dataTable1Key, setDataTable1Key] = useState(null);
     const [dataTable2, setDataTable2] = useState(null);
     const [dataTable2Key, setDataTable2Key] = useState(null);
-    const { startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName } = tableProps;
+    const clientSpaceId = useSelector(selectSpaceId);
+
+    // console.log("RightSlideModal: ", selectedView, selectedDepartment, selectedViewKpiList, dataTable1, dataTable1Key, dataTable2, dataTable2Key)
+
+    const { startDate, endDate, leadSource, kpiView, teamMembers, apiName } = tableProps;
     const { data, error } = useSWR({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }, fetchSingleKpi);
-    console.log(data)
+    // console.log(data)
 
     useEffect(() => {
         if (data) {
@@ -42,13 +48,20 @@ const RightSlideModal = ({
     }, [data])
 
     useEffect(() => {
-
-        if (selectedView === 'Team') {
-            setSelectedViewKpiList(VIEW_KPIS[selectedView][selectedDepartment]);
+        if (clientSpaceId == process.env.NEXT_PUBLIC_CLOSERS_SPACEID) {
+            if (selectedView === 'Team') {
+                setSelectedViewKpiList(VIEW_KPIS[selectedView]["Closers"][selectedDepartment]);
+            } else {
+                setSelectedViewKpiList(VIEW_KPIS[selectedView]["Closers"]);
+            }
         } else {
-            setSelectedViewKpiList(VIEW_KPIS[selectedView]);
+            if (selectedView === 'Team') {
+                setSelectedViewKpiList(VIEW_KPIS[selectedView]["Clients"][selectedDepartment]);
+            } else {
+                setSelectedViewKpiList(VIEW_KPIS[selectedView]["Clients"]);
+            }
         }
-    }, [selectedView, setSelectedKpis, selectedDepartment]);
+    }, [selectedView, selectedDepartment]);
 
     useEffect(() => {
         const handleEscape = (e) => {
@@ -92,7 +105,7 @@ const RightSlideModal = ({
             }}
         >
             <div className="absolute top-0 right-0 flex-col w-full h-screen bg-blue-900 bg-opacity-50 infoModal">
-                <button className="absolute right-2 top-2" onClick={handleCloseModal}>
+                <button className="absolute font-semibold right-2 top-2" onClick={handleCloseModal}>
                     <FiX />
                 </button>
                 {modalType === "info" && prop && prop.kpiFactors && (
@@ -155,18 +168,18 @@ const RightSlideModal = ({
                         </ul>
                     </div>
                 )}
-                {modalType === "table" && data ? (
 
-                    <div className="flex flex-row justify-center">
-                        { error && <div className="text-red-500">Error fetching data</div> }
-                        { dataTable1 && <DataTable className="flex" selectedTableKey={dataTable1Key} data={dataTable1} leadSources={leadSources} departments={departments} /> }
-                        { dataTable2 && <DataTable className="flex" selectedTableKey={dataTable2Key} data={dataTable2} leadSources={leadSources} departments={departments} /> }
-                    </div>
-                )
-                    : (
+                {modalType === "table" ? (
+                    data ? (
+                        <div className="flex flex-row justify-center">
+                            {error && <div className="text-red-500">Error fetching data</div>}
+                            {dataTable1 && <DataTable className="flex" selectedTableKey={dataTable1Key} data={dataTable1} leadSources={leadSources} departments={departments} />}
+                            {dataTable2 && <DataTable className="flex" selectedTableKey={dataTable2Key} data={dataTable2} leadSources={leadSources} departments={departments} />}
+                        </div>
+                    ) : (
                         <LoadingQuotes />
                     )
-                }
+                ) : null}
 
             </div>
         </div>,

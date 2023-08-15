@@ -1,8 +1,12 @@
 
 const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
-    //console.log("filters: ", filters)
-    // console.log("apiEndpoint: ", apiEndpoint)
-    // console.log("apiName: ", apiName)
+    console.log("clientSpaceId: ", clientSpaceId)
+    console.log("filters: ", filters)
+    console.log("apiEndpoint: ", apiEndpoint)
+    console.log("apiName: ", apiName)
+    const managementSpaceId = 7723481;
+
+    
     try {
         const response = await fetch(apiEndpoint, {
             method: 'POST',
@@ -10,7 +14,7 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "spaceid": clientSpaceId,
+                "spaceid": apiName === "Closers Payments" ? managementSpaceId : clientSpaceId,
                 "filters": filters
             }),
         });
@@ -23,12 +27,12 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
         const data = await response.json();
         if (data.total === 0) {
             return 0;
-        } else if (apiName !== "Marketing Expenses" && apiName !== "Profit" && apiName !== "Projected Profit" && apiName !== "Pending Deals") {
+        } else if (apiName !== "Marketing Expenses" && apiName !== "Profit" && apiName !== "Projected Profit" && apiName !== "Pending Deals" && apiName !== "Closers Ad Spend" && apiName !== "Closers Payments") {
             return data.total;
         } else {
 
-            // console.log(apiName)
-            // console.log(data)
+            console.log(apiName)
+            console.log(data)
 
             let fetchedResults = data.data ? data.data : [];
             let offset = fetchedResults.length;
@@ -40,7 +44,7 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        "spaceid": clientSpaceId,
+                        "spaceid": apiName === "Closers Payments" ? managementSpaceId : clientSpaceId,
                         "filters": filters,
                         "offset": offset,
                         "limit": 1000,
@@ -51,7 +55,7 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
                 fetchedResults = fetchedResults.concat(moreData.data);
                 offset += moreData.data.length;
             }
-            //console.log("fetchedResults: ", fetchedResults)
+            console.log("fetchedResults: ", fetchedResults)
             return fetchedResults;
         }
     } catch (error) {
@@ -170,7 +174,12 @@ const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters)
 };
 
 export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, filters, kpiView) {
- 
+    console.log("apiName: ", apiName)
+    console.log("apiEndpoint: ", apiEndpoint)
+    console.log("filters: ", filters)
+    console.log("kpiView: ", kpiView)
+
+
     try {
         switch (kpiView) {
             case 'Financial':
