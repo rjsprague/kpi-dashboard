@@ -47,6 +47,7 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
 
     console.log("kpi view ", kpiView)
     console.log("requested kpi list ", requestedKpiList)
+    console.log("department ", department)
 
     const teamMember = teamMemberStrings.map(Number);
     let kpiList = [];
@@ -57,8 +58,17 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
     } else if (kpiView === "Team" && department[0] === "Acquisition Manager") {
         kpiList = requestedKpiList['Acquisition Manager']
         console.log("kpi list ", kpiList)
+    } else if (kpiView === "Team" && department[0] === "Deal Analyst") {
+        kpiList = requestedKpiList['Deal Analyst']
+        console.log("kpi list ", kpiList)
+    } else if (kpiView === "Team" && department[0] === "Transaction Coordinator") {
+        kpiList = requestedKpiList['Transaction Coordinator']
+        console.log("kpi list ", kpiList)
     } else if (kpiView === "Team" && department[0] === "Setter") {
         kpiList = requestedKpiList['Setter']
+        console.log("kpi list ", kpiList)
+    } else if (kpiView === "Team" && department[0] === "Closer") {
+        kpiList = requestedKpiList['Closer']
         console.log("kpi list ", kpiList)
     } else {
         kpiList = requestedKpiList
@@ -68,7 +78,7 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
         const startDate = gte ? formatDate(new Date(gte)) : null;
         const endDate = lte ? formatDate(new Date(lte)) : null;
         const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMember);
-        console.log("api endpoints obj: ", apiEndpointsObj)
+        // console.log("api endpoints obj: ", apiEndpointsObj)
 
         const requiredEndpoints = new Set();
 
@@ -78,9 +88,9 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
                 requiredEndpoints.add(endpoint);
             });
         });
-        console.log("required endpoints: ", requiredEndpoints)
+        // console.log("required endpoints: ", requiredEndpoints)
         const uniqueEndpoints = Array.from(requiredEndpoints);
-        console.log("unique endpoints: ", uniqueEndpoints)
+        // console.log("unique endpoints: ", uniqueEndpoints)
         const kpiPromises = uniqueEndpoints.map((endpointKey) => {
             console.log("endpoint key: ", endpointKey)
             const { name, url, filters } = apiEndpointsObj[endpointKey];
@@ -127,10 +137,30 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
                 }
             }, 0);
 
+            const cashCollectedUpFront = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
+                if ("Cash Collected Up Front" in curr) {
+                    acc += parseFloat(curr["Cash Collected Up Front"]);
+                }
+                return acc;
+            }, 0);
+            
+            const revenueContracted = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
+                if ("Contract Total" in curr) {
+                    acc += parseFloat(curr["Contract Total"]);
+                }
+                return acc;
+            }, 0);
+
             endpointData.totalMarketingExpenses = totalMarketingExpenses;
             endpointData.actualizedProfit = actualizedProfit;
             endpointData.projectedProfit = projectedProfit;
             endpointData.totalProfit = actualizedProfit + projectedProfit;
+            endpointData.cashCollectedUpFront = cashCollectedUpFront;
+            endpointData.revenueContracted = revenueContracted;
+            if (cashCollectedUpFront && revenueContracted) {
+                endpointData.uncollectedRevenue = revenueContracted - cashCollectedUpFront;
+                endpointData.totalRevenue = revenueContracted + cashCollectedUpFront;
+            }
         }
 
         console.log("endpoint data: ", endpointData)
@@ -140,7 +170,7 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
 
         function getKpiValue(calculatedKPIs, endpointData, dataKey) {
             const data = endpointData[dataKey];
-            console.log(data)
+            // console.log(data)
             if (dataKey === 'marketingExpenses') {
                 return endpointData.totalMarketingExpenses;
             } else if (dataKey === 'deals') {

@@ -27,13 +27,13 @@ export const VIEW_KPIS = {
             "Closers Ad Spend",
             "Closers Leads Created",
             "Closers Leads Set Prequalified",
-            "Closers Bookings",
-            "Closers Bookings Confirmed",
-            "Closers Bookings Canceled",
-            "Closers Bookings No-Show",
-            "Closers DC Showed",
-            "Closers DC Offers",
-            "Closers DC Closed",
+            "Closers Booking Rate",
+            // "Closers Bookings Confirmed",
+            // "Closers Bookings Canceled",
+            // "Closers Bookings No-Show",
+            "Closers Show Rate",
+            "Closers Offer Rate",
+            "Closers Close Rate",
             "Closers Cash Collected",
             "Closers Revenue Contracted"
         ]
@@ -53,7 +53,7 @@ export const VIEW_KPIS = {
             ]
         },
         "Closers": {
-            "Closers Setter": [
+            "Setter": [
                 "Setter STL Median"
             ]
         }

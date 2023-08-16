@@ -65,9 +65,9 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
 };
 
 const handleTeamKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
-    // console.log("apiName: ", apiName)
-    // console.log("apiEndpoint: ", apiEndpoint)
-    // console.log("filters: ", filters)
+    console.log("apiName: ", apiName)
+    console.log("apiEndpoint: ", apiEndpoint)
+    console.log("filters: ", filters)
 
 
     try {
@@ -110,7 +110,7 @@ const handleTeamKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
             offset += moreData.data.length;
         }
 
-        //console.log("fetchedResults: ", fetchedResults)
+        console.log("fetchedResults: ", fetchedResults)
         return fetchedResults;
 
     } catch (error) {
@@ -120,6 +120,11 @@ const handleTeamKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
 };
 
 const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
+    console.log("apiName: ", apiName)
+    console.log("apiEndpoint: ", apiEndpoint)
+    console.log("filters: ", filters)
+    const managementSpaceId = 7723481;
+
     try {
         const response = await fetch(apiEndpoint, {
             method: 'POST',
@@ -127,7 +132,7 @@ const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters)
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "spaceid": clientSpaceId,
+                "spaceid": apiName === "Closers Payments" ? managementSpaceId : clientSpaceId,
                 "filters": filters
             }),
         });
@@ -140,7 +145,7 @@ const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters)
         const data = await response.json();
         if (data.total === 0) {
             return 0;
-        } else if (apiName !== "Marketing Expenses" && apiName !== "Profit" && apiName !== "Projected Profit") {
+        } else if (apiName !== "Marketing Expenses" && apiName !== "Profit" && apiName !== "Projected Profit" && apiName !== "Closers Ad Spend" && apiName !== "Closers Payments") {
             return data.total;
         } else {
 
@@ -154,7 +159,7 @@ const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters)
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        "spaceid": clientSpaceId,
+                        "spaceid": apiName === "Closers Payments" ? managementSpaceId : clientSpaceId,
                         "filters": filters,
                         "offset": offset,
                         "limit": 1000,
@@ -165,6 +170,7 @@ const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters)
                 fetchedResults = fetchedResults.concat(moreData.data);
                 offset += moreData.data.length;
             }
+            console.log("fetchedResults: ", fetchedResults)
             return fetchedResults;
         }
     } catch (error) {

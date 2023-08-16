@@ -1,6 +1,8 @@
 
 async function fetchActiveTeamMembers(clientSpaceId) {
     
+    const closersSpaceId = process.env.NEXT_PUBLIC_CLOSERS_SPACEID
+
 
     try {
         const response = await fetch('/api/team-members', {
@@ -20,11 +22,23 @@ async function fetchActiveTeamMembers(clientSpaceId) {
 
         const data = await response.json();
 
-        const activeMembers = {
-            "Lead Manager": {},
-            "Acquisition Manager": {}
-        };
+        let activeMembers;
 
+        if (clientSpaceId == closersSpaceId) {
+            activeMembers = {                
+                "Setter": {},
+                "Closer": {},
+                "Acquisition Manager": {},
+            };
+        } else {
+            activeMembers = {
+                "Lead Manager": {},
+                "Acquisition Manager": {},
+                "Deal Analyst": {},
+                "Transaction Coordinator": {},
+            };
+        }
+        
         data.data.forEach(member => {
             if (member.Status && member.Status[0] === "Active") {
                 const department = member.Department;
@@ -36,7 +50,8 @@ async function fetchActiveTeamMembers(clientSpaceId) {
                 }
             }
         });
-        //console.log("activeMembers", activeMembers)
+
+        console.log("activeMembers", activeMembers)
         return activeMembers;
 
     } catch (error) {

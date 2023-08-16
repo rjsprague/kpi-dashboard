@@ -11,5 +11,5 @@ function KpiDashboardPage() {
     )
 }
 
-export default withAuth(KpiDashboardPage)
+export default KpiDashboardPage
 

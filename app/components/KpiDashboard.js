@@ -64,6 +64,7 @@ export default function KpiDashboard() {
                 setLeadSources(leadSourcesData);
                 const leadSourcesObject = leadSourcesData;
                 const departmentsData = await fetchActiveTeamMembers(clientSpaceId);
+                console.log("departments data ", departmentsData)
                 setDepartments(departmentsData)
                 setTeamMembers(departmentsData)
                 const departmentsDataObject = departmentsData;
