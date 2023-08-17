@@ -224,6 +224,27 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                 {
                     "type": "category",
                     "fieldName": "Event",
+                    "values": ["Discovery Call Scheduled"]
+                },
+                {
+                    "type": "category",
+                    "fieldName": "lead_event #",
+                    "values": ["1.0000"]
+                },
+                {
+                    "type": "app",
+                    "fieldName": "Team Member Responsible",
+                    "values": teamMembers
+                }
+            ])
+        },
+        closersAppointments: {
+            name: "Closers Appointments",
+            url: "/api/closers/acquisitions/lead-events",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
+                {
+                    "type": "category",
+                    "fieldName": "Event",
                     "values": ["Discovery Call Attended", "Discovery Call NO-SHOW"]
                 },
                 {
@@ -231,11 +252,11 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                     "fieldName": "lead_event #",
                     "values": ["1.0000"]
                 },
-                // {
-                //     "type": "app",
-                //     "fieldName": "Team Member Responsible",
-                //     "values": teamMembers
-                // }
+                {
+                    "type": "app",
+                    "fieldName": "Team Member Responsible",
+                    "values": teamMembers
+                }
             ])
         },
         // closersBookingsConfirmed: {

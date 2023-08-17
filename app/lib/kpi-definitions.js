@@ -983,14 +983,14 @@ const KPI_DEFINITIONS = {
     // },
     "Closers Show Rate": {
         name: "Closers Show Rate",
-        dataKeys: ["closersBookings", "closersDcShowed"],
+        dataKeys: ["closersAppointments", "closersDcShowed"],
         formula: (apiData) => {
-            const { closersBookings, closersDcShowed } = apiData;
-            return closersBookings > 0 ? closersDcShowed / closersBookings * 100 : 0;
+            const { closersAppointments, closersDcShowed } = apiData;
+            return closersAppointments > 0 ? closersDcShowed / closersAppointments * 100 : 0;
         },
         redFlag: 70,
         target: 90,
-        dataLabels: ["Bookings: ", "Showings: "],
+        dataLabels: ["Appointments: ", "Showings: "],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [

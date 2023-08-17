@@ -43,7 +43,7 @@ function createKpiObject(name, current, redFlag, target, data1, data2, unit, kpi
 }
 
 async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource, gte, lte, department, teamMemberStrings) {
-    console.log("clientSpaceId: ", clientSpaceId)
+    // console.log("clientSpaceId: ", clientSpaceId)
 
     // console.log("kpi view ", kpiView)
     // console.log("requested kpi list ", requestedKpiList)
@@ -140,21 +140,21 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
             }, 0);
 
             const cashCollectedUpFront = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
-                if ("Cash Collected Up Front" in curr) {
+                if ("Cash Collected Up Front" in curr && curr["Status"] !== "Canceled") {
                     acc += parseFloat(curr["Cash Collected Up Front"]);
                 }
                 return acc;
             }, 0);
 
             const revenueContracted = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
-                if ("Contract Total" in curr) {
+                if ("Contract Total" in curr && curr["Status"] !== "Canceled") {
                     acc += parseFloat(curr["Contract Total"]);
                 }
                 return acc;
             }, 0);
 
             const numPaymentPlans = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
-                if ("Closer Responsible" in curr) {
+                if ("Closer Responsible" in curr && curr["Status"] !== "Canceled") {
                     acc += 1;
                 }
                 return acc;

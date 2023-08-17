@@ -32,7 +32,7 @@ const kpiToEndpointMapping = {
     // 'Closers Bookings Confirmed': ['closersBookingsConfirmed'],
     // 'Closers Bookings Canceled': ['closersBookingsCanceled'],
     // 'Closers Bookings No-Show': ['closersBookingsNoShow'],
-    'Closers Show Rate': ['closersBookings', 'closersDcShowed'],
+    'Closers Show Rate': ['closersAppointments', 'closersDcShowed'],
     'Closers Offer Rate': ['closersDcShowed', 'closersDcOffers'],
     'Closers Close Rate': ['closersDcOffers', 'closersDcClosed'],
     'Closers Cash Collected': ['closersPayments'],

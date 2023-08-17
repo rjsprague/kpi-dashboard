@@ -3,12 +3,12 @@ import apiEndpoints from './apiEndpoints';
 import { formatDate } from './date-utils';
 
 export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }) {
-    const managementSpaceId = process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID;
+    const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
     let teamMembersNum = teamMembers.map(Number);
     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
 
-    // console.log(apiEndpointsKeys)
-    // console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
+    console.log(apiEndpointsKeys)
+    console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
 
     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
         throw new Error('Invalid API name');
@@ -182,7 +182,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     }
                 } else {
                     return {
-                        "Date": result["Lead Created On"]["start_utc"] ? result["Lead Created On"]["start_utc"] : result["Lead Created On"]["start"] ? result["Lead Created On"]["start"] : "Not a Lead",
+                        "Date": result["Lead Created On"]["start_utc"] ? formatDate(result["Lead Created On"]["start_utc"]) : result["Lead Created On"]["start"] ? formatDate(result["Lead Created On"]["start"]) : "Not a Lead",
                         "Name": result["Contact Name"] ? result["Contact Name"] : result["Seller Contact Name"] ? result["Seller Contact Name"]
                             : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
                                 : result["First"] ? result["First"]
@@ -396,9 +396,15 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                 }
             })
         } else if (apiEndpointKey === "closersPayments") {
-            return results.map((result) => {
+            const calcResults = results.reduce((acc, curr) => {
+                if (curr.hasOwnProperty("Closer Responsible")) {
+                    acc.push(curr)
+                }
+                return acc
+            }, [])
+            return calcResults.map((result) => {
                 return {
-                    "Date Closed": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No date given",
+                    "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No date given",
                     "Payment Start": result["Date Start"] && result["Date Start"]["start"] ? formatDate(result["Date Start"]["start"]) : "No start date",
                     "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "No closer given",
                     "Cash Up Front": result["Cash Collected Up Front"] ? result["Cash Collected Up Front"] : "No cash up front",
@@ -406,7 +412,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     podio_item_id: result.itemid ? result.itemid : podio_item_id,
                 }
             })
-        } else if (apiEndpointKey === "closersLeadsSetPrequalified" || apiEndpointKey === "closersBookings") {
+        } else if (apiEndpointKey === "closersLeadsSetPrequalified" || apiEndpointKey === "closersBookings" || apiEndpointKey === "closersAppointments") {
             return results.map((result) => {
                 return {
                     "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No Date",

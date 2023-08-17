@@ -40,7 +40,7 @@ async function fetchActiveTeamMembers(clientSpaceId) {
         }
         
         data.data.forEach(member => {
-            if (member.Status && member.Status[0] === "Active") {
+            if (member.Status && member.Status == "Active" || member.Status == "Pending") {
                 const department = member.Department;
                 const id = member.itemid;
                 const name = member["Team Member Full Name"] ? member["Team Member Full Name"] : null;

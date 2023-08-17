@@ -4,8 +4,7 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
     // console.log("filters: ", filters)
     // console.log("apiEndpoint: ", apiEndpoint)
     // console.log("apiName: ", apiName)
-    const managementSpaceId = process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID;
-
+    const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
     
     try {
         const response = await fetch(apiEndpoint, {
@@ -30,10 +29,8 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
         } else if (apiName !== "Marketing Expenses" && apiName !== "Profit" && apiName !== "Projected Profit" && apiName !== "Pending Deals" && apiName !== "Closers Ad Spend" && apiName !== "Closers Payments") {
             return data.total;
         } else {
-
             // console.log(apiName)
             // console.log(data)
-
             let fetchedResults = data.data ? data.data : [];
             let offset = fetchedResults.length;
 
@@ -68,8 +65,6 @@ const handleTeamKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
     // console.log("apiName: ", apiName)
     // console.log("apiEndpoint: ", apiEndpoint)
     // console.log("filters: ", filters)
-
-
     try {
         const response = await fetch(apiEndpoint, {
             method: 'POST',
@@ -123,7 +118,7 @@ const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters)
     console.log("apiName: ", apiName)
     console.log("apiEndpoint: ", apiEndpoint)
     console.log("filters: ", filters)
-    const managementSpaceId = process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID;
+    const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
 
     try {
         const response = await fetch(apiEndpoint, {

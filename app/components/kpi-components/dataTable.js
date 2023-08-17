@@ -82,6 +82,15 @@ const dateColumnKeys = {
     amStlMedian: "Date",
     daStlMedian: "Date",
     bigChecks: "Date",
+    closersAdSpend: "Week",
+    closersLeadsCreated: "Date",
+    closersPayments: "Date",
+    closersLeadsSetPrequalified: "Date",
+    closersBookings: "Date",
+    closersAppointments: "Date",
+    closersDcShowed: "Date Submitted",
+    closersDcOffers: "Date Submitted",
+    closersDcClosed: "Date Submitted",
 };
 
 const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap) => {
