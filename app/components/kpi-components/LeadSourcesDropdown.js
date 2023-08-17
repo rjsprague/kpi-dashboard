@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import CheckboxDropdown from './UniversalDropdown';
+import UniversalDropdown from './UniversalDropdown';
 import ServiceUnavailable from '../ServiceUnavailable';
 import DropdownButton from './DropdownButton';
 
@@ -24,7 +24,7 @@ export default function LeadSourceDropdown({ onOptionSelected, queryId, leadSour
     }
 
     return (
-        <CheckboxDropdown
+        <UniversalDropdown
             options={Object.keys(leadSources)}
             onOptionSelected={handleOptionSelected}
             selectedOptions={selectedOptions}

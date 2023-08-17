@@ -45,31 +45,34 @@ function createKpiObject(name, current, redFlag, target, data1, data2, unit, kpi
 async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource, gte, lte, department, teamMemberStrings) {
     console.log("clientSpaceId: ", clientSpaceId)
 
-    console.log("kpi view ", kpiView)
-    console.log("requested kpi list ", requestedKpiList)
-    console.log("department ", department)
+    // console.log("kpi view ", kpiView)
+    // console.log("requested kpi list ", requestedKpiList)
+    // console.log("department ", department)
+    // console.log("team member strings ", teamMemberStrings)
 
     const teamMember = teamMemberStrings.map(Number);
+    // console.log("team member ", teamMember)
+
     let kpiList = [];
 
     if (kpiView === "Team" && department[0] === "Lead Manager") {
         kpiList = requestedKpiList['Lead Manager']
-        console.log("kpi list ", kpiList)
+        // console.log("kpi list ", kpiList)
     } else if (kpiView === "Team" && department[0] === "Acquisition Manager") {
         kpiList = requestedKpiList['Acquisition Manager']
-        console.log("kpi list ", kpiList)
+        // console.log("kpi list ", kpiList)
     } else if (kpiView === "Team" && department[0] === "Deal Analyst") {
         kpiList = requestedKpiList['Deal Analyst']
-        console.log("kpi list ", kpiList)
+        // console.log("kpi list ", kpiList)
     } else if (kpiView === "Team" && department[0] === "Transaction Coordinator") {
         kpiList = requestedKpiList['Transaction Coordinator']
-        console.log("kpi list ", kpiList)
+        // console.log("kpi list ", kpiList)
     } else if (kpiView === "Team" && department[0] === "Setter") {
         kpiList = requestedKpiList['Setter']
-        console.log("kpi list ", kpiList)
+        // console.log("kpi list ", kpiList)
     } else if (kpiView === "Team" && department[0] === "Closer") {
         kpiList = requestedKpiList['Closer']
-        console.log("kpi list ", kpiList)
+        // console.log("kpi list ", kpiList)
     } else {
         kpiList = requestedKpiList
     }
@@ -92,7 +95,6 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
         const uniqueEndpoints = Array.from(requiredEndpoints);
         // console.log("unique endpoints: ", uniqueEndpoints)
         const kpiPromises = uniqueEndpoints.map((endpointKey) => {
-            console.log("endpoint key: ", endpointKey)
             const { name, url, filters } = apiEndpointsObj[endpointKey];
             return fetchKPIs(clientSpaceId, name, url, filters, kpiView);
         });
@@ -110,7 +112,7 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
                 throw new Error("Error fetching endpoint data. Please try again later.");
             });
 
-        console.log("endpoint data: ", endpointData)
+        // console.log("endpoint data: ", endpointData)
 
         if (kpiView === 'Financial' || kpiView === 'Acquisitions') {
             const totalMarketingExpenses = endpointData.marketingExpenses && Array.isArray(endpointData.marketingExpenses) && endpointData.marketingExpenses.reduce((acc, curr) => {
@@ -143,10 +145,17 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
                 }
                 return acc;
             }, 0);
-            
+
             const revenueContracted = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
                 if ("Contract Total" in curr) {
                     acc += parseFloat(curr["Contract Total"]);
+                }
+                return acc;
+            }, 0);
+
+            const numPaymentPlans = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
+                if ("Closer Responsible" in curr) {
+                    acc += 1;
                 }
                 return acc;
             }, 0);
@@ -157,20 +166,19 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
             endpointData.totalProfit = actualizedProfit + projectedProfit;
             endpointData.cashCollectedUpFront = cashCollectedUpFront;
             endpointData.revenueContracted = revenueContracted;
-            if (cashCollectedUpFront && revenueContracted) {
-                endpointData.uncollectedRevenue = revenueContracted - cashCollectedUpFront;
-                endpointData.totalRevenue = revenueContracted + cashCollectedUpFront;
-            }
+            endpointData.uncollectedRevenue = revenueContracted - cashCollectedUpFront;
+            endpointData.totalRevenue = revenueContracted + cashCollectedUpFront;
+            endpointData.numPaymentPlans = numPaymentPlans;
         }
 
-        console.log("endpoint data: ", endpointData)
+        // console.log("endpoint data: ", endpointData)
 
         const calculatedKPIs = calculateKPIs(startDate, endDate, endpointData, kpiList);
-        console.log("calculated kpis: ", calculatedKPIs)
+        // console.log("calculated kpis: ", calculatedKPIs)
 
         function getKpiValue(calculatedKPIs, endpointData, dataKey) {
             const data = endpointData[dataKey];
-            // console.log(data)
+
             if (dataKey === 'marketingExpenses') {
                 return endpointData.totalMarketingExpenses;
             } else if (dataKey === 'deals') {
@@ -189,8 +197,8 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
                 return calculatedKPIs["BiG Checks"];
             } else if (dataKey === 'closersCashCollected') {
                 return calculatedKPIs["Closers Cash Collected"]
-            } else if (dataKey === 'closersRevenueCollected') {
-                return calculatedKPIs["Closers Revenue Collected"]
+            } else if (dataKey === 'closersRevenueContracted') {
+                return calculatedKPIs["Closers Revenue Contracted"]
             }
             else {
                 return data;
@@ -200,7 +208,7 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
 
         const kpiDefinitionsArray = Object.values(KPI_DEFINITIONS);
 
-        console.log("KPI Definitions Array: ", kpiDefinitionsArray)
+        // console.log("KPI Definitions Array: ", kpiDefinitionsArray)
 
         // Helper function for creating data strings
         const createDataString = (dataLabel, value) => {
@@ -225,7 +233,7 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
                 return createKpiObject(kpiDefinition.name, current, redFlag, target, data1, data2, unit, kpiType, kpiFactors);
             });
 
-        console.log(kpiObjects);
+        // console.log(kpiObjects);
         return kpiObjects;
 
     } catch (error) {

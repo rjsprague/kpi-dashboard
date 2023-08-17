@@ -1,10 +1,10 @@
 
 const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
-    console.log("clientSpaceId: ", clientSpaceId)
-    console.log("filters: ", filters)
-    console.log("apiEndpoint: ", apiEndpoint)
-    console.log("apiName: ", apiName)
-    const managementSpaceId = 7723481;
+    // console.log("clientSpaceId: ", clientSpaceId)
+    // console.log("filters: ", filters)
+    // console.log("apiEndpoint: ", apiEndpoint)
+    // console.log("apiName: ", apiName)
+    const managementSpaceId = process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID;
 
     
     try {
@@ -31,8 +31,8 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
             return data.total;
         } else {
 
-            console.log(apiName)
-            console.log(data)
+            // console.log(apiName)
+            // console.log(data)
 
             let fetchedResults = data.data ? data.data : [];
             let offset = fetchedResults.length;
@@ -55,7 +55,7 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
                 fetchedResults = fetchedResults.concat(moreData.data);
                 offset += moreData.data.length;
             }
-            console.log("fetchedResults: ", fetchedResults)
+            // console.log("fetchedResults: ", fetchedResults)
             return fetchedResults;
         }
     } catch (error) {
@@ -65,9 +65,9 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
 };
 
 const handleTeamKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
-    console.log("apiName: ", apiName)
-    console.log("apiEndpoint: ", apiEndpoint)
-    console.log("filters: ", filters)
+    // console.log("apiName: ", apiName)
+    // console.log("apiEndpoint: ", apiEndpoint)
+    // console.log("filters: ", filters)
 
 
     try {
@@ -123,7 +123,7 @@ const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters)
     console.log("apiName: ", apiName)
     console.log("apiEndpoint: ", apiEndpoint)
     console.log("filters: ", filters)
-    const managementSpaceId = 7723481;
+    const managementSpaceId = process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID;
 
     try {
         const response = await fetch(apiEndpoint, {
@@ -180,10 +180,10 @@ const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters)
 };
 
 export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, filters, kpiView) {
-    console.log("apiName: ", apiName)
-    console.log("apiEndpoint: ", apiEndpoint)
-    console.log("filters: ", filters)
-    console.log("kpiView: ", kpiView)
+    // console.log("apiName: ", apiName)
+    // console.log("apiEndpoint: ", apiEndpoint)
+    // console.log("filters: ", filters)
+    // console.log("kpiView: ", kpiView)
 
 
     try {

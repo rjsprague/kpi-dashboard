@@ -22,10 +22,10 @@ export default function KpiDashboard() {
     const [idCounter, setIdCounter] = useState(0);
     const [queries, setQueries] = useState([]);
     const clientSpaceId = useSelector(selectSpaceId);
-    const closersSpaceId = process.env.NEXT_PUBLIC_CLOSERS_SPACEID;
-    console.log(clientSpaceId)
-    console.log(closersSpaceId)
-    console.log(clientSpaceId == closersSpaceId)
+    const closersSpaceId = process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID;
+    // console.log(clientSpaceId)
+    // console.log(closersSpaceId)
+    // console.log(clientSpaceId == closersSpaceId)
 
 
     //console.log("clientSpaceId: ", clientSpaceId)
@@ -198,6 +198,23 @@ export default function KpiDashboard() {
         setQueries(createInitialQueries(leadSources, departments, datePresets));
     };
 
+    const handleTeamMemberForClosersChange = (teamMember, queryId) => {
+        console.log("team member ", teamMember)
+        setQueries((prevQueries) => {
+            return prevQueries.map((query) => {
+                if (query.id === queryId) {
+                    return {
+                        ...query,
+                        teamMembers: teamMember,
+                    };
+                } else {
+                    return query;
+                }
+            });
+        });
+    };
+
+
     const renderKpiResultsSection = () => {
         return <KpiQueryContainer
             view={queryType}
@@ -212,6 +229,7 @@ export default function KpiDashboard() {
             handleFetchedKpiData={handleFetchedKpiData}
             handleDateRangeChange={handleDateRangeChange}
             handleLeadSourceChange={handleLeadSourceChange}
+            handleTeamMemberForClosersChange={handleTeamMemberForClosersChange}
             handleTeamChange={handleTeamChange}
             handleToggleQuery={handleToggleQuery}
             handleRemoveQuery={handleRemoveQuery}

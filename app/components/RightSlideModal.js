@@ -35,8 +35,9 @@ const RightSlideModal = ({
     // console.log("RightSlideModal: ", selectedView, selectedDepartment, selectedViewKpiList, dataTable1, dataTable1Key, dataTable2, dataTable2Key)
 
     const { startDate, endDate, leadSource, kpiView, teamMembers, apiName } = tableProps;
+    console.log(apiName)
     const { data, error } = useSWR({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }, fetchSingleKpi);
-    // console.log(data)
+    console.log(data)
 
     useEffect(() => {
         if (data) {
@@ -48,7 +49,7 @@ const RightSlideModal = ({
     }, [data])
 
     useEffect(() => {
-        if (clientSpaceId == process.env.NEXT_PUBLIC_CLOSERS_SPACEID) {
+        if (clientSpaceId == process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID) {
             if (selectedView === 'Team') {
                 setSelectedViewKpiList(VIEW_KPIS[selectedView]["Closers"][selectedDepartment]);
             } else {

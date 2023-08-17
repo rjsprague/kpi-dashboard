@@ -1,10 +1,10 @@
 
 async function fetchLeadSources(clientSpaceId) {
 
-    console.log("fetchLeadSources clientSpaceId", clientSpaceId)
+    // console.log("fetchLeadSources clientSpaceId", clientSpaceId)
 
-    const closersSpaceId = process.env.NEXT_PUBLIC_CLOSERS_SPACEID
-    console.log("fetchLeadSources closersSpaceId", closersSpaceId)
+    const closersSpaceId = process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID
+    // console.log("fetchLeadSources closersSpaceId", closersSpaceId)
 
     try {
         const response = await fetch('/api/lead-sources', {

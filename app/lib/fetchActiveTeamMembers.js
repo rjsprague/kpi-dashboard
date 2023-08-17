@@ -1,7 +1,7 @@
 
 async function fetchActiveTeamMembers(clientSpaceId) {
     
-    const closersSpaceId = process.env.NEXT_PUBLIC_CLOSERS_SPACEID
+    const closersSpaceId = process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID
 
 
     try {
@@ -51,7 +51,7 @@ async function fetchActiveTeamMembers(clientSpaceId) {
             }
         });
 
-        console.log("activeMembers", activeMembers)
+        // console.log("activeMembers", activeMembers)
         return activeMembers;
 
     } catch (error) {

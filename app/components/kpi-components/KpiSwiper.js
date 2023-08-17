@@ -12,9 +12,9 @@ SwiperCore.use([Controller, Scrollbar, Mousewheel]);
 const KpiSwiper = ({ query, view, selectedKpis, handleCardInfoClick, handleKpiCardClick }) => {
     const swiperRef = useRef(null);
 
-    console.log("query: ", query)
-    console.log("view: ", view)
-    console.log("selectedKpis: ", selectedKpis)
+    // console.log("query: ", query)
+    // console.log("view: ", view)
+    // console.log("selectedKpis: ", selectedKpis)
 
     const slides = query?.results?.length > 0 && query.isOpen
         && query.results

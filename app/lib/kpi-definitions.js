@@ -1058,15 +1058,15 @@ const KPI_DEFINITIONS = {
     },
     "Closers Cash Collected": {
         name: "Closers Cash Collected",
-        dataKeys: ["closersCashCollected"],
+        dataKeys: ["closersCashCollected", "numPaymentPlans"],
         formula: (apiData) => {
-            const { cashCollectedUpFront, closersPayments } = apiData;
+            const { cashCollectedUpFront, numPaymentPlans } = apiData;
 
-            return closersPayments && closersPayments.length > 0 ? (cashCollectedUpFront / closersPayments.length).toFixed(2) : 0;
+            return numPaymentPlans && numPaymentPlans !== 0 ? (cashCollectedUpFront / numPaymentPlans).toFixed(2) : 0;
         },
         redFlag: 4000,
         target: 10000,
-        dataLabels: [],
+        dataLabels: ["Cash Collected: $", "Payment Plans: "],
         kpiType: "",
         unit: "$",
         kpiFactors: [
@@ -1084,15 +1084,16 @@ const KPI_DEFINITIONS = {
     },
     "Closers Revenue Contracted": {
         name: "Closers Revenue Contracted",
-        dataKeys: ["closersRevenueContracted"],
+        dataKeys: ["closersRevenueContracted", "numPaymentPlans"],
         formula: (apiData) => {
-            const { revenueContracted, closersPayments } = apiData;
-
-            return closersPayments && closersPayments.length > 0 ? revenueContracted / closersPayments.length : 0;
+            const { revenueContracted, numPaymentPlans } = apiData;
+            // console.log('revenueContracted', revenueContracted)
+            // console.log('numPaymentPlans', numPaymentPlans)
+            return numPaymentPlans && numPaymentPlans !== 0 ? (revenueContracted / numPaymentPlans).toFixed(2) : 0;
         },
         redFlag: 0,
         target: 0,
-        dataLabels: [],
+        dataLabels: ["Revenue Contracted: $", "Payment Plans: "],
         kpiType: "",
         unit: "$",
         kpiFactors: [

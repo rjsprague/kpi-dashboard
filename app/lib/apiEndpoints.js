@@ -26,6 +26,8 @@ const generateFilters = (startDate, endDate, leadSource, kpiView, leadSourceFiel
 };
 // Define the endpoints and filters for each KPI
 const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
+    console.log(teamMembers)
+    console.log(kpiView)
     return {
         marketingExpenses: {
             name: "Marketing Expenses",
@@ -207,6 +209,11 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                     "type": "category",
                     "fieldName": "lead_event #",
                     "values": ["1.0000"]
+                },
+                {
+                    "type": "app",
+                    "fieldName": "Team Member Responsible",
+                    "values": teamMembers
                 }
             ])
         },
@@ -223,7 +230,12 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                     "type": "category",
                     "fieldName": "lead_event #",
                     "values": ["1.0000"]
-                }
+                },
+                // {
+                //     "type": "app",
+                //     "fieldName": "Team Member Responsible",
+                //     "values": teamMembers
+                // }
             ])
         },
         // closersBookingsConfirmed: {
@@ -304,7 +316,13 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
         closersPayments: {
             name: "Closers Payments",
             url: "/api/closers/management/payment-plans",
-            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date")
+            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date", kpiView !== "Financial" && [
+                {
+                    "type": "app",
+                    "fieldName": "Closer Responsible",
+                    "values": teamMembers
+                }
+            ])
         },
         setterStlMedian: {
             name: "Setter STL Median",

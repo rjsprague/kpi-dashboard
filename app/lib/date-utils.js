@@ -1,5 +1,10 @@
 "use client"
 
+export const formatDate = (dateTimeString) => {
+    const dateObject = new Date(dateTimeString);
+    return dateObject.toISOString().split('T')[0]; 
+}
+
 export function getStartOfLastWeek() {
   const now = new Date();
   const startOfLastWeek = new Date(

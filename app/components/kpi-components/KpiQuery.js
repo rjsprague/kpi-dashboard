@@ -22,9 +22,9 @@ const KpiQuery = ({
 }) => {
     const { id, dateRange, leadSource, departments, teamMembers } = query;
     const clientSpaceId = useSelector(selectSpaceId);
-
-    //console.log("department in KpiQuery: ", departments)
-    //console.log("teamMember in KpiQuery: ", teamMembers)
+    // console.log(props)
+    // console.log("department in KpiQuery: ", departments)
+    // console.log("teamMember in KpiQuery: ", teamMembers)
     //console.log("id in KpiQuery: ", id)
     //console.log("lead sources in KpiQuery: ", leadSource)
     //console.log("date range in KpiQuery: ", dateRange)

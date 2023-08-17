@@ -16,6 +16,8 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
     const dropdownContentRef = useRef(null);
     const searchInputRef = useRef(null);
 
+    // console.log(options, selectedOptions)
+
     useEffect(() => {
         if (showButton) {
             setIsOpen(true);

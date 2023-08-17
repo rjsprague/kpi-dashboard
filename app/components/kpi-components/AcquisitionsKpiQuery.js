@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import KpiSwiper from './KpiSwiper';
 import LeadSourcesDropdown from './LeadSourcesDropdown';
 import SingleDateRangeSelector from './SingleDateRangeSelector';
@@ -8,6 +8,10 @@ import AnimateHeight from 'react-animate-height';
 import RightSlideModal from '../RightSlideModal';
 import QueryPanel from './QueryPanel';
 import ServiceUnavailable from '../ServiceUnavailable';
+import { useSelector } from 'react-redux';
+import { selectSpaceId } from '../../../app/GlobalRedux/Features/client/clientSlice'
+import UniversalDropdown from './UniversalDropdown';
+import DropdownButton from './DropdownButton';
 
 const AcquisitionsKpiQuery = ({
     view,
@@ -18,6 +22,7 @@ const AcquisitionsKpiQuery = ({
     leadSources,
     onDateRangeChange,
     onLeadSourceChange,
+    onTeamMemberForClosersChange,
     onToggleQuery,
     onRemoveQuery,
     isLoadingData
@@ -32,6 +37,33 @@ const AcquisitionsKpiQuery = ({
     const [selectedResult, setSelectedResult] = useState(null);
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
     const [tableProps, setTableProps] = useState(null);
+    const [teamMembersForClosers, setTeamMembersForClosers] = useState([]);
+    const [selectedTeamMembersForClosers, setSelectedTeamMembersForClosers] = useState([]);
+    const [reversedTeamMembersForClosers, setReversedTeamMembersForClosers] = useState([]);
+    const [teamMembersForClosersOpen, setTeamMembersForClosersOpen] = useState(false);
+    const clientSpaceId = useSelector(selectSpaceId);
+
+    useEffect(() => {
+        const teamMembersObj = {};
+        Object.entries(departments).forEach(([department, members]) => {
+            Object.entries(members).forEach(([id, name]) => {
+                if (!teamMembersObj[id]) {
+                    teamMembersObj[id] = name + " (" + department + ")";
+                }
+            });
+        });
+        setTeamMembersForClosers(teamMembersObj);
+        setSelectedTeamMembersForClosers(Object.values(teamMembersObj));
+        onTeamMemberForClosersChange(Object.keys(teamMembersObj), query.id)
+        let reversedTeamMembersObj = {};
+        Object.entries(teamMembersObj).forEach(([id, name]) => {
+            reversedTeamMembersObj[name] = id;
+        });
+        setReversedTeamMembersForClosers(reversedTeamMembersObj);
+    }, [departments])
+
+    
+
 
     const handleCardInfoClick = (result) => {
         setSelectedResult(result);
@@ -60,6 +92,12 @@ const AcquisitionsKpiQuery = ({
         setHeight(height === 0 ? 'auto' : 0);
     };
 
+    const handleTeamMemberForClosersChange = (selectedTeamMembers) => {
+        const selectedTeamMemberIds = selectedTeamMembers.map(option => reversedTeamMembersForClosers[option])
+        setSelectedTeamMembersForClosers(selectedTeamMembers)
+        onTeamMemberForClosersChange(selectedTeamMemberIds, query.id)
+    };
+
     const handleRemoveQuery = () => {
         onRemoveQuery && onRemoveQuery(query.id);
     };
@@ -73,6 +111,19 @@ const AcquisitionsKpiQuery = ({
             {/* Main KPI Results */}
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
                 <div className='flex flex-col gap-2 xs:flex-row'>
+                    {clientSpaceId == process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID && teamMembersForClosers &&
+                        <UniversalDropdown
+                            options={Object.values(teamMembersForClosers)}
+                            onOptionSelected={handleTeamMemberForClosersChange}
+                            selectedOptions={selectedTeamMembersForClosers}
+                            queryId={query.id}
+                            isSingleSelect={false}
+                            isLoadingData={isLoadingData}
+                            className={""}
+                            ButtonComponent={DropdownButton}
+                            showButton={teamMembersForClosersOpen}
+                        />
+                    }
                     {/* Lead Source and Date Range Selectors */}
                     <LeadSourcesDropdown
                         onOptionSelected={onLeadSourceChange}
