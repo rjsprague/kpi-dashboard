@@ -9,7 +9,9 @@ import { setClientName, setSpaceId } from '../GlobalRedux/Features/client/client
 import { useDispatch } from 'react-redux';
 import UniversalDropdown from './kpi-components/UniversalDropdown';
 import SidenavDropdownButton from './SidenavDropdownButton';
+import useSWR from 'swr';
 
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function SideNav() {
     const [isOpen, setIsOpen] = useState(false);
@@ -21,6 +23,9 @@ export default function SideNav() {
     const [clientsOpen, setClientsOpen] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
     const buttonRef = useRef(null);
+    const { data: user, error: userError } = useSWR('/auth/getUser', fetcher);
+
+    // console.log(user)
 
     const dispatch = useDispatch();
 
@@ -134,7 +139,7 @@ export default function SideNav() {
                             <ul className={`relative flex flex-col mt-8 lg:space-y-2 gap-2 ${isOpen ? '' : ''}`}>
                                 {navItems.map((item, index) => (
                                     <li key={index}>
-                                        {item.dropdown ? (
+                                        {item.dropdown && user && user?.IsAdmin === true ? (
                                             <div
                                                 ref={buttonRef}
                                                 className="relative flex w-full rounded-md hover:bg-blue-500"

@@ -8,6 +8,7 @@ const useRefreshToken = () => {
     const router = useRouter()
     const pathname = usePathname()
 
+    // console.log('useRefreshToken', auth.accessToken)
     const refresh = async () => {
         try {
             const response = await axios.get('/dashboard/auth/refresh', {
@@ -15,7 +16,8 @@ const useRefreshToken = () => {
                     Authorization: `Bearer ${auth.accessToken}`,
                 },
                 withCredentials: true
-            });           
+            });
+            console.log('refresh', response.data.token)         
             setAuth({ accessToken: response.data.token });
             Cookies.set('accessToken', response.data.token, { expires: 7, secure: true });
             return response.data.token;

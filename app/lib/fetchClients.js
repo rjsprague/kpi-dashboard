@@ -1,6 +1,18 @@
-async function fetchClients(url='/api/spaces') {
+
+async function fetchClients(url = '/api/spaces') {
+
+    const response = await fetch('/auth/getAccessToken');
+    const { accessToken } = await response.json();
+    console.log("accessToken", accessToken)
+
     try {
-        const data = await fetch(url);
+        const data = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken.value}`,
+            },
+        });
 
         // console.log('Clients Response:', data);
 

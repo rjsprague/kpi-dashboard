@@ -10,7 +10,7 @@ export async function GET(req) {
     const url = new URL(req.url);
     const code = url.searchParams.get('code');
 
-    console.log("code: " + code);
+    //console.log("code: " + code);
 
     if (!code) {
         return NextResponse.redirect( public_base_url + '/login');
@@ -29,10 +29,10 @@ export async function GET(req) {
 
         const data = await response.json();
         const { token } = data;
+
         const decodedToken = jwt.decode(token);
-
-        console.log(decodedToken);
-
+        // console.log(decodedToken);
+        
         // set the token in a cookie
         cookies().set({
             name: 'accessToken',
@@ -42,6 +42,12 @@ export async function GET(req) {
             secure: process.env.NODE_ENV === 'production', // set to true in production
             httpOnly: true,
         })
+
+        // console.log("accessToken cookie ", cookies().get('accessToken'))
+
+        if (!decodedToken.timezone) {
+            return NextResponse.redirect( public_base_url + '/user-profile')
+        }
 
         return NextResponse.redirect( public_base_url + '/kpi-dashboard');
     } catch (error) {

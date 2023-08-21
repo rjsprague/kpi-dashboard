@@ -7,7 +7,8 @@ import { AuthProvider } from '../context/AuthProvider';
 import SideNav from '../components/SideNav'
 import Header from '../components/Header'
 import { ReduxProvider } from '../GlobalRedux/provider';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function RootLayout({ children }) {
 
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
                                 {children}
                             </div>
                         </div>
+                        <ToastContainer />
                         <div id="modal-root"></div>
                         <div id="root"></div>
                         <div id="loading-portal"></div>

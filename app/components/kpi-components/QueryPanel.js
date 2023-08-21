@@ -8,13 +8,15 @@ import { selectSpaceId } from '../../../app/GlobalRedux/Features/client/clientSl
 import fetchClients from '../../lib/fetchClients';
 import useSWR from 'swr';
 
-
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function QueryPanel({ query, height, setHeight, handleToggleQuery, handleGearIconClick, handleRemoveQuery, children }) {
 
     const clientSpaceId = useSelector(selectSpaceId);
 
-    const { data: clients, error } = useSWR('/api/spaces',fetchClients);
+    const { data: user, error: userError } = useSWR('/auth/getUser', fetcher);
+
+    const { data: clients, error: clientsError } = useSWR('/api/spaces',fetchClients);
     // reverse the clients object so that the spaceid is the key and the name is the value
     const clientsMap = clients && Object.entries(clients).reduce((acc, [key, value]) => {
         acc[value] = key;
@@ -46,7 +48,7 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
                 </button>
                 
                 <div className='flex flex-col items-center gap-2 sm:flex-row'>
-                {clients && clientsMap && clientsMap[clientSpaceId]}
+                {user && user.IsAdmin === true && clients && clientsMap && clientsMap[clientSpaceId]}
                     {children}
                 </div>
                 <div className='flex flex-col justify-between gap-2 xs:flex-row'>

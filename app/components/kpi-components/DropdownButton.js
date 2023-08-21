@@ -7,6 +7,7 @@ const DropdownButton = ({ onClick, children, isOpen, className }) => (
   <button
     className=" justify-between text-xs sm:text-sm flex gap-2 items-center px-2 py-1.5 h-7 font-semibold text-blue-900 transition-colors duration-200 rounded-md bg-gray-50 whitespace-nowrap sm:w-42 shadow-super-4 hover:bg-blue-50"
     onClick={onClick}
+    type="button"
   >
     {children}
     <FontAwesomeIcon

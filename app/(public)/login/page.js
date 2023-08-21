@@ -2,7 +2,7 @@
 "use client"
 import { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from '../../api/axios';
+import axios from '../../../pages/api/axios';
 import Link from 'next/link';
 import useAuth from '../../hooks/useAuth';
 import Cookies from 'js-cookie';
@@ -21,7 +21,7 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const { auth, setAuth } = useAuth();
+    const { setAuth } = useAuth();
     const refreshToken = useRefreshToken();
 
     useEffect(() => {
@@ -126,7 +126,7 @@ const LoginPage = () => {
                         <hr className='w-full' />
                     </div>
                     <Link
-                        href={`https://podio.com/oauth/authorize?client_id=rei-ihi0fi&redirect_uri=http://localhost:3000/podio/callback`}
+                        href={`https://podio.com/oauth/authorize?client_id=rei-ihi0fi&redirect_uri=http://localhost:3000/auth/podio/callback`}
                         className='flex flex-row items-center justify-center w-full gap-2 px-4 py-2 text-blue-900 bg-white border-2 border-blue-500 rounded hover:bg-gray-100'
                     >
                         <Image src="/podio.svg" alt="Podio Logo" width={20} height={20} />

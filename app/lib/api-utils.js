@@ -1,5 +1,40 @@
 
-const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
+export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, filters, kpiView) {
+
+    const response = await fetch('/auth/getAccessToken');
+    const { accessToken } = await response.json();
+    console.log("accessToken", accessToken)
+    // console.log("apiName: ", apiName)
+    // console.log("apiEndpoint: ", apiEndpoint)
+    // console.log("filters: ", filters)
+    // console.log("kpiView: ", kpiView)
+
+
+    try {
+        switch (kpiView) {
+            case 'Financial':
+                return await handleFinancialKpis(accessToken.value, clientSpaceId, apiName, apiEndpoint, filters);
+
+            case 'Acquisitions':
+                return await handleAcquisitionKpis(accessToken.value, clientSpaceId, apiName, apiEndpoint, filters);
+
+            case 'Leaderboard':
+                return null;
+
+            case 'Team':
+                return await handleTeamKpis(accessToken.value, clientSpaceId, apiName, apiEndpoint, filters);
+
+            default:
+                console.error(`Unsupported KPI view: ${kpiView}`);
+                throw new Error(`Unsupported KPI view: ${kpiView}`);
+        }
+    } catch (error) {
+        console.error(error);
+        throw new Error("Error fetching data. Please try again later.");
+    }
+};
+
+const handleAcquisitionKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, filters) => {
     // console.log("clientSpaceId: ", clientSpaceId)
     // console.log("filters: ", filters)
     // console.log("apiEndpoint: ", apiEndpoint)
@@ -11,6 +46,7 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
                 "spaceid": apiName === "Closers Payments" ? managementSpaceId : clientSpaceId,
@@ -39,6 +75,7 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`,
                     },
                     body: JSON.stringify({
                         "spaceid": apiName === "Closers Payments" ? managementSpaceId : clientSpaceId,
@@ -61,7 +98,7 @@ const handleAcquisitionKpis = async (clientSpaceId, apiName, apiEndpoint, filter
     }
 };
 
-const handleTeamKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
+const handleTeamKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, filters) => {
     // console.log("apiName: ", apiName)
     // console.log("apiEndpoint: ", apiEndpoint)
     // console.log("filters: ", filters)
@@ -70,6 +107,7 @@ const handleTeamKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
                 "spaceid": clientSpaceId,
@@ -92,6 +130,7 @@ const handleTeamKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify({
                     "spaceid": clientSpaceId,
@@ -114,7 +153,7 @@ const handleTeamKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
     }
 };
 
-const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters) => {
+const handleFinancialKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, filters) => {
     console.log("apiName: ", apiName)
     console.log("apiEndpoint: ", apiEndpoint)
     console.log("filters: ", filters)
@@ -125,6 +164,7 @@ const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters)
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
                 "spaceid": apiName === "Closers Payments" ? managementSpaceId : clientSpaceId,
@@ -152,6 +192,7 @@ const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters)
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`,
                     },
                     body: JSON.stringify({
                         "spaceid": apiName === "Closers Payments" ? managementSpaceId : clientSpaceId,
@@ -174,34 +215,5 @@ const handleFinancialKpis = async (clientSpaceId, apiName, apiEndpoint, filters)
     }
 };
 
-export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, filters, kpiView) {
-    // console.log("apiName: ", apiName)
-    // console.log("apiEndpoint: ", apiEndpoint)
-    // console.log("filters: ", filters)
-    // console.log("kpiView: ", kpiView)
 
-
-    try {
-        switch (kpiView) {
-            case 'Financial':
-                return await handleFinancialKpis(clientSpaceId, apiName, apiEndpoint, filters);
-
-            case 'Acquisitions':
-                return await handleAcquisitionKpis(clientSpaceId, apiName, apiEndpoint, filters);
-
-            case 'Leaderboard':
-                return null;
-
-            case 'Team':
-                return await handleTeamKpis(clientSpaceId, apiName, apiEndpoint, filters);
-
-            default:
-                console.error(`Unsupported KPI view: ${kpiView}`);
-                throw new Error(`Unsupported KPI view: ${kpiView}`);
-        }
-    } catch (error) {
-        console.error(error);
-        throw new Error("Error fetching data. Please try again later.");
-    }
-};
 

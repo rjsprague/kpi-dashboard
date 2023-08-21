@@ -8,7 +8,7 @@ type ClientState = {
 }
 
 const initialState: ClientState = {
-    clientName: 'Crowne Properties Inc.',
+    clientName: 'Closers',
     spaceId: 8108305,
 };
 
