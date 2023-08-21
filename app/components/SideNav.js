@@ -25,7 +25,9 @@ export default function SideNav() {
     const buttonRef = useRef(null);
     const { data: user, error: userError } = useSWR('/auth/getUser', fetcher);
 
-    // console.log(user)
+    console.log(user)
+    const IsAdmin = user && user.IsAdmin === true ? true : false;
+    console.log(IsAdmin)
 
     const dispatch = useDispatch();
 
@@ -139,37 +141,39 @@ export default function SideNav() {
                             <ul className={`relative flex flex-col mt-8 lg:space-y-2 gap-2 ${isOpen ? '' : ''}`}>
                                 {navItems.map((item, index) => (
                                     <li key={index}>
-                                        {item.dropdown && user && user?.IsAdmin === true ? (
-                                            <div
-                                                ref={buttonRef}
-                                                className="relative flex w-full rounded-md hover:bg-blue-500"
-                                                onClick={item.onClick}
-                                                onKeyDown={handleKeyDown}
-                                            >
-                                                <div className='flex flex-row gap-2 p-1 text-left whitespace-nowrap '>
-                                                    <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}>{item.icon}</span>
-                                                    <span className={`truncate transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>{item.text}{selectedClient && `: ` + selectedClient}</span>
-                                                </div>
-                                                {clientsOpen && (
-                                                    <div
-                                                        className='absolute top-0 left-[50%]'
-                                                        onClick={(e) => e.stopPropagation()}
-                                                    >
-                                                        <UniversalDropdown
-                                                            options={clientsNamesArray}
-                                                            onOptionSelected={handleClientSelect}
-                                                            selectedOptions={selectedClient ? [selectedClient] : []}
-                                                            queryId={null}
-                                                            isSingleSelect={true}
-                                                            isLoadingData={null}
-                                                            className={"dropdown"}
-                                                            ButtonComponent={SidenavDropdownButton}
-                                                            defaultValue={"Select a client..."}
-                                                            showButton={clientsOpen}
-                                                        />
+                                        {item.dropdown ? (
+                                            user && IsAdmin && (
+                                                <div
+                                                    ref={buttonRef}
+                                                    className="relative flex w-full rounded-md hover:bg-blue-500"
+                                                    onClick={item.onClick}
+                                                    onKeyDown={handleKeyDown}
+                                                >
+                                                    <div className='flex flex-row gap-2 p-1 text-left whitespace-nowrap '>
+                                                        <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}>{item.icon}</span>
+                                                        <span className={`truncate transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>{item.text}{selectedClient && `: ` + selectedClient}</span>
                                                     </div>
-                                                )}
-                                            </div>
+                                                    {clientsOpen && (
+                                                        <div
+                                                            className='absolute top-0 left-[50%]'
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                            <UniversalDropdown
+                                                                options={clientsNamesArray}
+                                                                onOptionSelected={handleClientSelect}
+                                                                selectedOptions={selectedClient ? [selectedClient] : []}
+                                                                queryId={null}
+                                                                isSingleSelect={true}
+                                                                isLoadingData={null}
+                                                                className={"dropdown"}
+                                                                ButtonComponent={SidenavDropdownButton}
+                                                                defaultValue={"Select a client..."}
+                                                                showButton={clientsOpen}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )
 
                                         ) : (
                                             <Link href={item.link} className={`flex flex-row gap-2 whitespace-nowrap hover:bg-blue-500 rounded-md ${isOpen ? '' : ''}`}>
