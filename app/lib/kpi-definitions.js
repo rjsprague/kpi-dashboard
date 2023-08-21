@@ -1013,8 +1013,8 @@ const KPI_DEFINITIONS = {
             const { closersDcShowed, closersDcOffers } = apiData;
             return closersDcShowed > 0 ? closersDcOffers / closersDcShowed * 100 : 0;
         },
-        redFlag: 40,
-        target: 60,
+        redFlag: 60,
+        target: 80,
         dataLabels: ["Showings: ", "Offers: "],
         kpiType: "meter",
         unit: "%",
