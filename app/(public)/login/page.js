@@ -2,7 +2,7 @@
 "use client"
 import { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from '../../api/axios';
+import axios from '../../../pages/api/axios';
 import Link from 'next/link';
 import useAuth from '../../hooks/useAuth';
 import Cookies from 'js-cookie';
