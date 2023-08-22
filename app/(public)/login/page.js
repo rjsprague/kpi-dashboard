@@ -10,22 +10,22 @@ import Image from 'next/image';
 export default function LoginPage () {
 
     const router = useRouter();
-    const emailRef = useRef();
+    // const emailRef = useRef();
     const errRef = useRef();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    // const [email, setEmail] = useState('');
+    // const [password, setPassword] = useState('');
     const [errMsg, setErrMsg] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
+    // const [showPassword, setShowPassword] = useState(false);
     const { setAuth } = useAuth();
 
-    useEffect(() => {
-        emailRef.current.focus();
-    }, [])
+    // useEffect(() => {
+    //     emailRef.current.focus();
+    // }, [])
 
-    useEffect(() => {
-        setErrMsg('');
-    }, [email, password])
+    // useEffect(() => {
+    //     setErrMsg('');
+    // }, [email, password])
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -97,7 +97,7 @@ export default function LoginPage () {
         <main>
             <section className='flex items-center justify-center min-h-screen px-4 bg-blue-900'>
                 <div className='flex-col items-center p-8 text-blue-900 bg-white rounded shadow-super-3'>
-                    <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+                    {/* <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p> */}
                     {/* <h1 className='mb-6 text-2xl'>Sign In</h1> */}
 
                     {/* <form onSubmit={handleSubmit} className='space-y-4'>

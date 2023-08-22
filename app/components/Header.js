@@ -37,7 +37,7 @@ export default function Header() {
                                 <BsPerson size={20} />
                             )}
                             <h4 className="hidden overflow-hidden tracking-wide whitespace-nowrap lg:font-semibold sm:flex">
-                                {user && user.displayName && user.name ? user.displayName : user.name ? user.name : "Loading..."}
+                                {user && user.displayName ? user.displayName : user && user.name ? user.name : "Loading..."}
                             </h4>
                         </Menu.Button>
                         <Menu.Items className="absolute w-40 mt-20 bg-white rounded-md shadow-super-4">
