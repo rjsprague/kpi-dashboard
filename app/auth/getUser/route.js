@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import jwt from 'jsonwebtoken'
 
-export async function GET(req: NextRequest) {
+export async function GET() {
     const accessToken = cookies().get("accessToken");
+    const tokenValue = accessToken ? accessToken.value : null;
 
-    if (!accessToken) {
+    // console.log("accessToken", accessToken)
+    // console.log("tokenValue", tokenValue)
+    
+    if (!tokenValue) {
         return NextResponse.json("No token");
     }
 

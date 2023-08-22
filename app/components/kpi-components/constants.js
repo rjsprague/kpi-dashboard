@@ -93,7 +93,11 @@ export const VIEW_KPIS = {
             "# of Deals"
         ],
         "Closers": [
-
+            "Cost Per Contract",
+            "Cost Per Qualified Lead",
+            "Speed to Lead",
+            "# of Signed Contracts",
+            "# of Deals"
         ]
     }
 };

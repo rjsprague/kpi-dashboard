@@ -3,7 +3,7 @@ async function fetchActiveTeamMembers(clientSpaceId) {
     
     const response = await fetch('/auth/getAccessToken');
     const { accessToken } = await response.json();
-    console.log("accessToken", accessToken)
+    // console.log("accessToken", accessToken)
 
     const closersSpaceId = process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID
 

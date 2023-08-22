@@ -3,7 +3,7 @@ export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, fil
 
     const response = await fetch('/auth/getAccessToken');
     const { accessToken } = await response.json();
-    console.log("accessToken", accessToken)
+    // console.log("accessToken", accessToken)
     // console.log("apiName: ", apiName)
     // console.log("apiEndpoint: ", apiEndpoint)
     // console.log("filters: ", filters)
@@ -144,7 +144,7 @@ const handleTeamKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, 
             offset += moreData.data.length;
         }
 
-        console.log("fetchedResults: ", fetchedResults)
+        // console.log("fetchedResults: ", fetchedResults)
         return fetchedResults;
 
     } catch (error) {
@@ -154,9 +154,9 @@ const handleTeamKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, 
 };
 
 const handleFinancialKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, filters) => {
-    console.log("apiName: ", apiName)
-    console.log("apiEndpoint: ", apiEndpoint)
-    console.log("filters: ", filters)
+    // console.log("apiName: ", apiName)
+    // console.log("apiEndpoint: ", apiEndpoint)
+    // console.log("filters: ", filters)
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
 
     try {
@@ -206,7 +206,7 @@ const handleFinancialKpis = async (accessToken, clientSpaceId, apiName, apiEndpo
                 fetchedResults = fetchedResults.concat(moreData.data);
                 offset += moreData.data.length;
             }
-            console.log("fetchedResults: ", fetchedResults)
+            // console.log("fetchedResults: ", fetchedResults)
             return fetchedResults;
         }
     } catch (error) {

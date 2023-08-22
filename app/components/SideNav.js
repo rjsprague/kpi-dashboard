@@ -25,9 +25,10 @@ export default function SideNav() {
     const buttonRef = useRef(null);
     const { data: user, error: userError } = useSWR('/auth/getUser', fetcher);
 
-    console.log(user)
+    // console.log(user)
     const IsAdmin = user && user.IsAdmin === true ? true : false;
-    console.log(IsAdmin)
+    // console.log(IsAdmin)
+    // console.log(userError)
 
     const dispatch = useDispatch();
 
@@ -100,6 +101,22 @@ export default function SideNav() {
         }
     };
 
+    const logout = async () => {
+        try {
+            const response = await fetch('/auth/logout', {
+                method: 'POST',
+            });
+
+            if (response.ok) {
+                // Redirect to login page
+                window.location.href = '/login';
+            } else {
+                console.error('Logout failed');
+            }
+        } catch (error) {
+            console.error('An error occurred during logout:', error);
+        }
+    };
 
     const navItems = [
         { icon: <FontAwesomeIcon icon={faThLarge} size="lg" />, text: 'Overview', link: '/' },
@@ -207,12 +224,12 @@ export default function SideNav() {
                                     <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>Settings</span>
                                 </div>
                             </Link>
-                            <Link href="/" className="flex items-center gap-2 rounded-md hover:bg-blue-500">
+                            <button type="button" onClick={logout} className="flex items-center gap-2 rounded-md hover:bg-blue-500">
                                 <div className='flex flex-row gap-2 text-left whitespace-nowrap '>
                                     <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100 overflow-hidden'}`}><FiArrowRightCircle className='text-xl' /></span>
                                     <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>Log Out</span>
                                 </div>
-                            </Link>
+                            </button>
                         </div>
                     </nav>
                 </div>

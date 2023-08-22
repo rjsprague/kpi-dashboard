@@ -5,14 +5,14 @@ import { formatDate } from './date-utils';
 export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }) {
     const response = await fetch('/auth/getAccessToken');
     const { accessToken } = await response.json();
-    console.log("accessToken", accessToken)
+    // console.log("accessToken", accessToken)
 
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
     let teamMembersNum = teamMembers.map(Number);
     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
 
-    console.log(apiEndpointsKeys)
-    console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
+    // console.log(apiEndpointsKeys)
+    // console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
 
     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
         throw new Error('Invalid API name');

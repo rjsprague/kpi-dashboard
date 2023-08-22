@@ -3,7 +3,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import useAuth from '../hooks/useAuth';
 import Cookies from 'js-cookie';
-import useRefreshToken from '../hooks/useRefreshToken';
+// import useRefreshToken from '../hooks/useRefreshToken';
 import LoadingQuotes from '../components/LoadingQuotes';
 
 
@@ -12,7 +12,7 @@ export default function withAuth(Component) {
         const { auth, setAuth } = useAuth();
         const router = useRouter();
         const pathname = usePathname()
-        const refresh = useRefreshToken();
+        // const refresh = useRefreshToken();
         const [isLoading, setIsLoading] = useState(true);
 
         useEffect(() => {
@@ -22,14 +22,14 @@ export default function withAuth(Component) {
                     .then(data => {
                         const accessToken = data.accessToken.value;
                         setAuth({ accessToken });
-                        console.log('accessToken', accessToken);
-                        if (accessToken) {
-                            refresh().then(() => setIsLoading(false));
-                        } else {
-                            // Store the current location in the cookie
-                            Cookies.set('preLoginRoute', pathname);
-                            router.push('/login');
-                        }
+                        // console.log('accessToken', accessToken);
+                        // if (accessToken) {
+                        //     refresh().then(() => setIsLoading(false));
+                        // } else {
+                        //     // Store the current location in the cookie
+                        //     Cookies.set('preLoginRoute', pathname);
+                        //     router.push('/login');
+                        // }
                     })
                     .catch(error => {
                         console.error(error);

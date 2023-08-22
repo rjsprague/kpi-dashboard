@@ -5,7 +5,7 @@ async function fetchLeadSources(clientSpaceId) {
     const { accessToken } = await response.json();
 
     // console.log("fetchLeadSources clientSpaceId", clientSpaceId)
-    console.log("fetchLeadSources accessToken", accessToken)
+    // console.log("fetchLeadSources accessToken", accessToken)
     const closersSpaceId = process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID
     // console.log("fetchLeadSources closersSpaceId", closersSpaceId)
 
@@ -46,8 +46,8 @@ async function fetchLeadSources(clientSpaceId) {
                 leadSourceMap[source.Title] = parseInt(source.itemid, 10);
             }
         }
-        console.log("leadSourceMap", leadSourceMap)
-        console.log("lead sources values ", Object.values(leadSourceMap))
+        // console.log("leadSourceMap", leadSourceMap)
+        // console.log("lead sources values ", Object.values(leadSourceMap))
         return leadSourceMap;
 
     } catch (error) {

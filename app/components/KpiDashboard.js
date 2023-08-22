@@ -64,7 +64,7 @@ export default function KpiDashboard() {
                 setLeadSources(leadSourcesData);
                 const leadSourcesObject = leadSourcesData;
                 const departmentsData = await fetchActiveTeamMembers(clientSpaceId);
-                console.log("departments data ", departmentsData)
+                // console.log("departments data ", departmentsData)
                 setDepartments(departmentsData)
                 setTeamMembers(departmentsData)
                 const departmentsDataObject = departmentsData;
@@ -199,7 +199,7 @@ export default function KpiDashboard() {
     };
 
     const handleTeamMemberForClosersChange = (teamMember, queryId) => {
-        console.log("team member ", teamMember)
+        // console.log("team member ", teamMember)
         setQueries((prevQueries) => {
             return prevQueries.map((query) => {
                 if (query.id === queryId) {

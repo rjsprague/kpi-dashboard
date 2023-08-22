@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
-async function KpiDashboardPage() {
+function KpiDashboardPage() {
     const { data: user, error: userError } = useSWR('/auth/getUser')
     const router = useRouter()
 
@@ -28,9 +28,7 @@ async function KpiDashboardPage() {
     }, [user])
 
     return (
-        <>
-            <KpiDashboard />
-        </>
+        <KpiDashboard />
     )
 }
 

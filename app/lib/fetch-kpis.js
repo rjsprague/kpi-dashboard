@@ -123,6 +123,14 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
                 }
             }, 0);
 
+            const totalClosersAdSpend = endpointData.closersAdSpend && Array.isArray(endpointData.closersAdSpend) && endpointData.closersAdSpend.reduce((acc, curr) => {
+                if ("Amount" in curr) {
+                    return acc + parseInt(curr["Amount"], 10);
+                } else {
+                    return acc;
+                }
+            }, 0);
+
             const actualizedProfit = endpointData.profit && Array.isArray(endpointData.profit) && endpointData.profit.reduce((acc, curr) => {
                 if ("Net Profit Center" in curr) {
                     return acc + parseInt(curr["Net Profit Center"], 10);
@@ -140,34 +148,40 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
             }, 0);
 
             const cashCollectedUpFront = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
-                if ("Cash Collected Up Front" in curr && curr["Status"] !== "Canceled") {
+                if ("Cash Collected Up Front" in curr && curr["Status"][0] !== "Canceled") {
                     acc += parseFloat(curr["Cash Collected Up Front"]);
                 }
                 return acc;
             }, 0);
 
-            const revenueContracted = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
-                if ("Contract Total" in curr && curr["Status"] !== "Canceled") {
+            const totalRevenueContracted = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
+                
+                if ("Contract Total" in curr && curr["Status"][0] !== "Canceled") {
                     acc += parseFloat(curr["Contract Total"]);
                 }
                 return acc;
             }, 0);
 
             const numPaymentPlans = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
-                if ("Closer Responsible" in curr && curr["Status"] !== "Canceled") {
+                if ("Closer Responsible" in curr && curr["Status"][0] !== "Canceled") {
                     acc += 1;
                 }
                 return acc;
             }, 0);
 
             endpointData.totalMarketingExpenses = totalMarketingExpenses;
+            endpointData.totalClosersAdSpend = totalClosersAdSpend;
             endpointData.actualizedProfit = actualizedProfit;
             endpointData.projectedProfit = projectedProfit;
             endpointData.totalProfit = actualizedProfit + projectedProfit;
             endpointData.cashCollectedUpFront = cashCollectedUpFront;
-            endpointData.revenueContracted = revenueContracted;
-            endpointData.uncollectedRevenue = revenueContracted - cashCollectedUpFront;
-            endpointData.totalRevenue = revenueContracted + cashCollectedUpFront;
+            // console.log("cash collected up front: ", cashCollectedUpFront)
+            endpointData.totalRevenueContracted = totalRevenueContracted;
+            // console.log("total revenue contracted: ", totalRevenueContracted)
+            endpointData.uncollectedRevenue = totalRevenueContracted - cashCollectedUpFront;
+            // console.log("uncollected revenue: ", totalRevenueContracted - cashCollectedUpFront)
+            endpointData.totalRevenue = totalRevenueContracted + cashCollectedUpFront;
+            // console.log("total revenue: ", totalRevenueContracted + cashCollectedUpFront)
             endpointData.numPaymentPlans = numPaymentPlans;
         }
 
@@ -181,6 +195,8 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
 
             if (dataKey === 'marketingExpenses') {
                 return endpointData.totalMarketingExpenses;
+            } else if ( dataKey === 'closersAdSpend') {
+                return endpointData.totalClosersAdSpend;
             } else if (dataKey === 'deals') {
                 return endpointData.deals;
             } else if (dataKey === 'profit') {
@@ -196,9 +212,9 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
             } else if (dataKey === 'bigChecks') {
                 return calculatedKPIs["BiG Checks"];
             } else if (dataKey === 'closersCashCollected') {
-                return calculatedKPIs["Closers Cash Collected"]
+                return endpointData.cashCollectedUpFront;
             } else if (dataKey === 'closersRevenueContracted') {
-                return calculatedKPIs["Closers Revenue Contracted"]
+                return endpointData.totalRevenueContracted;
             }
             else {
                 return data;

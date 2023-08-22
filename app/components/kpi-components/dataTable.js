@@ -10,12 +10,6 @@ import {
     getFilteredRowModel,
     getPaginationRowModel,
 } from '@tanstack/react-table';
-import { Listbox, Transition } from '@headlessui/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import LoadingQuotes from '../LoadingQuotes';
-import useSWR from 'swr';
-import fetchSingleKpi from '../../lib/fetchSingleKpi';
 
 function stringifyObject(obj) {
     let output = '';
@@ -156,7 +150,7 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments }) => {
     }
 
 
-    console.log("data: ", data)
+    // console.log("data: ", data)
 
     const [columns, setColumns] = useState([]);
     const [sorting, setSorting] = useState([]);

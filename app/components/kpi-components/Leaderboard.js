@@ -9,6 +9,7 @@ import RightSlideModal from '../RightSlideModal';
 import LoadingQuotes from '../LoadingQuotes';
 import UniversalDropdown from './UniversalDropdown';
 import DropdownButton from './DropdownButton';
+import useSWR from 'swr';
 
 const currencyToNumber = (str) => {
     if (!str) return 0;
@@ -23,6 +24,8 @@ const removeDuplicates = (data) => {
         return !duplicate;
     });
 };
+
+const fetcher = (url) => axios.get(url).then(res => res.data);
 
 export default function Leaderboard({
     view,
@@ -47,6 +50,78 @@ export default function Leaderboard({
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
     const [loading, setLoading] = useState(true);
 
+    // console.log("selectedKpis", selectedKpis);
+
+    const { data: leaderData, error: leaderError } = useSWR(`/api/leaderboard?year=${year}&month=${month}`, fetcher);
+
+    const years = ['2023'];
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+    useEffect(() => {
+        if (!leaderData) {
+            setLoading(true);
+            return;
+        }
+
+        try {
+            // console.log('leaderData', leaderData)
+
+            const costPerContractData = [];
+            const costPerQualifiedLeadData = [];
+            const speedToLeadData = [];
+            const signedContractsData = [];
+            const dealsData = [];
+
+            leaderData.forEach(item => {
+                const costPerContract = currencyToNumber(item.cost_per_contract);
+                const costPerQualifiedLead = currencyToNumber(item.cost_per_qualified_lead);
+                const speedToLeadMedian = parseFloat(item.speed_to_lead_median || 0, 10);
+                const contracts = parseInt(item.contracts || 0, 10);
+                const deals = parseInt(item.deals || 0, 10);
+
+                if (costPerContract !== 0) {
+                    costPerContractData.push({ workspace: item.workspace, metric: costPerContract });
+                }
+                if (costPerQualifiedLead !== 0) {
+                    costPerQualifiedLeadData.push({ workspace: item.workspace, metric: costPerQualifiedLead });
+                }
+                if (speedToLeadMedian !== 0) {
+                    speedToLeadData.push({ workspace: item.workspace, metric: speedToLeadMedian });
+                }
+                if (contracts !== 0) {
+                    signedContractsData.push({ workspace: item.workspace, metric: contracts });
+                }
+                if (deals !== 0) {
+                    dealsData.push({ workspace: item.workspace, metric: deals });
+                }
+            });
+
+            // console.log('costPerContractData', costPerContractData)
+            // console.log('costPerQualifiedLeadData', costPerQualifiedLeadData)
+            // console.log('speedToLeadData', speedToLeadData)
+            // console.log('signedContractsData', signedContractsData)
+            // console.log('dealsData', dealsData)
+
+            setCostPerContractTop3(removeDuplicates(costPerContractData).sort((a, b) => a.metric - b.metric).slice(0, 3));
+            setCostPerQualifiedLeadTop3(removeDuplicates(costPerQualifiedLeadData).sort((a, b) => a.metric - b.metric).slice(0, 3));
+            setSpeedToLeadTop3(removeDuplicates(speedToLeadData).sort((a, b) => a.metric - b.metric).slice(0, 3));
+            setSignedContractsTop3(removeDuplicates(signedContractsData).sort((a, b) => b.metric - a.metric).slice(0, 3));
+            setDealsTop3(removeDuplicates(dealsData).sort((a, b) => b.metric - a.metric).slice(0, 3));
+
+            setError(null);
+        } catch (error) {
+            console.error('Failed to fetch data', error)
+            setError(true);
+        } finally {
+            setLoading(false);
+        }
+    }, [leaderData]);
+
+    // console.log("costPerContractTop3", costPerContractTop3);
+    // console.log("costPerQualifiedLeadTop3", costPerQualifiedLeadTop3);
+    // console.log("speedToLeadTop3", speedToLeadTop3);
+    // console.log("signedContractsTop3", signedContractsTop3);
+    // console.log("dealsTop3", dealsTop3);
 
     const kpis = [
         {
@@ -71,76 +146,7 @@ export default function Leaderboard({
         },
     ];
 
-    const years = ['2023'];
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get(`/api/leaderboard?year=${year}&month=${month}`);
-                const data = response.data;
-
-                //console.log('data', data)
-
-                const costPerContractData = [];
-                const costPerQualifiedLeadData = [];
-                const speedToLeadData = [];
-                const signedContractsData = [];
-                const dealsData = [];
-
-                data.forEach(item => {
-                    const costPerContract = currencyToNumber(item.cost_per_contract);
-                    const costPerQualifiedLead = currencyToNumber(item.cost_per_qualified_lead);
-                    const speedToLeadMedian = parseFloat(item.speed_to_lead_median || 0, 10);
-                    const contracts = parseInt(item.contracts || 0, 10);
-                    const deals = parseInt(item.deals || 0, 10);
-
-                    if (costPerContract !== 0) {
-                        costPerContractData.push({ workspace: item.workspace, metric: costPerContract });
-                    }
-                    if (costPerQualifiedLead !== 0) {
-                        costPerQualifiedLeadData.push({ workspace: item.workspace, metric: costPerQualifiedLead });
-                    }
-                    if (speedToLeadMedian !== 0) {
-                        speedToLeadData.push({ workspace: item.workspace, metric: speedToLeadMedian });
-                    }
-                    if (contracts !== 0) {
-                        signedContractsData.push({ workspace: item.workspace, metric: contracts });
-                    }
-                    if (deals !== 0) {
-                        dealsData.push({ workspace: item.workspace, metric: deals });
-                    }
-                });
-
-                //console.log('costPerContractData', costPerContractData)
-                //console.log('costPerQualifiedLeadData', costPerQualifiedLeadData)
-                //console.log('speedToLeadData', speedToLeadData)
-                //console.log('signedContractsData', signedContractsData)
-                //console.log('dealsData', dealsData)
-
-                setCostPerContractTop3(removeDuplicates(costPerContractData).sort((a, b) => a.metric - b.metric).slice(0, 3));
-                setCostPerQualifiedLeadTop3(removeDuplicates(costPerQualifiedLeadData).sort((a, b) => a.metric - b.metric).slice(0, 3));
-                setSpeedToLeadTop3(removeDuplicates(speedToLeadData).sort((a, b) => a.metric - b.metric).slice(0, 3));
-                setSignedContractsTop3(removeDuplicates(signedContractsData).sort((a, b) => b.metric - a.metric).slice(0, 3));
-                setDealsTop3(removeDuplicates(dealsData).sort((a, b) => b.metric - a.metric).slice(0, 3));
-
-                setError(null);
-            } catch (error) {
-                setError('Failed to fetch data');
-                //return <ServiceUnavailable />
-            }
-            setLoading(false);
-        };
-
-        fetchData();
-    }, [year, month]);
-
-    //console.log("costPerContractTop3", costPerContractTop3);
-    //console.log("costPerQualifiedLeadTop3", costPerQualifiedLeadTop3);
-    //console.log("speedToLeadTop3", speedToLeadTop3);
-    //console.log("signedContractsTop3", signedContractsTop3);
-    //console.log("dealsTop3", dealsTop3);
+    // console.log(kpis)
 
     const handleToggleQuery = () => {
         onToggleQuery(query.id);
@@ -164,9 +170,9 @@ export default function Leaderboard({
         setMonth(selectedMonth);
     };
 
-    if (error) {
-        return <ServiceUnavailable />;
-    }
+    // if (error) {
+    //     return <ServiceUnavailable />;
+    // }
 
     return (
         <div className="mb-2">
@@ -179,7 +185,7 @@ export default function Leaderboard({
                         queryId={null}
                         isSingleSelect={true}
                         isLoadingData={null}
-                        className={""}
+                        className={"dropdown"}
                         ButtonComponent={DropdownButton}
                         defaultValue={year}
                     />
@@ -190,7 +196,7 @@ export default function Leaderboard({
                         queryId={null}
                         isSingleSelect={true}
                         isLoadingData={null}
-                        className={""}
+                        className={"dropdown"}
                         ButtonComponent={DropdownButton}
                         defaultValue={month}
                     />
@@ -249,6 +255,7 @@ export default function Leaderboard({
                     modalType={modalType}
                     selectedKpis={selectedKpis}
                     setSelectedKpis={setSelectedKpis}
+                    tableProps={null}
                 />
             </AnimateHeight>
         </div>
