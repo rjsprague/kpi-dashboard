@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import UniversalDropdown from './kpi-components/UniversalDropdown';
 import SidenavDropdownButton from './SidenavDropdownButton';
 import useSWR from 'swr';
+import { useRouter } from 'next/navigation';
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -23,6 +24,8 @@ export default function SideNav() {
     const [clientsOpen, setClientsOpen] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
     const buttonRef = useRef(null);
+    const router = useRouter();
+
     const { data: user, error: userError } = useSWR('/auth/getUser', fetcher);
 
     // console.log(user)
@@ -78,13 +81,15 @@ export default function SideNav() {
     };
 
     useEffect(() => {
-        async function getClients() {
-            const clientsObj = await fetchClients();
-            setClients(clientsObj);
-            setClientsNamesArray(Object.keys(clientsObj));
+        if (user && user.IsAdmin) {
+            async function getClients() {
+                const clientsObj = await fetchClients();
+                setClients(clientsObj);
+                setClientsNamesArray(Object.keys(clientsObj));
+            }
+            getClients();
         }
-        getClients();
-    }, []);
+    }, [user]);
 
     const handleClientSelect = (clientName) => {
         // Do something with the selected client name and spaceid
@@ -109,31 +114,33 @@ export default function SideNav() {
 
             if (response.ok) {
                 // Redirect to login page
-                window.location.href = '/login';
+                router.push('/login');
             } else {
                 console.error('Logout failed');
             }
         } catch (error) {
             console.error('An error occurred during logout:', error);
+        } finally {
+            router.push('/login');
         }
     };
 
     const navItems = [
-        { icon: <FontAwesomeIcon icon={faThLarge} size="lg" />, text: 'Overview', link: '/' },
-        { icon: <FontAwesomeIcon icon={faCheckDouble} size="lg" />, text: 'To Dos', link: '/' },
+        // { icon: <FontAwesomeIcon icon={faThLarge} size="lg" />, text: 'Overview', link: '/' },
+        // { icon: <FontAwesomeIcon icon={faCheckDouble} size="lg" />, text: 'To Dos', link: '/' },
         { icon: <FontAwesomeIcon icon={faGaugeHigh} size="lg" />, text: 'KPIs', link: '/kpi-dashboard' },
-        { icon: <FontAwesomeIcon icon={faRobot} size="lg" />, text: 'Automations', link: '/' },
-        { icon: <FontAwesomeIcon icon={faScrewdriverWrench} size="lg" />, text: 'Tools', link: '/' },
-        { icon: <FontAwesomeIcon icon={faChalkboardTeacher} size="lg" />, text: 'Training', link: '/' },
+        // { icon: <FontAwesomeIcon icon={faRobot} size="lg" />, text: 'Automations', link: '/' },
+        // { icon: <FontAwesomeIcon icon={faScrewdriverWrench} size="lg" />, text: 'Tools', link: '/' },
+        // { icon: <FontAwesomeIcon icon={faChalkboardTeacher} size="lg" />, text: 'Training', link: '/' },
         { icon: <FiUsers className='text-xl' />, text: 'Clients', link: '/', dropdown: true, onClick: () => setClientsOpen(!clientsOpen) },
     ];
 
-    const teamItems = [
-        { color: 'bg-blue-300', text: 'Lead Management', link: '/' },
-        { color: 'bg-green-400', text: 'Deal Analysis', link: '/' },
-        { color: 'bg-yellow-400', text: 'Acquisition Management', link: '/' },
-        { color: 'bg-red-400', text: 'Marketing', link: '/' },
-    ];
+    // const teamItems = [
+    //     { color: 'bg-blue-300', text: 'Lead Management', link: '/' },
+    //     { color: 'bg-green-400', text: 'Deal Analysis', link: '/' },
+    //     { color: 'bg-yellow-400', text: 'Acquisition Management', link: '/' },
+    //     { color: 'bg-red-400', text: 'Marketing', link: '/' },
+    // ];
 
     return (
 
@@ -203,7 +210,7 @@ export default function SideNav() {
                                     </li>
                                 ))}
                             </ul>
-                            <span className={`block mt-4 mb-2 text-xs font-semibold uppercase lg:mb-4 transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>Teams</span>
+                            {/* <span className={`block mt-4 mb-2 text-xs font-semibold uppercase lg:mb-4 transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>Teams</span>
                             <ul className='flex flex-col gap-2'>
                                 {teamItems.map((item, index) => (
                                     <li key={index}>
@@ -215,10 +222,10 @@ export default function SideNav() {
                                         </Link>
                                     </li>
                                 ))}
-                            </ul>
+                            </ul> */}
                         </div>
                         <div className="flex flex-col mb-4 space-y-2 lg:space-y-4">
-                            <Link href="/" className="flex items-center gap-2 rounded-md hover:bg-blue-500">
+                            <Link href="/user-profile" className="flex items-center gap-2 rounded-md hover:bg-blue-500">
                                 <div className='flex flex-row gap-2 text-left whitespace-nowrap '>
                                     <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100 overflow-hidden'}`}><FiSettings className='text-xl' /></span>
                                     <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>Settings</span>

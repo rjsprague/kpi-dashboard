@@ -3,7 +3,7 @@ export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, fil
 
     const response = await fetch('/auth/getAccessToken');
     const { accessToken } = await response.json();
-    // console.log("accessToken", accessToken)
+    console.log("accessToken", accessToken)
     // console.log("apiName: ", apiName)
     // console.log("apiEndpoint: ", apiEndpoint)
     // console.log("filters: ", filters)
@@ -13,16 +13,16 @@ export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, fil
     try {
         switch (kpiView) {
             case 'Financial':
-                return await handleFinancialKpis(accessToken.value, clientSpaceId, apiName, apiEndpoint, filters);
+                return await handleFinancialKpis(accessToken, clientSpaceId, apiName, apiEndpoint, filters);
 
             case 'Acquisitions':
-                return await handleAcquisitionKpis(accessToken.value, clientSpaceId, apiName, apiEndpoint, filters);
+                return await handleAcquisitionKpis(accessToken, clientSpaceId, apiName, apiEndpoint, filters);
 
             case 'Leaderboard':
                 return null;
 
             case 'Team':
-                return await handleTeamKpis(accessToken.value, clientSpaceId, apiName, apiEndpoint, filters);
+                return await handleTeamKpis(accessToken, clientSpaceId, apiName, apiEndpoint, filters);
 
             default:
                 console.error(`Unsupported KPI view: ${kpiView}`);
@@ -35,10 +35,10 @@ export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, fil
 };
 
 const handleAcquisitionKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, filters) => {
-    // console.log("clientSpaceId: ", clientSpaceId)
-    // console.log("filters: ", filters)
-    // console.log("apiEndpoint: ", apiEndpoint)
-    // console.log("apiName: ", apiName)
+    console.log("clientSpaceId: ", clientSpaceId)
+    console.log("filters: ", filters)
+    console.log("apiEndpoint: ", apiEndpoint)
+    console.log("apiName: ", apiName)
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
     
     try {
@@ -46,7 +46,7 @@ const handleAcquisitionKpis = async (accessToken, clientSpaceId, apiName, apiEnd
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`,
+                'Authorization': `Bearer ${accessToken.value}`,
             },
             body: JSON.stringify({
                 "spaceid": apiName === "Closers Payments" ? managementSpaceId : clientSpaceId,
@@ -75,7 +75,7 @@ const handleAcquisitionKpis = async (accessToken, clientSpaceId, apiName, apiEnd
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
+                        'Authorization': `Bearer ${accessToken.value}`,
                     },
                     body: JSON.stringify({
                         "spaceid": apiName === "Closers Payments" ? managementSpaceId : clientSpaceId,
@@ -107,7 +107,7 @@ const handleTeamKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`,
+                'Authorization': `Bearer ${accessToken.value}`,
             },
             body: JSON.stringify({
                 "spaceid": clientSpaceId,
@@ -130,7 +130,7 @@ const handleTeamKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`,
+                    'Authorization': `Bearer ${accessToken.value}`,
                 },
                 body: JSON.stringify({
                     "spaceid": clientSpaceId,
@@ -164,7 +164,7 @@ const handleFinancialKpis = async (accessToken, clientSpaceId, apiName, apiEndpo
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`,
+                'Authorization': `Bearer ${accessToken.value}`,
             },
             body: JSON.stringify({
                 "spaceid": apiName === "Closers Payments" ? managementSpaceId : clientSpaceId,
@@ -192,7 +192,7 @@ const handleFinancialKpis = async (accessToken, clientSpaceId, apiName, apiEndpo
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
+                        'Authorization': `Bearer ${accessToken.value}`,
                     },
                     body: JSON.stringify({
                         "spaceid": apiName === "Closers Payments" ? managementSpaceId : clientSpaceId,

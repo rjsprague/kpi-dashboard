@@ -7,7 +7,7 @@ import Link from 'next/link';
 import useAuth from '../../hooks/useAuth';
 import Image from 'next/image';
 
-export default function LoginPage () {
+export default function LoginPage() {
 
     const router = useRouter();
     // const emailRef = useRef();
@@ -37,7 +37,7 @@ export default function LoginPage () {
                     console.error('Error fetching user:', response.statusText);
                     return;
                 }
-                
+
                 const user = await response.json();
                 // console.log(user)
                 if (user.id) {
@@ -45,7 +45,7 @@ export default function LoginPage () {
                 };
             } catch (error) {
                 console.error('Error fetching user:', error);
-            }            
+            }
         };
         fetchUser();
     }, []);
@@ -95,7 +95,8 @@ export default function LoginPage () {
 
     return (
         <main>
-            <section className='flex items-center justify-center min-h-screen px-4 bg-blue-900'>
+            <section className='flex flex-col items-center justify-center min-h-screen gap-8 px-4 bg-blue-900'>
+                <Image src="/reia-logo.svg" alt="Logo" width={300} height={100} />
                 <div className='flex-col items-center p-8 text-blue-900 bg-white rounded shadow-super-3'>
                     {/* <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p> */}
                     {/* <h1 className='mb-6 text-2xl'>Sign In</h1> */}
@@ -126,7 +127,7 @@ export default function LoginPage () {
                         </button>
                         <button type="submit" className='w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600'>Sign In</button>
                     </form> */}
-
+                    
                     <Link
                         href={`https://podio.com/oauth/authorize?client_id=rei-ihi0fi&redirect_uri=${process.env.NEXT_PUBLIC_BASE_URL}/auth/podio/callback`}
                         className='flex flex-row items-center justify-center w-full gap-2 px-4 py-2 text-blue-900 bg-white border-2 border-blue-500 rounded hover:bg-gray-100'

@@ -26,6 +26,7 @@ async function fetchActiveTeamMembers(clientSpaceId) {
         }
 
         const data = await response.json();
+        console.log("data", data)
 
         let activeMembers;
 
@@ -40,7 +41,6 @@ async function fetchActiveTeamMembers(clientSpaceId) {
                 "Lead Manager": {},
                 "Acquisition Manager": {},
                 "Deal Analyst": {},
-                "Transaction Coordinator": {},
             };
         }
         
@@ -56,7 +56,7 @@ async function fetchActiveTeamMembers(clientSpaceId) {
             }
         });
 
-        // console.log("activeMembers", activeMembers)
+        console.log("activeMembers", activeMembers)
         return activeMembers;
 
     } catch (error) {

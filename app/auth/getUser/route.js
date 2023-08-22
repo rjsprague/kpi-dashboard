@@ -27,8 +27,9 @@ export async function GET() {
     });
 
     if (!response.ok) {
-        console.error('Error fetching user:', response.statusText);
-        return NextResponse.json("Error fetching user");
+        console.error('Error fetching user:', response);
+        cookies().delete("accessToken");
+        return NextResponse.redirect(process.env.NEXT_PUBLIC_BASE_URL+"/login");
     }
 
     const data = await response.json();

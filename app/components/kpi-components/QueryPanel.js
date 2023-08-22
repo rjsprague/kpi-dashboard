@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faGear, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
@@ -15,13 +15,17 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
     const clientSpaceId = useSelector(selectSpaceId);
 
     const { data: user, error: userError } = useSWR('/auth/getUser', fetcher);
+    console.log(user)
 
-    const { data: clients, error: clientsError } = useSWR('/api/spaces',fetchClients);
-    // reverse the clients object so that the spaceid is the key and the name is the value
-    const clientsMap = clients && Object.entries(clients).reduce((acc, [key, value]) => {
-        acc[value] = key;
-        return acc;
-    }, {});
+    let clientsMap = {};
+
+    if (user && user.IsAdmin === true) {
+        const { data: clients, error: clientsError } = useSWR('/api/spaces', fetchClients);
+        clientsMap = clients && Object.entries(clients).reduce((acc, [key, value]) => {
+            acc[value] = key;
+            return acc;
+        }, {});
+    }
 
     return (
         <div className="p-2 text-sm rounded-lg shadow-super-3 bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
@@ -46,9 +50,9 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
                         />
                     }
                 </button>
-                
+
                 <div className='flex flex-col items-center gap-2 sm:flex-row'>
-                {user && user.IsAdmin === true && clients && clientsMap && clientsMap[clientSpaceId]}
+                    {user && user.IsAdmin && clientsMap && clientsMap[clientSpaceId]}
                     {children}
                 </div>
                 <div className='flex flex-col justify-between gap-2 xs:flex-row'>

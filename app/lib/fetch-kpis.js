@@ -42,50 +42,53 @@ function createKpiObject(name, current, redFlag, target, data1, data2, unit, kpi
     };
 }
 
-async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource, gte, lte, department, teamMemberStrings) {
-    // console.log("clientSpaceId: ", clientSpaceId)
+async function fetchKpiData({clientSpaceId, view, kpiList, leadSource, gte, lte, departments, teamMembers}) {
+    console.log("clientSpaceId: ", clientSpaceId)
+    console.log("kpi view ", view)
+    console.log("requested kpi list ", kpiList)
+    console.log("lead source ", leadSource)
+    console.log("gte ", gte)
+    console.log("lte ", lte)
+    console.log("department ", departments)
+    console.log("team member strings ", teamMembers)
 
-    // console.log("kpi view ", kpiView)
-    // console.log("requested kpi list ", requestedKpiList)
-    // console.log("department ", department)
-    // console.log("team member strings ", teamMemberStrings)
 
-    const teamMember = teamMemberStrings.map(Number);
-    // console.log("team member ", teamMember)
+    const teamMember = teamMembers.map(Number);
+    console.log("team member ", teamMember)
 
-    let kpiList = [];
+    let requestedKpiList = [];
 
-    if (kpiView === "Team" && department[0] === "Lead Manager") {
-        kpiList = requestedKpiList['Lead Manager']
-        // console.log("kpi list ", kpiList)
-    } else if (kpiView === "Team" && department[0] === "Acquisition Manager") {
-        kpiList = requestedKpiList['Acquisition Manager']
-        // console.log("kpi list ", kpiList)
-    } else if (kpiView === "Team" && department[0] === "Deal Analyst") {
-        kpiList = requestedKpiList['Deal Analyst']
-        // console.log("kpi list ", kpiList)
-    } else if (kpiView === "Team" && department[0] === "Transaction Coordinator") {
-        kpiList = requestedKpiList['Transaction Coordinator']
-        // console.log("kpi list ", kpiList)
-    } else if (kpiView === "Team" && department[0] === "Setter") {
-        kpiList = requestedKpiList['Setter']
-        // console.log("kpi list ", kpiList)
-    } else if (kpiView === "Team" && department[0] === "Closer") {
-        kpiList = requestedKpiList['Closer']
-        // console.log("kpi list ", kpiList)
+    if (view === "Team" && departments[0] === "Lead Manager") {
+        requestedKpiList = kpiList['Lead Manager']
+        console.log("kpi list ", requestedKpiList)
+    } else if (view === "Team" && departments[0] === "Acquisition Manager") {
+        requestedKpiList = kpiList['Acquisition Manager']
+        console.log("kpi list ", requestedKpiList)
+    } else if (view === "Team" && departments[0] === "Deal Analyst") {
+        requestedKpiList = kpiList['Deal Analyst']
+        console.log("kpi list ", requestedKpiList)
+    } else if (view === "Team" && departments[0] === "Transaction Coordinator") {
+        requestedKpiList = kpiList['Transaction Coordinator']
+        console.log("kpi list ", requestedKpiList)
+    } else if (view === "Team" && departments[0] === "Setter") {
+        requestedKpiList = kpiList['Setter']
+        console.log("kpi list ", requestedKpiList)
+    } else if (view === "Team" && departments[0] === "Closer") {
+        requestedKpiList = kpiList['Closer']
+        console.log("kpi list ", requestedKpiList)
     } else {
-        kpiList = requestedKpiList
+        requestedKpiList = kpiList
     }
 
     try {
         const startDate = gte ? formatDate(new Date(gte)) : null;
         const endDate = lte ? formatDate(new Date(lte)) : null;
-        const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMember);
+        const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, view, teamMember);
         // console.log("api endpoints obj: ", apiEndpointsObj)
 
         const requiredEndpoints = new Set();
 
-        kpiList.forEach((kpi) => {
+        requestedKpiList.forEach((kpi) => {
             const endpoints = kpiToEndpointMapping[kpi] || [];
             endpoints.forEach((endpoint) => {
                 requiredEndpoints.add(endpoint);
@@ -96,7 +99,7 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
         // console.log("unique endpoints: ", uniqueEndpoints)
         const kpiPromises = uniqueEndpoints.map((endpointKey) => {
             const { name, url, filters } = apiEndpointsObj[endpointKey];
-            return fetchKPIs(clientSpaceId, name, url, filters, kpiView);
+            return fetchKPIs(clientSpaceId, name, url, filters, view);
         });
 
         const endpointData = {};
@@ -114,7 +117,7 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
 
         // console.log("endpoint data: ", endpointData)
 
-        if (kpiView === 'Financial' || kpiView === 'Acquisitions') {
+        if (view === 'Financial' || view === 'Acquisitions') {
             const totalMarketingExpenses = endpointData.marketingExpenses && Array.isArray(endpointData.marketingExpenses) && endpointData.marketingExpenses.reduce((acc, curr) => {
                 if ("Amount" in curr) {
                     return acc + parseInt(curr["Amount"], 10);
@@ -187,7 +190,7 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
 
         // console.log("endpoint data: ", endpointData)
 
-        const calculatedKPIs = calculateKPIs(startDate, endDate, endpointData, kpiList);
+        const calculatedKPIs = calculateKPIs(startDate, endDate, endpointData, requestedKpiList);
         // console.log("calculated kpis: ", calculatedKPIs)
 
         function getKpiValue(calculatedKPIs, endpointData, dataKey) {
@@ -240,7 +243,7 @@ async function fetchKpiData(clientSpaceId, kpiView, requestedKpiList, leadSource
             return dataLabel + value;
         };
 
-        const kpiObjects = kpiDefinitionsArray.filter((kpiDefinition) => kpiList.includes(kpiDefinition.name))
+        const kpiObjects = kpiDefinitionsArray.filter((kpiDefinition) => requestedKpiList.includes(kpiDefinition.name))
             .map((kpiDefinition) => {
                 const current = calculatedKPIs[kpiDefinition.name];
                 const { redFlag, target, dataLabels, kpiFactors, dataKeys, kpiType, unit } = kpiDefinition;
