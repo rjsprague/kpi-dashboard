@@ -1,7 +1,10 @@
+"use client"
+import LoadingQuotes from "../components/LoadingQuotes"
+
 const Loading = () => {
     return (
       <div className='mx-8 my-6'>
-        <h2 className='text-lg font-medium'>Loading...</h2>
+        <LoadingQuotes mode={"dark"} />
       </div>
     )
   }

@@ -47,7 +47,7 @@ function KpiDashboardPage() {
                     </div>
                 )
                 :
-                <KpiDashboard clientSpaceId={user.spaceID} />}
+                <KpiDashboard IsAdmin={user.IsAdmin} />}
         </>
     )
 }

@@ -15,7 +15,7 @@ function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, depar
     useEffect(() => {
         const teamMembers = departments[selectedDepartment] ? Object.values(departments[selectedDepartment]) : [];
         setSelectedTeamMembers(teamMembers);
-        console.log(selectedDepartment)
+        // console.log(selectedDepartment)
         onTeamChange(selectedDepartment, teamMembers.map(name => getTeamMemberIdByName(name)), queryId);
     }, [selectedDepartment]);
 

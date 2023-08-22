@@ -3,14 +3,11 @@ import { RootState } from '../../store';
 
 
 type ClientState = {
-    clientName: string,
-    spaceId: number,
+    clientName?: string, // Optional
+    spaceId?: number, // Optional
 }
 
-const initialState: ClientState = {
-    clientName: 'Closers',
-    spaceId: 8108305,
-};
+const initialState: Partial<ClientState> = {};
 
 export const client = createSlice({
     name: 'client',

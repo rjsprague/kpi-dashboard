@@ -15,7 +15,7 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
     const clientSpaceId = useSelector(selectSpaceId);
 
     const { data: user, error: userError } = useSWR('/auth/getUser', fetcher);
-    console.log(user)
+    // console.log(user)
 
     let clientsMap = {};
 

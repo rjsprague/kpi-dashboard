@@ -11,7 +11,7 @@ import LoadingQuotes from './LoadingQuotes';
 import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
 
-export default function KpiDashboard({ clientSpaceId}) {
+export default function KpiDashboard({ IsAdmin }) {
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [queryType, setQueryType] = useState();
     const [leadSources, setLeadSources] = useState({});
@@ -21,12 +21,12 @@ export default function KpiDashboard({ clientSpaceId}) {
     const datePresets = getDatePresets();
     const [idCounter, setIdCounter] = useState(0);
     const [queries, setQueries] = useState([]);
-    const closersSpaceId = process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID;
-    console.log(clientSpaceId)
-    console.log(closersSpaceId)
-    console.log(clientSpaceId == closersSpaceId)
-
-
+    const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID);
+    const clientSpaceId = useSelector(selectSpaceId)
+    // console.log(clientSpaceId)
+    // console.log(closersSpaceId)
+    // console.log(clientSpaceId === closersSpaceId)
+    // console.log("IsAdmin: ", IsAdmin)
     //console.log("clientSpaceId: ", clientSpaceId)
     // console.log("lead sources object ", leadSources)
     // console.log("Queries ", queries.map((query) => query.id))
@@ -54,6 +54,9 @@ export default function KpiDashboard({ clientSpaceId}) {
     // Fetch lead sources and departmentData on component mount
     useEffect(() => {
         async function getLeadSources() {
+            if (!clientSpaceId) {
+                return;
+            }
             setIsLoadingData(true);
             try {
 
@@ -68,7 +71,7 @@ export default function KpiDashboard({ clientSpaceId}) {
                 setTeamMembers(departmentsData)
                 const departmentsDataObject = departmentsData;
                 setQueryType(KPI_VIEWS.Acquisitions);
-                if (clientSpaceId == closersSpaceId) {
+                if (clientSpaceId === closersSpaceId && IsAdmin) {
                     setKpiList(VIEW_KPIS["Acquisitions"]["Closers"]);
                 } else {
                     setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
@@ -189,7 +192,7 @@ export default function KpiDashboard({ clientSpaceId}) {
 
     const handleQueryTypeChange = (type) => {
         setQueryType(type);
-        if (clientSpaceId == closersSpaceId) {
+        if (clientSpaceId === closersSpaceId && IsAdmin) {
             setKpiList(VIEW_KPIS[type]["Closers"]);
         } else {
             setKpiList(VIEW_KPIS[type]["Clients"]);
