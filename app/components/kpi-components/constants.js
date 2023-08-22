@@ -28,9 +28,6 @@ export const VIEW_KPIS = {
             "Closers Leads Created",
             "Closers Leads Set Prequalified",
             "Closers Booking Rate",
-            // "Closers Bookings Confirmed",
-            // "Closers Bookings Canceled",
-            // "Closers Bookings No-Show",
             "Closers Show Rate",
             "Closers Offer Rate",
             "Closers Close Rate",
@@ -50,7 +47,10 @@ export const VIEW_KPIS = {
                 "AM STL Median",
                 "DA STL Median",
                 "BiG Checks",
-            ]
+            ],
+            "Deal Analyst": [
+                "DA STL Median",
+            ],
         },
         "Closers": {
             "Setter": [
@@ -93,7 +93,11 @@ export const VIEW_KPIS = {
             "# of Deals"
         ],
         "Closers": [
-
+            "Cost Per Contract",
+            "Cost Per Qualified Lead",
+            "Speed to Lead",
+            "# of Signed Contracts",
+            "# of Deals"
         ]
     }
 };

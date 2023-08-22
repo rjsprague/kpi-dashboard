@@ -34,10 +34,14 @@ const RightSlideModal = ({
 
     // console.log("RightSlideModal: ", selectedView, selectedDepartment, selectedViewKpiList, dataTable1, dataTable1Key, dataTable2, dataTable2Key)
 
-    const { startDate, endDate, leadSource, kpiView, teamMembers, apiName } = tableProps;
-    console.log(apiName)
+    // Check if tableProps is defined before destructuring
+    let startDate, endDate, leadSource, kpiView, teamMembers, apiName;
+    if (tableProps) {
+        ({ startDate, endDate, leadSource, kpiView, teamMembers, apiName } = tableProps);
+    }
+    // console.log(apiName)
     const { data, error } = useSWR({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }, fetchSingleKpi);
-    console.log(data)
+    // console.log(data)
 
     useEffect(() => {
         if (data) {
@@ -170,7 +174,7 @@ const RightSlideModal = ({
                     </div>
                 )}
 
-                {modalType === "table" ? (
+                {modalType === "table" && tableProps ? (
                     data ? (
                         <div className="flex flex-row justify-center">
                             {error && <div className="text-red-500">Error fetching data</div>}

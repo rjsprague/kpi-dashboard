@@ -1,8 +1,11 @@
 
 async function fetchLeadSources(clientSpaceId) {
 
-    // console.log("fetchLeadSources clientSpaceId", clientSpaceId)
+    const response = await fetch('/auth/getAccessToken');
+    const { accessToken } = await response.json();
 
+    // console.log("fetchLeadSources clientSpaceId", clientSpaceId)
+    // console.log("fetchLeadSources accessToken", accessToken)
     const closersSpaceId = process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID
     // console.log("fetchLeadSources closersSpaceId", closersSpaceId)
 
@@ -10,7 +13,8 @@ async function fetchLeadSources(clientSpaceId) {
         const response = await fetch('/api/lead-sources', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken.value}`,
             },
             body: JSON.stringify({
                 "spaceid": clientSpaceId,

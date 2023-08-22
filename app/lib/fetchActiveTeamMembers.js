@@ -1,6 +1,10 @@
 
 async function fetchActiveTeamMembers(clientSpaceId) {
     
+    const response = await fetch('/auth/getAccessToken');
+    const { accessToken } = await response.json();
+    // console.log("accessToken", accessToken)
+
     const closersSpaceId = process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID
 
 
@@ -8,7 +12,8 @@ async function fetchActiveTeamMembers(clientSpaceId) {
         const response = await fetch('/api/team-members', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken.value}`,
             },
             body: JSON.stringify({
                 "spaceid": clientSpaceId,
@@ -21,6 +26,7 @@ async function fetchActiveTeamMembers(clientSpaceId) {
         }
 
         const data = await response.json();
+        console.log("data", data)
 
         let activeMembers;
 
@@ -35,7 +41,6 @@ async function fetchActiveTeamMembers(clientSpaceId) {
                 "Lead Manager": {},
                 "Acquisition Manager": {},
                 "Deal Analyst": {},
-                "Transaction Coordinator": {},
             };
         }
         
@@ -51,7 +56,7 @@ async function fetchActiveTeamMembers(clientSpaceId) {
             }
         });
 
-        // console.log("activeMembers", activeMembers)
+        console.log("activeMembers", activeMembers)
         return activeMembers;
 
     } catch (error) {

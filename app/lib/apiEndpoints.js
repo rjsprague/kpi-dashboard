@@ -26,8 +26,8 @@ const generateFilters = (startDate, endDate, leadSource, kpiView, leadSourceFiel
 };
 // Define the endpoints and filters for each KPI
 const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
-    console.log(teamMembers)
-    console.log(kpiView)
+    // console.log(teamMembers)
+    // console.log(kpiView)
     return {
         marketingExpenses: {
             name: "Marketing Expenses",
@@ -309,8 +309,24 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
         // },
         closersDcShowed: {
             name: "Closers DC Showed",
-            url: "/api/closers/acquisitions/discovery-calls",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "created_on")
+            url: "/api/closers/acquisitions/lead-events",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
+                {
+                    "type": "category",
+                    "fieldName": "Event",
+                    "values": ["Discovery Call Attended"]
+                },
+                {
+                    "type": "category",
+                    "fieldName": "lead_event #",
+                    "values": ["1.0000"]
+                },
+                {
+                    "type": "app",
+                    "fieldName": "Team Member Responsible",
+                    "values": teamMembers
+                }
+            ])
         },
         closersDcOffers: {
             name: "Closers DC Offers",
@@ -342,6 +358,11 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                     "type": "app",
                     "fieldName": "Closer Responsible",
                     "values": teamMembers
+                },
+                {
+                    "type": "category",
+                    "fieldName": "Status",
+                    "values": ["Active"]
                 }
             ])
         },

@@ -24,8 +24,8 @@ const KpiQueryContainer = ({
     isLoadingData
 }) => {
 
-    // console.log("KpiViews view: ", view)
-    // console.log("kpilist: ", kpiList)
+    console.log("KpiViews view: ", view)
+    console.log("kpilist: ", kpiList)
     // console.log("lead sources: ", leadSources)
     // console.log("queries: ", queries)
 

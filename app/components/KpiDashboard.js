@@ -11,7 +11,7 @@ import LoadingQuotes from './LoadingQuotes';
 import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
 
-export default function KpiDashboard() {
+export default function KpiDashboard({ clientSpaceId}) {
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [queryType, setQueryType] = useState();
     const [leadSources, setLeadSources] = useState({});
@@ -21,11 +21,10 @@ export default function KpiDashboard() {
     const datePresets = getDatePresets();
     const [idCounter, setIdCounter] = useState(0);
     const [queries, setQueries] = useState([]);
-    const clientSpaceId = useSelector(selectSpaceId);
     const closersSpaceId = process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID;
-    // console.log(clientSpaceId)
-    // console.log(closersSpaceId)
-    // console.log(clientSpaceId == closersSpaceId)
+    console.log(clientSpaceId)
+    console.log(closersSpaceId)
+    console.log(clientSpaceId == closersSpaceId)
 
 
     //console.log("clientSpaceId: ", clientSpaceId)
@@ -42,7 +41,7 @@ export default function KpiDashboard() {
                 id: newQueryId ? 1 + newQueryId : 1,
                 results: [],
                 isOpen: true,
-                isLoading: false,
+                isLoading: true,
                 isUnavailable: false,
                 leadSource: leadSourcesObject,
                 dateRange: { gte: datePresets['Previous Week'].startDate, lte: datePresets['Previous Week'].endDate },
@@ -64,7 +63,7 @@ export default function KpiDashboard() {
                 setLeadSources(leadSourcesData);
                 const leadSourcesObject = leadSourcesData;
                 const departmentsData = await fetchActiveTeamMembers(clientSpaceId);
-                console.log("departments data ", departmentsData)
+                // console.log("departments data ", departmentsData)
                 setDepartments(departmentsData)
                 setTeamMembers(departmentsData)
                 const departmentsDataObject = departmentsData;
@@ -199,7 +198,7 @@ export default function KpiDashboard() {
     };
 
     const handleTeamMemberForClosersChange = (teamMember, queryId) => {
-        console.log("team member ", teamMember)
+        // console.log("team member ", teamMember)
         setQueries((prevQueries) => {
             return prevQueries.map((query) => {
                 if (query.id === queryId) {

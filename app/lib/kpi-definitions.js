@@ -1015,7 +1015,7 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 60,
         target: 80,
-        dataLabels: ["Showings: ", "Offers: "],
+        dataLabels: ["Attended: ", "Offers: "],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [
@@ -1033,14 +1033,14 @@ const KPI_DEFINITIONS = {
     },
     "Closers Close Rate": {
         name: "Closers Close Rate",
-        dataKeys: ["closersDcOffers", "closersDcClosed"],
+        dataKeys: ["closersDcShowed", "closersDcClosed"],
         formula: (apiData) => {
-            const { closersDcOffers, closersDcClosed } = apiData;
-            return closersDcClosed ? closersDcClosed / closersDcOffers * 100 : 0;
+            const { closersDcShowed, closersDcClosed } = apiData;
+            return closersDcClosed ? closersDcClosed / closersDcShowed * 100 : 0;
         },
         redFlag: 20,
         target: 40,
-        dataLabels: ["DC Offered: ", "DC Closed: "],
+        dataLabels: ["Attended: ", "Closed: "],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [
@@ -1086,10 +1086,10 @@ const KPI_DEFINITIONS = {
         name: "Closers Revenue Contracted",
         dataKeys: ["closersRevenueContracted", "numPaymentPlans"],
         formula: (apiData) => {
-            const { revenueContracted, numPaymentPlans } = apiData;
+            const { totalRevenueContracted, numPaymentPlans } = apiData;
             // console.log('revenueContracted', revenueContracted)
             // console.log('numPaymentPlans', numPaymentPlans)
-            return numPaymentPlans && numPaymentPlans !== 0 ? (revenueContracted / numPaymentPlans).toFixed(2) : 0;
+            return numPaymentPlans && numPaymentPlans !== 0 ? (totalRevenueContracted / numPaymentPlans).toFixed(2) : 0;
         },
         redFlag: 0,
         target: 0,
@@ -1144,10 +1144,11 @@ const KPI_DEFINITIONS = {
     },
     "Closers Cost Per Lead": {
         name: "Closers Cost Per Lead",
-        dataKeys: ["closersAdSpend", "closersLeadsCreated"],
+        dataKeys: ["totalClosersAdSpend", "closersLeadsCreated"],
         formula: (apiData) => {
-            const { closersAdSpend, closersLeadsCreated } = apiData;
-            return closersLeadsCreated > 0 ? closersAdSpend / closersLeadsCreated : 0;
+            const { totalClosersAdSpend, closersLeadsCreated } = apiData;
+            console.log(closersLeadsCreated > 0)
+            return closersLeadsCreated > 0 ? totalClosersAdSpend / closersLeadsCreated : 0;
         },
         redFlag: 100,
         target: 50,
@@ -1169,10 +1170,10 @@ const KPI_DEFINITIONS = {
     },
     "Closers Cost Per Close": {
         name: "Closers Cost Per Close",
-        dataKeys: ["closersAdSpend", "closersDcClosed"],
+        dataKeys: ["totalClosersAdSpend", "closersDcClosed"],
         formula: (apiData) => {
-            const { closersAdSpend, closersDcClosed } = apiData;
-            return closersDcClosed > 0 ? closersAdSpend / closersDcClosed : 0;
+            const { totalClosersAdSpend, closersDcClosed } = apiData;
+            return closersDcClosed > 0 ? totalClosersAdSpend / closersDcClosed : 0;
         },
         redFlag: 1000,
         target: 500,
@@ -1194,10 +1195,10 @@ const KPI_DEFINITIONS = {
     },
     "Closers ROAS Actualized": {
         name: "Closers ROAS Actualized",
-        dataKeys: ["cashCollectedUpFront", "closersAdSpend"],
+        dataKeys: ["cashCollectedUpFront", "totalClosersAdSpend"],
         formula: (apiData) => {
-            const { cashCollectedUpFront, closersAdSpend } = apiData;
-            return closersAdSpend > 0 ? cashCollectedUpFront / closersAdSpend * 100 : 0;
+            const { cashCollectedUpFront, totalClosersAdSpend } = apiData;
+            return totalClosersAdSpend > 0 ? cashCollectedUpFront / totalClosersAdSpend * 100 : 0;
         },
         redFlag: 800,
         target: 1200,
@@ -1219,11 +1220,11 @@ const KPI_DEFINITIONS = {
     },
     "Closers ROAS Projected": {
         name: "Closers ROAS Projected",
-        dataKeys: ["uncollectedRevenue", "closersAdSpend"],
+        dataKeys: ["uncollectedRevenue", "totalClosersAdSpend"],
         formula: (apiData) => {
-            const { uncollectedRevenue, closersAdSpend,  } = apiData;
+            const { uncollectedRevenue, totalClosersAdSpend,  } = apiData;
             
-            return closersAdSpend > 0 ? uncollectedRevenue / closersAdSpend * 100 : 0;
+            return totalClosersAdSpend > 0 ? uncollectedRevenue / totalClosersAdSpend * 100 : 0;
         },
         redFlag: 800,
         target: 1200,
@@ -1245,10 +1246,10 @@ const KPI_DEFINITIONS = {
     },
     "Closers ROAS Total": {
         name: "Closers ROAS Total",
-        dataKeys: ["totalRevenue", "closersAdSpend"],
+        dataKeys: ["totalRevenue", "totalClosersAdSpend"],
         formula: (apiData) => {
-            const { totalRevenue, closersAdSpend } = apiData;
-            return closersAdSpend > 0 ? totalRevenue / closersAdSpend * 100 : 0;
+            const { totalRevenue, totalClosersAdSpend } = apiData;
+            return totalClosersAdSpend > 0 ? totalRevenue / totalClosersAdSpend * 100 : 0;
         },
         redFlag: 800,
         target: 1200,
