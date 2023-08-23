@@ -175,7 +175,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
 
                 if (apiEndpointKey === "leads") {
                     return {
-                        "Date": result["Lead Created On"]["start_utc"] ? formatDate(result["Lead Created On"]["start_utc"]) : result["Lead Created On"]["start"] ? formatDate(result["Lead Created On"]["start"]) : "Not a Lead",
+                        "Date": result["Lead Created On"]["start"] ? formatDate(result["Lead Created On"]["start"]) : result["Lead Created On"]["start"] ? formatDate(result["Lead Created On"]["start"]) : "Not a Lead",
                         "Name": result["Contact Name"] ? result["Contact Name"] : result["Seller Contact Name"] ? result["Seller Contact Name"]
                             : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
                                 : result["First"] ? result["First"]
@@ -188,7 +188,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     }
                 } else {
                     return {
-                        "Date": result["Lead Created On"]["start_utc"] ? formatDate(result["Lead Created On"]["start_utc"]) : result["Lead Created On"]["start"] ? formatDate(result["Lead Created On"]["start"]) : "Not a Lead",
+                        "Date": result["Lead Created On"]["start"] ? formatDate(result["Lead Created On"]["start"]) : result["Lead Created On"]["start"] ? formatDate(result["Lead Created On"]["start"]) : "Not a Lead",
                         "Name": result["Contact Name"] ? result["Contact Name"] : result["Seller Contact Name"] ? result["Seller Contact Name"]
                             : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
                                 : result["First"] ? result["First"]
@@ -203,7 +203,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
         } else if (apiEndpointKey === "leadConnections") {
             return results.map((result) => {
                 return {
-                    "Date Connected": result["First lead connection"]["start_utc"] ? formatDate(result["First lead connection"]["start_utc"]) : "Not a Lead Connection",
+                    "Date Connected": result["First lead connection"]["start"] ? formatDate(result["First lead connection"]["start"]) : "Not a Lead Connection",
                     "Lead Name": result["Seller Contact Name"] ? result["Seller Contact Name"]
                         : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
                             : result["First"] ? result["First"]
@@ -218,7 +218,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
         } else if (apiEndpointKey === "triageCalls") {
             return results.map((result) => {
                 return {
-                    "Date SLS Submitted": result["SLS Created On"]["start_utc"] ? formatDate(result["SLS Created On"]["start_utc"]) : "Not an SLS",
+                    "Date SLS Submitted": result["SLS Created On"]["start"] ? formatDate(result["SLS Created On"]["start"]) : "Not an SLS",
                     "Lead Name": result["Seller Contact Name"] ? result["Seller Contact Name"]
                         : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
                             : result["First"] ? result["First"]
@@ -234,7 +234,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
         } else if (apiEndpointKey === "qualifiedTriageCalls") {
             return results.map((result) => {
                 return {
-                    "Date SLS Submitted": result["SLS Created On"]["start_utc"] ? formatDate(result["SLS Created On"]["start_utc"]) : "Not an SLS",
+                    "Date SLS Submitted": result["SLS Created On"]["start"] ? formatDate(result["SLS Created On"]["start"]) : "Not an SLS",
                     "Lead Name": result["Seller Contact Name"] ? result["Seller Contact Name"]
                         : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
                             : result["First"] ? result["First"]
@@ -249,7 +249,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
         } else if (apiEndpointKey === "triageApproval") {
             return results.map((result) => {
                 return {
-                    "Date SLS Submitted": result["SLS Created On"]["start_utc"] ? formatDate(result["SLS Created On"]["start_utc"]) : "Not an SLS",
+                    "Date SLS Submitted": result["SLS Created On"]["start"] ? formatDate(result["SLS Created On"]["start"]) : "Not an SLS",
                     "Lead Name": result["Seller Contact Name"] ? result["Seller Contact Name"]
                         : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
                             : result["First"] ? result["First"]
@@ -264,7 +264,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
         } else if (apiEndpointKey === "dealAnalysis") {
             return results.map((result) => {
                 return {
-                    "Date DA Submitted": result["Timestamp"] && result["Timestamp"]["start_utc"] ? formatDate(result["Timestamp"]["start_utc"]) : "Not an SLS",
+                    "Date DA Submitted": result["Timestamp"] && result["Timestamp"]["start"] ? formatDate(result["Timestamp"]["start"]) : "Not an SLS",
                     "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "Status": result["--Current Seller Lead Status"] ? result["--Current Seller Lead Status"] : "No Status",
@@ -275,7 +275,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
         } else if (apiEndpointKey === "perfectPresentations") {
             return results.map((result) => {
                 return {
-                    "Date AS Submitted": result["AS Created On"]["start_utc"] ? formatDate(result["AS Created On"]["start_utc"]) : "Not an SLS",
+                    "Date AS Submitted": result["AS Created On"]["start"] ? formatDate(result["AS Created On"]["start"]) : "Not an SLS",
                     "Lead Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "Ask Ryan",
                     "Address": result["*AS Address"] ? result["*AS Address"] : "No address",
                     "Result": result["**What was the result of this lead?**"] ? result["**What was the result of this lead?**"] : "No Result",
@@ -287,7 +287,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
 
             return results.map((result) => {
                 return {
-                    "Date": result["Timestamp"]["start_utc"] ? formatDate(result["Timestamp"]["start_utc"]) : "No Date",
+                    "Date": result["Timestamp"]["start"] ? formatDate(result["Timestamp"]["start"]) : "No Date",
                     "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 60) + " mins" : "No LM STL Median",
@@ -298,7 +298,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
         } else if (apiEndpointKey === "amStlMedian") {
             return results.map((result) => {
                 return {
-                    "Date": result["Timestamp"]["start_utc"] ? formatDate(result["Timestamp"]["start_utc"]) : "No Date",
+                    "Date": result["Timestamp"]["start"] ? formatDate(result["Timestamp"]["start"]) : "No Date",
                     "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "AM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 3600).toFixed(2) + " hours" : "No AM STL Median",
@@ -309,7 +309,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
         } else if (apiEndpointKey === "daStlMedian") {
             return results.map((result) => {
                 return {
-                    "Date": result["Timestamp"]["start_utc"] ? formatDate(result["Timestamp"]["start_utc"]) : "No Date",
+                    "Date": result["Timestamp"]["start"] ? formatDate(result["Timestamp"]["start"]) : "No Date",
                     "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 3600).toFixed(2) + " hours" : "No DA STL Median",
@@ -320,7 +320,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
         } else if (apiEndpointKey === "bigChecks") {
             return results.map((result) => {
                 return {
-                    "Date": result["Timestamp"]["start_utc"] ? formatDate(result["Timestamp"]["start_utc"]) : "No Date",
+                    "Date": result["Timestamp"]["start"] ? formatDate(result["Timestamp"]["start"]) : "No Date",
                     "Team Member": result["Team Member Responsible"] ? result["Team Member Responsible"] : "No Team Member",
                     //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
@@ -329,7 +329,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
         } else if (apiEndpointKey === "contracts") {
             return results.map((result) => {
                 return {
-                    "Date Contracted": result["*Date Ratified"]["start_utc"] ? formatDate(result["*Date Ratified"]["start_utc"]) : "No Date",
+                    "Date Contracted": result["*Date Ratified"]["start"] ? formatDate(result["*Date Ratified"]["start"]) : "No Date",
                     "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
@@ -339,7 +339,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
         } else if (apiEndpointKey === "acquisitions") {
             return results.map((result) => {
                 return {
-                    "Date Acquired": result["Date Acquired"]["start_utc"] ? formatDate(result["Date Acquired"]["start_utc"]) : "No Date",
+                    "Date Acquired": result["Date Acquired"]["start"] ? formatDate(result["Date Acquired"]["start"]) : "No Date",
                     "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
@@ -355,7 +355,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
             }, [])
             return calcResults.map((result) => {
                 return {
-                    "Date Acquired": result["Date Acquired"]["start_utc"] ? formatDate(result["Date Acquired"]["start_utc"]) : "No Date",
+                    "Date Acquired": result["Date Acquired"]["start"] ? formatDate(result["Date Acquired"]["start"]) : "No Date",
                     "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "Projected Profit": result["Expected Profit Center"] ? result["Expected Profit Center"] : "No Projected Profit",
@@ -366,7 +366,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
         } else if (apiEndpointKey === "deals") {
             return results.map((result) => {
                 return {
-                    "Date Deal Sold": result["Closing (Sell)"]["start_utc"] ? formatDate(result["Closing (Sell)"]["start_utc"]) : "No Date",
+                    "Date Deal Sold": result["Closing (Sell)"]["start"] ? formatDate(result["Closing (Sell)"]["start"]) : "No Date",
                     "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
@@ -376,7 +376,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
         } else if (apiEndpointKey === "profit") {
             return results.map((result) => {
                 return {
-                    "Date Deal Sold": result["Closing (Sell)"]["start_utc"] ? formatDate(result["Closing (Sell)"]["start_utc"]) : "No Date",
+                    "Date Deal Sold": result["Closing (Sell)"]["start"] ? formatDate(result["Closing (Sell)"]["start"]) : "No Date",
                     "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "Amount of Profit": result["Net Profit Center"] ? result["Net Profit Center"] : "No Profit",
@@ -393,7 +393,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
             }, [])
             return calcResults.map((result) => {
                 return {
-                    "Date Acquired": result["Date Acquired"]["start_utc"] ? formatDate(result["Date Acquired"]["start_utc"]) : "No Date",
+                    "Date Acquired": result["Date Acquired"]["start"] ? formatDate(result["Date Acquired"]["start"]) : "No Date",
                     "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "Projected Profit": result["Expected Profit Center"] ? result["Expected Profit Center"] : "No Projected Profit",

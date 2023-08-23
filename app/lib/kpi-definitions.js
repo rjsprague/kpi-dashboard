@@ -339,7 +339,7 @@ const KPI_DEFINITIONS = {
         formula: (apiData) => {
             const { pendingDeals } = apiData;
             // reduce pendingDeals to only objects that do not have a "*Deal" property
-            let pendingDealsReduced = pendingDeals && pendingDeals > 0 ? pendingDeals.reduce((acc, curr) => {
+            let pendingDealsReduced = pendingDeals && pendingDeals.length > 0 ? pendingDeals.reduce((acc, curr) => {
                 if (!curr.hasOwnProperty("*Deal")) {
                     acc.push(curr)
                 }
