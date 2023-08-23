@@ -5,8 +5,8 @@ const generateFilters = (startDate, endDate, leadSource, kpiView, leadSourceFiel
         filters.push({
             "type": 'date',
             "fieldName": dateFieldName,
-            "gte": startDate,
-            "lte": endDate,
+            "gte": startDate+" 00:00:00",
+            "lte": endDate+" 23:59:59",
         });
     }
 
