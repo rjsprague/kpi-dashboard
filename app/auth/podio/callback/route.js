@@ -10,7 +10,7 @@ export async function GET(req) {
     const url = new URL(req.url);
     const code = url.searchParams.get('code');
 
-    console.log("code: " + code);
+    // console.log("code: " + code);
 
     if (!code) {
         return NextResponse.redirect( public_base_url + '/login');
@@ -27,7 +27,7 @@ export async function GET(req) {
             },
         });
 
-        console.log("response: " + response);
+        // console.log("response: " + response);
         
         if (!response.ok) {
             throw new Error("Something went wrong on api server!", response);
@@ -52,7 +52,7 @@ export async function GET(req) {
             httpOnly: true,
         })
 
-        console.log("accessToken cookie ", cookies().get('accessToken'))
+        // console.log("accessToken cookie ", cookies().get('accessToken'))
 
         if (!decodedToken.timezone) {
             return NextResponse.redirect( public_base_url + '/user-profile')

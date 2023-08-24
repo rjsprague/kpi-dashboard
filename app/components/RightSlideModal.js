@@ -39,7 +39,7 @@ const RightSlideModal = ({
     if (tableProps) {
         ({ startDate, endDate, leadSource, kpiView, teamMembers, apiName } = tableProps);
     }
-    console.log(apiName)
+    // console.log(apiName)
     const { data, error } = useSWR({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }, fetchSingleKpi);
     // console.log(data)
 
@@ -109,7 +109,7 @@ const RightSlideModal = ({
                 }
             }}
         >
-            <div className="absolute top-0 right-0 flex-col w-full h-screen bg-blue-900 bg-opacity-50 infoModal">
+            <div className="absolute top-0 right-0 flex-col w-full h-screen overflow-scroll bg-blue-900 bg-opacity-50 infoModal">
                 <button className="absolute font-semibold right-2 top-2" onClick={handleCloseModal}>
                     <FiX />
                 </button>
@@ -176,7 +176,7 @@ const RightSlideModal = ({
 
                 {modalType === "table" && tableProps ? (
                     data ? (
-                        <div className="flex flex-row justify-center">
+                        <div className="flex flex-col justify-center 2xl:flex-row">
                             {error && <div className="text-red-500">Error fetching data</div>}
                             {dataTable1 && <DataTable className="flex" selectedTableKey={dataTable1Key} data={dataTable1} leadSources={leadSources} departments={departments} />}
                             {dataTable2 && <DataTable className="flex" selectedTableKey={dataTable2Key} data={dataTable2} leadSources={leadSources} departments={departments} />}

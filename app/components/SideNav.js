@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { FiPlayCircle, FiUsers, FiSettings, FiArrowRightCircle, FiMenu, FiChevronsRight } from 'react-icons/fi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRobot, faCheckDouble, faGaugeHigh, faScrewdriverWrench, faThLarge, faChalkboardTeacher } from '@fortawesome/free-solid-svg-icons';
+import { faRobot, faCheckDouble, faGaugeHigh, faScrewdriverWrench, faThLarge, faChalkboardTeacher, faSignOut, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import fetchClients from '../lib/fetchClients';
 import { setClientName, setSpaceId } from '../GlobalRedux/Features/client/clientSlice'
 import { useDispatch } from 'react-redux';
@@ -128,7 +128,7 @@ export default function SideNav() {
     const navItems = [
         // { icon: <FontAwesomeIcon icon={faThLarge} size="lg" />, text: 'Overview', link: '/' },
         // { icon: <FontAwesomeIcon icon={faCheckDouble} size="lg" />, text: 'To Dos', link: '/' },
-        { icon: <FontAwesomeIcon icon={faGaugeHigh} size="lg" />, text: 'KPIs', link: '/kpi-dashboard' },
+        { icon: <FontAwesomeIcon icon={faGaugeHigh} size="xl" />, text: 'KPIs', link: '/kpi-dashboard' },
         // { icon: <FontAwesomeIcon icon={faRobot} size="lg" />, text: 'Automations', link: '/' },
         // { icon: <FontAwesomeIcon icon={faScrewdriverWrench} size="lg" />, text: 'Tools', link: '/' },
         // { icon: <FontAwesomeIcon icon={faChalkboardTeacher} size="lg" />, text: 'Training', link: '/' },
@@ -156,7 +156,7 @@ export default function SideNav() {
                                 <img
                                     src="/reia-icon.webp"
                                     alt="REI Automated Logo"
-                                    className="w-8 h-8 text-white transition-all duration-300 ease-in-out"
+                                    className="w-8 h-8 text-white transition-all duration-300 ease-in-out animate-pulse"
                                     onClick={toggleOpen}
                                     style={{ transform: `${isOpen ? 'rotate(360deg)' : 'rotate(0deg)'}` }}
                                 />
@@ -169,12 +169,12 @@ export default function SideNav() {
                                             user && IsAdmin && (
                                                 <div
                                                     ref={buttonRef}
-                                                    className="relative flex w-full rounded-md hover:bg-blue-500"
+                                                    className="relative flex w-full rounded-md"
                                                     onClick={item.onClick}
                                                     onKeyDown={handleKeyDown}
                                                 >
                                                     <div className='flex flex-row gap-2 p-1 text-left whitespace-nowrap '>
-                                                        <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}>{item.icon}</span>
+                                                        <span className={`transition-all duration-300 ease-out hover:animate-bounce ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}>{item.icon}</span>
                                                         <span className={`truncate transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>{item.text}{selectedClient && `: ` + selectedClient}</span>
                                                     </div>
                                                     {clientsOpen && (
@@ -200,9 +200,9 @@ export default function SideNav() {
                                             )
 
                                         ) : (
-                                            <Link href={item.link} className={`flex flex-row gap-2 whitespace-nowrap hover:bg-blue-500 rounded-md ${isOpen ? '' : ''}`}>
+                                            <Link href={item.link} className={`flex flex-row gap-2 whitespace-nowrap rounded-md ${isOpen ? '' : ''}`}>
                                                 <div className='flex flex-row gap-2 p-1 text-left whitespace-nowrap '>
-                                                    <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}>{item.icon}</span>
+                                                    <span className={`transition-all duration-300 ease-out hover:animate-bounce ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}>{item.icon}</span>
                                                     <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>{item.text}</span>
                                                 </div>
                                             </Link>
@@ -225,15 +225,15 @@ export default function SideNav() {
                             </ul> */}
                         </div>
                         <div className="flex flex-col mb-4 space-y-2 lg:space-y-4">
-                            <Link href="/user-profile" className="flex items-center gap-2 rounded-md hover:bg-blue-500">
+                            <Link href="/user-profile" className="flex items-center gap-2 rounded-md">
                                 <div className='flex flex-row gap-2 text-left whitespace-nowrap '>
-                                    <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100 overflow-hidden'}`}><FiSettings className='text-xl' /></span>
+                                    <span className={`transition-all duration-300 ease-out origin-center hover:animate-spin ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100 overflow-hidden'}`}><FiSettings className='text-2xl' /></span>
                                     <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>Settings</span>
                                 </div>
                             </Link>
-                            <button type="button" onClick={logout} className="flex items-center gap-2 rounded-md hover:bg-blue-500">
+                            <button type="button" onClick={logout} className="flex items-center gap-2 rounded-md">
                                 <div className='flex flex-row gap-2 text-left whitespace-nowrap '>
-                                    <span className={`transition-all duration-300 ease-out ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100 overflow-hidden'}`}><FiArrowRightCircle className='text-xl' /></span>
+                                    <span className={`transition-all duration-300 ease-out hover:animate-bounce ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100 overflow-hidden'}`}><FontAwesomeIcon icon={faSignOut} size="xl" /></span>
                                     <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>Log Out</span>
                                 </div>
                             </button>

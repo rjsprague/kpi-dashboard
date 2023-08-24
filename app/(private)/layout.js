@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
             <html lang="en">
                 <head />
-                <body className='absolute inset-0 h-screen max-h-screen'>
+                <body className='absolute inset-0 h-screen max-h-screen overflow-hidden'>
                     <ReduxProvider>
                         <div className=''>
                             <SideNav />

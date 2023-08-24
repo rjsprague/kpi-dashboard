@@ -93,14 +93,15 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
                         if (cellValue && Array.isArray(cellValue)) {
                             return invertedLeadSources[cellValue[0]];
                         } else {
-                            console.log("cellValue: ", cellValue)
+                            // console.log("cellValue: ", cellValue)
                             return cellValue;
                         }
-                    } else if (info.column.columnDef.header === 'Team Member' || info.column.columnDef.header === 'Lead Manager') {
+                    } else if (info.column.columnDef.header === 'Team Member' || info.column.columnDef.header === 'Lead Manager' || info.column.columnDef.header === 'Closer') {
                         if (cellValue && Array.isArray(cellValue)) {
+                            // console.log("cellValue: ", cellValue)
                             return teamMembersMap[cellValue[0]];
                         } else {
-                            console.log("cellValue: ", cellValue)
+                            // console.log("cellValue: ", cellValue)
                             return cellValue;
                         }
                     }

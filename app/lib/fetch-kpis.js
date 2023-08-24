@@ -69,7 +69,7 @@ async function fetchKpiData({ clientSpaceId, view, kpiList, leadSource, gte, lte
         requestedKpiList = kpiList
     }
 
-    console.log("requested kpi list ", requestedKpiList)
+    // console.log("requested kpi list ", requestedKpiList)
 
     try {
         const startDate = gte ? formatDate(new Date(gte)) : null;
