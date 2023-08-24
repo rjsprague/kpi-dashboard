@@ -307,8 +307,8 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
         //         }
         //     ])
         // },
-        closersDcShowed: {
-            name: "Closers DC Showed",
+        closersUniqueAttended: {
+            name: "Closers Unique Attended",
             url: "/api/closers/acquisitions/lead-events",
             filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
                 {

@@ -19,7 +19,7 @@ function KpiDashboardPage() {
         if (userError) {
             router.push('/login')
         }
-        if (user && user.IsAdmin === true && user.spaceID === "") {
+        if (user && user.IsAdmin === true && user.spaceID === 0) {
             dispatch(setSpaceId(Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)))
         } else if (user) {
             dispatch(setSpaceId(user.spaceID))

@@ -13,8 +13,13 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
     const labelRef = useRef(null);
     const valRef = useRef(null);
 
-    let dollarFill = currentNum <= target ? "green" : currentNum <= redFlag ? "yellow" : "red";
-    
+    let dollarFill;
+    if (target > redFlag) {
+        dollarFill = currentNum >= target ? "green" : currentNum >= redFlag ? "yellow" : "red";
+    } else {
+        dollarFill = currentNum <= target ? "green" : currentNum <= redFlag ? "yellow" : "red";
+    }
+
     let percentFill;
     if (target > redFlag) {
         percentFill = currentNum >= target ? "green" : currentNum >= redFlag ? "yellow" : "red";
@@ -26,11 +31,27 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
     let redFlagPosition = 0;
     let targetPosition = 0;
 
-    if (kpiName === "Cost Per Contract" || kpiName === "Cost Per Acquisition" || kpiName === "ROAS Total" || kpiName === "ROAS Total APR") {
+    if (kpiName === "ROAS Total" || kpiName === "ROAS Total APR" || kpiName === "Closers ROAS Total" || kpiName === "Closers ROAS Projected" || kpiName === "Closers ROAS Actualized") {
         currentPosition = current === Infinity ? 100 : current > 1000 ? 200 : current/10;
         redFlagPosition = redFlag / 10 ;
         targetPosition = target / 10 ;
-    } else {
+    } else if (kpiName === "Cost Per Contract" || kpiName === "Cost Per Acquisition") {
+        currentPosition = current > 1600 ? 200 : current / 8;
+        redFlagPosition = 150;
+        targetPosition = 50;
+    } else if (kpiName === "Cost Per Acquisition") {
+        currentPosition = current > 2400 ? 200 : current / 12;
+        redFlagPosition = 150;
+        targetPosition = 50;
+    } else if (target < redFlag && unit === "$") {
+        currentPosition = current > redFlag * 1.33 ? 200 : current / 6.66;
+        redFlagPosition = 133;
+        targetPosition = 66;
+    } else if (kpiName === "Closers Avg Cash Collected") {
+        currentPosition = current > target * 1.33 ? 200 : current / 66.66;
+        redFlagPosition = 66;
+        targetPosition = 133;
+    }  else {
         currentPosition = current === Infinity ? 100 : current > 100 ? 200 : (current) * 2;
         redFlagPosition = redFlag * 2;
         targetPosition = target * 2;

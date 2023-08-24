@@ -6,12 +6,12 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     const response = await fetch('/auth/getAccessToken');
     const { accessToken } = await response.json();
     // console.log("accessToken", accessToken)
-
+    console.log("api name: ", apiName)
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
     let teamMembersNum = teamMembers.map(Number);
     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
 
-    // console.log(apiEndpointsKeys)
+    console.log(apiEndpointsKeys)
     // console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
 
     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
@@ -411,14 +411,14 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
             return calcResults.map((result) => {
                 return {
                     "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No date given",
-                    "Payment Start": result["Date Start"] && result["Date Start"]["start"] ? formatDate(result["Date Start"]["start"]) : "No start date",
-                    "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "No closer given",
+                    // "Payment Start": result["Date Start"] && result["Date Start"]["start"] ? formatDate(result["Date Start"]["start"]) : "No start date",
+                    "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "No closer given", //get name converted from id in table
                     "Cash Up Front": result["Cash Collected Up Front"] ? result["Cash Collected Up Front"] : "No cash up front",
                     "Revenue Contracted": result["Contract Total"] ? result["Contract Total"] : "No revenue contracted",
                     podio_item_id: result.itemid ? result.itemid : podio_item_id,
                 }
             })
-        } else if (apiEndpointKey === "closersLeadsSetPrequalified" || apiEndpointKey === "closersBookings" || apiEndpointKey === "closersAppointments") {
+        } else if (apiEndpointKey === "closersUniqueAttended" || apiEndpointKey === "closersLeadsSetPrequalified" || apiEndpointKey === "closersBookings" || apiEndpointKey === "closersAppointments") {
             return results.map((result) => {
                 return {
                     "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No Date",
@@ -428,7 +428,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                 }
             })
-        } else if (apiEndpointKey === "closersDcShowed" || apiEndpointKey === "closersDcOffers" || apiEndpointKey === "closersDcClosed") {
+        } else if (apiEndpointKey === "closersDcOffers" || apiEndpointKey === "closersDcClosed") {
             return results.map((result) => {
                 return {
                     "Date Submitted": result["created_on"] && result["created_on"]["start"] ? formatDate(result["created_on"]["start"]) : "No date given",

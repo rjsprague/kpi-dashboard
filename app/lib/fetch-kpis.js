@@ -2,6 +2,7 @@ import fetchKPIs from "./api-utils";
 import KPI_DEFINITIONS from "./kpi-definitions";
 import kpiToEndpointMapping from "./kpiToEndpointMapping";
 import apiEndpoints from "./apiEndpoints";
+import { request } from "http";
 
 function formatDate(date) {
     const year = date.getFullYear();
@@ -28,21 +29,9 @@ function calculateKPIs(startDate, endDate, endpointData, kpiList) {
     return kpiData;
 }
 
-function createKpiObject(name, current, redFlag, target, data1, data2, unit, kpiType, kpiFactors) {
-    return {
-        name,
-        current,
-        redFlag,
-        target,
-        data1,
-        data2,
-        unit,
-        kpiType,
-        kpiFactors,
-    };
-}
 
-async function fetchKpiData({clientSpaceId, view, kpiList, leadSource, gte, lte, departments, teamMembers}) {
+
+async function fetchKpiData({ clientSpaceId, view, kpiList, leadSource, gte, lte, departments, teamMembers }) {
     // console.log("clientSpaceId: ", clientSpaceId)
     // console.log("kpi view ", view)
     // console.log("requested kpi list ", kpiList)
@@ -79,6 +68,8 @@ async function fetchKpiData({clientSpaceId, view, kpiList, leadSource, gte, lte,
     } else {
         requestedKpiList = kpiList
     }
+
+    console.log("requested kpi list ", requestedKpiList)
 
     try {
         const startDate = gte ? formatDate(new Date(gte)) : null;
@@ -158,7 +149,7 @@ async function fetchKpiData({clientSpaceId, view, kpiList, leadSource, gte, lte,
             }, 0);
 
             const totalRevenueContracted = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
-                
+
                 if ("Contract Total" in curr && curr["Status"][0] !== "Canceled") {
                     acc += parseFloat(curr["Contract Total"]);
                 }
@@ -198,7 +189,7 @@ async function fetchKpiData({clientSpaceId, view, kpiList, leadSource, gte, lte,
 
             if (dataKey === 'marketingExpenses') {
                 return endpointData.totalMarketingExpenses;
-            } else if ( dataKey === 'closersAdSpend') {
+            } else if (dataKey === 'closersAdSpend') {
                 return endpointData.totalClosersAdSpend;
             } else if (dataKey === 'deals') {
                 return endpointData.deals;
@@ -224,9 +215,6 @@ async function fetchKpiData({clientSpaceId, view, kpiList, leadSource, gte, lte,
             }
 
         }
-
-        const kpiDefinitionsArray = Object.values(KPI_DEFINITIONS);
-
         // console.log("KPI Definitions Array: ", kpiDefinitionsArray)
 
         // Helper function for creating data strings
@@ -243,14 +231,17 @@ async function fetchKpiData({clientSpaceId, view, kpiList, leadSource, gte, lte,
             return dataLabel + value;
         };
 
-        const kpiObjects = kpiDefinitionsArray.filter((kpiDefinition) => requestedKpiList.includes(kpiDefinition.name))
-            .map((kpiDefinition) => {
-                const current = calculatedKPIs[kpiDefinition.name];
-                const { redFlag, target, dataLabels, kpiFactors, dataKeys, kpiType, unit } = kpiDefinition;
-                const data1 = dataKeys.length > 0 && dataLabels[0] !== undefined ? createDataString(dataLabels[0], getKpiValue(calculatedKPIs, endpointData, dataKeys[0])) : 0;
-                const data2 = dataKeys.length > 1 && dataLabels[1] !== undefined ? createDataString(dataLabels[1], getKpiValue(calculatedKPIs, endpointData, dataKeys[1])) : 0;
-                return createKpiObject(kpiDefinition.name, current, redFlag, target, data1, data2, unit, kpiType, kpiFactors);
-            });
+        // console.log(requestedKpiList)
+
+        // Helper function for creating KPI objects
+        const kpiObjects = requestedKpiList.map((kpiName) => {
+            const name = KPI_DEFINITIONS[kpiName].name;
+            const current = calculatedKPIs[kpiName];
+            const { redFlag, target, dataLabels, kpiFactors, dataKeys, kpiType, unit } = KPI_DEFINITIONS[kpiName];
+            const data1 = dataKeys.length > 0 && dataLabels[0] !== undefined ? createDataString(dataLabels[0], getKpiValue(calculatedKPIs, endpointData, dataKeys[0])) : 0;
+            const data2 = dataKeys.length > 1 && dataLabels[1] !== undefined ? createDataString(dataLabels[1], getKpiValue(calculatedKPIs, endpointData, dataKeys[1])) : 0;
+            return createKpiObject(name, current, redFlag, target, data1, data2, unit, kpiType, kpiFactors);
+        })
 
         // console.log(kpiObjects);
         return kpiObjects;
@@ -262,3 +253,18 @@ async function fetchKpiData({clientSpaceId, view, kpiList, leadSource, gte, lte,
 }
 
 export default fetchKpiData;
+
+
+function createKpiObject(name, current, redFlag, target, data1, data2, unit, kpiType, kpiFactors) {
+    return {
+        name,
+        current,
+        redFlag,
+        target,
+        data1,
+        data2,
+        unit,
+        kpiType,
+        kpiFactors,
+    };
+}

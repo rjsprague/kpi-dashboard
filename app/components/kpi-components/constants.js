@@ -28,11 +28,11 @@ export const VIEW_KPIS = {
             "Closers Leads Created",
             "Closers Leads Set Prequalified",
             "Closers Booking Rate",
-            "Closers Show Rate",
+            "Closers Unique Attendance Rate",
             "Closers Offer Rate",
             "Closers Close Rate",
-            "Closers Cash Collected",
-            "Closers Revenue Contracted"
+            "Closers Avg Cash Collected",
+            "Closers Avg Revenue Contracted"
         ]
 
     },
@@ -77,8 +77,8 @@ export const VIEW_KPIS = {
             "Closers Ad Spend",
             "Closers Cost Per Lead",
             "Closers Cost Per Close",
-            "Closers Cash Collected",
-            "Closers Revenue Contracted",
+            "Closers Avg Cash Collected",
+            "Closers Avg Revenue Contracted",
             "Closers ROAS Actualized",
             "Closers ROAS Projected",
             "Closers ROAS Total",

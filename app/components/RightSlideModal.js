@@ -39,7 +39,7 @@ const RightSlideModal = ({
     if (tableProps) {
         ({ startDate, endDate, leadSource, kpiView, teamMembers, apiName } = tableProps);
     }
-    // console.log(apiName)
+    console.log(apiName)
     const { data, error } = useSWR({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }, fetchSingleKpi);
     // console.log(data)
 

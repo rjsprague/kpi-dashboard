@@ -906,91 +906,16 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
-    // "Closers Bookings Confirmed": {
-    //     name: "Closers Bookings Confirmed",
-    //     dataKeys: ["closersBookings", "closersBookingsConfirmed"],
-    //     formula: (apiData) => {
-    //         const { closersBookings, closersBookingsConfirmed } = apiData;
-    //         return closersBookings > 0 ? closersBookingsConfirmed / closersBookings * 100 : 0;
-    //     },
-    //     redFlag: 70,
-    //     target: 90,
-    //     dataLabels: ["Bookings: ", "Bookings Confirmed: "],
-    //     kpiType: "meter",
-    //     unit: "%",
-    //     kpiFactors: [
-    //         {
-    //             id: 0,
-    //             title: "How to Optimize Bookings Confirmed",
-    //         },
-    //         {
-    //             id: 1,
-    //             desc: "Description TBD",
-    //             linkName: "Learn More",
-    //             link: ""
-    //         },
-    //     ],
-    // },
-    // "Closers Bookings Canceled": {
-    //     name: "Closers Bookings Canceled",
-    //     dataKeys: ["closersBookings", "closersBookingsCanceled"],
-    //     formula: (apiData) => {
-    //         const { closersBookings, closersBookingsCanceled } = apiData;
-    //         return closersBookings > 0 ? closersBookingsCanceled / closersBookings * 100 : 0;
-    //     },
-    //     redFlag: 30,
-    //     target: 10,
-    //     dataLabels: ["Bookings: ", "Bookings Canceled: "],
-    //     kpiType: "meter",
-    //     unit: "%",
-    //     kpiFactors: [
-    //         {
-    //             id: 0,
-    //             title: "How to Optimize Bookings Canceled",
-    //         },
-    //         {
-    //             id: 1,
-    //             desc: "Description TBD",
-    //             linkName: "Learn More",
-    //             link: ""
-    //         },
-    //     ],
-    // },
-    // "Closers Bookings No-Show": {
-    //     name: "Closers Bookings No-Show",
-    //     dataKeys: ["closersBookings", "closersBookingsNoShow"],
-    //     formula: (apiData) => {
-    //         const { closersBookings, closersBookingsNoShow } = apiData;
-    //         return closersBookings > 0 ? closersBookingsNoShow / closersBookings * 100 : 0;
-    //     },
-    //     redFlag: 30,
-    //     target: 10,
-    //     dataLabels: ["Bookings: ", "Bookings No-Show: "],
-    //     kpiType: "meter",
-    //     unit: "%",
-    //     kpiFactors: [
-    //         {
-    //             id: 0,
-    //             title: "How to Optimize Bookings No-Show",
-    //         },
-    //         {
-    //             id: 1,
-    //             desc: "Description TBD",
-    //             linkName: "Learn More",
-    //             link: ""
-    //         },
-    //     ],
-    // },
-    "Closers Show Rate": {
-        name: "Closers Show Rate",
-        dataKeys: ["closersAppointments", "closersDcShowed"],
+    "Closers Unique Attendance Rate": {
+        name: "Closers Unique Attendance Rate",
+        dataKeys: ["closersAppointments", "closersUniqueAttended"],
         formula: (apiData) => {
-            const { closersAppointments, closersDcShowed } = apiData;
-            return closersAppointments > 0 ? closersDcShowed / closersAppointments * 100 : 0;
+            const { closersAppointments, closersUniqueAttended } = apiData;
+            return closersAppointments > 0 ? closersUniqueAttended / closersAppointments * 100 : 0;
         },
         redFlag: 70,
         target: 90,
-        dataLabels: ["Appointments: ", "Showings: "],
+        dataLabels: ["Appointments: ", "Unique Attended: "],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [
@@ -1008,14 +933,14 @@ const KPI_DEFINITIONS = {
     },
     "Closers Offer Rate": {
         name: "Closers Offer Rate",
-        dataKeys: ["closersDcShowed", "closersDcOffers"],
+        dataKeys: ["closersUniqueAttended", "closersDcOffers"],
         formula: (apiData) => {
-            const { closersDcShowed, closersDcOffers } = apiData;
-            return closersDcShowed > 0 ? closersDcOffers / closersDcShowed * 100 : 0;
+            const { closersUniqueAttended, closersDcOffers } = apiData;
+            return closersUniqueAttended > 0 ? closersDcOffers / closersUniqueAttended * 100 : 0;
         },
         redFlag: 60,
         target: 80,
-        dataLabels: ["Attended: ", "Offers: "],
+        dataLabels: ["Unique Attended: ", "Offers: "],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [
@@ -1033,14 +958,14 @@ const KPI_DEFINITIONS = {
     },
     "Closers Close Rate": {
         name: "Closers Close Rate",
-        dataKeys: ["closersDcShowed", "closersDcClosed"],
+        dataKeys: ["closersUniqueAttended", "closersDcClosed"],
         formula: (apiData) => {
-            const { closersDcShowed, closersDcClosed } = apiData;
-            return closersDcClosed ? closersDcClosed / closersDcShowed * 100 : 0;
+            const { closersUniqueAttended, closersDcClosed } = apiData;
+            return closersDcClosed ? closersDcClosed / closersUniqueAttended * 100 : 0;
         },
         redFlag: 20,
         target: 40,
-        dataLabels: ["Attended: ", "Closed: "],
+        dataLabels: ["Unique Attended: ", "Closed: "],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [
@@ -1056,8 +981,8 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
-    "Closers Cash Collected": {
-        name: "Closers Cash Collected",
+    "Closers Avg Cash Collected": {
+        name: "Closers Avg Cash Collected",
         dataKeys: ["closersCashCollected", "numPaymentPlans"],
         formula: (apiData) => {
             const { cashCollectedUpFront, numPaymentPlans } = apiData;
@@ -1067,7 +992,7 @@ const KPI_DEFINITIONS = {
         redFlag: 4000,
         target: 10000,
         dataLabels: ["Cash Collected: $", "Payment Plans: "],
-        kpiType: "",
+        kpiType: "meter",
         unit: "$",
         kpiFactors: [
             {
@@ -1082,13 +1007,11 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
-    "Closers Revenue Contracted": {
-        name: "Closers Revenue Contracted",
+    "Closers Avg Revenue Contracted": {
+        name: "Closers Avg Revenue Contracted",
         dataKeys: ["closersRevenueContracted", "numPaymentPlans"],
         formula: (apiData) => {
             const { totalRevenueContracted, numPaymentPlans } = apiData;
-            // console.log('revenueContracted', revenueContracted)
-            // console.log('numPaymentPlans', numPaymentPlans)
             return numPaymentPlans && numPaymentPlans !== 0 ? (totalRevenueContracted / numPaymentPlans).toFixed(2) : 0;
         },
         redFlag: 0,
@@ -1147,12 +1070,11 @@ const KPI_DEFINITIONS = {
         dataKeys: ["totalClosersAdSpend", "closersLeadsCreated"],
         formula: (apiData) => {
             const { totalClosersAdSpend, closersLeadsCreated } = apiData;
-            console.log(closersLeadsCreated > 0)
             return closersLeadsCreated > 0 ? totalClosersAdSpend / closersLeadsCreated : 0;
         },
         redFlag: 100,
         target: 50,
-        dataLabels: ["Ad Spend: ", "Leads Created: "],
+        dataLabels: ["Ad Spend: $", "Leads Created: "],
         kpiType: "meter",
         unit: "$",
         kpiFactors: [
@@ -1177,7 +1099,7 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 1000,
         target: 500,
-        dataLabels: ["Ad Spend: ", "DC Closed: "],
+        dataLabels: ["Ad Spend: $", "Closed: "],
         kpiType: "meter",
         unit: "$",
         kpiFactors: [
@@ -1202,7 +1124,7 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 800,
         target: 1200,
-        dataLabels: ["Cash Collected: ", "Ad Spend: "],
+        dataLabels: ["Cash Collected: $", "Ad Spend: $"],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [
@@ -1228,7 +1150,7 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 800,
         target: 1200,
-        dataLabels: ["Uncollected Revenue: ", "Ad Spend: "],
+        dataLabels: ["Uncollected Revenue: $", "Ad Spend: $"],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [
@@ -1253,7 +1175,7 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 800,
         target: 1200,
-        dataLabels: ["Total Revenue: ", "Ad Spend: "],
+        dataLabels: ["Total Revenue: $", "Ad Spend: $"],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [
