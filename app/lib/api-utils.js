@@ -3,7 +3,7 @@ export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, fil
 
     const response = await fetch('/auth/getAccessToken');
     const { accessToken } = await response.json();
-    console.log("accessToken", accessToken)
+    // console.log("accessToken", accessToken)
     // console.log("apiName: ", apiName)
     // console.log("apiEndpoint: ", apiEndpoint)
     // console.log("filters: ", filters)
@@ -35,10 +35,10 @@ export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, fil
 };
 
 const handleAcquisitionKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, filters) => {
-    console.log("clientSpaceId: ", clientSpaceId)
-    console.log("filters: ", filters)
-    console.log("apiEndpoint: ", apiEndpoint)
-    console.log("apiName: ", apiName)
+    // console.log("clientSpaceId: ", clientSpaceId)
+    // console.log("filters: ", filters)
+    // console.log("apiEndpoint: ", apiEndpoint)
+    // console.log("apiName: ", apiName)
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
     
     try {

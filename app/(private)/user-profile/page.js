@@ -52,9 +52,8 @@ function UserProfilePage() {
         });
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
+            // console.log(data);
             mutate('/auth/getUser');
-            router.push('/kpi-dashboard');
         } else {
             console.error('Failed to update user:', await response.text());
         }
@@ -62,18 +61,18 @@ function UserProfilePage() {
 
     useEffect(() => {
         if (profileData?.settings?.timezone == "" && !toast.isActive('timezone-toast')) {
-          toast.error('Please select a timezone', {
-            position: toast.POSITION.TOP_CENTER,
-            toastId: 'timezone-toast',
-          });
+            toast.error('Please select a timezone', {
+                position: toast.POSITION.TOP_CENTER,
+                toastId: 'timezone-toast',
+            });
         }
-      }, [profileData?.settings?.timezone]);
+    }, [profileData?.settings?.timezone]);
 
     if (!profileData || !timezones) {
         return <div className='flex items-center justify-center w-full h-full'>Loading...</div>;
     }
 
-    
+
 
     return (
         <div className='flex flex-col items-center justify-center w-full h-full gap-4'>
@@ -94,6 +93,9 @@ function UserProfilePage() {
                 <section className='flex flex-row gap-2 p-2 rounded-md'>
                     <label htmlFor="timezone">Timezone:</label>
                     <p>{profile?.settings?.timezone && profile.settings.timezone}</p>
+
+                </section>
+                <section className='flex flex-row gap-2 p-2 rounded-md'>
                     <UniversalDropdown
                         type={"timezone"}
                         options={timezones}

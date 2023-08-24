@@ -10,7 +10,7 @@ export async function GET(req) {
     const url = new URL(req.url);
     const code = url.searchParams.get('code');
 
-    //console.log("code: " + code);
+    // console.log("code: " + code);
 
     if (!code) {
         return NextResponse.redirect( public_base_url + '/login');
@@ -27,7 +27,16 @@ export async function GET(req) {
             },
         });
 
+        // console.log("response: " + response);
+        
+        if (!response.ok) {
+            throw new Error("Something went wrong on api server!", response);
+        }
+
+
         const data = await response.json();
+
+        // console.log(data)
         const { token } = data;
 
         const decodedToken = jwt.decode(token);

@@ -88,7 +88,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
 
 
     return (
-        <div className="">
+        <div>
             <div className="flex flex-col px-2 py-1 text-center text-black delay-500 rounded h-52 shadow-super-3 transform-gpu ">
                 <h1 className="text-2xl font-semibold tracking-tighter align-top">{prop.name.includes("Closers") ? removeWord(prop.name, "Closers") : prop.name}</h1>
                 <div className="mt-1 font-medium text-md">

@@ -6,7 +6,8 @@ async function fetchLeadSources(clientSpaceId) {
 
     // console.log("fetchLeadSources clientSpaceId", clientSpaceId)
     // console.log("fetchLeadSources accessToken", accessToken)
-    const closersSpaceId = process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID
+
+    // const closersSpaceId = process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID
     // console.log("fetchLeadSources closersSpaceId", closersSpaceId)
 
     try {
@@ -24,7 +25,8 @@ async function fetchLeadSources(clientSpaceId) {
         //console.log('Lead Sources Response:', response);
 
         if (!response.ok) {
-            throw new Error("Something went wrong on api server!");
+            console.error(response)
+            throw new Error("Something went wrong on api server!", response);
         }
 
         const data = await response.json();
@@ -52,7 +54,7 @@ async function fetchLeadSources(clientSpaceId) {
 
     } catch (error) {
         console.error(error);
-        throw new Error("Error fetching lead sources. Please try again later.");
+        throw new Error("Error fetching lead sources. Please try again later.", error);
     }
 }
 
