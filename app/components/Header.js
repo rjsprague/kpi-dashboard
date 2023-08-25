@@ -1,6 +1,9 @@
 "use client"
 import { AiOutlineMail, AiOutlineBell, AiOutlineSearch } from 'react-icons/ai';
 import { BsPerson } from 'react-icons/bs';
+import { FiPlayCircle, FiUsers, FiSettings, FiArrowRightCircle, FiMenu, FiChevronsRight } from 'react-icons/fi';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRobot, faCheckDouble, faGaugeHigh, faScrewdriverWrench, faThLarge, faChalkboardTeacher, faSignOut, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link'
 import Image from 'next/image'
 import useSWR from 'swr'
@@ -72,14 +75,16 @@ export default function Header() {
                         <Menu.Items className="absolute right-0 z-10 w-full mt-2 origin-top-right bg-white shadow-lg rounded-2xl focus:outline-none ring-1 ring-teal-950">
                             <Menu.Item>
                                 {({ active }) => (
-                                    <Link href="/user-profile" className={`block w-full px-4 py-2 rounded-t-2xl ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
+                                    <Link href="/user-profile" className={`flex items-center w-full px-4 py-2 rounded-t-2xl ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
+                                        <FiSettings className='mr-2 text-xl hover:animate-spin' />
                                         Settings
                                     </Link>
                                 )}
                             </Menu.Item>
                             <Menu.Item>
                                 {({ active }) => (
-                                    <button type="button" onClick={logout} className={`block text-left w-full px-4 py-2 rounded-b-2xl ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
+                                    <button type="button" onClick={logout} className={`flex items-center text-left w-full px-4 py-2 rounded-b-2xl ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
+                                        <FontAwesomeIcon icon={faSignOut} size="lg" className='mr-2 hover:animate-bounce' />
                                         Logout
                                     </button>
                                 )}

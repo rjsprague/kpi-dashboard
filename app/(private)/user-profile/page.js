@@ -72,10 +72,8 @@ function UserProfilePage() {
         return <div className='flex items-center justify-center w-full h-full'>Loading...</div>;
     }
 
-
-
     return (
-        <div className='flex flex-col items-center justify-center w-full h-full gap-4'>
+        <div className='flex flex-col items-center justify-center w-full h-full gap-4 overflow-y-auto'>
             <form onSubmit={handleSubmit} className="px-4 py-6 border border-gray-100 rounded-md">
                 <h1 className='text-xl font-semibold text-center'>User Profile</h1>
                 <section className='flex flex-row gap-2 p-2 rounded-md'>

@@ -144,7 +144,7 @@ export default function SideNav() {
 
     return (
 
-        <div className="relative z-10 overflow-visible">
+        <div className="fixed z-10 overflow-visible">
             <div
                 className={`relative flex`}
                 ref={sideNavRef}
@@ -224,7 +224,7 @@ export default function SideNav() {
                                 ))}
                             </ul> */}
                         </div>
-                        <div className="flex flex-col mb-4 space-y-2 lg:space-y-4">
+                        {/* <div className="flex flex-col mb-4 space-y-2 lg:space-y-4">
                             <Link href="/user-profile" className="flex items-center gap-2 rounded-md">
                                 <div className='flex flex-row gap-2 text-left whitespace-nowrap '>
                                     <span className={`transition-all duration-300 ease-out origin-center hover:animate-spin ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100 overflow-hidden'}`}><FiSettings className='text-2xl' /></span>
@@ -237,7 +237,7 @@ export default function SideNav() {
                                     <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>Log Out</span>
                                 </div>
                             </button>
-                        </div>
+                        </div> */}
                     </nav>
                 </div>
             </div>
