@@ -75,7 +75,7 @@ const dateColumnKeys = {
 
 const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap) => {
 
-    // console.log(teamMembersMap)
+    console.log(teamMembersMap)
     // console.log(data)
     // console.log(selectedTableKey)
 
@@ -99,6 +99,7 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
                     } else if (info.column.columnDef.header === 'Team Member' || info.column.columnDef.header === 'Lead Manager' || info.column.columnDef.header === 'Closer') {
                         if (cellValue && Array.isArray(cellValue)) {
                             // console.log("cellValue: ", cellValue)
+                            // console.log("teamMembersMap: ", teamMembersMap)
                             return teamMembersMap[cellValue[0]];
                         } else {
                             // console.log("cellValue: ", cellValue)
@@ -136,7 +137,7 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments }) => {
         )
     }
 
-
+    // console.log(departments)
     // console.log("data: ", data)
 
     const [columns, setColumns] = useState([]);

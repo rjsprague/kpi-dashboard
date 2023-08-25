@@ -801,17 +801,10 @@ const KPI_DEFINITIONS = {
     },
     "Closers Ad Spend": {
         name: "Closers Ad Spend",
-        dataKeys: ["closersAdSpend"],
+        dataKeys: ["totalClosersAdSpend"],
         formula: (apiData) => {
-            const { closersAdSpend } = apiData;
-            let marketingExpenses = closersAdSpend && Array.isArray(closersAdSpend) && closersAdSpend.reduce((acc, curr) => {
-                if ("Amount" in curr) {
-                    return acc + parseInt(curr["Amount"], 10);
-                } else {
-                    return acc;
-                }
-            }, 0);
-            return marketingExpenses;
+            const { totalClosersAdSpend } = apiData; 
+            return totalClosersAdSpend;
         },
         redFlag: 0,
         target: 0,
@@ -890,13 +883,64 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 20,
         target: 40,
-        dataLabels: ["Leads: ", "Bookings: "],
+        dataLabels: ["Leads: ", "Unique Bookings: "],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [
             {
                 id: 0,
                 title: "How to Optimize Booking Rate",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closers Cost Per Booking": {
+        name: "Closers Cost Per Booking",
+        dataKeys: ["totalClosersAdSpend", "closersBookings"],
+        formula: (apiData) => {
+            const { totalClosersAdSpend, closersBookings } = apiData;
+            return closersBookings > 0 ? totalClosersAdSpend / closersBookings : 0;
+        },
+        redFlag: 0,
+        target: 0,
+        dataLabels: ["Ad Spend: $", "Unique Bookings: "],
+        kpiType: "meter",
+        unit: "$",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Cost Per Booking",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closers Cost Per Qualified Booking": {
+        name: "Closers Cost Per Qualified Booking",
+        dataKeys: ["totalClosersAdSpend", "closersQualifiedBookings"],
+        formula: (apiData) => {
+            const { totalClosersAdSpend, closersQualifiedBookings } = apiData;
+            console.log(totalClosersAdSpend, closersQualifiedBookings)
+            return closersQualifiedBookings > 0 ? totalClosersAdSpend / closersQualifiedBookings : 0;
+        },
+        redFlag: 0,
+        target: 0,
+        dataLabels: ["Ad Spend: $", "Unique Qualified Bookings: "],
+        kpiType: "meter",
+        unit: "$",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Cost Per Qualified Booking",
             },
             {
                 id: 1,

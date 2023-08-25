@@ -13,6 +13,7 @@ const FinancialsKpiQuery = ({
     view,
     VIEW_KPIS,
     query,
+    departments,
     kpiList,
     leadSources,
     onDateRangeChange,
@@ -123,6 +124,7 @@ const FinancialsKpiQuery = ({
                                     setSelectedKpis={setSelectedKpis}
                                     tableProps={tableProps}
                                     leadSources={leadSources}
+                                    departments={departments}
                                 />
                             }
                         </div>

@@ -238,6 +238,32 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                 }
             ])
         },
+        closersQualifiedBookings: {
+            name: "Closers Qualified Bookings",
+            url: "/api/closers/acquisitions/lead-events",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
+                {
+                    "type": "category",
+                    "fieldName": "Event",
+                    "values": ["Discovery Call Scheduled"]
+                },
+                {
+                    "type": "category",
+                    "fieldName": "calendly_slug",
+                    "values": ["discovery-call"]
+                },
+                {
+                    "type": "category",
+                    "fieldName": "lead_event #",
+                    "values": ["1.0000"]
+                },
+                {
+                    "type": "app",
+                    "fieldName": "Team Member Responsible",
+                    "values": teamMembers
+                }
+            ])
+        },
         closersAppointments: {
             name: "Closers Appointments",
             url: "/api/closers/acquisitions/lead-events",

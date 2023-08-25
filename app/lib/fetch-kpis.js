@@ -26,6 +26,7 @@ function calculateKPIs(startDate, endDate, endpointData, kpiList) {
             console.error(`Error calculating ${kpiName}:`, error);
         }
     }
+    // console.log("kpiData: ", kpiData)
     return kpiData;
 }
 
@@ -163,6 +164,16 @@ async function fetchKpiData({ clientSpaceId, view, kpiList, leadSource, gte, lte
                 return acc;
             }, 0);
 
+            // const uniqueQualifiedBookings = endpointData.closersQualifiedBookings && Array.isArray(endpointData.closersQualifiedBookings) && endpointData.closersQualifiedBookings.reduce((acc, curr) => {
+            //     let slug = curr && curr["lead_event_slug"] && curr["lead_event_slug"];
+            //     let splitSlug = slug && slug.split(" ");
+            //     if (splitSlug && splitSlug[splitSlug.length - 1] === "discovery-call" && curr["lead_event #"] === "1.0000") {
+            //         acc += 1;
+            //     }
+            //     return acc;
+            // }, 0);
+
+            // endpointData.uniqueQualifiedBookings = uniqueQualifiedBookings;
             endpointData.totalMarketingExpenses = totalMarketingExpenses;
             endpointData.totalClosersAdSpend = totalClosersAdSpend;
             endpointData.actualizedProfit = actualizedProfit;
@@ -209,8 +220,9 @@ async function fetchKpiData({ clientSpaceId, view, kpiList, leadSource, gte, lte
                 return endpointData.cashCollectedUpFront;
             } else if (dataKey === 'closersRevenueContracted') {
                 return endpointData.totalRevenueContracted;
-            }
-            else {
+            // } else if (dataKey === 'closersQualifiedBookings') {
+            //     return endpointData.uniqueQualifiedBookings;
+            } else {
                 return data;
             }
 
