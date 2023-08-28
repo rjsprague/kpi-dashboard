@@ -384,12 +384,13 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                     "type": "app",
                     "fieldName": "Closer Responsible",
                     "values": teamMembers
-                },
-                {
-                    "type": "category",
-                    "fieldName": "Status",
-                    "values": ["Active"]
                 }
+                // ,
+                // {
+                //     "type": "category",
+                //     "fieldName": "Status",
+                //     "values": ["Active"]
+                // }
             ])
         },
         setterStlMedian: {
