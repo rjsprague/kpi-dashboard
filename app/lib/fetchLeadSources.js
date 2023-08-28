@@ -31,11 +31,17 @@ async function fetchLeadSources(clientSpaceId) {
 
         const data = await response.json();
 
-        //console.log("data", data)
+        // console.log("data", data?.data[1]?.Status && data.data[1].Status[0])
 
-        const filteredData = data.data.filter(
-            (source) => source.Status !== "Inactive"
-        );
+        // filter out object with a field called "Status" that has a value of "Inactive"
+        // if an item doesn't have a "Status" field, it will be included in the filtered data
+        const filteredData = data.data.filter((item) => {
+            if (item.Status) {
+                return item.Status[0] !== "Inactive";
+            } else {
+                return item;
+            }
+        });
 
         const sortedData = filteredData.sort(
             (a, b) => b["Count of Seller Leads"] - a["Count of Seller Leads"]
