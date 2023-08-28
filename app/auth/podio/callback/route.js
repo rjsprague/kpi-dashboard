@@ -10,7 +10,7 @@ export async function GET(req) {
     const url = new URL(req.url);
     const code = url.searchParams.get('code');
 
-    console.log("code: " + code);
+    // console.log("code: " + code);
 
     if (!code) {
         return NextResponse.redirect( public_base_url + '/login');
@@ -27,8 +27,6 @@ export async function GET(req) {
             },
         });
 
-        console.log("callback")
-
         // if (!response.ok) {
         //     throw new Error("Something went wrong on api server!", response);
         // }
@@ -36,11 +34,11 @@ export async function GET(req) {
 
         const data = await response.json();
 
-        console.log(data)
+        // console.log(data)
         const { token } = data;
 
         const decodedToken = jwt.decode(token);
-        console.log(decodedToken);
+        // console.log(decodedToken);
         
         // set the token in a cookie
         cookies().set({
@@ -52,7 +50,7 @@ export async function GET(req) {
             httpOnly: true,
         })
 
-        console.log("accessToken cookie ", cookies().get('accessToken'))
+        // console.log("accessToken cookie ", cookies().get('accessToken'))
 
         if (!decodedToken.timezone) {
             return NextResponse.redirect( public_base_url + '/user-profile')
