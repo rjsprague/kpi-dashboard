@@ -27,9 +27,9 @@ export async function GET(req) {
             },
         });
 
-        // if (!response.ok) {
-        //     throw new Error("Something went wrong on api server!", response);
-        // }
+        if (!response.ok) {
+            throw new Error("Something went wrong on api server!", response);
+        }
 
 
         const data = await response.json();

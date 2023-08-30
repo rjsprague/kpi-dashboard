@@ -906,8 +906,8 @@ const KPI_DEFINITIONS = {
             const { totalClosersAdSpend, closersBookings } = apiData;
             return closersBookings > 0 ? totalClosersAdSpend / closersBookings : 0;
         },
-        redFlag: 0,
-        target: 0,
+        redFlag: 60,
+        target: 40,
         dataLabels: ["Ad Spend: $", "Unique Bookings: "],
         kpiType: "meter",
         unit: "$",
@@ -929,11 +929,11 @@ const KPI_DEFINITIONS = {
         dataKeys: ["totalClosersAdSpend", "closersQualifiedBookings"],
         formula: (apiData) => {
             const { totalClosersAdSpend, closersQualifiedBookings } = apiData;
-            console.log(totalClosersAdSpend, closersQualifiedBookings)
+            // console.log(totalClosersAdSpend, closersQualifiedBookings)
             return closersQualifiedBookings > 0 ? totalClosersAdSpend / closersQualifiedBookings : 0;
         },
-        redFlag: 0,
-        target: 0,
+        redFlag: 150,
+        target: 100,
         dataLabels: ["Ad Spend: $", "Unique Qualified Bookings: "],
         kpiType: "meter",
         unit: "$",

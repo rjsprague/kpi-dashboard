@@ -42,7 +42,7 @@ const KpiQuery = ({
 
     switch (view) {
         case 'Acquisitions':
-            return <AcquisitionsKpiQuery {...props} view={view} query={query} kpiList={kpiList} />;
+            return <AcquisitionsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} />;
         case 'Team':
             return (
                 <TeamKpiQuery

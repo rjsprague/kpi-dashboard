@@ -27,35 +27,7 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
         percentFill = currentNum <= target ? "green" : currentNum <= redFlag ? "yellow" : "red";
     }
 
-    let currentPosition = 0;
-    let redFlagPosition = 0;
-    let targetPosition = 0;
-
-    if (kpiName === "ROAS Total" || kpiName === "ROAS Total APR" || kpiName === "Closers ROAS Total" || kpiName === "Closers ROAS Projected" || kpiName === "Closers ROAS Actualized") {
-        currentPosition = current === Infinity ? 100 : current > 1000 ? 200 : current/10;
-        redFlagPosition = redFlag / 10 ;
-        targetPosition = target / 10 ;
-    } else if (kpiName === "Cost Per Contract" || kpiName === "Cost Per Acquisition") {
-        currentPosition = current > 1600 ? 200 : current / 8;
-        redFlagPosition = 150;
-        targetPosition = 50;
-    } else if (kpiName === "Cost Per Acquisition") {
-        currentPosition = current > 2400 ? 200 : current / 12;
-        redFlagPosition = 150;
-        targetPosition = 50;
-    } else if (target < redFlag && unit === "$") {
-        currentPosition = current > redFlag * 1.33 ? 200 : current / 6.66;
-        redFlagPosition = 133;
-        targetPosition = 66;
-    } else if (kpiName === "Closers Avg Cash Collected") {
-        currentPosition = current > target * 1.33 ? 200 : current / 66.66;
-        redFlagPosition = 66;
-        targetPosition = 133;
-    }  else {
-        currentPosition = current === Infinity ? 100 : current > 100 ? 200 : (current) * 2;
-        redFlagPosition = redFlag * 2;
-        targetPosition = target * 2;
-    }
+    const { currentPosition, redFlagPosition, targetPosition } = calculatePositions(kpiName, current, redFlag, target, unit);
 
     useEffect(() => {
         gsap.to(rectRef.current, {
@@ -131,3 +103,61 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
 
 export default KpiMeter;
 
+
+const calculatePositions = (kpiName, current, redFlag, target, unit) => {
+    const svgWidth = 200;
+    let currentPosition = 0;
+    let redFlagPosition = 0;
+    let targetPosition = 0;
+  
+    if (current === 0) {
+      currentPosition = 0;
+    }
+  
+    if (unit === '%') {
+      const maxValue = Math.max(redFlag, target);
+      const scale = maxValue > 100 ? 100 / (redFlag + target) : 1;
+  
+      redFlagPosition = (redFlag * scale / 100) * svgWidth;
+      targetPosition = (target * scale / 100) * svgWidth;
+      currentPosition = (current * scale / 100) * svgWidth;
+    } else if (unit === '$') {
+      const diff = Math.abs(redFlag - target);
+      const spacing = (diff / (redFlag + target)) * svgWidth;
+  
+      if (redFlag < target) {
+        redFlagPosition = (svgWidth - spacing) / 2;
+        targetPosition = redFlagPosition + spacing;
+      } else {
+        targetPosition = (svgWidth - spacing) / 2;
+        redFlagPosition = targetPosition + spacing;
+      }
+  
+      const minValue = Math.min(redFlag, target);
+      const maxValue = Math.max(redFlag, target);
+      const range = maxValue - minValue;
+      const normalizedCurrent = (current - minValue) / range;
+  
+      if (redFlag < target) {
+        currentPosition = redFlagPosition + (normalizedCurrent * spacing);
+      } else {
+        if (current >= 0 && current <= target) {
+          currentPosition = (targetPosition * current) / target;
+        } else if (current > target && current <= redFlag) {
+          currentPosition = targetPosition + ((redFlagPosition - targetPosition) * (current - target) / (redFlag - target));
+        } else if (current > redFlag) {
+          currentPosition = redFlagPosition + ((svgWidth - redFlagPosition) * (current - redFlag) / (redFlag));
+        }
+      }
+    }
+  
+    // Ensure the positions are within SVG bounds
+    currentPosition = Math.min(svgWidth, Math.max(0, currentPosition));
+  
+    return { currentPosition, redFlagPosition, targetPosition };
+  };
+  
+  
+  
+  
+  

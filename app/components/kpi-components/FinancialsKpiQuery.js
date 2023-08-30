@@ -18,6 +18,7 @@ const FinancialsKpiQuery = ({
     leadSources,
     onDateRangeChange,
     onLeadSourceChange,
+    onTeamMemberForClosersChange,
     onToggleQuery,
     onRemoveQuery,
     isLoadingData
@@ -32,6 +33,18 @@ const FinancialsKpiQuery = ({
     const [selectedResult, setSelectedResult] = useState(null);
     const [selectedKpis, setSelectedKpis] = useState([]);
     const [tableProps, setTableProps] = useState(null);
+
+    useEffect(() => {
+        const teamMembersObj = {};
+        Object.entries(departments).forEach(([department, members]) => {
+            Object.entries(members).forEach(([id, name]) => {
+                if (!teamMembersObj[id]) {
+                    teamMembersObj[id] = name + " (" + department + ")";
+                }
+            });
+        });
+        onTeamMemberForClosersChange(Object.keys(teamMembersObj), query.id)
+    }, [departments])
 
     useEffect(() => {
         setSelectedKpis(kpiList)

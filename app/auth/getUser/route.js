@@ -15,7 +15,7 @@ export async function GET() {
 
     // console.log("accessToken", accessToken);
     const { id } = jwt.decode(accessToken.value)
-    if (!id) {
+    if (!id) {        
         return NextResponse.json("Invalid token")
     }
 
