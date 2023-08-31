@@ -250,7 +250,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                 {
                     "type": "category",
                     "fieldName": "calendly_slug",
-                    "values": ["discovery-call"]
+                    "values": ["discovery-call-web-preq", "discovery-call-fbad-preq", "discovery-call"]
                 },
                 {
                     "type": "category",
