@@ -37,7 +37,7 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
                         setHeight(height === 0 ? 'auto' : 0)
                     }}
                 >
-                    {query.isOpen ?
+                    {query && query.isOpen ?
                         <FontAwesomeIcon
                             icon={faChevronDown}
                             size="sm"

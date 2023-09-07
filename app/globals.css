@@ -4,70 +4,71 @@
 @tailwind variants;
 
 :root {
-  --primary: none;
-  --secondary: cornflowerblue;
+    --primary: none;
+    --secondary: cornflowerblue;
 }
 
 /* Firefox */
 * {
-  scrollbar-width: thin;
-  scrollbar-color: var(--secondary) var(--primary);
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary) var(--primary);
 }
 
 /* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
-  width: 8px;
+    width: 8px;
 }
 
 *::-webkit-scrollbar-track {
-  background: var(--primary);
-  border-radius: 5px;
+    background: var(--primary);
+    border-radius: 5px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: var(--secondary);
-  border-radius: 14px;
-  border: 3px solid var(--primary);
+    background-color: var(--secondary);
+    border-radius: 14px;
+    border: 3px solid var(--primary);
 }
 
 
 
 body {
-  background-color: #092439;
-  color: white;
-  overflow-x: hidden;
+    background-color: #092439;
+    color: white;
+    overflow-x: hidden;
 }
 
 .flip-container {
-  perspective: 1000px;
+    perspective: 1000px;
 }
 
 .flipper {
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
-  cursor: pointer;
-  position: relative;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    cursor: pointer;
+    position: relative;
 }
 
 .flipped {
-  transform: rotateY(180deg);
+    transform: rotateY(180deg);
 }
 
 .front,
 .back {
-  backface-visibility: hidden;
-  position: absolute;
-  top: 0;
-  left: 0;
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .back {
-  transform: rotateY(180deg);
+    transform: rotateY(180deg);
 }
 
 .backface {
-  backface-visibility: hidden;
+    backface-visibility: hidden;
 }
+
 /* 
 .swiper-container {
   position: relative;
@@ -93,99 +94,165 @@ body {
 
 
 .swiper-scrollbar {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  z-index: 10;
-  width: 100%;
-  height: 10px !important;
-  background: rgba(255, 255, 255, 0.5);
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 10;
+    width: 100%;
+    height: 10px !important;
+    background: rgba(255, 255, 255, 0.5);
 }
 
 .swiper-scrollbar-drag {
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 10;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
-  opacity: 0.5;
-  transition: opacity 0.3s;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    opacity: 0.5;
+    transition: opacity 0.3s;
 }
 
 .swiper-scrollbar-drag:hover {
-  opacity: 1;
+    opacity: 1;
 }
 
 .swiper-scrollbar-cursor-drag {
-  cursor: -webkit-grabbing;
-  cursor: -moz-grabbing;
-  cursor: grabbing;
+    cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+    cursor: grabbing;
 }
 
 
 .bm-cross {
-  background: #bdc3c7;
+    background: #bdc3c7;
 }
 
 .kpis-open {
- 
-  max-height: 400px;
+
+    max-height: 400px;
 }
 
 .kpis-closed {
-  -webkit-transition: max-height 1s; 
-  -moz-transition: max-height 1s; 
-  -ms-transition: max-height 1s; 
-  -o-transition: max-height 1s; 
-  transition: max-height 1s;  
-  overflow: hidden;
-  max-height: 65px;
+    -webkit-transition: max-height 1s;
+    -moz-transition: max-height 1s;
+    -ms-transition: max-height 1s;
+    -o-transition: max-height 1s;
+    transition: max-height 1s;
+    overflow: hidden;
+    max-height: 65px;
 }
 
 
 .table {
-  display: table;
-  border-collapse: collapse;
-  border-spacing: 0;
-  width: 100%;
+    display: table;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
 }
 
 .tr {
-  display: table-row;
-  vertical-align: middle;
-  border-bottom:rgba(255, 255, 255, 0.5) solid 1px;
+    display: table-row;
+    vertical-align: middle;
+    border-bottom: rgba(255, 255, 255, 0.5) solid 1px;
 }
 
 .th,
 .td {
-  display: table-cell;
-  vertical-align: middle;
-  width: 150px;
-  max-width: 150px;
-  min-width: 150px;
-  box-sizing: border-box;
-  padding: 3px;
-  white-space: nowrap;
-  border-right:rgba(255, 255, 255, 0.5) solid 1px;
-  height: 30px;
-  max-height: 30px;
-  min-height: 30px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    display: table-cell;
+    vertical-align: middle;
+    width: 150px;
+    max-width: 150px;
+    min-width: 150px;
+    box-sizing: border-box;
+    padding: 3px;
+    white-space: nowrap;
+    border-right: rgba(255, 255, 255, 0.5) solid 1px;
+    height: 30px;
+    max-height: 30px;
+    min-height: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .th {
-  font-weight: bold;
-  color: white;
-  text-align: center;
-  border-top:rgba(255, 255, 255, 0.5) solid 1px;
-  border-bottom:rgba(255, 255, 255, 0.5) solid 1px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    border-top: rgba(255, 255, 255, 0.5) solid 1px;
+    border-bottom: rgba(255, 255, 255, 0.5) solid 1px;
 }
 
 .cursor-col-resize {
-  cursor: col-resize;
+    cursor: col-resize;
 }
 
+.lds-ellipsis {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 20px;
+}
+
+.lds-ellipsis div {
+    position: absolute;
+    top: 10px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #5BA9E5;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.lds-ellipsis div:nth-child(1) {
+    left: 8px;
+    animation: lds-ellipsis1 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(2) {
+    left: 8px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(3) {
+    left: 32px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(4) {
+    left: 56px;
+    animation: lds-ellipsis3 0.6s infinite;
+}
+
+@keyframes lds-ellipsis1 {
+    0% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes lds-ellipsis3 {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0);
+    }
+}
+
+@keyframes lds-ellipsis2 {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(24px, 0);
+    }
+}

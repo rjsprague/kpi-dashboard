@@ -62,9 +62,6 @@ const AcquisitionsKpiQuery = ({
         setReversedTeamMembersForClosers(reversedTeamMembersObj);
     }, [departments])
 
-    
-
-
     const handleCardInfoClick = (result) => {
         setSelectedResult(result);
         setModalType("info");

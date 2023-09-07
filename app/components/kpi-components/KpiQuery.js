@@ -9,6 +9,7 @@ import fetchKpiData from '../../lib/fetch-kpis';
 import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../../app/GlobalRedux/Features/client/clientSlice'
 import useSWR from 'swr';
+import ClosersLeaderboard from './ClosersLeaderboard';
 
 const KpiQuery = ({
     view,
@@ -28,6 +29,7 @@ const KpiQuery = ({
         lte = dateRange?.lte || '';
     }
     const clientSpaceId = useSelector(selectSpaceId);
+    const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
 
     const { data, error } = useSWR({ clientSpaceId, view, kpiList, leadSource, gte, lte, departments, teamMembers }, fetchKpiData);
     
@@ -57,7 +59,11 @@ const KpiQuery = ({
         case 'Financial':
             return <FinancialsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} />;
         case 'Leaderboard':
+            if (clientSpaceId === closersSpaceId) {
+                return <ClosersLeaderboard {...props} view={view} query={query} kpiList={kpiList} />;
+            } else {
             return <Leaderboard {...props} view={view} query={query} kpiList={kpiList} />;
+            }
         default:
             return <AcquisitionsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} />;
     }

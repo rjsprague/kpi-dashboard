@@ -32,18 +32,18 @@ function calculateKPIs(startDate, endDate, endpointData, kpiList) {
 
 
 async function fetchKpiData({ clientSpaceId, view, kpiList, leadSource, gte, lte, departments, teamMembers }) {
-    console.log("clientSpaceId: ", clientSpaceId)
-    console.log("kpi view ", view)
-    console.log("requested kpi list ", kpiList)
-    console.log("lead source ", leadSource)
-    console.log("gte ", gte)
-    console.log("lte ", lte)
-    console.log("department ", departments)
-    console.log("team member strings ", teamMembers)
+    // console.log("clientSpaceId: ", clientSpaceId)
+    // console.log("kpi view ", view)
+    // console.log("requested kpi list ", kpiList)
+    // console.log("lead source ", leadSource)
+    // console.log("gte ", gte)
+    // console.log("lte ", lte)
+    // console.log("department ", departments)
+    // console.log("team member strings ", teamMembers)
 
 
     const teamMember = teamMembers.map(Number);
-    console.log("team member ", teamMember)
+    // console.log("team member ", teamMember)
 
     let requestedKpiList = [];
 

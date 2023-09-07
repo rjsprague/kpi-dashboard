@@ -31,12 +31,12 @@ export default function KpiDashboard({ IsAdmin }) {
     // console.log("lead sources object ", leadSources)
     // console.log("Queries ", queries.map((query) => query.id))
 
-    const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId) => {
+    const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId, kpiView) => {
         const firstDepartment = Object?.keys(departmentsDataObject)[0]
-        //console.log("first department ", firstDepartment)
+        // console.log("first department ", Object.values(departmentsDataObject))
         const firstDeptTeamMembers = Object?.keys(departmentsDataObject[firstDepartment])
         //console.log("first department team members ", firstDeptTeamMembers)
-        return [
+        const initialQuery = [
             {
                 id: newQueryId ? 1 + newQueryId : 1,
                 results: [],
@@ -49,6 +49,9 @@ export default function KpiDashboard({ IsAdmin }) {
                 teamMembers: firstDeptTeamMembers,
             },
         ];
+
+        return initialQuery;
+
     };
 
     // Fetch lead sources and departmentData on component mount
@@ -197,7 +200,8 @@ export default function KpiDashboard({ IsAdmin }) {
         } else {
             setKpiList(VIEW_KPIS[type]["Clients"]);
         }
-        setQueries(createInitialQueries(leadSources, departments, datePresets));
+        setIdCounter(idCounter + 1);
+        setQueries(createInitialQueries(leadSources, departments, datePresets, idCounter + 1, type));
     };
 
     const handleTeamMemberForClosersChange = (teamMember, queryId) => {
@@ -241,7 +245,7 @@ export default function KpiDashboard({ IsAdmin }) {
     };
 
     return (
-        <div className="absolute left-0 right-0 flex flex-col h-full top-20 max-w-screen lg:left-20">
+        <div className="absolute left-0 right-0 flex flex-col h-full pb-20 top-20 max-w-screen lg:left-20">
             <NavigationBar onQueryTypeChange={handleQueryTypeChange} />
             <div className="flex flex-col h-full px-3 pt-2 pb-24 overflow-y-auto">
                 {renderKpiResultsSection()}

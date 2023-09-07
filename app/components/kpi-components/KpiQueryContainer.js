@@ -50,6 +50,7 @@ const KpiQueryContainer = ({
                     onSetLeadSourcesLoading={handleSetLeadSourcesLoading}
                     onTeamChange={handleTeamChange}
                     isLoadingData={isLoadingData}
+                    handleAddQuery={handleAddQuery}
                 />
             ))}
             <AddQueryButton handleAddQuery={handleAddQuery} />
