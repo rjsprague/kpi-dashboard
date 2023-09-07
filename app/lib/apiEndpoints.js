@@ -285,54 +285,22 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                 }
             ])
         },
-        // closersBookingsConfirmed: {
-        //     name: "Closers Bookings Confirmed",
-        //     url: "/api/closers/acquisitions/lead-events",
-        //     filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
-        //         {
-        //             "type": "category",
-        //             "fieldName": "Event",
-        //             "values": ["Discovery Call Confirmed"]
-        //         },
-        //         {
-        //             "type": "category",
-        //             "fieldName": "lead_event #",
-        //             "values": ["1.0000"]
-        //         }
-        //     ])
-        // },
-        // closersBookingsCanceled: {
-        //     name: "Closers Bookings Canceled",
-        //     url: "/api/closers/acquisitions/lead-events",
-        //     filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
-        //         {
-        //             "type": "category",
-        //             "fieldName": "Event",
-        //             "values": ["Discovery Call Canceled"]
-        //         },
-        //         {
-        //             "type": "category",
-        //             "fieldName": "lead_event #",
-        //             "values": ["1.0000"]
-        //         }
-        //     ])
-        // },
-        // closersBookingsNoShow: {
-        //     name: "Closers Bookings No-Show",
-        //     url: "/api/closers/acquisitions/lead-events",
-        //     filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
-        //         {
-        //             "type": "category",
-        //             "fieldName": "Event",
-        //             "values": ["Discovery Call NO-SHOW"]
-        //         },
-        //         {
-        //             "type": "category",
-        //             "fieldName": "lead_event #",
-        //             "values": ["1.0000"]
-        //         }
-        //     ])
-        // },
+        closersTotalAttended: {
+            name: "Closers Total Attended",
+            url: "/api/closers/acquisitions/lead-events",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
+                {
+                    "type": "category",
+                    "fieldName": "Event",
+                    "values": ["Discovery Call Attended"]
+                },
+                {
+                    "type": "app",
+                    "fieldName": "Team Member Responsible",
+                    "values": teamMembers
+                }
+            ])
+        },
         closersUniqueAttended: {
             name: "Closers Unique Attended",
             url: "/api/closers/acquisitions/lead-events",
@@ -385,12 +353,6 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                     "fieldName": "Closer Responsible",
                     "values": teamMembers
                 }
-                // ,
-                // {
-                //     "type": "category",
-                //     "fieldName": "Status",
-                //     "values": ["Active"]
-                // }
             ])
         },
         setterStlMedian: {

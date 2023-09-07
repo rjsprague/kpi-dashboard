@@ -30,52 +30,36 @@ function calculateKPIs(startDate, endDate, endpointData, kpiList) {
 }
 
 
-
 async function fetchKpiData({ clientSpaceId, view, kpiList, leadSource, gte, lte, departments, teamMembers }) {
-    // console.log("clientSpaceId: ", clientSpaceId)
-    // console.log("kpi view ", view)
-    // console.log("requested kpi list ", kpiList)
-    // console.log("lead source ", leadSource)
-    // console.log("gte ", gte)
-    // console.log("lte ", lte)
-    // console.log("department ", departments)
-    // console.log("team member strings ", teamMembers)
 
+    if (view === "Leaderboard") {
+        return null;
+    }
 
     const teamMember = teamMembers.map(Number);
-    // console.log("team member ", teamMember)
 
     let requestedKpiList = [];
 
     if (view === "Team" && departments[0] === "Lead Manager") {
         requestedKpiList = kpiList['Lead Manager']
-        // console.log("kpi list ", requestedKpiList)
     } else if (view === "Team" && departments[0] === "Acquisition Manager") {
         requestedKpiList = kpiList['Acquisition Manager']
-        // console.log("kpi list ", requestedKpiList)
     } else if (view === "Team" && departments[0] === "Deal Analyst") {
         requestedKpiList = kpiList['Deal Analyst']
-        // console.log("kpi list ", requestedKpiList)
     } else if (view === "Team" && departments[0] === "Transaction Coordinator") {
         requestedKpiList = kpiList['Transaction Coordinator']
-        // console.log("kpi list ", requestedKpiList)
     } else if (view === "Team" && departments[0] === "Setter") {
         requestedKpiList = kpiList['Setter']
-        // console.log("kpi list ", requestedKpiList)
     } else if (view === "Team" && departments[0] === "Closer") {
         requestedKpiList = kpiList['Closer']
-        // console.log("kpi list ", requestedKpiList)
     } else {
         requestedKpiList = kpiList
     }
-
-    // console.log("requested kpi list ", requestedKpiList)
 
     try {
         const startDate = gte ? formatDate(new Date(gte)) : null;
         const endDate = lte ? formatDate(new Date(lte)) : null;
         const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, view, teamMember);
-        // console.log("api endpoints obj: ", apiEndpointsObj)
 
         const requiredEndpoints = new Set();
 
@@ -85,10 +69,11 @@ async function fetchKpiData({ clientSpaceId, view, kpiList, leadSource, gte, lte
                 requiredEndpoints.add(endpoint);
             });
         });
-        // console.log("required endpoints: ", requiredEndpoints)
         const uniqueEndpoints = Array.from(requiredEndpoints);
-        // console.log("unique endpoints: ", uniqueEndpoints)
         const kpiPromises = uniqueEndpoints.map((endpointKey) => {
+            if (!apiEndpointsObj[endpointKey]) {
+                console.error(`apiEndpointsObj[endpointKey] is undefined for endpointKey: ${endpointKey}`);
+            }
             const { name, url, filters } = apiEndpointsObj[endpointKey];
             return fetchKPIs(clientSpaceId, name, url, filters, view);
         });
@@ -105,8 +90,6 @@ async function fetchKpiData({ clientSpaceId, view, kpiList, leadSource, gte, lte
                 console.error(error);
                 throw new Error("Error fetching endpoint data. Please try again later.");
             });
-
-        // console.log("endpoint data: ", endpointData)
 
         if (view === 'Financial' || view === 'Acquisitions') {
             const totalMarketingExpenses = endpointData.marketingExpenses && Array.isArray(endpointData.marketingExpenses) && endpointData.marketingExpenses.reduce((acc, curr) => {
@@ -163,36 +146,19 @@ async function fetchKpiData({ clientSpaceId, view, kpiList, leadSource, gte, lte
                 return acc;
             }, 0);
 
-            // const uniqueQualifiedBookings = endpointData.closersQualifiedBookings && Array.isArray(endpointData.closersQualifiedBookings) && endpointData.closersQualifiedBookings.reduce((acc, curr) => {
-            //     let slug = curr && curr["lead_event_slug"] && curr["lead_event_slug"];
-            //     let splitSlug = slug && slug.split(" ");
-            //     if (splitSlug && splitSlug[splitSlug.length - 1] === "discovery-call" && curr["lead_event #"] === "1.0000") {
-            //         acc += 1;
-            //     }
-            //     return acc;
-            // }, 0);
-
-            // endpointData.uniqueQualifiedBookings = uniqueQualifiedBookings;
             endpointData.totalMarketingExpenses = totalMarketingExpenses;
             endpointData.totalClosersAdSpend = totalClosersAdSpend;
             endpointData.actualizedProfit = actualizedProfit;
             endpointData.projectedProfit = projectedProfit;
             endpointData.totalProfit = actualizedProfit + projectedProfit;
             endpointData.cashCollectedUpFront = cashCollectedUpFront;
-            // console.log("cash collected up front: ", cashCollectedUpFront)
             endpointData.totalRevenueContracted = totalRevenueContracted;
-            // console.log("total revenue contracted: ", totalRevenueContracted)
             endpointData.uncollectedRevenue = totalRevenueContracted - cashCollectedUpFront;
-            // console.log("uncollected revenue: ", totalRevenueContracted - cashCollectedUpFront)
             endpointData.totalRevenue = totalRevenueContracted + cashCollectedUpFront;
-            // console.log("total revenue: ", totalRevenueContracted + cashCollectedUpFront)
             endpointData.numPaymentPlans = numPaymentPlans;
         }
 
-        // console.log("endpoint data: ", endpointData)
-
         const calculatedKPIs = calculateKPIs(startDate, endDate, endpointData, requestedKpiList);
-        // console.log("calculated kpis: ", calculatedKPIs)
 
         function getKpiValue(calculatedKPIs, endpointData, dataKey) {
             const data = endpointData[dataKey];
@@ -219,8 +185,6 @@ async function fetchKpiData({ clientSpaceId, view, kpiList, leadSource, gte, lte
                 return endpointData.cashCollectedUpFront;
             } else if (dataKey === 'closersRevenueContracted') {
                 return endpointData.totalRevenueContracted;
-            // } else if (dataKey === 'closersQualifiedBookings') {
-            //     return endpointData.uniqueQualifiedBookings;
             } else {
                 return data;
             }

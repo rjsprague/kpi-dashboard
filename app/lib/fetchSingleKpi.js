@@ -418,7 +418,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     podio_item_id: result.itemid ? result.itemid : podio_item_id,
                 }
             })
-        } else if (apiEndpointKey === "closersUniqueAttended" || apiEndpointKey === "closersLeadsSetPrequalified" || apiEndpointKey === "closersBookings" || apiEndpointKey === "closersAppointments") {
+        } else if (apiEndpointKey === "closersUniqueAttended" || apiEndpointKey === "closersTotalAttended" || apiEndpointKey === "closersLeadsSetPrequalified" || apiEndpointKey === "closersBookings" || apiEndpointKey === "closersAppointments") {
             return results.map((result) => {
                 return {
                     "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No Date",

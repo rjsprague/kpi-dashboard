@@ -950,16 +950,16 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
-    "Closers Unique Attendance Rate": {
-        name: "Closers Unique Attendance Rate",
-        dataKeys: ["closersAppointments", "closersUniqueAttended"],
+    "Closers Total Attendance Rate": {
+        name: "Closers Total Attendance Rate",
+        dataKeys: ["closersAppointments", "closersTotalAttended"],
         formula: (apiData) => {
-            const { closersAppointments, closersUniqueAttended } = apiData;
-            return closersAppointments > 0 ? closersUniqueAttended / closersAppointments * 100 : 0;
+            const { closersAppointments, closersTotalAttended } = apiData;
+            return closersAppointments > 0 ? closersTotalAttended / closersAppointments * 100 : 0;
         },
         redFlag: 70,
         target: 90,
-        dataLabels: ["Appointments: ", "Unique Attended: "],
+        dataLabels: ["Appointments: ", "Total Attended: "],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [
