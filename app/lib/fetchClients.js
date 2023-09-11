@@ -1,28 +1,28 @@
+import cookies from 'js-cookie';
 
 async function fetchClients(url = '/api/spaces') {
 
-    const response = await fetch('/auth/getAccessToken');
-    const { accessToken } = await response.json();
+    const accessToken = cookies.get('accessToken');
     // console.log("accessToken", accessToken)
 
     try {
-        const data = await fetch(url, {
+        const response = await fetch(url, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken.value}`,
+                'Authorization': `Bearer ${accessToken}`,
             },
         });
 
-        // console.log('Clients Response:', data);
+        // console.log('Clients Response:', response);
 
-        if (!data.ok) {
-            throw new Error("Something went wrong on api server!");
-        }
+        // if (!data.ok) {
+        //     throw new Error("Something went wrong on api server!");
+        // }
 
-        const clientsObj = await data.json();
+        const clientsObj = await response.json();
 
-        //console.log("clients", clients)
+        // console.log("clients", clientsObj)
         // filter clients list to include only the "name" and "spaceid" properties with the "name" property as the key and the "spaceid" property as the value
         const clientsMap = clientsObj.data.reduce((acc, client) => {
             acc[client.name] = client.spaceid;

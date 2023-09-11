@@ -75,10 +75,6 @@ const dateColumnKeys = {
 
 const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap) => {
 
-    console.log(teamMembersMap)
-    // console.log(data)
-    // console.log(selectedTableKey)
-
     return Object.keys(data[0]).map(key => {
         if (key !== 'podio_item_id') {
             const dateColumnKey = dateColumnKeys[selectedTableKey];
@@ -93,16 +89,12 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
                         if (cellValue && Array.isArray(cellValue)) {
                             return invertedLeadSources[cellValue[0]];
                         } else {
-                            // console.log("cellValue: ", cellValue)
                             return cellValue;
                         }
                     } else if (info.column.columnDef.header === 'Team Member' || info.column.columnDef.header === 'Lead Manager' || info.column.columnDef.header === 'Closer') {
                         if (cellValue && Array.isArray(cellValue)) {
-                            // console.log("cellValue: ", cellValue)
-                            // console.log("teamMembersMap: ", teamMembersMap)
                             return teamMembersMap[cellValue[0]];
                         } else {
-                            // console.log("cellValue: ", cellValue)
                             return cellValue;
                         }
                     }
@@ -124,9 +116,7 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
 }
 
 const DataTable = ({ selectedTableKey, data, leadSources, departments }) => {
-    //const { startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName } = tableProps;
-    // console.log("tableProps: ", tableProps)
-    //const { data, error } = useSWR({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }, fetchSingleKpi);
+  
     const [tableTitle, setTableTitle] = useState('');
 
     if (data.length === 0) {
@@ -137,9 +127,6 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments }) => {
         )
     }
 
-    // console.log(departments)
-    // console.log("data: ", data)
-
     const [columns, setColumns] = useState([]);
     const [sorting, setSorting] = useState([]);
 
@@ -148,7 +135,6 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments }) => {
     );
 
     let teamMembersMap = departments ? Object.assign({}, ...Object.values(departments)) : null;
-    //console.log("teamMembersMap: ", teamMembersMap)
     const columnHelper = useMemo(() => createColumnHelper(), []);
     const newColumns = useMemo(() => columns, [columns]);
 
@@ -173,10 +159,6 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments }) => {
         }
     }, [data]);
 
-    // console.log('selectedTableKey:', selectedTableKey);
-    // console.log('dateColumnKey:', dateColumnKeys[selectedTableKey]);
-    // console.log('column ids:', newColumns.map(column => column.id));
-
     const table = useReactTable({
         data: data,
         columns: newColumns,
@@ -187,13 +169,6 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments }) => {
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
     });
-
-    // if (error) {
-    //     console.log("error: ", error)
-    //     return <div>Error loading data</div>
-    // }
-
-    // if (!data) return <div><LoadingQuotes /></div>
 
     return (
         <div className="flex flex-col items-center mt-4">

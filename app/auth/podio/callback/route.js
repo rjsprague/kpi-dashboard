@@ -10,7 +10,7 @@ export async function GET(req) {
     const url = new URL(req.url);
     const code = url.searchParams.get('code');
 
-    // console.log("code: " + code);
+    console.log("code: " + code);
 
     if (!code) {
         return NextResponse.redirect( public_base_url + '/login');
@@ -20,25 +20,21 @@ export async function GET(req) {
     const callbackUrl = `${process.env.API_BASE_URL}/auth/callback?code=${code}`;
 
     try {
-        const response = await fetch(callbackUrl, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-            },
-        });
+        const response = await fetch(callbackUrl);
 
-        if (!response.ok) {
-            throw new Error("Something went wrong on api server!", response);
-        }
+        console.log(response.status, response.statusText)
+        // if (!response.ok) {
+        //     throw new Error("Something went wrong on api server!", response.status, response.statusText);
+        // }
 
 
         const data = await response.json();
 
-        // console.log(data)
+        console.log(data)
         const { token } = data;
 
         const decodedToken = jwt.decode(token);
-        // console.log(decodedToken);
+        console.log(decodedToken);
         
         // set the token in a cookie
         cookies().set({
@@ -47,7 +43,7 @@ export async function GET(req) {
             path: '/',
             maxAge: 60 * 60 * 24 * 7, // 1 week
             secure: process.env.NODE_ENV === 'production', // set to true in production
-            httpOnly: true,
+            httpOnly: false,
         })
 
         // console.log("accessToken cookie ", cookies().get('accessToken'))
@@ -58,7 +54,7 @@ export async function GET(req) {
 
         return NextResponse.redirect( public_base_url + '/kpi-dashboard');
     } catch (error) {
-        console.log(error);
+        console.log(error, error.message);
         return NextResponse.redirect(public_base_url + '/login');
     }
 }

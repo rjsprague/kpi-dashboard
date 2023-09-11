@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import useSWR, { mutate } from 'swr';
 import { getDatePresets } from '../../lib/date-utils';
 import getClosersLeaderboard from '../../lib/closers-leaderboard'
@@ -20,23 +20,26 @@ function getNameById(id, departments) {
             return departments[role][id];
         }
     }
-    return null; // Return null if the ID is not found
+    return null;
 }
 
+const formatDateToDay = (dateString) => {
+    const date = new Date(dateString);
+    return String(date.getDate()).padStart(2, '0');
+};
+
+const formatDateToWeek = (startDateString, endDateString) => {
+    const startDate = new Date(startDateString);
+    const endDate = new Date(endDateString);
+    return `${String(startDate.getDate()).padStart(2, '0')}-${String(endDate.getDate()).padStart(2, '0')}`;
+};
 
 export default function ClosersLeaderboard({
     query,
-    view,
-    VIEW_KPIS,
     departments,
-    kpiList,
-    onDateRangeChange,
-    onTeamMemberForClosersChange,
     onToggleQuery,
     onRemoveQuery,
-    isLoadingData,
 }) {
-    // create constants for start and end of today, this week, this month
     const today = getDatePresets().Today;
     const thisWeek = getDatePresets()['Current Week'];
     const thisMonth = getDatePresets()["Current Month"];
@@ -48,7 +51,34 @@ export default function ClosersLeaderboard({
 
     const [height, setHeight] = useState('auto');
 
-    // create state for start and end dates
+    const [selectedDay, setSelectedDay] = useState();
+    const [selectedWeek, setSelectedWeek] = useState();
+    const [selectedMonth, setSelectedMonth] = useState();
+
+    const [days, setDays] = useState([]);
+    const [weeks, setWeeks] = useState([]);
+
+    useEffect(() => {
+        setSelectedDay(formatDateToDay(today.startDate))
+        setSelectedWeek(formatDateToWeek(thisWeek.startDate, thisWeek.endDate))
+        setSelectedMonth(months[new Date().getMonth()])
+
+        const currentYear = new Date().getFullYear();
+
+        // Generate days for the initially selected month
+        const daysInMonth = new Date(currentYear, months.indexOf(selectedMonth) + 1, 0).getDate();
+        const newDays = Array.from({ length: daysInMonth }, (_, i) => formatDateToDay(new Date(currentYear, months.indexOf(selectedMonth), i + 1)));
+        setDays(newDays);
+
+        // Generate weeks for the initially selected month
+        const newWeeks = [];
+        for (let i = 1; i <= daysInMonth; i += 7) {
+            const endWeek = Math.min(i + 6, daysInMonth);
+            newWeeks.push(formatDateToWeek(new Date(currentYear, months.indexOf(selectedMonth), i), new Date(currentYear, months.indexOf(selectedMonth), endWeek)));
+        }
+        setWeeks(newWeeks);
+    }, [])
+
     const [dayStart, setDayStart] = useState(formatDate(today.startDate));
     const [dayEnd, setDayEnd] = useState(formatDate(today.endDate));
     const [weekStart, setWeekStart] = useState(formatDate(thisWeek.startDate));
@@ -62,30 +92,72 @@ export default function ClosersLeaderboard({
 
     const currentYear = new Date().getFullYear();
 
-    const handleDayChange = (selectedDay) => {
-        const [monthName, day] = selectedDay.split(' ');
-        const selectedDayDate = new Date(`${currentYear}-${months.indexOf(monthName) + 1}-${day}`);
+    const handleDayChange = (selectedDay, selectedMonth, selectedWeek, weeks) => {
+
+        const selectedDayDate = new Date(`${currentYear}-${months.indexOf(selectedMonth) + 1}-${selectedDay}`);
         setDayStart(formatDate(selectedDayDate));
         setDayEnd(formatDate(selectedDayDate));
+        setSelectedDay(formatDateToDay(selectedDayDate));
+
+        // set the selected week to the week that the selected day is in
+        weeks.find(week => {
+            const [startDay, endDay] = week.split('-');
+
+            if (selectedDay >= startDay && selectedDay <= endDay) {
+                setSelectedWeek(week);
+                handleWeekChange(week, selectedMonth, selectedDay, weeks);
+                return true;
+            }
+        });
+
         mutate({ startDate: formatDate(selectedDayDate), endDate: formatDate(selectedDayDate), departments: departments });
     };
 
-    const handleWeekChange = (selectedWeek) => {
-        const [monthName, dayRange] = selectedWeek.split(' ');
-        const [startDay, endDay] = dayRange.split('-');
-        const startWeekDate = new Date(`${currentYear}-${months.indexOf(monthName) + 1}-${startDay}`);
-        const endWeekDate = new Date(`${currentYear}-${months.indexOf(monthName) + 1}-${endDay}`);
+    const handleWeekChange = (selectedWeek, selectedMonth, selectedDay, weeks) => {
+
+        const [startDay, endDay] = selectedWeek.split('-');
+        const startWeekDate = new Date(`${currentYear}-${months.indexOf(selectedMonth) + 1}-${startDay}`);
+        const endWeekDate = new Date(`${currentYear}-${months.indexOf(selectedMonth) + 1}-${endDay}`);
+        setSelectedWeek(formatDateToWeek(startWeekDate, endWeekDate));
         setWeekStart(formatDate(startWeekDate));
         setWeekEnd(formatDate(endWeekDate));
+
+        // set the selected day to the first day of the selected week if it is not within the selected week
+        if (selectedDay < startDay || selectedDay > endDay) {
+            setSelectedDay(formatDateToDay(startWeekDate));
+            handleDayChange(formatDateToDay(startWeekDate), selectedMonth, selectedWeek, weeks);
+        }
+
         mutate({ startDate: formatDate(startWeekDate), endDate: formatDate(endWeekDate), departments: departments });
     };
 
     const handleMonthChange = (selectedMonth) => {
+        setSelectedMonth(selectedMonth);
+        const currentYear = new Date().getFullYear();
+
+        // Generate days based on the selected month
+        const daysInMonth = new Date(currentYear, months.indexOf(selectedMonth) + 1, 0).getDate();
+        const newDays = Array.from({ length: daysInMonth }, (_, i) => formatDateToDay(new Date(currentYear, months.indexOf(selectedMonth), i + 1)));
+        setDays(newDays);
+
+        // Generate weeks based on the selected month
+        const newWeeks = [];
+        for (let i = 1; i <= daysInMonth; i += 7) {
+            const endWeek = Math.min(i + 6, daysInMonth);
+            newWeeks.push(formatDateToWeek(new Date(currentYear, months.indexOf(selectedMonth), i), new Date(currentYear, months.indexOf(selectedMonth), endWeek)));
+        }
+        setWeeks(newWeeks);
+
         const selectedMonthDate = new Date(`${currentYear}-${months.indexOf(selectedMonth) + 1}-01`);
         const lastDayOfMonth = new Date(selectedMonthDate.getFullYear(), selectedMonthDate.getMonth() + 1, 0);
         setMonthStart(formatDate(selectedMonthDate));
         setMonthEnd(formatDate(lastDayOfMonth));
+
+        // update the data for the selected month to the newly selected month
         mutate({ startDate: formatDate(selectedMonthDate), endDate: formatDate(lastDayOfMonth), departments: departments });
+
+        handleDayChange(newDays[0], selectedMonth, weeks[0], weeks);
+        handleWeekChange(weeks[0], selectedMonth, newDays[0], weeks);
     };
 
     const handleToggleQuery = () => {
@@ -113,6 +185,12 @@ export default function ClosersLeaderboard({
         <>
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleRemoveQuery={handleRemoveQuery} handleGearIconClick={handleGearIconClick}>
                 <ClosersDateSelector
+                    selectedDay={selectedDay}
+                    selectedWeek={selectedWeek}
+                    selectedMonth={selectedMonth}
+                    days={days}
+                    weeks={weeks}
+                    months={months}
                     onDayChange={handleDayChange}
                     onWeekChange={handleWeekChange}
                     onMonthChange={handleMonthChange}
@@ -129,20 +207,20 @@ export default function ClosersLeaderboard({
                             <div className="w-32 text-center">Most Cash Collected</div>
                         </div>
                         {/* Table Rows */}
-                        {['Day', 'Week', 'Month'].map((timeFrame, index) => (
+                        {[`Day (${selectedDay})`, `Week (${selectedWeek})`, `Month (${selectedMonth})`].map((timeFrame, index) => (
                             <div key={index} className="flex flex-row justify-between px-4 py-2 text-sm text-blue-800 bg-white">
                                 <div className="w-32 font-semibold">{timeFrame}</div>
                                 {['highestCloseRate', 'mostClosedDiscoveryCalls', 'mostCashCollectedUpFront'].map((kpi, i) => (
                                     <div key={i} className="w-32 text-center">
-                                        {timeFrame === 'Day' ?
+                                        {timeFrame === `Day (${selectedDay})` ?
                                             (isLoading(dayData, dayError) ? <EllipsisLoader /> :
                                                 dayData?.winners[kpi] ? `${getNameById(dayData.winners[kpi][0], departments).split(' ')[0]} :  ${kpi === 'mostCashCollectedUpFront' ? '$' : ''}${dayData.winners[kpi][1]}${kpi === 'highestCloseRate' ? '%' : ''}` : '-')
 
-                                            : timeFrame === 'Week' ?
+                                            : timeFrame === `Week (${selectedWeek})` ?
                                                 (isLoading(weekData, weekError) ? <EllipsisLoader /> :
                                                     weekData?.winners[kpi] ? `${getNameById(weekData.winners[kpi][0], departments).split(' ')[0]} : ${kpi === 'mostCashCollectedUpFront' ? '$' : ''}${weekData.winners[kpi][1]}${kpi === 'highestCloseRate' ? '%' : ''}` : '-')
 
-                                                : timeFrame === 'Month' ?
+                                                : timeFrame === `Month (${selectedMonth})` ?
                                                     (isLoading(monthData, monthError) ? <EllipsisLoader /> :
                                                         monthData?.winners[kpi] ? `${getNameById(monthData.winners[kpi][0], departments).split(' ')[0]} : ${kpi === 'mostCashCollectedUpFront' ? '$' : ''}${monthData.winners[kpi][1]}${kpi === 'highestCloseRate' ? '%' : ''}` : '-')
                                                     : null}

@@ -28,10 +28,7 @@ export default function SideNav() {
 
     const { data: user, error: userError } = useSWR('/auth/getUser', fetcher);
 
-    // console.log(user)
     const IsAdmin = user && user.IsAdmin === true ? true : false;
-    // console.log(IsAdmin)
-    // console.log(userError)
 
     const dispatch = useDispatch();
 
@@ -92,7 +89,6 @@ export default function SideNav() {
     }, [user]);
 
     const handleClientSelect = (clientName) => {
-        // Do something with the selected client name and spaceid
         const spaceid = clients[clientName];
         setSelectedClient(clientName);
         dispatch(setClientName(clientName));
@@ -113,7 +109,6 @@ export default function SideNav() {
             });
 
             if (response.ok) {
-                // Redirect to login page
                 router.push('/login');
             } else {
                 console.error('Logout failed');

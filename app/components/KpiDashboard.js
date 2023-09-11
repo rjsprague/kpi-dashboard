@@ -23,19 +23,12 @@ export default function KpiDashboard({ IsAdmin }) {
     const [queries, setQueries] = useState([]);
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID);
     const clientSpaceId = useSelector(selectSpaceId)
-    // console.log(clientSpaceId)
-    // console.log(closersSpaceId)
-    // console.log(clientSpaceId === closersSpaceId)
-    // console.log("IsAdmin: ", IsAdmin)
-    //console.log("clientSpaceId: ", clientSpaceId)
-    // console.log("lead sources object ", leadSources)
-    // console.log("Queries ", queries.map((query) => query.id))
+ 
 
     const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId, kpiView) => {
         const firstDepartment = Object?.keys(departmentsDataObject)[0]
-        // console.log("first department ", Object.values(departmentsDataObject))
         const firstDeptTeamMembers = Object?.keys(departmentsDataObject[firstDepartment])
-        //console.log("first department team members ", firstDeptTeamMembers)
+
         const initialQuery = [
             {
                 id: newQueryId ? 1 + newQueryId : 1,
@@ -54,7 +47,7 @@ export default function KpiDashboard({ IsAdmin }) {
 
     };
 
-    // Fetch lead sources and departmentData on component mount
+    // Fetch lead sources and departmentData on component mount, create initial queries
     useEffect(() => {
         async function getLeadSources() {
             if (!clientSpaceId) {
@@ -63,13 +56,10 @@ export default function KpiDashboard({ IsAdmin }) {
             setIsLoadingData(true);
             try {
 
-                // console.log("clientSpaceId: ", clientSpaceId)
                 const leadSourcesData = await fetchLeadSources(clientSpaceId);
-                // console.log("lead sources data ", leadSourcesData)
                 setLeadSources(leadSourcesData);
                 const leadSourcesObject = leadSourcesData;
                 const departmentsData = await fetchActiveTeamMembers(clientSpaceId);
-                // console.log("departments data ", departmentsData)
                 setDepartments(departmentsData)
                 setTeamMembers(departmentsData)
                 const departmentsDataObject = departmentsData;
@@ -88,8 +78,6 @@ export default function KpiDashboard({ IsAdmin }) {
         }
         getLeadSources();
     }, [clientSpaceId]);
-
-
 
     if (isLoadingData) {
         return (
@@ -140,9 +128,6 @@ export default function KpiDashboard({ IsAdmin }) {
     };
 
     const handleLeadSourceChange = (values, queryId) => {
-        //console.log("values", values)
-        //console.log("queryId", queryId)
-
         setQueries((prevQueries) =>
             prevQueries.map((query) =>
                 query.id === queryId
@@ -153,11 +138,9 @@ export default function KpiDashboard({ IsAdmin }) {
                     : query
             )
         );
-        console.log("query.id ", queries)
     };
 
     const handleTeamChange = (department, teamMembers, queryId) => {
-
         setQueries((prevQueries) =>
             prevQueries.map((query) =>
                 query.id === queryId
@@ -219,7 +202,6 @@ export default function KpiDashboard({ IsAdmin }) {
             });
         });
     };
-
 
     const renderKpiResultsSection = () => {
         return <KpiQueryContainer

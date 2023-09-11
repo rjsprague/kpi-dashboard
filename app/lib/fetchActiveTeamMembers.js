@@ -1,25 +1,23 @@
+import cookies from 'js-cookie';
 
 async function fetchActiveTeamMembers(clientSpaceId) {
     
-    const response = await fetch('/auth/getAccessToken');
-    const { accessToken } = await response.json();
+    const accessToken = cookies.get('accessToken');
     // console.log("accessToken", accessToken)
 
     const closersSpaceId = process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID
-
 
     try {
         const response = await fetch('/api/team-members', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken.value}`,
+                'Authorization': `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
                 "spaceid": clientSpaceId,
             })
         });
-
 
         if (!response.ok) {
             throw new Error("Something went wrong on api server!");

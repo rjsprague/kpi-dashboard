@@ -1,3 +1,4 @@
+import cookies from 'js-cookie';
 
 // Function to extract team member IDs from the departments object
 function extractTeamMemberIDs(departments) {
@@ -21,7 +22,7 @@ function createFetchPromises(teamMemberIDs, accessToken, startDate, endDate, clo
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken.value}`
+                    'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify({
                     "spaceid": closersSpaceId,
@@ -49,7 +50,7 @@ function createFetchPromises(teamMemberIDs, accessToken, startDate, endDate, clo
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken.value}`
+                    'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify({
                     "spaceid": closersSpaceId,
@@ -82,7 +83,7 @@ function createFetchPromises(teamMemberIDs, accessToken, startDate, endDate, clo
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken.value}`
+                    'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify({
                     "spaceid": managementSpaceId,
@@ -146,8 +147,7 @@ function determineWinners(teamMemberData) {
 
 export default async function getClosersLeaderboard({ startDate, endDate, departments }) {
 
-    const response = await fetch('/auth/getAccessToken');
-    const { accessToken } = await response.json();
+    const accessToken = cookies.get('accessToken')
 
     const closersSpaceId = parseInt(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
     const managementSpaceId = parseInt(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID)

@@ -3,8 +3,8 @@
 import React, { useRef, useEffect } from "react";
 import { gsap } from 'gsap';
 
-const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
-
+const KpiMeter = ({ redFlag, current, target, unit }) => {
+    // A visual representation of the KPI that shows users how close they are to reaching their goal.
     const currentNum = Math.floor(Number(current));
     const prettyCurNum = current > 999 && current !== Infinity ? currentNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : currentNum;
 
@@ -13,6 +13,7 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
     const labelRef = useRef(null);
     const valRef = useRef(null);
 
+    // Used by KPIs that have a $ as the unit
     let dollarFill;
     if (target > redFlag) {
         dollarFill = currentNum >= target ? "green" : currentNum >= redFlag ? "yellow" : "red";
@@ -20,6 +21,7 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
         dollarFill = currentNum <= target ? "green" : currentNum <= redFlag ? "yellow" : "red";
     }
 
+    // Used by KPIs that have a % as the unit
     let percentFill;
     if (target > redFlag) {
         percentFill = currentNum >= target ? "green" : currentNum >= redFlag ? "yellow" : "red";
@@ -27,8 +29,9 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
         percentFill = currentNum <= target ? "green" : currentNum <= redFlag ? "yellow" : "red";
     }
 
-    const { currentPosition, redFlagPosition, targetPosition } = calculatePositions(kpiName, current, redFlag, target, unit);
+    const { currentPosition, redFlagPosition, targetPosition } = calculatePositions(current, redFlag, target, unit);
 
+    // Animates the KPI meter
     useEffect(() => {
         gsap.to(rectRef.current, {
             duration: 2,
@@ -52,8 +55,7 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
                     <rect x="25" y="60" rx="0" ry="0" width="200" height="30" fill="#D9D9D9" stroke="none" strokeWidth="0" />
                     <rect ref={rectRef} rx="0" ry="0" x="25" y="60" width="0" height="30" />
                 </g>
-                {/*<path d={`M ${currentNum * 2 + 10} 40 L ${currentNum * 2 + 10} 70`} fill="none" stroke="black" strokeWidth="1" />
-                <path d={`M ${redFlag * 2 + 10} 40 L ${redFlag * 2 + 10} 70 M ${target * 2 + 10} 40 L ${target * 2 + 10} 70`} fill="none" stroke="black" strokeWidth="1" />*/}
+
                 <polygon ref={triRef} points="26,60 21,50 31,50" fill="black" />
                 {
                     redFlag !== 0 && <polygon points={`${redFlagPosition + 25},90 ${redFlagPosition + 20},100 ${redFlagPosition + 30},100`} fill="red" />
@@ -61,7 +63,6 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
                 {
                     target !== 0 && <polygon points={`${targetPosition + 25},90 ${targetPosition + 20},100 ${targetPosition + 30},100`} fill="green" />
                 }
-
 
                 <text ref={valRef} x="27" y="47" textAnchor="middle" fontSize="12" className="text-lg">
                     {
@@ -94,8 +95,7 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
                 )}
 
                 <text ref={labelRef} x="25" y="30" textAnchor="middle" fontSize="12" className="text-xs ">Current</text>
-                {/*<text x={`${redFlag * 2 + 12}`} y="97" transform={`rotate(-35, ${redFlag * 2 + 12}, 97)`} textAnchor="end" fontSize="10">Red Flag</text>
-                <text x={`${target * 2 + 12}`} y="97" transform={`rotate(-35, ${target * 2 + 12}, 97)`} textAnchor="end" fontSize="10">Target</text>*/}
+                
             </svg>
         </div>
     );
@@ -104,7 +104,10 @@ const KpiMeter = ({ redFlag, current, target, kpiName, unit }) => {
 export default KpiMeter;
 
 
-const calculatePositions = (kpiName, current, redFlag, target, unit) => {
+const calculatePositions = (current, redFlag, target, unit) => {
+    // Calculates the position of the red flag, target, and current values on the KPI meter
+    // while taking into account a variety of scenarios such as when the red flag is greater than the target
+    // or when the target is greater than the red flag, etc.
     const svgWidth = 200;
     let currentPosition = 0;
     let redFlagPosition = 0;

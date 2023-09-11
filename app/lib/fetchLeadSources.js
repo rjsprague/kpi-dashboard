@@ -1,8 +1,8 @@
+import cookies from 'js-cookie';
 
 async function fetchLeadSources(clientSpaceId) {
 
-    const response = await fetch('/auth/getAccessToken');
-    const { accessToken } = await response.json();
+    const accessToken = cookies.get('accessToken');
 
     // console.log("fetchLeadSources clientSpaceId", clientSpaceId)
     // console.log("fetchLeadSources accessToken", accessToken)
@@ -15,7 +15,7 @@ async function fetchLeadSources(clientSpaceId) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken.value}`,
+                'Authorization': `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
                 "spaceid": clientSpaceId,

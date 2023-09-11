@@ -1,10 +1,10 @@
 import kpiToEndpointMapping from './kpiToEndpointMapping';
 import apiEndpoints from './apiEndpoints';
 import { formatDate } from './date-utils';
+import cookies from 'js-cookie';
 
 export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }) {
-    const response = await fetch('/auth/getAccessToken');
-    const { accessToken } = await response.json();
+    const accessToken = cookies.get('accessToken');
     // console.log("accessToken", accessToken)
     // console.log("api name: ", apiName)
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
@@ -32,7 +32,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken.value}`,
+                'Authorization': `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
                 "spaceid": requestObject.name === "Closers Payments" ? managementSpaceId : clientSpaceId,
@@ -57,7 +57,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken.value}`,
+                'Authorization': `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
                 "spaceid": requestObject.name === "Closers Payments" ? managementSpaceId : clientSpaceId,

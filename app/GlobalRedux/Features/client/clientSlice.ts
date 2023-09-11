@@ -3,8 +3,8 @@ import { RootState } from '../../store';
 
 
 type ClientState = {
-    clientName?: string, // Optional
-    spaceId?: number, // Optional
+    clientName?: string,
+    spaceId?: number,
 }
 
 const initialState: Partial<ClientState> = {};
