@@ -10,7 +10,7 @@ export async function GET(req) {
     const url = new URL(req.url);
     const code = url.searchParams.get('code');
 
-    console.log("code: " + code);
+    // console.log("code: " + code);
 
     if (!code) {
         return NextResponse.redirect( public_base_url + '/login');
@@ -22,7 +22,7 @@ export async function GET(req) {
     try {
         const response = await fetch(callbackUrl);
 
-        console.log(response.status, response.statusText)
+        // console.log(response.status, response.statusText)
         // if (!response.ok) {
         //     throw new Error("Something went wrong on api server!", response.status, response.statusText);
         // }
@@ -30,11 +30,11 @@ export async function GET(req) {
 
         const data = await response.json();
 
-        console.log(data)
+        // console.log(data)
         const { token } = data;
 
         const decodedToken = jwt.decode(token);
-        console.log(decodedToken);
+        // console.log(decodedToken);
         
         // set the token in a cookie
         cookies().set({
