@@ -15,8 +15,6 @@ export default function withAuth(Component) {
         // const refresh = useRefreshToken();
         const [isLoading, setIsLoading] = useState(true);
 
-        const accessToken = Cookies.get('accessToken');
-
         useEffect(() => {
             // Check if the user is authenticated
             if (!auth) {
@@ -37,11 +35,12 @@ export default function withAuth(Component) {
                 fetch(`${process.env.API_BASE_URL}/users/me`, {
                     method: 'GET',
                     headers: {
-                        'content-type': 'application/json',
+                        Accept: 'application/json',
                         authorization: `Bearer ${accessToken}`,
                     },
                 })
                     .then((res) => {
+                        console.log(res, res.status)
                         if (res.status === 401) {
                             router.push('/login');
                             return;

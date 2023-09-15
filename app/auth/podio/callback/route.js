@@ -23,10 +23,9 @@ export async function GET(req) {
         const response = await fetch(callbackUrl);
 
         // console.log(response.status, response.statusText)
-        // if (!response.ok) {
-        //     throw new Error("Something went wrong on api server!", response.status, response.statusText);
-        // }
-
+        if (!response.ok) {
+            throw new Error("Something went wrong on api server!", response.status, response.statusText);
+        }
 
         const data = await response.json();
 

@@ -34,7 +34,7 @@ export default function LoginPage() {
                 // console.log(response)
 
                 if (!response.ok) {
-                    console.error('Error fetching user:', response.statusText);
+                    console.error('Error fetching user.');
                     return;
                 }
 
@@ -44,7 +44,7 @@ export default function LoginPage() {
                     router.push('/kpi-dashboard');
                 };
             } catch (error) {
-                console.error('Error fetching user:', error);
+                console.error('User not logged in.');
             }
         };
         fetchUser();

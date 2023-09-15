@@ -4,12 +4,10 @@ import jwt from 'jsonwebtoken'
 
 export async function GET() {
     const accessToken = cookies().get("accessToken");
-    const tokenValue = accessToken ? accessToken.value : null;
 
     // console.log("accessToken", accessToken)
-    // console.log("tokenValue", tokenValue)
     
-    if (!tokenValue) {
+    if (!accessToken) {
         return NextResponse.json("No token");
     }
 

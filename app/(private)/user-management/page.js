@@ -11,20 +11,22 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import cookies from 'js-cookie';
+import { userAgent } from 'next/server';
 
-
+const fetcher = (url) => fetch(url).then((res) => res.json())
 
 function UserManagementPage() {
 
     const accessToken = cookies.get('accessToken');
+    console.log("accessToken", accessToken)
 
-    console.log("accessToken: " + accessToken)
+    const { data: user, error: userError } = useSWR('/auth/getUser', fetcher)
+    console.log("user", user)
 
     const [formData, setFormData] = useState({
         name: '',
         email: ''
     });
-    const [token, setToken] = useState(''); // Replace with the actual token
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -39,29 +41,38 @@ function UserManagementPage() {
 
         // Create Temp User
         try {
-            const response = await axios.post('/temp/users', formData, {
+            const createUserResponse = await axios.post('/temp/users', formData, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${accessToken}`
                 }
             });
 
-            const { id } = response.data;
+            console.log(createUserResponse, createUserResponse.status)
+            const { id } = createUserResponse.data;
 
             // Activate Temp User
-            await axios.put(`/temp/users/${id}/toggle`, {}, {
+            const activateUserResponse = await axios.put(`/temp/users/${id}/toggle`, {}, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${accessToken}`
                 }
             });
 
-            alert('User created and activated successfully.');
+            console.log(activateUserResponse, activateUserResponse.status)
+
+            toast.success('User created and activated successfully.');
 
         } catch (error) {
             console.error('Error creating user:', error);
         }
     };
+
+    if(user && !user.IsAdmin) {
+        <div>
+            <h1>Unauthorized</h1>
+        </div>
+    }
 
     return (
         <div className="relative flex flex-col items-center justify-center p-4 mx-auto left-5 top-20">

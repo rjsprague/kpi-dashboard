@@ -1,9 +1,8 @@
 "use client"
-import { AiOutlineMail, AiOutlineBell, AiOutlineSearch } from 'react-icons/ai';
 import { BsPerson } from 'react-icons/bs';
-import { FiPlayCircle, FiUsers, FiSettings, FiArrowRightCircle, FiMenu, FiChevronsRight } from 'react-icons/fi';
+import { FiUsers, FiSettings } from 'react-icons/fi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRobot, faCheckDouble, faGaugeHigh, faScrewdriverWrench, faThLarge, faChalkboardTeacher, faSignOut, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSignOut } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link'
 import Image from 'next/image'
 import useSWR from 'swr'
@@ -16,7 +15,7 @@ export default function Header() {
     const router = useRouter()
     const { data: user, error: userError } = useSWR('/auth/getUser', fetcher)
 
-    // console.log("user", user)
+    console.log("user", user)
 
     const logout = async () => {
         try {
@@ -81,6 +80,16 @@ export default function Header() {
                                     </Link>
                                 )}
                             </Menu.Item>
+                            {user && user.IsAdmin && (
+                                <Menu.Item>
+                                    {({ active }) => (
+                                        <Link href="/user-management" className={`flex items-center w-full px-4 py-2 rounded-t-2xl ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
+                                            <FiUsers className='mr-2 text-xl hover:animate-spin' />
+                                            User Management
+                                        </Link>
+                                    )}
+                                </Menu.Item>
+                            )}
                             <Menu.Item>
                                 {({ active }) => (
                                     <button type="button" onClick={logout} className={`flex items-center text-left w-full px-4 py-2 rounded-b-2xl ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
