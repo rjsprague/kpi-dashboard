@@ -19,7 +19,7 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
 
     let clientsMap = {};
 
-    if (user && user.IsAdmin === true) {
+    if (user && user.isAdmin === true) {
         const { data: clients, error: clientsError } = useSWR('/api/spaces', fetchClients);
         clientsMap = clients && Object.entries(clients).reduce((acc, [key, value]) => {
             acc[value] = key;
@@ -52,7 +52,7 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
                 </button>
 
                 <div className='flex flex-col items-center gap-2 sm:flex-row'>
-                    {user && user.IsAdmin && clientsMap && clientsMap[clientSpaceId]}
+                    {user && user.isAdmin && clientsMap && clientsMap[clientSpaceId]}
                     {children}
                 </div>
                 <div className='flex flex-col justify-between gap-2 xs:flex-row'>

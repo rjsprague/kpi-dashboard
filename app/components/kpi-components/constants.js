@@ -1,7 +1,7 @@
 export const KPI_VIEWS = {
     Acquisitions: 'Acquisitions',
     Team: 'Team',
-    Financial: 'Financials',
+    Financial: 'Financial',
     Leaderboard: 'Leaderboard'
 };
 

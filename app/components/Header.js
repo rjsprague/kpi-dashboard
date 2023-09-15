@@ -15,7 +15,7 @@ export default function Header() {
     const router = useRouter()
     const { data: user, error: userError } = useSWR('/auth/getUser', fetcher)
 
-    console.log("user", user)
+    // console.log("user", user)
 
     const logout = async () => {
         try {
@@ -80,12 +80,12 @@ export default function Header() {
                                     </Link>
                                 )}
                             </Menu.Item>
-                            {user && user.IsAdmin && (
+                            {user && user.isAdmin && (
                                 <Menu.Item>
                                     {({ active }) => (
-                                        <Link href="/user-management" className={`flex items-center w-full px-4 py-2 rounded-t-2xl ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
+                                        <Link href="/user-management" className={`flex items-center w-full px-4 py-2 ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
                                             <FiUsers className='mr-2 text-xl hover:animate-spin' />
-                                            User Management
+                                            Users
                                         </Link>
                                     )}
                                 </Menu.Item>

@@ -42,7 +42,6 @@ export async function GET(req) {
             path: '/',
             maxAge: 60 * 60 * 24 * 7, // 1 week
             secure: process.env.NODE_ENV === 'production', // set to true in production
-            httpOnly: false,
         })
 
         // console.log("accessToken cookie ", cookies().get('accessToken'))

@@ -32,9 +32,17 @@ export async function POST(req: NextRequest) {
                     "displayName": profile.displayName,
                     "spaceID": profile.spaceID,
                     "settings": {
-                        "timezone": selectedTimezone
+                        "timezone": selectedTimezone,
+                        podio: { 
+                            userID: profile.settings.podio.userID,
+                            spacesID: profile.settings.podio.spaceID,
+                        },
+                        google: {
+                            driveID: profile.settings.google.driveID
+                        }
                     },
                     "isAdmin": profile.isAdmin,
+                    "isActive": profile.isActive,
                 })
             });
 

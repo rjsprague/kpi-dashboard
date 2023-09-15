@@ -1,9 +1,10 @@
 "use client"
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { FiPlayCircle, FiUsers, FiSettings, FiArrowRightCircle, FiMenu, FiChevronsRight } from 'react-icons/fi';
+import { FiUsers } from 'react-icons/fi';
+import { FaGoogleDrive } from "react-icons/fa6";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRobot, faCheckDouble, faGaugeHigh, faScrewdriverWrench, faThLarge, faChalkboardTeacher, faSignOut, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faGaugeHigh, faScrewdriverWrench, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import fetchClients from '../lib/fetchClients';
 import { setClientName, setSpaceId } from '../GlobalRedux/Features/client/clientSlice'
 import { useDispatch } from 'react-redux';
@@ -28,7 +29,9 @@ export default function SideNav() {
 
     const { data: user, error: userError } = useSWR('/auth/getUser', fetcher);
 
-    const IsAdmin = user && user.IsAdmin === true ? true : false;
+    const clientFolderID = user?.settings?.google?.driveID && user.settings.google.driveID;
+
+    const isAdmin = user && user.isAdmin === true ? true : false;
 
     const dispatch = useDispatch();
 
@@ -78,7 +81,7 @@ export default function SideNav() {
     };
 
     useEffect(() => {
-        if (user && user.IsAdmin) {
+        if (user && user.isAdmin) {
             async function getClients() {
                 const clientsObj = await fetchClients();
                 setClients(clientsObj);
@@ -102,32 +105,32 @@ export default function SideNav() {
         }
     };
 
-    const logout = async () => {
-        try {
-            const response = await fetch('/auth/logout', {
-                method: 'POST',
-            });
+    // const logout = async () => {
+    //     try {
+    //         const response = await fetch('/auth/logout', {
+    //             method: 'POST',
+    //         });
 
-            if (response.ok) {
-                router.push('/login');
-            } else {
-                console.error('Logout failed');
-            }
-        } catch (error) {
-            console.error('An error occurred during logout:', error);
-        } finally {
-            router.push('/login');
-        }
-    };
+    //         if (response.ok) {
+    //             router.push('/login');
+    //         } else {
+    //             console.error('Logout failed');
+    //         }
+    //     } catch (error) {
+    //         console.error('An error occurred during logout:', error);
+    //     } finally {
+    //         router.push('/login');
+    //     }
+    // };
 
     const navItems = [
         // { icon: <FontAwesomeIcon icon={faThLarge} size="lg" />, text: 'Overview', link: '/' },
         // { icon: <FontAwesomeIcon icon={faCheckDouble} size="lg" />, text: 'To Dos', link: '/' },
         { icon: <FontAwesomeIcon icon={faGaugeHigh} size="xl" />, text: 'KPIs', link: '/kpi-dashboard' },
-        // { icon: <FontAwesomeIcon icon={faRobot} size="lg" />, text: 'Automations', link: '/' },
-        // { icon: <FontAwesomeIcon icon={faScrewdriverWrench} size="lg" />, text: 'Tools', link: '/' },
+        { icon: <FontAwesomeIcon icon={faFileAlt} size="xl" />, text: 'Scripts', link: '/call-scripts', scripts: true, onClick: () => setScriptsOpen(!scriptsOpen) },
+        { icon: <FaGoogleDrive className="block text-xl" />, text: 'Properties', link: `https://drive.google.com/drive/folders/${clientFolderID}`, target: '_blank', rel: 'noopener noreferrer'},
         // { icon: <FontAwesomeIcon icon={faChalkboardTeacher} size="lg" />, text: 'Training', link: '/' },
-        { icon: <FiUsers className='text-xl' />, text: 'Clients', link: '/', dropdown: true, onClick: () => setClientsOpen(!clientsOpen) },
+        { icon: <FiUsers className='text-xl' />, text: 'Clients', link: '/', clients: true, onClick: () => setClientsOpen(!clientsOpen) },
     ];
 
     // const teamItems = [
@@ -157,18 +160,18 @@ export default function SideNav() {
                                 />
                                 <p className={`text-xl transition-all duration-300 ease-in-out whitespace-nowrap ${isOpen ? 'ml-2 w-40 opacity-100' : 'w-0 opacity-0'}`}>REI AUTOMATED</p>
                             </div>
-                            <ul className={`relative flex flex-col mt-8 lg:space-y-2 gap-2 ${isOpen ? '' : ''}`}>
+                            <ul className={`relative transition-all ease-in delay-300 flex flex-col mt-8 lg:space-y-2 gap-2 ${isOpen ? '' : 'pl-2'}`}>
                                 {navItems.map((item, index) => (
                                     <li key={index}>
-                                        {item.dropdown ? (
-                                            user && IsAdmin && (
+                                        {item.clients ? (
+                                            user && isAdmin && (
                                                 <div
                                                     ref={buttonRef}
                                                     className="relative flex w-full rounded-md"
                                                     onClick={item.onClick}
                                                     onKeyDown={handleKeyDown}
                                                 >
-                                                    <div className='flex flex-row gap-2 p-1 text-left whitespace-nowrap '>
+                                                    <div className='flex flex-row gap-2 p-1 text-left cursor-pointer whitespace-nowrap'>
                                                         <span className={`transition-all duration-300 ease-out hover:animate-bounce ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}>{item.icon}</span>
                                                         <span className={`truncate transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>{item.text}{selectedClient && `: ` + selectedClient}</span>
                                                     </div>
@@ -195,7 +198,7 @@ export default function SideNav() {
                                             )
 
                                         ) : (
-                                            <Link href={item.link} className={`flex flex-row gap-2 whitespace-nowrap rounded-md ${isOpen ? '' : ''}`}>
+                                            <Link href={item.link} target={item.target ? item.target : ""} rel={item.rel ? item.rel : ""} className={`flex flex-row gap-2 whitespace-nowrap rounded-md ${isOpen ? '' : ''}`}>
                                                 <div className='flex flex-row gap-2 p-1 text-left whitespace-nowrap '>
                                                     <span className={`transition-all duration-300 ease-out hover:animate-bounce ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}>{item.icon}</span>
                                                     <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>{item.text}</span>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import KpiQueryContainer from './kpi-components/KpiQueryContainer';
-import NavigationBar from './kpi-components/NavigationBar';
+import NavigationBar from './NavigationBar';
 import { KPI_VIEWS, VIEW_KPIS } from './kpi-components/constants';
 import { getDatePresets } from '../lib/date-utils'
 import fetchLeadSources from '../lib/fetchLeadSources';
@@ -11,7 +11,7 @@ import LoadingQuotes from './LoadingQuotes';
 import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
 
-export default function KpiDashboard({ IsAdmin }) {
+export default function KpiDashboard({ isAdmin }) {
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [queryType, setQueryType] = useState();
     const [leadSources, setLeadSources] = useState({});
@@ -23,7 +23,6 @@ export default function KpiDashboard({ IsAdmin }) {
     const [queries, setQueries] = useState([]);
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID);
     const clientSpaceId = useSelector(selectSpaceId)
- 
 
     const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId, kpiView) => {
         const firstDepartment = Object?.keys(departmentsDataObject)[0]
@@ -64,7 +63,7 @@ export default function KpiDashboard({ IsAdmin }) {
                 setTeamMembers(departmentsData)
                 const departmentsDataObject = departmentsData;
                 setQueryType(KPI_VIEWS.Acquisitions);
-                if (clientSpaceId === closersSpaceId && IsAdmin) {
+                if (clientSpaceId === closersSpaceId && isAdmin) {
                     setKpiList(VIEW_KPIS["Acquisitions"]["Closers"]);
                 } else {
                     setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
@@ -178,7 +177,7 @@ export default function KpiDashboard({ IsAdmin }) {
 
     const handleQueryTypeChange = (type) => {
         setQueryType(type);
-        if (clientSpaceId === closersSpaceId && IsAdmin) {
+        if (clientSpaceId === closersSpaceId && isAdmin) {
             setKpiList(VIEW_KPIS[type]["Closers"]);
         } else {
             setKpiList(VIEW_KPIS[type]["Clients"]);
@@ -228,7 +227,7 @@ export default function KpiDashboard({ IsAdmin }) {
 
     return (
         <div className="absolute left-0 right-0 flex flex-col h-full pb-20 top-20 max-w-screen lg:left-20">
-            <NavigationBar onQueryTypeChange={handleQueryTypeChange} />
+            <NavigationBar items={Object.values(KPI_VIEWS)} onItemChange={handleQueryTypeChange} initialActiveItem={Object.values(KPI_VIEWS)[0]} />
             <div className="flex flex-col h-full px-3 pt-2 pb-24 overflow-y-auto">
                 {renderKpiResultsSection()}
             </div>

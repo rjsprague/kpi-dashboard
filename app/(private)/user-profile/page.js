@@ -25,8 +25,9 @@ function UserProfilePage() {
     const { data: timezones, error } = useSWR('/api/timezones', fetcher);
     // console.log('timezones', timezones)
 
-    const { data: profileData } = useSWR('/auth/getUser', fetcher);
+    const { data: profileData, error: profileError } = useSWR('/auth/getUser', fetcher);
     // console.log(profileData)
+    if(profileData === 'No token') router.push('/login');
 
     useEffect(() => {
         if (profileData) {
@@ -41,7 +42,7 @@ function UserProfilePage() {
     };
 
     const handleSubmit = async (e) => {
-        console.log('submitting')
+        // console.log('submitting')
         e.preventDefault();
         const response = await fetch('/auth/updateUser', {
             method: 'POST',

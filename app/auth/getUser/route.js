@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 export async function GET() {
     const accessToken = cookies().get("accessToken");
 
-    // console.log("accessToken", accessToken)
+    console.log("accessToken", accessToken)
     
     if (!accessToken) {
         return NextResponse.json("No token");
@@ -13,6 +13,7 @@ export async function GET() {
 
     // console.log("accessToken", accessToken);
     const { id } = jwt.decode(accessToken.value)
+
     if (!id) {        
         return NextResponse.json("Invalid token")
     }
@@ -24,6 +25,8 @@ export async function GET() {
         }
     });
 
+    // console.log(response)
+
     if (!response.ok) {
         console.error('Error fetching user:', response);
         cookies().delete("accessToken");
@@ -31,6 +34,6 @@ export async function GET() {
     }
 
     const data = await response.json();
-    // console.log(data);
+    console.log(data);
     return NextResponse.json(data);
 }
