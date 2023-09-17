@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { FiUsers } from 'react-icons/fi';
 import { FaGoogleDrive } from "react-icons/fa6";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGaugeHigh, faScrewdriverWrench, faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { faGaugeHigh, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import fetchClients from '../lib/fetchClients';
 import { setClientName, setSpaceId } from '../GlobalRedux/Features/client/clientSlice'
 import { useDispatch } from 'react-redux';
@@ -105,30 +105,12 @@ export default function SideNav() {
         }
     };
 
-    // const logout = async () => {
-    //     try {
-    //         const response = await fetch('/auth/logout', {
-    //             method: 'POST',
-    //         });
-
-    //         if (response.ok) {
-    //             router.push('/login');
-    //         } else {
-    //             console.error('Logout failed');
-    //         }
-    //     } catch (error) {
-    //         console.error('An error occurred during logout:', error);
-    //     } finally {
-    //         router.push('/login');
-    //     }
-    // };
-
     const navItems = [
         // { icon: <FontAwesomeIcon icon={faThLarge} size="lg" />, text: 'Overview', link: '/' },
         // { icon: <FontAwesomeIcon icon={faCheckDouble} size="lg" />, text: 'To Dos', link: '/' },
         { icon: <FontAwesomeIcon icon={faGaugeHigh} size="xl" />, text: 'KPIs', link: '/kpi-dashboard' },
-        { icon: <FontAwesomeIcon icon={faFileAlt} size="xl" />, text: 'Scripts', link: '/call-scripts', scripts: true, onClick: () => setScriptsOpen(!scriptsOpen) },
-        { icon: <FaGoogleDrive className="block text-xl" />, text: 'Properties', link: `https://drive.google.com/drive/folders/${clientFolderID}`, target: '_blank', rel: 'noopener noreferrer'},
+        { icon: <FontAwesomeIcon icon={faFileAlt} size="xl" />, text: 'Call Scripts', link: '/call-scripts', scripts: true, onClick: () => setScriptsOpen(!scriptsOpen) },
+        { icon: <FaGoogleDrive className="block text-xl" />, text: 'Property Folders', link: `https://drive.google.com/drive/folders/${clientFolderID}`, target: '_blank', rel: 'noopener noreferrer'},
         // { icon: <FontAwesomeIcon icon={faChalkboardTeacher} size="lg" />, text: 'Training', link: '/' },
         { icon: <FiUsers className='text-xl' />, text: 'Clients', link: '/', clients: true, onClick: () => setClientsOpen(!clientsOpen) },
     ];
@@ -148,7 +130,7 @@ export default function SideNav() {
                 ref={sideNavRef}
             >
                 <div className="relative">
-                    <nav className={`absolute top-0 bottom-0 left-0 flex flex-col pl-5 pr-2 bg-gradient-to-r from-blue-900 to-blue-700 shadow-super-2 lg:shadow-black transition-all duration-300 ease-in-out ${isOpen ? 'w-60 h-screen' : 'w-20 h-20 lg:h-screen overflow-hidden lg:overflow-visible'}`}>
+                    <nav className={`fixed top-0 bottom-0 left-0 flex flex-col pl-5 pr-2 bg-gradient-to-r from-blue-900 to-blue-700 shadow-super-2 lg:shadow-black transition-all duration-300 ease-in-out ${isOpen ? 'w-60 h-screen' : 'w-20 h-20 lg:h-screen overflow-hidden lg:overflow-visible'}`}>
                         <div className={`relative flex flex-col flex-grow`}>
                             <div className={`relative flex flex-row top-5 left-1 mb-10`}>
                                 <img

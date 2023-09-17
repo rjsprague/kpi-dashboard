@@ -185,7 +185,7 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                                     className={`w-full truncate py-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400 ${index === highlightedIndex ? 'bg-blue-400' : ''}`}
                                 >
                                     <label className="inline-flex items-center truncate">
-                                        {selectedOptions?.includes(option) ? isSingleSelect ? <FiCheck size="20px" /> : <FiCheckSquare size="20px" /> : !isSingleSelect && <FiSquare size="20px" />}
+                                        { selectedOptions?.includes(option) ? isSingleSelect ? <FiCheck size="20px" /> : <FiCheckSquare size="20px" /> : !isSingleSelect && <FiSquare size="20px" />}
                                         <span className="ml-2 truncate">{option}</span>
                                     </label>
                                 </li>

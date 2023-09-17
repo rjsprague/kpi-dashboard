@@ -51,7 +51,7 @@ export default function CallScriptsPage() {
     return (
         <div className="absolute left-0 right-0 flex flex-col h-full pb-20 top-20 max-w-screen lg:left-20">
             <NavigationBar items={callScripts} onItemChange={handleScriptChange} initialActiveItem={callScripts[0]} />
-            <div className="flex flex-col h-full px-3 pt-2 pb-24 overflow-y-auto">
+            <div className="flex flex-col h-full px-3 pt-2 pb-2 overflow-y-auto">
                 {renderScriptsSection()}
             </div>
         </div>

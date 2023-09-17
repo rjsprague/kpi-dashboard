@@ -1,14 +1,8 @@
-// NavigationBar.js
 "use client";
 
-import { ColumnSizing } from '@tanstack/react-table';
 import React, { useState } from 'react';
 
 export default function NavigationBar({ items, onItemChange, initialActiveItem }) {
-
-    console.log(items)
-    console.log(onItemChange)
-    console.log(initialActiveItem)
 
     const [activeItem, setActiveItem] = useState(initialActiveItem || items[0]);
 

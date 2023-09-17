@@ -22,7 +22,7 @@ export async function GET(req) {
     try {
         const response = await fetch(callbackUrl);
 
-        // console.log(response.status, response.statusText)
+        console.log(response.status, response.statusText)
         if (!response.ok) {
             throw new Error("Something went wrong on api server!", response.status, response.statusText);
         }
@@ -33,7 +33,7 @@ export async function GET(req) {
         const { token } = data;
 
         const decodedToken = jwt.decode(token);
-        // console.log(decodedToken);
+        // console.log("Decoded Token: ", decodedToken);
         
         // set the token in a cookie
         cookies().set({
@@ -46,7 +46,7 @@ export async function GET(req) {
 
         // console.log("accessToken cookie ", cookies().get('accessToken'))
 
-        if (!decodedToken.timezone) {
+        if (!decodedToken.settings.timezone) {
             return NextResponse.redirect( public_base_url + '/user-profile')
         }
 

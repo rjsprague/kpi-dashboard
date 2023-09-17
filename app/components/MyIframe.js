@@ -1,20 +1,20 @@
 import React from 'react';
 
 const MyIframe = ({ src, title }) => {
-  return (
-    <div className="iframe-container">
-      <iframe 
-        src={src} 
-        title={title}
-        loading="lazy"
-        sandbox="allow-scripts allow-same-origin"
-      ></iframe>
-      <style jsx>{`
+    return (
+        <div className="iframe-container">
+            <iframe
+                src={src}
+                title={title}
+                loading="lazy"
+                sandbox="allow-scripts allow-same-origin"
+            ></iframe>
+            <style jsx>{`
         .iframe-container {
           position: relative;
           overflow: hidden;
           width: 100%;
-          padding-top: 56.25%; /* 16:9 Aspect Ratio */
+          height: 100vh;
         }
         .iframe-container > iframe {
           position: absolute;
@@ -25,8 +25,8 @@ const MyIframe = ({ src, title }) => {
           border: 0;
         }
       `}</style>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default MyIframe;
