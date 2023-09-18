@@ -69,7 +69,7 @@ function UserProfilePage() {
             })
             return;
         }
-        if (response.ok) {
+        if (response.status === 200) {
             toast.success('Timezone updated successfully!', {
                 position: toast.POSITION.TOP_CENTER,
             })
