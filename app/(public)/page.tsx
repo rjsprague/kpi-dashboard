@@ -11,7 +11,7 @@ function Home() {
         <section className='flex flex-col items-center gap-20 px-10 mx-auto'>
           <div>
             <Image
-              src="/reia-logo.png"
+              src="/login-logo.svg"
               alt="REI Automated Logo"
               height={100}
               width={500}
