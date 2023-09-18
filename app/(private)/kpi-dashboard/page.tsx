@@ -26,17 +26,17 @@ function KpiDashboardPage() {
             dispatch(setSpaceId(user.settings.podio.spacesID))
         }
         if (user && user.settings && !user.settings.timezone) {
-            if (!toast.isActive('timezone-not-set')) {
-                toast.info('Please set your timezone in settings to see your KPIs', {
-                    position: toast.POSITION.TOP_CENTER,
-                    autoClose: 10000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    toastId: 'timezone-not-set'
-                })
-            }
+            // if (!toast.isActive('timezone-not-set')) {
+            //     toast.info('Please set your timezone in settings to see your KPIs', {
+            //         position: toast.POSITION.TOP_CENTER,
+            //         autoClose: 10000,
+            //         hideProgressBar: false,
+            //         closeOnClick: true,
+            //         pauseOnHover: true,
+            //         draggable: true,
+            //         toastId: 'timezone-not-set'
+            //     })
+            // }
             router.push('/user-profile')
         }
     }, [user])

@@ -28,28 +28,28 @@ export default function LoginPage() {
         setErrMsg('');
     }, [email, password])
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const response = await fetch('/auth/getUser');
-                // console.log(response)
+    // useEffect(() => {
+    //     const fetchUser = async () => {
+    //         try {
+    //             const response = await fetch('/auth/getUser');
+    //             // console.log(response)
 
-                if (!response.ok) {
-                    console.error('Error fetching user.');
-                    return;
-                }
+    //             if (!response.ok) {
+    //                 console.error('Error fetching user.');
+    //                 return;
+    //             }
 
-                const user = await response.json();
-                // console.log(user)
-                if (user.id) {
-                    router.push('/kpi-dashboard');
-                };
-            } catch (error) {
-                console.error('User not logged in.');
-            }
-        };
-        fetchUser();
-    }, []);
+    //             const user = await response.json();
+    //             // console.log(user)
+    //             if (user.id) {
+    //                 router.push('/kpi-dashboard');
+    //             };
+    //         } catch (error) {
+    //             console.error('User not logged in.');
+    //         }
+    //     };
+    //     fetchUser();
+    // }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -100,8 +100,8 @@ export default function LoginPage() {
     return (
         <main>
             <section className='flex flex-col items-center justify-center min-h-screen gap-8 px-4 bg-blue-900'>
-                <Image src="/reia-logo.svg" alt="Logo" width={600} height={200} />
-                <div className='flex-col items-center p-8 mt-20 text-blue-900 bg-white rounded shadow-super-3'>
+                <Image src="/login-logo.svg" alt="Logo" width={600} height={150} />
+                <div className='flex-col items-center p-8 mt-4 text-blue-900 bg-white rounded lg:mt-10 shadow-super-3'>
                     <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
                     <h1 className='mb-6 text-2xl'>Sign In</h1>
 
