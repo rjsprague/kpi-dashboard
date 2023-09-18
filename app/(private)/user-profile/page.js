@@ -51,25 +51,25 @@ function UserProfilePage() {
 
         console.log(response)
 
-        if (response.status === 401) {
+        if (response.data.status === 401) {
             toast.error('You are not authorized to update this user.', {
                 position: toast.POSITION.TOP_CENTER,
             })
             return;
         }
-        if (response.status === 403) {
+        if (response.data.status === 403) {
             toast.error('You are not authorized to update this user.', {
                 position: toast.POSITION.TOP_CENTER,
             })
             return;
         }
-        if (response.status === 404) {
+        if (response.data.status === 404) {
             toast.error('User not found.', {
                 position: toast.POSITION.TOP_CENTER,
             })
             return;
         }
-        if (response.status === 200) {
+        if (response.data.status === 200) {
             toast.success('Timezone updated successfully!', {
                 position: toast.POSITION.TOP_CENTER,
             })

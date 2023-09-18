@@ -102,7 +102,7 @@ export default function LoginPage() {
             <section className='flex flex-col items-center justify-center min-h-screen gap-8 px-4 bg-blue-900'>
                 <Image src="/login-logo.svg" alt="Logo" width={600} height={150} />
                 <div className='flex-col items-center p-8 mt-4 text-blue-900 bg-white rounded lg:mt-10 shadow-super-3'>
-                    <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+                    <p ref={errRef} className={` ${errMsg ? "errmsg px-4 text-center font-semibold uppercase border text-blue-900 border-red-600 rounded-full bg-red-300" : "offscreen"}`} aria-live="assertive">{errMsg}</p>
                     <h1 className='mb-6 text-2xl'>Sign In</h1>
 
                     <form onSubmit={handleSubmit} className='space-y-4'>

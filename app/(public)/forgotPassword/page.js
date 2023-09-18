@@ -23,8 +23,8 @@ export default function ForgotPasswordPage() {
             );
 
             console.log(response, response.status)
-            
-            
+
+
             toast.success('Password reset email sent successfully.', {
                 position: toast.POSITION.TOP_CENTER,
             });
@@ -37,6 +37,7 @@ export default function ForgotPasswordPage() {
     return (
         <div className="flex items-center justify-center w-screen h-screen">
             <div className="flex flex-col justify-center px-8 py-4 space-y-4 border border-white w-100">
+                <Image src="/login-logo.svg" alt="Logo" width={600} height={150} />
                 <h1 className="text-2xl font-bold text-center">Forgot Password</h1>
                 <form onSubmit={handleSubmit} className="flex flex-col space-y-2">
                     <section className="flex flex-row flex-wrap items-center justify-center gap-2 px-2 py-2 border border-gray-200 border-dotted">
