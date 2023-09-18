@@ -12,7 +12,6 @@ import { useDispatch } from 'react-redux';
 
 function KpiDashboardPage() {
     const { data: user, error: userError } = useSWR('/auth/getUser')
-    // console.log(user)
     const router = useRouter()
     const dispatch = useDispatch();
 

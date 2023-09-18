@@ -28,29 +28,6 @@ export default function LoginPage() {
         setErrMsg('');
     }, [email, password])
 
-    // useEffect(() => {
-    //     const fetchUser = async () => {
-    //         try {
-    //             const response = await fetch('/auth/getUser');
-    //             // console.log(response)
-
-    //             if (!response.ok) {
-    //                 console.error('Error fetching user.');
-    //                 return;
-    //             }
-
-    //             const user = await response.json();
-    //             // console.log(user)
-    //             if (user.id) {
-    //                 router.push('/kpi-dashboard');
-    //             };
-    //         } catch (error) {
-    //             console.error('User not logged in.');
-    //         }
-    //     };
-    //     fetchUser();
-    // }, []);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -74,8 +51,6 @@ export default function LoginPage() {
 
             const preLoginRoute = Cookies.get('preLoginRoute');
 
-            console.log(preLoginRoute)
-
             if (preLoginRoute && preLoginRoute !== '/login') {
                 router.push(preLoginRoute);
                 Cookies.remove('preLoginRoute');
@@ -83,7 +58,6 @@ export default function LoginPage() {
                 router.push('/kpi-dashboard');
             }
         } catch (err) {
-            console.log('catch block', err);
             if (!err?.response) {
                 setErrMsg('No Server Response');
             } else if (err.response?.status === 400) {
@@ -100,7 +74,7 @@ export default function LoginPage() {
     return (
         <main>
             <section className='flex flex-col items-center justify-center min-h-screen gap-8 px-4 bg-blue-900'>
-                <Image src="/login-logo.svg" alt="Logo" width={600} height={150} />
+                <Image src="/login-logo.svg" alt="Logo" width={600} height={150} priority />
                 <div className='flex-col items-center p-8 mt-4 text-blue-900 bg-white rounded lg:mt-10 shadow-super-3'>
                     <p ref={errRef} className={` ${errMsg ? "errmsg px-4 text-center font-semibold uppercase border text-blue-900 border-red-600 rounded-full bg-red-300" : "offscreen"}`} aria-live="assertive">{errMsg}</p>
                     <h1 className='mb-6 text-2xl'>Sign In</h1>

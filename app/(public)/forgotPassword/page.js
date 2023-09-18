@@ -25,8 +25,6 @@ export default function ForgotPasswordPage() {
                     withCredentials: true
                 }
             );
-
-            console.log(response.data)
             
                 if (!response.data) {
                     toast.error('Error sending password reset email.', {

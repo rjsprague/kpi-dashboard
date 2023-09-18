@@ -22,7 +22,6 @@ export default function ForgotPasswordPage() {
     useEffect(() => {
         const id = searchParams.get('id');
         const resetSecret = searchParams.get('key');
-        console.log(id, resetSecret);
 
         if (!id || !resetSecret) {
             toast.error('Invalid reset link. Please try again.', {
@@ -53,8 +52,6 @@ export default function ForgotPasswordPage() {
             return;
         }
 
-        console.log(id, resetSecret, newPassword)
-
         try {
             const response = await axios.post('/api/auth/reset-password',
                 JSON.stringify({
@@ -67,8 +64,6 @@ export default function ForgotPasswordPage() {
                     withCredentials: true
                 }
             );
-
-            console.log(response)
 
             if (response && response.status !== 200) {
                 toast.error('Error resetting password. Please try again. Contact support@reiautomated.io if you are unable to reset your password.', {

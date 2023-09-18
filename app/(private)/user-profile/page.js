@@ -20,13 +20,10 @@ function UserProfilePage() {
     const [displayName, setDisplayName] = useState('');
     const { auth } = useAuth();
     const router = useRouter();
-    console.log('auth', auth)
 
     const { data: timezones, error } = useSWR('/api/timezones', fetcher);
-    console.log('timezones', timezones)
 
     const { data: profileData, error: profileError } = useSWR('/auth/getUser', fetcher);
-    console.log(profileData)
     if (profileData === 'No token') router.push('/login');
 
     useEffect(() => {
@@ -37,19 +34,15 @@ function UserProfilePage() {
     }, [profileData]);
 
     const handleTimezoneChange = (selectedOption) => {
-        console.log(selectedOption)
         setSelectedTimezone(selectedOption[0]);
     };
 
     const handleSubmit = async (e) => {
-        // console.log('submitting')
         e.preventDefault();
         const response = await axios.post('/auth/updateUser',
             { profile, auth, selectedTimezone },
             { 'Content-Type': 'application/json' }
         );
-
-        console.log(response)
 
         if (response.data.status === 401) {
             toast.error('You are not authorized to update this user.', {
