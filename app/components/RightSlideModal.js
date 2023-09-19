@@ -40,12 +40,8 @@ const RightSlideModal = ({
     if (tableProps) {
         ({ startDate, endDate, leadSource, kpiView, teamMembers, apiName } = tableProps);
     }
-    console.log(apiName)
-    console.log(isProfessional)
-    console.log(kpiToEndpointMapping[apiName][0])
-    console.log(kpiToEndpointMapping[apiName][1])
+    
     const { data, error } = useSWR({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }, fetchSingleKpi);
-    console.log(data)
 
     useEffect(() => {
         if (data) {
