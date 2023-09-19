@@ -25,15 +25,17 @@ export default function ForgotPasswordPage() {
                     withCredentials: true
                 }
             );
-            
-                if (!response.data) {
-                    toast.error('Error sending password reset email.', {
-                        position: toast.POSITION.TOP_CENTER,
-                    });
-                    return;
-                }
 
-            toast.success('Password reset email sent successfully.', {
+            if (!response.data) {
+                toast.error('Error sending password reset email.', {
+                    position: toast.POSITION.TOP_CENTER,
+                });
+                return;
+            }
+
+            console.log(response.data)
+
+            toast.success('Password reset email sent successfully. Check your email inbox.', {
                 position: toast.POSITION.TOP_CENTER,
             });
             router.push('/login')

@@ -19,7 +19,8 @@ const TeamKpiQuery = ({
     onToggleQuery,
     onRemoveQuery,
     onTeamChange,
-    isLoadingData
+    isLoadingData,
+    isProfessional
 }) => {
     const [height, setHeight] = useState('auto');
     const [openModal, setOpenModal] = useState(false);
@@ -129,6 +130,7 @@ const TeamKpiQuery = ({
                                     selectedDepartment={query.departments}
                                     tableProps={tableProps}
                                     departments={departments}
+                                    isProfessional={isProfessional}
                                 />
                             }
                         </div>

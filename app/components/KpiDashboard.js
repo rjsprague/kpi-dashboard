@@ -11,7 +11,7 @@ import LoadingQuotes from './LoadingQuotes';
 import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
 
-export default function KpiDashboard({ isAdmin }) {
+export default function KpiDashboard({ user, isAdmin }) {
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [queryType, setQueryType] = useState();
     const [leadSources, setLeadSources] = useState({});
@@ -23,6 +23,8 @@ export default function KpiDashboard({ isAdmin }) {
     const [queries, setQueries] = useState([]);
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID);
     const clientSpaceId = useSelector(selectSpaceId)
+    const isProfessional = user?.settings?.podio?.userID === 0 && !isAdmin && clientSpaceId === 0;
+    const professionalQuery = { id: idCounter + 1, results: [], isOpen: true, isLoading: false, isUnavailable: false, leadSource: {}, dateRange: { gte: datePresets['Previous Week'].startDate, lte: datePresets['Previous Week'].endDate }, departments: ["Lead Manager"], teamMembers: [{"Lead Manager":"Bob"}, {"Acquisition Manager":"Bob"}, {"Deal Analyst": "Bob"}] }
 
     const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId, kpiView) => {
         const firstDepartment = Object?.keys(departmentsDataObject)[0]
@@ -48,10 +50,23 @@ export default function KpiDashboard({ isAdmin }) {
 
     // Fetch lead sources and departmentData on component mount, create initial queries
     useEffect(() => {
+
+        if (isProfessional) {
+            setLeadSources({});
+            setDepartments([]);
+            setTeamMembers([]);
+            setQueryType(KPI_VIEWS.Acquisitions);
+            setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
+            setQueries([professionalQuery]);
+            setIsLoadingData(false);
+            return;
+        }
+
         async function getLeadSources() {
             if (!clientSpaceId) {
                 return;
             }
+
             setIsLoadingData(true);
             try {
 
@@ -172,6 +187,10 @@ export default function KpiDashboard({ isAdmin }) {
 
     const handleAddQuery = () => {
         setIdCounter(idCounter + 1);
+        if (isProfessional) {
+            setQueries([...queries, professionalQuery]);
+            return;
+        }
         setQueries([...queries, ...createInitialQueries(leadSources, departments, datePresets, idCounter + 1)]);
     };
 
@@ -183,6 +202,10 @@ export default function KpiDashboard({ isAdmin }) {
             setKpiList(VIEW_KPIS[type]["Clients"]);
         }
         setIdCounter(idCounter + 1);
+        if (isProfessional) {
+            setQueries([professionalQuery]);
+            return;
+        }
         setQueries(createInitialQueries(leadSources, departments, datePresets, idCounter + 1, type));
     };
 
@@ -204,6 +227,7 @@ export default function KpiDashboard({ isAdmin }) {
 
     const renderKpiResultsSection = () => {
         return <KpiQueryContainer
+            isProfessional={isProfessional}
             view={queryType}
             kpiList={kpiList}
             leadSources={leadSources}

@@ -116,13 +116,16 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
 }
 
 const DataTable = ({ selectedTableKey, data, leadSources, departments }) => {
-  
+
     const [tableTitle, setTableTitle] = useState('');
 
     if (data.length === 0) {
         return (
-            <div className="flex items-center justify-center w-1/3 m-10 border h-1/4">
-                <h2 className="text-2xl font-bold text-center text-gray-100">No Data</h2>
+            <div className="flex flex-col items-center justify-center w-1/3 m-4 h-1/4">
+                <h1 className="text-xl font-bold text-center text-gray-100">{formatWords(selectedTableKey)}</h1>
+                <div className="flex items-center justify-center w-full h-full py-40 mt-4 border">
+                    <h2 className="text-lg font-semibold text-center text-gray-100">No Data</h2>
+                </div>
             </div>
         )
     }

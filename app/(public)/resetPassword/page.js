@@ -27,6 +27,7 @@ export default function ForgotPasswordPage() {
             toast.error('Invalid reset link. Please try again.', {
                 position: toast.POSITION.TOP_CENTER,
             });
+            router.push('/forgotPassword')
             return;
         }
 
@@ -65,10 +66,13 @@ export default function ForgotPasswordPage() {
                 }
             );
 
+            console.log(response)
+
             if (response && response.status !== 200) {
                 toast.error('Error resetting password. Please try again. Contact support@reiautomated.io if you are unable to reset your password.', {
                     position: toast.POSITION.TOP_CENTER,
                 });
+                router.push('/forgotPassword')
                 return;
             }
 
@@ -76,8 +80,13 @@ export default function ForgotPasswordPage() {
                 position: toast.POSITION.TOP_CENTER,
             });
             router.push('/login')
+
         } catch (error) {
+            toast.error('Error resetting password. Please try again.', {
+                position: toast.POSITION.TOP_CENTER,
+            })
             console.error('Error setting new password:', error);
+            router.push('/forgotPassword')
         }
     };
 

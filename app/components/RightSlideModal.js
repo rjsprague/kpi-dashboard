@@ -8,6 +8,7 @@ import fetchSingleKpi from '../lib/fetchSingleKpi';
 import LoadingQuotes from './LoadingQuotes';
 import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
+import kpiToEndpointMapping from '../lib/kpiToEndpointMapping';
 
 const RightSlideModal = ({
     isOpen,
@@ -23,7 +24,8 @@ const RightSlideModal = ({
     className,
     tableProps,
     leadSources,
-    departments
+    departments,
+    isProfessional
 }) => {
     const [selectedViewKpiList, setSelectedViewKpiList] = useState([]);
     const [dataTable1, setDataTable1] = useState(null);
@@ -32,16 +34,18 @@ const RightSlideModal = ({
     const [dataTable2Key, setDataTable2Key] = useState(null);
     const clientSpaceId = useSelector(selectSpaceId);
 
-    // console.log("RightSlideModal: ", selectedView, selectedDepartment, selectedViewKpiList, dataTable1, dataTable1Key, dataTable2, dataTable2Key)
 
     // Check if tableProps is defined before destructuring
     let startDate, endDate, leadSource, kpiView, teamMembers, apiName;
     if (tableProps) {
         ({ startDate, endDate, leadSource, kpiView, teamMembers, apiName } = tableProps);
     }
-    // console.log(apiName)
+    console.log(apiName)
+    console.log(isProfessional)
+    console.log(kpiToEndpointMapping[apiName][0])
+    console.log(kpiToEndpointMapping[apiName][1])
     const { data, error } = useSWR({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }, fetchSingleKpi);
-    // console.log(data)
+    console.log(data)
 
     useEffect(() => {
         if (data) {
@@ -110,7 +114,7 @@ const RightSlideModal = ({
             }}
         >
             <div className="absolute top-0 right-0 flex-col w-full h-screen overflow-scroll bg-blue-900 bg-opacity-50 infoModal">
-                <button className="absolute font-semibold right-2 top-2" onClick={handleCloseModal}>
+                <button className="absolute text-xl font-semibold right-2 top-2" onClick={handleCloseModal}>
                     <FiX />
                 </button>
                 {modalType === "info" && prop && prop.kpiFactors && (
@@ -180,6 +184,11 @@ const RightSlideModal = ({
                             {error && <div className="text-red-500">Error fetching data</div>}
                             {dataTable1 && <DataTable className="flex" selectedTableKey={dataTable1Key} data={dataTable1} leadSources={leadSources} departments={departments} />}
                             {dataTable2 && <DataTable className="flex" selectedTableKey={dataTable2Key} data={dataTable2} leadSources={leadSources} departments={departments} />}
+                        </div>
+                    ) : isProfessional ? (
+                        <div className="flex flex-col justify-center 2xl:flex-row">
+                            { <DataTable className="flex" selectedTableKey={kpiToEndpointMapping[apiName][0]} data={[]} leadSources={leadSources} departments={departments} />}
+                            { <DataTable className="flex" selectedTableKey={kpiToEndpointMapping[apiName][1]} data={[]} leadSources={leadSources} departments={departments} />}
                         </div>
                     ) : (
                         <LoadingQuotes />

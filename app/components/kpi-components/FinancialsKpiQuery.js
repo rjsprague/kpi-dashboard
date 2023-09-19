@@ -21,7 +21,8 @@ const FinancialsKpiQuery = ({
     onTeamMemberForClosersChange,
     onToggleQuery,
     onRemoveQuery,
-    isLoadingData
+    isLoadingData,
+    isProfessional
 }) => {
     // console.log("view: ", view)
     // console.log("query: ", query)
@@ -138,6 +139,7 @@ const FinancialsKpiQuery = ({
                                     tableProps={tableProps}
                                     leadSources={leadSources}
                                     departments={departments}
+                                    isProfessional={isProfessional}
                                 />
                             }
                         </div>

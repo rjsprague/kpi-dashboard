@@ -24,9 +24,9 @@ function KpiDashboardPage() {
         } else if (user) {
             dispatch(setSpaceId(user.settings.podio.spacesID))
         }
-        if (user && user.settings && !user.settings.timezone) {
-            router.push('/user-profile')
-        }
+        // if (user && user.settings && !user.settings.timezone) {
+        //     router.push('/user-profile')
+        // }
     }, [user])
 
     return (
@@ -38,7 +38,7 @@ function KpiDashboardPage() {
                     </div>
                 )
                 :
-                <KpiDashboard isAdmin={user.isAdmin} />}
+                <KpiDashboard user={user} isAdmin={user.isAdmin} />}
         </>
     )
 }

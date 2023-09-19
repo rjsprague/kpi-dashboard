@@ -6,6 +6,7 @@ import AddQueryButton from './AddQueryButton';
 import { VIEW_KPIS } from './constants';
 
 const KpiQueryContainer = ({ 
+    isProfessional,
     view, 
     kpiList,
     leadSources,
@@ -24,15 +25,11 @@ const KpiQueryContainer = ({
     isLoadingData
 }) => {
 
-    // console.log("KpiViews view: ", view)
-    // console.log("kpilist: ", kpiList)
-    // console.log("lead sources: ", leadSources)
-    // console.log("queries: ", queries)
-
     return (
         <div>
             {queries.map((query) => (
                 <KpiQuery
+                    isProfessional={isProfessional}
                     key={query.id}
                     view={view}
                     VIEW_KPIS={VIEW_KPIS}
