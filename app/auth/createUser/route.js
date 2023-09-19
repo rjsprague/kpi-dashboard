@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 // callback handler for Podio OAuth
-export async function GET(req) {
+export async function POST(req) {
     const apiBaseUrl = process.env.API_BASE_URL;
 
     const url = new URL(req.url);
