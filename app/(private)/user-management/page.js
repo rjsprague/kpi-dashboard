@@ -44,7 +44,6 @@ function UserManagementPage() {
             const createUserResponse = await axios.post('/api/temp/users', formData, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
                 }
             });
 
@@ -55,7 +54,6 @@ function UserManagementPage() {
             const activateUserResponse = await axios.put(`/api/temp/users/${id}/toggle`, {}, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
                 }
             });
 

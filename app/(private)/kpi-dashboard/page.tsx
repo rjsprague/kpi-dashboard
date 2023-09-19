@@ -2,11 +2,9 @@
 import KpiDashboard from '../../components/KpiDashboard'
 import withAuth from '../../lib/withAuth'
 import LoadingQuotes from '../../components/LoadingQuotes'
-import { Suspense, useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import useSWR from 'swr'
 import { useRouter } from 'next/navigation'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css';
 import { setSpaceId } from '../../GlobalRedux/Features/client/clientSlice'
 import { useDispatch } from 'react-redux';
 
@@ -24,9 +22,9 @@ function KpiDashboardPage() {
         } else if (user) {
             dispatch(setSpaceId(user.settings.podio.spacesID))
         }
-        // if (user && user.settings && !user.settings.timezone) {
-        //     router.push('/user-profile')
-        // }
+        if (user && user.settings && !user.settings.timezone && user.settings.podio.userID !== 0) {
+            router.push('/user-profile')
+        }
     }, [user])
 
     return (
