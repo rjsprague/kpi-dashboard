@@ -6,6 +6,7 @@ import EllipsisLoader from '../EllipsisLoader';
 import ClosersDateSelector from './ClosersDateSelector';
 import QueryPanel from './QueryPanel';
 import AnimateHeight from 'react-animate-height';
+import { FiCopy } from 'react-icons/fi';
 
 function formatDate(date) {
     const year = date.getFullYear();
@@ -39,7 +40,9 @@ export default function ClosersLeaderboard({
     departments,
     onToggleQuery,
     onRemoveQuery,
+    onCloneLeaderboard,
 }) {
+
     const today = getDatePresets().Today;
     const thisWeek = getDatePresets()['Current Week'];
     const thisMonth = getDatePresets()["Current Month"];
@@ -51,12 +54,19 @@ export default function ClosersLeaderboard({
 
     const [height, setHeight] = useState('auto');
 
-    const [selectedDay, setSelectedDay] = useState();
-    const [selectedWeek, setSelectedWeek] = useState();
-    const [selectedMonth, setSelectedMonth] = useState();
+    const [selectedDay, setSelectedDay] = useState("");
+    const [selectedWeek, setSelectedWeek] = useState("");
+    const [selectedMonth, setSelectedMonth] = useState("");
 
     const [days, setDays] = useState([]);
     const [weeks, setWeeks] = useState([]);
+
+    const [dayStart, setDayStart] = useState("");
+    const [dayEnd, setDayEnd] = useState("");
+    const [weekStart, setWeekStart] = useState("");
+    const [weekEnd, setWeekEnd] = useState("");
+    const [monthStart, setMonthStart] = useState("");
+    const [monthEnd, setMonthEnd] = useState("");
 
     useEffect(() => {
         setSelectedDay(formatDateToDay(today.startDate))
@@ -77,14 +87,32 @@ export default function ClosersLeaderboard({
             newWeeks.push(formatDateToWeek(new Date(currentYear, months.indexOf(selectedMonth), i), new Date(currentYear, months.indexOf(selectedMonth), endWeek)));
         }
         setWeeks(newWeeks);
+
+        setDayStart(formatDate(today.startDate));
+        setDayEnd(formatDate(today.endDate));
+        setWeekStart(formatDate(thisWeek.startDate));
+        setWeekEnd(formatDate(thisWeek.endDate));
+        setMonthStart(formatDate(thisMonth.startDate));
+        setMonthEnd(formatDate(thisMonth.endDate));
+
     }, [])
 
-    const [dayStart, setDayStart] = useState(formatDate(today.startDate));
-    const [dayEnd, setDayEnd] = useState(formatDate(today.endDate));
-    const [weekStart, setWeekStart] = useState(formatDate(thisWeek.startDate));
-    const [weekEnd, setWeekEnd] = useState(formatDate(thisWeek.endDate));
-    const [monthStart, setMonthStart] = useState(formatDate(thisMonth.startDate));
-    const [monthEnd, setMonthEnd] = useState(formatDate(thisMonth.endDate));
+
+
+    // When a leaderboard is cloned the query results will hold the previous query's results
+    useEffect(() => {
+        if (!query.results.dayStart) return;
+        setDayStart(query.results.dayStart)
+        setDayEnd(query.results.dayEnd)
+        setWeekStart(query.results.weekStart)
+        setWeekEnd(query.results.weekEnd)
+        setMonthStart(query.results.monthStart || monthStart)
+        setMonthEnd(query.results.monthEnd || monthEnd)
+
+        setSelectedDay(formatDateToDay(query.results.dayStart))
+        setSelectedWeek(formatDateToWeek(query.results.weekStart, query.results.weekEnd))
+        setSelectedMonth(months[new Date(query.results.monthStart || monthStart).getMonth()])
+    }, [query.results])
 
     const { data: dayData, error: dayError } = useSWR({ startDate: dayStart, endDate: dayEnd, departments: departments }, getClosersLeaderboard);
     const { data: weekData, error: weekError } = useSWR({ startDate: weekStart, endDate: weekEnd, departments: departments }, getClosersLeaderboard);
@@ -92,8 +120,7 @@ export default function ClosersLeaderboard({
 
     const currentYear = new Date().getFullYear();
 
-    const handleDayChange = (selectedDay, selectedMonth, selectedWeek, weeks) => {
-
+    const handleDayChange = (selectedDay, selectedMonth) => {
         const selectedDayDate = new Date(`${currentYear}-${months.indexOf(selectedMonth) + 1}-${selectedDay}`);
         setDayStart(formatDate(selectedDayDate));
         setDayEnd(formatDate(selectedDayDate));
@@ -109,11 +136,10 @@ export default function ClosersLeaderboard({
                 return true;
             }
         });
-
         mutate({ startDate: formatDate(selectedDayDate), endDate: formatDate(selectedDayDate), departments: departments });
     };
 
-    const handleWeekChange = (selectedWeek, selectedMonth, selectedDay, weeks) => {
+    const handleWeekChange = (selectedWeek, selectedMonth, selectedDay) => {
 
         const [startDay, endDay] = selectedWeek.split('-');
         const startWeekDate = new Date(`${currentYear}-${months.indexOf(selectedMonth) + 1}-${startDay}`);
@@ -125,7 +151,7 @@ export default function ClosersLeaderboard({
         // set the selected day to the first day of the selected week if it is not within the selected week
         if (selectedDay < startDay || selectedDay > endDay) {
             setSelectedDay(formatDateToDay(startWeekDate));
-            handleDayChange(formatDateToDay(startWeekDate), selectedMonth, selectedWeek, weeks);
+            handleDayChange(formatDateToDay(startWeekDate), selectedMonth, selectedWeek);
         }
 
         mutate({ startDate: formatDate(startWeekDate), endDate: formatDate(endWeekDate), departments: departments });
@@ -156,8 +182,8 @@ export default function ClosersLeaderboard({
         // update the data for the selected month to the newly selected month
         mutate({ startDate: formatDate(selectedMonthDate), endDate: formatDate(lastDayOfMonth), departments: departments });
 
-        handleDayChange(newDays[0], selectedMonth, weeks[0], weeks);
-        handleWeekChange(weeks[0], selectedMonth, newDays[0], weeks);
+        handleDayChange(newDays[0], selectedMonth, weeks[0]);
+        handleWeekChange(weeks[0], selectedMonth, newDays[0]);
     };
 
     const handleToggleQuery = () => {
@@ -172,6 +198,10 @@ export default function ClosersLeaderboard({
     const handleGearIconClick = () => {
         setModalType("settings");
         setOpenModal(true);
+    };
+
+    const handleCloneLeaderboard = (dayStart, dayEnd, weekStart, weekEnd, monthStart, monthEnd) => {
+        onCloneLeaderboard(dayStart, dayEnd, weekStart, weekEnd, monthStart, monthEnd);
     };
 
     const isLoading = (data, error) => !data && !error;
@@ -195,6 +225,9 @@ export default function ClosersLeaderboard({
                     onWeekChange={handleWeekChange}
                     onMonthChange={handleMonthChange}
                 />
+                <div>
+                    <FiCopy className="w-7 h-7 p-0.5 text-white border shadow-super-3 rounded-md cursor-pointer border-color-white hover:text-blue-700 hover:bg-white" onClick={() => handleCloneLeaderboard(dayStart, dayEnd, weekStart, weekEnd, monthStart, monthEnd)} />
+                </div>
             </QueryPanel>
             <AnimateHeight duration={500} height={height}>
                 <div id="closers-leaderboard" className="flex flex-col items-center w-full px-4 py-4 mb-4 bg-blue-300 rounded-lg shadow-super-4">

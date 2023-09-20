@@ -176,6 +176,22 @@ export default function KpiDashboard({ IsAdmin }) {
         setQueries([...queries, ...createInitialQueries(leadSources, departments, datePresets, idCounter + 1)]);
     };
 
+    const createClonedLeaderboardQuery = (queryId, dayStart, dayEnd, weekStart, weekEnd, monthStart, monthEnd) => {
+        const clonedQuery = [{
+            id: queryId + 1,
+            results: { "dayStart":dayStart, "dayEnd":dayEnd, "weekStart":weekStart, "weekEnd":weekEnd, "monthStart":monthStart, "monthEnd":monthEnd },
+            isOpen: true,
+            isLoading: true,
+            isUnavailable: false,
+        }];
+        return clonedQuery;
+    }
+
+    const handleCloneLeaderboard = (dayStart, dayEnd, weekStart, weekEnd, monthStart, monthEnd) => {
+        setIdCounter(idCounter + 1);
+        setQueries([...queries, ...createClonedLeaderboardQuery(idCounter + 1, dayStart, dayEnd, weekStart, weekEnd, monthStart, monthEnd)]);
+    }
+
     const handleQueryTypeChange = (type) => {
         setQueryType(type);
         if (clientSpaceId === closersSpaceId && IsAdmin) {
@@ -222,6 +238,7 @@ export default function KpiDashboard({ IsAdmin }) {
             handleToggleQuery={handleToggleQuery}
             handleRemoveQuery={handleRemoveQuery}
             handleAddQuery={handleAddQuery}
+            handleCloneLeaderboard={handleCloneLeaderboard}
             isLoadingData={isLoadingData}
         />;
     };

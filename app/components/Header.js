@@ -15,8 +15,6 @@ export default function Header() {
     const router = useRouter()
     const { data: user, error: userError } = useSWR('/auth/getUser', fetcher)
 
-    console.log("user", user)
-
     const logout = async () => {
         try {
             const response = await fetch('/auth/logout', {
