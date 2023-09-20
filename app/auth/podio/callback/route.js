@@ -19,11 +19,9 @@ export async function GET(req) {
     try {
         const response = await fetch(callbackUrl);
 
-        if (!response.ok) {
-            throw new Error("Something went wrong on api server!", response.status, response.statusText);
-        }
+        const data = await response.json();      
 
-        const data = await response.json();
+        // console.log(data)
 
         const { token } = data;
 
