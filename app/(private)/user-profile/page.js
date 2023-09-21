@@ -71,7 +71,7 @@ function UserProfilePage() {
             toast.error('Failed to update timezone. Please try again. Contact support if this issue persists.', {
                 position: toast.POSITION.TOP_CENTER,
             })
-            console.error('Failed to update user:', await response.text());
+            console.error('Failed to update user:', response);
         }
     };
 

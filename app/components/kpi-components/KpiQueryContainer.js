@@ -5,15 +5,15 @@ import KpiQuery from './KpiQuery';
 import AddQueryButton from './AddQueryButton';
 import { VIEW_KPIS } from './constants';
 
-const KpiQueryContainer = ({ 
+const KpiQueryContainer = ({
     isProfessional,
-    view, 
+    view,
     kpiList,
     leadSources,
     departments,
-    queries,      
+    queries,
     handleSetLoading,
-    handleSetLeadSourcesLoading,     
+    handleSetLeadSourcesLoading,
     handleFetchedKpiData,
     handleDateRangeChange,
     handleLeadSourceChange,

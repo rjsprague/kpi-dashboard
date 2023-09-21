@@ -11,7 +11,13 @@ import LoadingQuotes from './LoadingQuotes';
 import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
 
-export default function KpiDashboard({ user, isAdmin }) {
+export default function KpiDashboard({ user }) {
+    // console.log(user)
+
+    const [isAdmin, setIsAdmin] = useState(user ? user.isAdmin : false);
+    const [isProfessional, setIsProfessional] = useState(user ? user.isProfessional : false);
+    const [isScaling, setIsScaling] = useState(user ? user.isScaling : false);
+    const [isStarter, setIsStarter] = useState(user ? user.isStarter : false);
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [queryType, setQueryType] = useState();
     const [leadSources, setLeadSources] = useState({});
@@ -23,8 +29,8 @@ export default function KpiDashboard({ user, isAdmin }) {
     const [queries, setQueries] = useState([]);
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID);
     const clientSpaceId = useSelector(selectSpaceId)
-    const isProfessional = user?.settings?.podio?.userID === 0 && !isAdmin && clientSpaceId === 0;
     const professionalQuery = { id: idCounter + 1, results: [], isOpen: true, isLoading: false, isUnavailable: false, leadSource: {}, dateRange: { gte: datePresets['Previous Week'].startDate, lte: datePresets['Previous Week'].endDate }, departments: ["Lead Manager"], teamMembers: [{"Lead Manager":"Bob"}, {"Acquisition Manager":"Bob"}, {"Deal Analyst": "Bob"}] }
+
 
     const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId, kpiView) => {
         const firstDepartment = Object?.keys(departmentsDataObject)[0]
@@ -43,9 +49,7 @@ export default function KpiDashboard({ user, isAdmin }) {
                 teamMembers: firstDeptTeamMembers,
             },
         ];
-
         return initialQuery;
-
     };
 
     // Fetch lead sources and departmentData on component mount, create initial queries
@@ -80,6 +84,7 @@ export default function KpiDashboard({ user, isAdmin }) {
                 setQueryType(KPI_VIEWS.Acquisitions);
                 if (clientSpaceId === closersSpaceId && isAdmin) {
                     setKpiList(VIEW_KPIS["Acquisitions"]["Closers"]);
+                    console.log("oops")
                 } else {
                     setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
                 }
@@ -187,7 +192,7 @@ export default function KpiDashboard({ user, isAdmin }) {
 
     const handleAddQuery = () => {
         setIdCounter(idCounter + 1);
-        if (isProfessional) {
+        if (user.isProfessional) {
             setQueries([...queries, professionalQuery]);
             return;
         }
@@ -202,7 +207,7 @@ export default function KpiDashboard({ user, isAdmin }) {
             setKpiList(VIEW_KPIS[type]["Clients"]);
         }
         setIdCounter(idCounter + 1);
-        if (isProfessional) {
+        if (user.isProfessional) {
             setQueries([professionalQuery]);
             return;
         }

@@ -20,20 +20,42 @@ export default function SideNav() {
     const [contentWidth, setContentWidth] = useState(0);
     const [clients, setClients] = useState({});
     const [clientsNamesArray, setClientsNamesArray] = useState([]);
-    const sideNavRef = useRef(null);
-    const sideNavContentRef = useRef(null);
     const [clientsOpen, setClientsOpen] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
+    const [clientFolderID, setClientFolderID] = useState("");
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isScaling, setIsScaling] = useState(false);
+    const [isProfessional, setIsProfessional] = useState(false);
+    const [isStarter, setIsStarter] = useState(false);
+    
+    const sideNavRef = useRef(null);
+    const sideNavContentRef = useRef(null);
     const buttonRef = useRef(null);
+
+    const dispatch = useDispatch();
+    
     const router = useRouter();
 
     const { data: user, error: userError } = useSWR('/auth/getUser', fetcher);
+    // console.log(user)
 
-    const clientFolderID = user?.settings?.google?.driveID && user.settings.google.driveID;
+    useEffect(() => {
+        if (user && user.isScaling) {
+            setClientFolderID(user.settings.google.rootFolderID)
+            setIsScaling(true);
+        } else if (user && user.isProfessional) {
+            setClientFolderID(user.settings.google.propertyFolderID);
+            setIsProfessional(true);
+        } else if (user && user.isStarter) {
+            setIsStarter(true);
+        }
 
-    const isAdmin = user && user.isAdmin === true ? true : false;
+        if (user && user.isAdmin) {
+            setIsAdmin(true);
+        }
+    }, [user])
 
-    const dispatch = useDispatch();
+    
 
     useEffect(() => {
         if (isOpen) {
@@ -110,7 +132,7 @@ export default function SideNav() {
         // { icon: <FontAwesomeIcon icon={faCheckDouble} size="lg" />, text: 'To Dos', link: '/' },
         { icon: <FontAwesomeIcon icon={faGaugeHigh} size="xl" />, text: 'KPIs', link: '/kpi-dashboard' },
         { icon: <FontAwesomeIcon icon={faFileAlt} size="xl" />, text: 'Call Scripts', link: '/call-scripts', scripts: true, onClick: () => setScriptsOpen(!scriptsOpen) },
-        { icon: <FaGoogleDrive className="block text-xl" />, text: 'Property Folders', link: `https://drive.google.com/drive/folders/${clientFolderID}`, target: '_blank', rel: 'noopener noreferrer'},
+        { icon: <FaGoogleDrive className="block text-xl" />, text: isScaling?`Files`:isProfessional?`Property Folders`:``, link: `https://drive.google.com/drive/folders/${clientFolderID}`, target: '_blank', rel: 'noopener noreferrer'},
         // { icon: <FontAwesomeIcon icon={faChalkboardTeacher} size="lg" />, text: 'Training', link: '/' },
         { icon: <FiUsers className='text-xl' />, text: 'Clients', link: '/', clients: true, onClick: () => setClientsOpen(!clientsOpen) },
     ];

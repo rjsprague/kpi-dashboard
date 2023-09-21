@@ -24,8 +24,10 @@ export async function GET(req) {
         // console.log(data)
 
         const { token } = data;
+        // console.log(token)
 
         const decodedToken = jwt.decode(token);
+        // console.log(decodedToken)
         
         cookies().set({
             name: 'accessToken',

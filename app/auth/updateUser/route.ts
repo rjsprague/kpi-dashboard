@@ -7,7 +7,6 @@ export async function POST(req: NextRequest) {
 
     const accessToken = auth.accessToken;
 
-
     if (!accessToken) {
         return NextResponse.json("No token");
     }
@@ -25,7 +24,7 @@ export async function POST(req: NextRequest) {
                     "email": profile.email,
                     "name": profile.name,
                     "displayName": profile.displayName,
-                    "spaceID": profile.spaceID,
+                    // "spaceID": profile.spaceID,
                     "settings": {
                         "timezone": selectedTimezone,
                         podio: {
@@ -33,7 +32,8 @@ export async function POST(req: NextRequest) {
                             spacesID: profile.settings.podio.spaceID,
                         },
                         google: {
-                            driveID: profile.settings.google.driveID
+                            rootFolderID: "11Pv9p9w24685nxx08R_Sk2V2_cjcVpCB",
+                            propertyFolderID: "1d2cOtlQT07hl5Bg8zViHIijmL9ANDabn",
                         }
                     },
                     "isAdmin": profile.isAdmin,

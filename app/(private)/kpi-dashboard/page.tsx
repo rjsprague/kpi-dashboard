@@ -13,6 +13,8 @@ function KpiDashboardPage() {
     const router = useRouter()
     const dispatch = useDispatch();
 
+    // console.log("user", user)
+
     useEffect(() => {
         if (userError) {
             router.push('/login')
@@ -36,7 +38,7 @@ function KpiDashboardPage() {
                     </div>
                 )
                 :
-                <KpiDashboard user={user} isAdmin={user.isAdmin} />}
+                <KpiDashboard user={user} />}
         </>
     )
 }

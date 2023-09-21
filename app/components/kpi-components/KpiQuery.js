@@ -22,7 +22,6 @@ const KpiQuery = ({
     isLoadingData,
     ...props
 }) => {
-
     let id, dateRange, leadSource, departments, teamMembers, gte, lte;
     if (query) {
         ({ id, dateRange, leadSource, departments, teamMembers } = query);
