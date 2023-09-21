@@ -24,24 +24,26 @@ export async function POST(req: NextRequest) {
                     "email": profile.email,
                     "name": profile.name,
                     "displayName": profile.displayName,
-                    // "spaceID": profile.spaceID,
                     "settings": {
                         "timezone": selectedTimezone,
                         podio: {
                             userID: profile.settings.podio.userID,
-                            spacesID: profile.settings.podio.spaceID,
+                            spacesID: profile.settings.podio.spacesID,
                         },
                         google: {
-                            rootFolderID: "11Pv9p9w24685nxx08R_Sk2V2_cjcVpCB",
-                            propertyFolderID: "1d2cOtlQT07hl5Bg8zViHIijmL9ANDabn",
+                            rootFolderID: profile.settings.google.rootFolderID,
+                            propertyFolderID: profile.settings.google.propertyFolderID,
                         }
                     },
                     "isAdmin": profile.isAdmin,
                     "isActive": profile.isActive,
+                    "isScaling": profile.isScaling,
+                    "isProfessional": profile.isProfessional,
+                    "isStarter": profile.isStarter
                 })
             });
 
-        return NextResponse.json({ status: response.status, message: response.statusText })
+        return NextResponse.json({ status: response.status, message: response.statusText, body: await response.json() })
 
     } catch (error) {
         // Handle error

@@ -44,6 +44,8 @@ function UserProfilePage() {
             { 'Content-Type': 'application/json' }
         );
 
+        console.log(response)
+
         if (response.data.status === 401) {
             toast.error('You are not authorized to update this user.', {
                 position: toast.POSITION.TOP_CENTER,
