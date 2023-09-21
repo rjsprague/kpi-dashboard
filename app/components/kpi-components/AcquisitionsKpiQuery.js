@@ -25,12 +25,9 @@ const AcquisitionsKpiQuery = ({
     onTeamMemberForClosersChange,
     onToggleQuery,
     onRemoveQuery,
-    isLoadingData
+    isLoadingData,
+    isProfessional
 }) => {
-    // console.log("view: ", view)
-    // console.log("VIEW_KPIS: ", VIEW_KPIS)
-    // console.log("query: ", query)
-    // console.log("kpiList: ", kpiList)
     const [height, setHeight] = useState('auto');
     const [openModal, setOpenModal] = useState(false);
     const [modalType, setModalType] = useState("info");
@@ -42,6 +39,8 @@ const AcquisitionsKpiQuery = ({
     const [reversedTeamMembersForClosers, setReversedTeamMembersForClosers] = useState([]);
     const [teamMembersForClosersOpen, setTeamMembersForClosersOpen] = useState(false);
     const clientSpaceId = useSelector(selectSpaceId);
+
+    // console.log("AcquisitionsKpiQuery: ", query)
 
     useEffect(() => {
         const teamMembersObj = {};
@@ -164,6 +163,7 @@ const AcquisitionsKpiQuery = ({
                                     tableProps={tableProps}
                                     leadSources={leadSources}
                                     departments={departments}
+                                    isProfessional={isProfessional}
                                 />
                             }
 

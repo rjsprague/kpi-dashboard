@@ -142,7 +142,7 @@ const Dial = ({ target, redFlag, max, value, unit }) => {
     }, [value, max, fillColor, valuePosition]);
 
     return (
-        <svg id="Meter" className='relative m-auto bottom-10 w-60 h-60' xmlns="http://www.w3.org/2000/svg" width="450" height="250" viewBox="0 0 450 250">
+        <svg id="Meter" className='absolute flex self-center w-60 top-30' xmlns="http://www.w3.org/2000/svg" width="450" height="250" viewBox="0 0 450 250">
 
 
             <defs>

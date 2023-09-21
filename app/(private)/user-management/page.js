@@ -41,10 +41,9 @@ function UserManagementPage() {
 
         // Create Temp User
         try {
-            const createUserResponse = await axios.post('/temp/users', formData, {
+            const createUserResponse = await axios.post('/api/temp/users', formData, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
                 }
             });
 
@@ -52,10 +51,9 @@ function UserManagementPage() {
             const { id } = createUserResponse.data;
 
             // Activate Temp User
-            const activateUserResponse = await axios.put(`/temp/users/${id}/toggle`, {}, {
+            const activateUserResponse = await axios.put(`/api/temp/users/${id}/toggle`, {}, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
                 }
             });
 
@@ -68,7 +66,7 @@ function UserManagementPage() {
         }
     };
 
-    if(user && !user.IsAdmin) {
+    if(user && !user.isAdmin) {
         <div>
             <h1>Unauthorized</h1>
         </div>

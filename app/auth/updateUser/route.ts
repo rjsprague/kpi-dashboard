@@ -4,18 +4,12 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
     const { profile, auth, selectedTimezone } = body as any;
-    // console.log("profile", profile)
-    // console.log("auth", auth)
-    // console.log("selectedTimezone", selectedTimezone)
 
     const accessToken = auth.accessToken;
-
 
     if (!accessToken) {
         return NextResponse.json("No token");
     }
-
-    // console.log("accessToken", accessToken);
 
     try {
         const response = await fetch(`${process.env.API_BASE_URL}/users/${profile.id}`,
@@ -30,22 +24,26 @@ export async function POST(req: NextRequest) {
                     "email": profile.email,
                     "name": profile.name,
                     "displayName": profile.displayName,
-                    "spaceID": profile.spaceID,
                     "settings": {
-                        "timezone": selectedTimezone
+                        "timezone": selectedTimezone,
+                        podio: {
+                            userID: profile.settings.podio.userID,
+                            spacesID: profile.settings.podio.spacesID,
+                        },
+                        google: {
+                            rootFolderID: profile.settings.google.rootFolderID,
+                            propertyFolderID: profile.settings.google.propertyFolderID,
+                        }
                     },
                     "isAdmin": profile.isAdmin,
+                    "isActive": profile.isActive,
+                    "isScaling": profile.isScaling,
+                    "isProfessional": profile.isProfessional,
+                    "isStarter": profile.isStarter
                 })
             });
 
-        if (response.status === 200) {
-            // console.log('Profile updated successfully')
-            return NextResponse.json({ message: "Profile updated successfully." });
-
-        } else {
-            console.error('Failed to update timzeone: ', response)
-            return NextResponse.json({ message: "Failed to update timzeone." });
-        }
+        return NextResponse.json({ status: response.status, message: response.statusText, body: await response.json() })
 
     } catch (error) {
         // Handle error

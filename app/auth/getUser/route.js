@@ -13,6 +13,7 @@ export async function GET() {
 
     // console.log("accessToken", accessToken);
     const { id } = jwt.decode(accessToken.value)
+
     if (!id) {        
         return NextResponse.json("Invalid token")
     }
@@ -23,6 +24,8 @@ export async function GET() {
             'Authorization': 'Bearer ' + accessToken.value
         }
     });
+
+    // console.log(response)
 
     if (!response.ok) {
         console.error('Error fetching user:', response);

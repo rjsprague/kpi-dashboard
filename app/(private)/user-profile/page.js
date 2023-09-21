@@ -20,13 +20,11 @@ function UserProfilePage() {
     const [displayName, setDisplayName] = useState('');
     const { auth } = useAuth();
     const router = useRouter();
-    // console.log('auth', auth)
 
     const { data: timezones, error } = useSWR('/api/timezones', fetcher);
-    // console.log('timezones', timezones)
 
-    const { data: profileData } = useSWR('/auth/getUser', fetcher);
-    // console.log(profileData)
+    const { data: profileData, error: profileError } = useSWR('/auth/getUser', fetcher);
+    if (profileData === 'No token') router.push('/login');
 
     useEffect(() => {
         if (profileData) {
@@ -36,26 +34,46 @@ function UserProfilePage() {
     }, [profileData]);
 
     const handleTimezoneChange = (selectedOption) => {
-        console.log(selectedOption)
         setSelectedTimezone(selectedOption[0]);
     };
 
     const handleSubmit = async (e) => {
-        console.log('submitting')
         e.preventDefault();
-        const response = await fetch('/auth/updateUser', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ profile, auth, selectedTimezone })
-        });
-        if (response.ok) {
-            const data = await response.json();
-            // console.log(data);
+        const response = await axios.post('/auth/updateUser',
+            { profile, auth, selectedTimezone },
+            { 'Content-Type': 'application/json' }
+        );
+
+        console.log(response)
+
+        if (response.data.status === 401) {
+            toast.error('You are not authorized to update this user.', {
+                position: toast.POSITION.TOP_CENTER,
+            })
+            return;
+        }
+        if (response.data.status === 403) {
+            toast.error('You are not authorized to update this user.', {
+                position: toast.POSITION.TOP_CENTER,
+            })
+            return;
+        }
+        if (response.data.status === 404) {
+            toast.error('User not found.', {
+                position: toast.POSITION.TOP_CENTER,
+            })
+            return;
+        }
+        if (response.data.status === 200) {
+            toast.success('Timezone updated successfully!', {
+                position: toast.POSITION.TOP_CENTER,
+            })
             mutate('/auth/getUser');
         } else {
-            console.error('Failed to update user:', await response.text());
+            toast.error('Failed to update timezone. Please try again. Contact support if this issue persists.', {
+                position: toast.POSITION.TOP_CENTER,
+            })
+            console.error('Failed to update user:', response);
         }
     };
 

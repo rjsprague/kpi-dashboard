@@ -5,14 +5,15 @@ import KpiQuery from './KpiQuery';
 import AddQueryButton from './AddQueryButton';
 import { VIEW_KPIS } from './constants';
 
-const KpiQueryContainer = ({ 
-    view, 
+const KpiQueryContainer = ({
+    isProfessional,
+    view,
     kpiList,
     leadSources,
     departments,
-    queries,      
+    queries,
     handleSetLoading,
-    handleSetLeadSourcesLoading,     
+    handleSetLeadSourcesLoading,
     handleFetchedKpiData,
     handleDateRangeChange,
     handleLeadSourceChange,
@@ -24,15 +25,11 @@ const KpiQueryContainer = ({
     isLoadingData
 }) => {
 
-    // console.log("KpiViews view: ", view)
-    // console.log("kpilist: ", kpiList)
-    // console.log("lead sources: ", leadSources)
-    // console.log("queries: ", queries)
-
     return (
         <div>
             {queries.map((query) => (
                 <KpiQuery
+                    isProfessional={isProfessional}
                     key={query.id}
                     view={view}
                     VIEW_KPIS={VIEW_KPIS}

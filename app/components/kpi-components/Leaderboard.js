@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import QueryPanel from './QueryPanel';
 import AnimateHeight from 'react-animate-height';
-import ServiceUnavailable from '../ServiceUnavailable';
 import RightSlideModal from '../RightSlideModal';
 import LoadingQuotes from '../LoadingQuotes';
 import UniversalDropdown from './UniversalDropdown';
@@ -36,26 +35,27 @@ export default function Leaderboard({
     onToggleQuery,
     onRemoveQuery,
 }) {
+    const years = ['2023'];
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const [costPerContractTop3, setCostPerContractTop3] = useState([]);
     const [costPerQualifiedLeadTop3, setCostPerQualifiedLeadTop3] = useState([]);
     const [speedToLeadTop3, setSpeedToLeadTop3] = useState([]);
     const [signedContractsTop3, setSignedContractsTop3] = useState([]);
     const [dealsTop3, setDealsTop3] = useState([]);
     const [year, setYear] = useState('2023');
-    const [month, setMonth] = useState('February');
+    const previousMonth = new Date().getMonth() - 1;
+    const [month, setMonth] = useState(previousMonth < 0 ? "December" : months[previousMonth]);
     const [error, setError] = useState(null);
     const [height, setHeight] = useState('auto');
     const [openModal, setOpenModal] = useState(false);
     const [modalType, setModalType] = useState("info");
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
     const [loading, setLoading] = useState(true);
+    
 
     // console.log("selectedKpis", selectedKpis);
 
-    const { data: leaderData, error: leaderError } = useSWR(`/api/leaderboard?year=${year}&month=${month}`, fetcher);
-
-    const years = ['2023'];
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const { data: leaderData, error: leaderError } = useSWR(`/api/leaderboard?year=${year}&month=${month}`, fetcher);    
 
     useEffect(() => {
         if (!leaderData) {
@@ -64,7 +64,6 @@ export default function Leaderboard({
         }
 
         try {
-            // console.log('leaderData', leaderData)
 
             const costPerContractData = [];
             const costPerQualifiedLeadData = [];
@@ -96,12 +95,6 @@ export default function Leaderboard({
                 }
             });
 
-            // console.log('costPerContractData', costPerContractData)
-            // console.log('costPerQualifiedLeadData', costPerQualifiedLeadData)
-            // console.log('speedToLeadData', speedToLeadData)
-            // console.log('signedContractsData', signedContractsData)
-            // console.log('dealsData', dealsData)
-
             setCostPerContractTop3(removeDuplicates(costPerContractData).sort((a, b) => a.metric - b.metric).slice(0, 3));
             setCostPerQualifiedLeadTop3(removeDuplicates(costPerQualifiedLeadData).sort((a, b) => a.metric - b.metric).slice(0, 3));
             setSpeedToLeadTop3(removeDuplicates(speedToLeadData).sort((a, b) => a.metric - b.metric).slice(0, 3));
@@ -116,12 +109,6 @@ export default function Leaderboard({
             setLoading(false);
         }
     }, [leaderData]);
-
-    // console.log("costPerContractTop3", costPerContractTop3);
-    // console.log("costPerQualifiedLeadTop3", costPerQualifiedLeadTop3);
-    // console.log("speedToLeadTop3", speedToLeadTop3);
-    // console.log("signedContractsTop3", signedContractsTop3);
-    // console.log("dealsTop3", dealsTop3);
 
     const kpis = [
         {

@@ -2,11 +2,9 @@
 import KpiDashboard from '../../components/KpiDashboard'
 import withAuth from '../../lib/withAuth'
 import LoadingQuotes from '../../components/LoadingQuotes'
-import { Suspense, useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import useSWR from 'swr'
 import { useRouter } from 'next/navigation'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css';
 import { setSpaceId } from '../../GlobalRedux/Features/client/clientSlice'
 import { useDispatch } from 'react-redux';
 
@@ -15,27 +13,18 @@ function KpiDashboardPage() {
     const router = useRouter()
     const dispatch = useDispatch();
 
+    // console.log("user", user)
+
     useEffect(() => {
         if (userError) {
             router.push('/login')
         }
-        if (user && user.IsAdmin === true && user.spaceID === 0) {
+        if (user && user.isAdmin === true && user.settings.podio.spacesID === 0) {
             dispatch(setSpaceId(Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)))
         } else if (user) {
-            dispatch(setSpaceId(user.spaceID))
+            dispatch(setSpaceId(user.settings.podio.spacesID))
         }
-        if (user && user.settings && !user.settings.timezone) {
-            if (!toast.isActive('timezone-not-set')) {
-                toast.info('Please set your timezone in settings to see your KPIs', {
-                    position: toast.POSITION.TOP_CENTER,
-                    autoClose: 10000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    toastId: 'timezone-not-set'
-                })
-            }
+        if (user && user.settings && !user.settings.timezone && user.settings.podio.userID !== 0) {
             router.push('/user-profile')
         }
     }, [user])
@@ -49,7 +38,7 @@ function KpiDashboardPage() {
                     </div>
                 )
                 :
-                <KpiDashboard IsAdmin={user.IsAdmin} />}
+                <KpiDashboard user={user} />}
         </>
     )
 }

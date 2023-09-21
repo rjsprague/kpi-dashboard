@@ -5,7 +5,8 @@ import '@fortawesome/fontawesome-svg-core/styles.css'
 config.autoAddCss = false
 import { AuthProvider } from '../context/AuthProvider';
 import { ReduxProvider } from '../GlobalRedux/provider';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function RootLayout({ children }) {
     return (
@@ -15,6 +16,7 @@ export default function RootLayout({ children }) {
                 <body>
                     <ReduxProvider>
                         {children}
+                        <ToastContainer />
                     </ReduxProvider>
                 </body>
             </html>

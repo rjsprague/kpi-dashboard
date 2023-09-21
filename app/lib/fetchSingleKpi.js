@@ -144,6 +144,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         }
     });
 
+    // console.log(namesAddresses)
     // console.log(results)
 
     Object.keys(results).forEach(key => {

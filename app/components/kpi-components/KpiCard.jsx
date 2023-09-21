@@ -68,7 +68,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
                 />
             );
         } else {
-            return (<div className="flex items-center self-center justify-center text-3xl font-semibold align-middle my-15">
+            return (<div className="flex justify-center text-3xl font-bold w-70">
                 {
                     prop.unit === "$" && prop.current !== Infinity ? (
                         <span>$<CountUp delay={1} start={0} end={prop.current} /></span>
@@ -89,19 +89,19 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
 
     return (
         <div>
-            <div className="flex flex-col px-2 py-1 text-center text-black delay-500 rounded h-52 shadow-super-3 transform-gpu ">
-                <h1 className="text-2xl font-semibold tracking-tighter align-top">{prop.name.includes("Closers") ? removeWord(prop.name, "Closers") : prop.name}</h1>
-                <div className="mt-1 font-medium text-md">
+            <div className="relative flex flex-col px-2 py-1 text-center text-black delay-500 rounded h-52 shadow-super-3 transform-gpu ">
+                <h1 className="absolute flex self-center text-2xl font-semibold tracking-tighter text-center align-top">{prop.name.includes("Closers") ? removeWord(prop.name, "Closers") : prop.name}</h1>
+                <div className="absolute flex self-center mt-1 font-medium top-10">
                     {prop.data1 !== null && prop.data2 !== null ? (
-                        <div className="flex flex-row justify-center gap-4 text-sm">
-                            <div>{prop.data1.length > 1 && prop.data1}</div>
+                        <div className="flex flex-row justify-center gap-4 text-xs">
+                            <div className="">{prop.data1.length > 1 && prop.data1}</div>
                             <div>{prop.data2.length > 1 && prop.data2}</div>
                         </div>
                     ) : (
                         ''
                     )}
                 </div>
-                <div className="relative bottom-2">{renderMeter()}</div>
+                <div className="absolute flex justify-center bottom-16">{renderMeter()}</div>
                 <button
                     onClick={() => {
                         handleCardInfoClick(prop);
