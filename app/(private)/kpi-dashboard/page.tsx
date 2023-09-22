@@ -13,13 +13,13 @@ function KpiDashboardPage() {
     const router = useRouter()
     const dispatch = useDispatch();
 
-    // console.log("user", user)
-
     useEffect(() => {
         if (userError) {
             router.push('/login')
         }
-        if (user && user.isAdmin === true && user.settings.podio.spacesID === 0) {
+        if (user && user.settings.podio.spacesID === 8108305) {
+            dispatch(setSpaceId(Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)))
+        } else if (user && user.isAdmin === true && user.settings.podio.spacesID === 0) {
             dispatch(setSpaceId(Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)))
         } else if (user) {
             dispatch(setSpaceId(user.settings.podio.spacesID))

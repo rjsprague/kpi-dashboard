@@ -31,7 +31,6 @@ export default function KpiDashboard({ user }) {
     const clientSpaceId = useSelector(selectSpaceId)
     const professionalQuery = { id: idCounter + 1, results: [], isOpen: true, isLoading: false, isUnavailable: false, leadSource: {}, dateRange: { gte: datePresets['Previous Week'].startDate, lte: datePresets['Previous Week'].endDate }, departments: ["Lead Manager"], teamMembers: [{"Lead Manager":"Bob"}, {"Acquisition Manager":"Bob"}, {"Deal Analyst": "Bob"}] }
 
-
     const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId, kpiView) => {
         const firstDepartment = Object?.keys(departmentsDataObject)[0]
         const firstDeptTeamMembers = Object?.keys(departmentsDataObject[firstDepartment])
@@ -55,7 +54,7 @@ export default function KpiDashboard({ user }) {
     // Fetch lead sources and departmentData on component mount, create initial queries
     useEffect(() => {
 
-        if (isProfessional) {
+        if (clientSpaceId && clientSpaceId !== closersSpaceId && isProfessional) {
             setLeadSources({});
             setDepartments([]);
             setTeamMembers([]);
@@ -82,9 +81,8 @@ export default function KpiDashboard({ user }) {
                 setTeamMembers(departmentsData)
                 const departmentsDataObject = departmentsData;
                 setQueryType(KPI_VIEWS.Acquisitions);
-                if (clientSpaceId === closersSpaceId && isAdmin) {
+                if (clientSpaceId === closersSpaceId) {
                     setKpiList(VIEW_KPIS["Acquisitions"]["Closers"]);
-                    console.log("oops")
                 } else {
                     setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
                 }
@@ -192,7 +190,7 @@ export default function KpiDashboard({ user }) {
 
     const handleAddQuery = () => {
         setIdCounter(idCounter + 1);
-        if (user.isProfessional) {
+        if (user.isProfessional && clientSpaceId !== closersSpaceId) {
             setQueries([...queries, professionalQuery]);
             return;
         }
@@ -217,13 +215,13 @@ export default function KpiDashboard({ user }) {
 
     const handleQueryTypeChange = (type) => {
         setQueryType(type);
-        if (clientSpaceId === closersSpaceId && isAdmin) {
+        if (clientSpaceId === closersSpaceId) {
             setKpiList(VIEW_KPIS[type]["Closers"]);
         } else {
             setKpiList(VIEW_KPIS[type]["Clients"]);
         }
         setIdCounter(idCounter + 1);
-        if (user.isProfessional) {
+        if (user.isProfessional && clientSpaceId !== closersSpaceId) {
             setQueries([professionalQuery]);
             return;
         }
