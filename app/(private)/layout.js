@@ -6,6 +6,7 @@ import Header from '../components/Header'
 import { ReduxProvider } from '../GlobalRedux/provider';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Script from 'next/script';
 
 export default function RootLayout({ children }) {
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }) {
                         <div id="loading-portal"></div>
                     </ReduxProvider>
                 </body>
+                <Script src="//scripts.reiautomated.io/wp-content/plugins/gravity-forms-iframe-master/assets/scripts/gfembed.min.js"></Script>
             </html>
         </AuthProvider>
     )

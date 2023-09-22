@@ -7,7 +7,7 @@ const MyIframe = ({ src, title }) => {
                 src={src}
                 title={title}
                 loading="lazy"
-                sandbox="allow-scripts allow-same-origin"
+                sandbox="allow-scripts allow-same-origin allow-forms allow-modals"
             ></iframe>
             <style jsx>{`
         .iframe-container {

@@ -33,7 +33,7 @@ export default function ForgotPasswordPage() {
                 return;
             }
 
-            // console.log(response.data)
+            console.log(response.data)
 
             toast.success('Password reset email sent successfully. Check your email inbox.', {
                 position: toast.POSITION.TOP_CENTER,
