@@ -25,6 +25,7 @@ function UserProfilePage() {
 
     const { data: profileData, error: profileError } = useSWR('/auth/getUser', fetcher);
     if (profileData === 'No token') router.push('/login');
+    console.log(profileData)
 
     useEffect(() => {
         if (profileData) {
