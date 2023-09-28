@@ -181,6 +181,11 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                 }
             ])
         },
+        contractedProfit: {
+            name: "Contracted Profit",
+            url: "/api/contracts",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "*Date Ratified")
+        },
         projectedProfit: {
             name: "Projected Profit",
             url: "/api/acquisitions",

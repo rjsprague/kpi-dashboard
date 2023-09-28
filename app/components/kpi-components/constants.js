@@ -67,6 +67,7 @@ export const VIEW_KPIS = {
             "Cost Per Deal",
             "Actualized Profit",
             "Projected Profit",
+            "Contracted Profit",
             "Total Profit",
             "ROAS Actualized",
             "ROAS Projected",

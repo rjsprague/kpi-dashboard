@@ -21,6 +21,7 @@ const kpiToEndpointMapping = {
     'Cost Per Deal': ['marketingExpenses', 'deals'],
     'Actualized Profit': ['profit'],
     'Projected Profit': ['projectedProfit'],
+    'Contracted Profit': ['contractedProfit'],
     'Total Profit': ['profit', 'projectedProfit'],
     'ROAS Actualized': ['profit', 'marketingExpenses'],
     'ROAS Projected': ['projectedProfit', 'marketingExpenses'],

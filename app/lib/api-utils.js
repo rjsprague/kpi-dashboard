@@ -40,7 +40,7 @@ const handleAcquisitionKpis = async (accessToken, clientSpaceId, apiName, apiEnd
     // console.log("apiEndpoint: ", apiEndpoint)
     // console.log("apiName: ", apiName)
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
-    
+
     try {
         const response = await fetch(apiEndpoint, {
             method: 'POST',
@@ -180,7 +180,7 @@ const handleFinancialKpis = async (accessToken, clientSpaceId, apiName, apiEndpo
         const data = await response.json();
         if (data.total === 0) {
             return 0;
-        } else if (apiName !== "Marketing Expenses" && apiName !== "Profit" && apiName !== "Projected Profit" && apiName !== "Closers Ad Spend" && apiName !== "Closers Payments") {
+        } else if (apiName !== "Marketing Expenses" && apiName !== "Profit" && apiName !== "Projected Profit" && apiName !== "Contracted Profit" && apiName !== "Closers Ad Spend" && apiName !== "Closers Payments") {
             return data.total;
         } else {
 

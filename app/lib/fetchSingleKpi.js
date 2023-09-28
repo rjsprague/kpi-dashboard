@@ -327,12 +327,13 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                 }
             })
-        } else if (apiEndpointKey === "contracts") {
+        } else if (apiEndpointKey === "contracts" || apiEndpointKey === "contractedProfit") {
             return results.map((result) => {
                 return {
                     "Date Contracted": result["*Date Ratified"]["start"] ? formatDate(result["*Date Ratified"]["start"]) : "No Date",
                     "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
+                    "Expected Profit": result["Expected Profit Center"] ? result["Expected Profit Center"] : "No Profit Center",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                 }

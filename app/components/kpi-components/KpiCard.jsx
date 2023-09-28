@@ -89,17 +89,25 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
 
     return (
         <div>
-            <div className="relative flex flex-col px-2 py-1 text-center text-black delay-500 rounded h-52 shadow-super-3 transform-gpu ">
+            <div className="relative flex flex-col px-3 py-1 text-center text-black delay-500 rounded h-52 shadow-super-3 transform-gpu ">
                 <h1 className="absolute flex self-center text-2xl font-semibold tracking-tighter text-center align-top">{prop.name.includes("Closers") ? removeWord(prop.name, "Closers") : prop.name}</h1>
                 <div className="absolute flex self-center mt-1 font-medium top-10">
-                    {prop.data1 !== null && prop.data2 !== null ? (
-                        <div className="flex flex-row justify-center gap-4 text-xs">
-                            <div className="">{prop.data1.length > 1 && prop.data1}</div>
-                            <div>{prop.data2.length > 1 && prop.data2}</div>
-                        </div>
-                    ) : (
-                        ''
-                    )}
+                    {
+                        prop.data1 !== null && prop.data2 !== null && prop.data3 !== null ?
+                            <div className="flex flex-row justify-center gap-2 px-1 text-xs">
+                                <div className="">{prop.data1.length > 1 && prop.data1}</div>
+                                <div>{prop.data2.length > 1 && prop.data2}</div>
+                                <div>{prop.data3.length > 1 && prop.data3}</div>
+                            </div>
+                            :
+                            prop.data1 !== null && prop.data2 !== null ? (
+                                <div className="flex flex-row justify-center gap-4 text-xs">
+                                    <div className="">{prop.data1.length > 1 && prop.data1}</div>
+                                    <div>{prop.data2.length > 1 && prop.data2}</div>
+                                </div>
+                            ) : (
+                                ''
+                            )}
                 </div>
                 <div className="absolute flex justify-center bottom-16">{renderMeter()}</div>
                 <button

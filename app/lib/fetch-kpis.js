@@ -42,7 +42,7 @@ const createDataString = (dataLabel, value) => {
     return dataLabel + value;
 };
 
-function createKpiObject(name, current, redFlag, target, data1, data2, unit, kpiType, kpiFactors) {
+function createKpiObject(name, current, redFlag, target, data1, data2, data3, unit, kpiType, kpiFactors) {
     return {
         name,
         current,
@@ -50,6 +50,7 @@ function createKpiObject(name, current, redFlag, target, data1, data2, unit, kpi
         target,
         data1,
         data2,
+        data3,
         unit,
         kpiType,
         kpiFactors,
@@ -89,7 +90,7 @@ function getKpiValue(calculatedKPIs, endpointData, dataKey) {
 
 async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, leadSource, gte, lte, departments, teamMembers }) {
 
-    console.log(isProfessional, clientSpaceId)
+    // console.log(isProfessional, clientSpaceId)
 
     if (view === "Leaderboard") {
         return null;
@@ -211,6 +212,14 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
                 }
             }, 0);
 
+            const contractedProfit = endpointData.contractedProfit && Array.isArray(endpointData.contractedProfit) && endpointData.contractedProfit.reduce((acc, curr) => {
+                if ("Expected Profit Center" in curr) {
+                    return acc + parseInt(curr["Expected Profit Center"], 10);
+                } else {
+                    return acc;
+                }
+            }, 0);
+
             const cashCollectedUpFront = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
                 if ("Cash Collected Up Front" in curr && curr["Status"][0] !== "Canceled") {
                     acc += parseFloat(curr["Cash Collected Up Front"]);
@@ -237,7 +246,8 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
             endpointData.totalClosersAdSpend = totalClosersAdSpend;
             endpointData.actualizedProfit = actualizedProfit;
             endpointData.projectedProfit = projectedProfit;
-            endpointData.totalProfit = actualizedProfit + projectedProfit;
+            endpointData.contractedProfit = contractedProfit;
+            endpointData.totalProfit = actualizedProfit + projectedProfit + contractedProfit;
             endpointData.cashCollectedUpFront = cashCollectedUpFront;
             endpointData.totalRevenueContracted = totalRevenueContracted;
             endpointData.uncollectedRevenue = totalRevenueContracted - cashCollectedUpFront;
@@ -256,7 +266,8 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
             const { redFlag, target, dataLabels, kpiFactors, dataKeys, kpiType, unit } = KPI_DEFINITIONS[kpiName];
             const data1 = dataKeys.length > 0 && dataLabels[0] !== undefined ? createDataString(dataLabels[0], getKpiValue(calculatedKPIs, endpointData, dataKeys[0])) : 0;
             const data2 = dataKeys.length > 1 && dataLabels[1] !== undefined ? createDataString(dataLabels[1], getKpiValue(calculatedKPIs, endpointData, dataKeys[1])) : 0;
-            return createKpiObject(name, current, redFlag, target, data1, data2, unit, kpiType, kpiFactors);
+            const data3 = dataKeys.length > 2 && dataLabels[2] !== undefined ? createDataString(dataLabels[2], getKpiValue(calculatedKPIs, endpointData, dataKeys[2])) : 0;
+            return createKpiObject(name, current, redFlag, target, data1, data2, data3, unit, kpiType, kpiFactors);
         })
 
         console.log(kpiObjects);

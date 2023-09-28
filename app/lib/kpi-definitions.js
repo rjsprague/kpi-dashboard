@@ -661,16 +661,41 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
-    "Total Profit": {
-        name: "Total Profit",
-        dataKeys: ["profit", "projectedProfit"],
+    "Contracted Profit": {
+        name: "Contracted Profit",
+        dataKeys: ["contractedProfit"],
         formula: (apiData) => {
-            const { projectedProfit, actualizedProfit } = apiData;
-            return projectedProfit + actualizedProfit;
+            const { contractedProfit } = apiData;
+            return contractedProfit;
         },
         redFlag: 0,
         target: 0,
-        dataLabels: ["Actualized Profit: $", "Projected Profit: $"],
+        dataLabels: ["Contracted Profit: $"],
+        kpiType: "",
+        unit: "$",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Contracted Profit",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Total Profit": {
+        name: "Total Profit",
+        dataKeys: ["profit", "projectedProfit", "contractedProfit"],
+        formula: (apiData) => {
+            const { projectedProfit, actualizedProfit, contractedProfit } = apiData;
+            return projectedProfit + actualizedProfit + contractedProfit;
+        },
+        redFlag: 0,
+        target: 0,
+        dataLabels: ["Actualized Profit: $", "Projected Profit: $", "Contracted Profit: $"],
         kpiType: "",
         unit: "$",
         kpiFactors: [
@@ -803,7 +828,7 @@ const KPI_DEFINITIONS = {
         name: "Closers Ad Spend",
         dataKeys: ["totalClosersAdSpend"],
         formula: (apiData) => {
-            const { totalClosersAdSpend } = apiData; 
+            const { totalClosersAdSpend } = apiData;
             return totalClosersAdSpend;
         },
         redFlag: 0,
@@ -1188,8 +1213,8 @@ const KPI_DEFINITIONS = {
         name: "Closers ROAS Projected",
         dataKeys: ["uncollectedRevenue", "totalClosersAdSpend"],
         formula: (apiData) => {
-            const { uncollectedRevenue, totalClosersAdSpend,  } = apiData;
-            
+            const { uncollectedRevenue, totalClosersAdSpend, } = apiData;
+
             return totalClosersAdSpend > 0 ? uncollectedRevenue / totalClosersAdSpend * 100 : 0;
         },
         redFlag: 800,
