@@ -5,7 +5,7 @@ import { Transition } from "react-transition-group";
 import LoadingIcon from "../LoadingIcon";
 import { FiCheck, FiCheckSquare, FiSquare } from 'react-icons/fi';
 
-function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId, isSingleSelect, isLoadingData, className, ButtonComponent, showButton, defaultValue }) {
+function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId, isSingleSelect, isLoadingData, className, ButtonComponent, showButton, defaultValue, label }) {
     const [selectedOption, setSelectedOption] = useState(defaultValue || (isSingleSelect && selectedOptions[0]) || "");
     const [searchTerm, setSearchTerm] = useState("");
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -138,21 +138,23 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
     return (
         <div ref={dropdownRef} className={`relative items-center text-xs dropdown sm:text-sm ${className}`}>
             <ButtonComponent onClick={toggleOpen} isOpen={isOpen}>
-                {isLoadingData ? <LoadingIcon /> :
-                    selectedOption
-                        ? selectedOption
-                        : isSingleSelect && selectedOptions || selectedOptions?.length === 1
-                            ? selectedOptions[0]
-                            : selectedOptions?.length === options.length
-                                ? "All"
-                                : `${selectedOptions?.length} selected`}
+                <div className="truncate">
+                    {isLoadingData ? <LoadingIcon /> :
+                        selectedOption
+                            ? selectedOption
+                            : isSingleSelect && selectedOptions || selectedOptions?.length === 1
+                                ? selectedOptions[0]
+                                : selectedOptions?.length === options.length
+                                    ? (label ? label : "All")
+                                    : `${selectedOptions?.length} selected`}
+                </div>
             </ButtonComponent>
 
             <Transition in={isOpen} timeout={duration}>
                 {(state) => (
                     <div
                         ref={dropdownContentRef}
-                        className="absolute z-50 p-1 text-white bg-blue-800 rounded-md shadow-lg sm:w-44 bg-opacity-80"
+                        className="absolute z-50 p-1 text-white bg-blue-800 rounded-b-lg shadow-lg sm:w-44 bg-opacity-80"
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],
@@ -169,7 +171,7 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                             className="z-10 w-full px-3 py-1 text-blue-900 rounded-md"
                             placeholder="Search..."
                         />
-                        <ul className="py-1 ">
+                        <ul className="py-1">
                             {!isSingleSelect && (
                                 <li className="py-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400">
                                     <label className="inline-flex items-center" onClick={() => handleCheckboxChange('All')}>
@@ -182,11 +184,11 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                                 <li
                                     key={option}
                                     onClick={() => handleCheckboxChange(option)}
-                                    className={`w-full truncate py-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400 ${index === highlightedIndex ? 'bg-blue-400' : ''}`}
+                                    className={`w-full py-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400 ${index === highlightedIndex ? 'bg-blue-400' : ''}`}
                                 >
-                                    <label className="inline-flex items-center truncate">
-                                        { selectedOptions?.includes(option) ? isSingleSelect ? <FiCheck size="20px" /> : <FiCheckSquare size="20px" /> : !isSingleSelect && <FiSquare size="20px" />}
-                                        <span className="ml-2 truncate">{option}</span>
+                                    <label className="inline-flex items-center">
+                                        {selectedOptions?.includes(option) ? isSingleSelect ? <FiCheck size="20px" /> : <FiCheckSquare size="20px" /> : !isSingleSelect && <FiSquare size="20px" />}
+                                        <span className="ml-2 truncate w-34">{option}</span>
                                     </label>
                                 </li>
                             )) : <LoadingIcon />}

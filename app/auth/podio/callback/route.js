@@ -20,17 +20,17 @@ export async function GET(req) {
     // console.log(callbackUrl)
     try {
         const response = await fetch(callbackUrl);
-        // console.log(response)
+        console.log(response)
 
         const data = await response.json();      
 
-        // console.log(data)
+        console.log(data)
 
         const { token } = data;
-        // console.log(token)
+        console.log(token)
 
         const decodedToken = jwt.decode(token);
-        // console.log(decodedToken)
+        console.log(decodedToken)
         
         cookies().set({
             name: 'accessToken',

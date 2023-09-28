@@ -1,39 +1,28 @@
-import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import jwt from 'jsonwebtoken'
+import { NextResponse } from "next/server";
 
-export async function GET() {
-    const accessToken = cookies().get("accessToken");
-
-    // console.log("accessToken", accessToken)
-    
-    if (!accessToken) {
-        return NextResponse.json("No token");
-    }
+export async function GET(req) {
+    const accessToken = req.cookies.get("accessToken");
 
     // console.log("accessToken", accessToken);
-    const { id } = jwt.decode(accessToken.value)
 
-    if (!id) {        
-        return NextResponse.json("Invalid token")
-    }
+        const response = await fetch(`${process.env.API_BASE_URL}/users/me`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken.value}`
+            }
+        });
 
-    const response = await fetch(`${process.env.API_BASE_URL}/users/me`, {
-        method: 'GET',
-        headers: {
-            'Authorization': 'Bearer ' + accessToken.value
+        // console.log(response.status)
+
+        if (response.status !== 200) {
+            console.error('Error fetching user:', response);
+            req.cookies.delete('accessToken')
+            console.log("redirecting to login")
+            return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/login`);
         }
-    });
 
-    // console.log(response)
+        const data = await response.json();
+        // console.log(data)
 
-    if (!response.ok) {
-        console.error('Error fetching user:', response);
-        cookies().delete("accessToken");
-        return NextResponse.redirect(process.env.NEXT_PUBLIC_BASE_URL+"/login");
-    }
-
-    const data = await response.json();
-    // console.log(data);
-    return NextResponse.json(data);
+        return NextResponse.json(data);
 }

@@ -7,14 +7,24 @@ import Link from 'next/link'
 import Image from 'next/image'
 import useSWR from 'swr'
 import { Menu, Transition } from '@headlessui/react'
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'
+
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export default function Header() {
     const router = useRouter()
+
     const { data: user, error: userError } = useSWR('/auth/getUser', fetcher)
 
+    if (!user) {
+        return <div className='flex items-center justify-center w-full h-full'>Loading...</div>
+    }
+    
+    if (userError) {
+        console.error('Failed to load user:', userError)
+    }
+    
     const logout = async () => {
         try {
             const response = await fetch('/auth/logout', {
@@ -33,6 +43,8 @@ export default function Header() {
             router.push('/login');
         }
     };
+
+
 
     return (
         <section className="fixed top-0 right-0 z-10 flex flex-col max-w-screen left-20">
@@ -82,7 +94,7 @@ export default function Header() {
                                 <Menu.Item>
                                     {({ active }) => (
                                         <Link href="/user-management" className={`flex items-center w-full px-4 py-2 ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
-                                            <FiUsers className='mr-2 text-xl hover:animate-spin' />
+                                            <FiUsers className='mr-2 text-xl' />
                                             Users
                                         </Link>
                                     )}
@@ -91,7 +103,7 @@ export default function Header() {
                             <Menu.Item>
                                 {({ active }) => (
                                     <button type="button" onClick={logout} className={`flex items-center text-left w-full px-4 py-2 rounded-b-2xl ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
-                                        <FontAwesomeIcon icon={faSignOut} size="lg" className='mr-2 hover:animate-bounce' />
+                                        <FontAwesomeIcon icon={faSignOut} size="lg" className='mr-2' />
                                         Logout
                                     </button>
                                 )}

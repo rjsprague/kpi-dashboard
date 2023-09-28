@@ -198,17 +198,12 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
         },
         closersLeadsSetPrequalified: {
             name: "Closers Leads Set Prequalified",
-            url: "/api/closers/acquisitions/lead-events",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
+            url: "/api/closers/acquisitions/setter-calls",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, null, "created_on", [
                 {
                     "type": "category",
-                    "fieldName": "Event",
-                    "values": ["Prequalified"]
-                },
-                {
-                    "type": "category",
-                    "fieldName": "lead_event #",
-                    "values": ["1.0000"]
+                    "fieldName": "Qualification",
+                    "values": ["Qualified"]
                 },
                 {
                     "type": "app",

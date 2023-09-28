@@ -419,11 +419,11 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     podio_item_id: result.itemid ? result.itemid : podio_item_id,
                 }
             })
-        } else if (apiEndpointKey === "closersUniqueAttended" || apiEndpointKey === "closersTotalAttended" || apiEndpointKey === "closersLeadsSetPrequalified" || apiEndpointKey === "closersBookings" || apiEndpointKey === "closersAppointments") {
+        } else if (apiEndpointKey === "closersUniqueAttended" || apiEndpointKey === "closersTotalAttended" || apiEndpointKey === "closersBookings" || apiEndpointKey === "closersAppointments") {
             return results.map((result) => {
                 return {
                     "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No Date",
-                    "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name", 
+                    "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name",
                     "Event": result["Event"] ? result["Event"] : "No event given",
                     "Team Member Responsible": result["Team Member Responsible [Name]"] ? result["Team Member Responsible [Name]"] : "No team member responsible",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
@@ -441,7 +441,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
             return calcResults.map((result) => {
                 return {
                     "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No Date",
-                    "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name", 
+                    "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name",
                     "Event": result["Event"] ? result["Event"] : "No event given",
                     "Team Member Responsible": result["Team Member Responsible [Name]"] ? result["Team Member Responsible [Name]"] : "No team member responsible",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
@@ -455,6 +455,18 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Status": result["Status of the Call"] ? result["Status of the Call"] : "No Status",
                     "Lead Source": result["Related Lead Source Item"] ? result["Related Lead Source Item"] : "No lead source",
                     "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "Closer not given",
+                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id
+                }
+            })
+        } else if (apiEndpointKey === "closersLeadsSetPrequalified") {
+            return results.map((result) => {
+                return {
+                    "Date": result["created_on"] && result["created_on"]["start"] ? formatDate(result["created_on"]["start"]) : "No date given",
+                    "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name",
+                    "Qualification": result["Qualification"] ? result["Qualification"] : "No qualification",
+                    "Call Confirmed": result["Call Confirmed"] ? result["Call Confirmed"] : "No call confirmed",
+                    // "Lead Source": result["Related Lead Source Item"] ? result["Related Lead Source Item"] : "No lead source",
+                    "Setter": result["Team Member Responsible"] ? result["Team Member Responsible"] : "Setter not given",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id
                 }
             })

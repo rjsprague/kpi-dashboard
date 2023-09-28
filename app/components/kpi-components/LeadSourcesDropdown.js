@@ -8,6 +8,7 @@ import DropdownButton from './DropdownButton';
 
 export default function LeadSourceDropdown({ onOptionSelected, queryId, leadSources, isLoadingData, isUnavailable}) {
     const [selectedOptions, setSelectedOptions] = useState(Object.keys(leadSources));
+    const allsourcesLabel = "All Lead Sources";
 
     //console.log("lead sources dropdown: ", leadSources)
 
@@ -33,6 +34,7 @@ export default function LeadSourceDropdown({ onOptionSelected, queryId, leadSour
             isLoadingData={isLoadingData}
             ButtonComponent={DropdownButton}
             className={""}
+            label={allsourcesLabel}
         />
     );
 }

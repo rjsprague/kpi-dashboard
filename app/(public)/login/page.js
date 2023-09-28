@@ -39,12 +39,8 @@ export default function LoginPage() {
                     withCredentials: true
                 }
             );
-
-            // console.log(response.data.token)
             const accessToken = response && response.data && response.data.token && response.data.token;
-
             Cookies.set('accessToken', accessToken, { expires: 7, path: '/' });
-
             setAuth({ accessToken });
             setEmail('');
             setPassword('');

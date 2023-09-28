@@ -1,47 +1,39 @@
+"use client"
+
 import { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Switch } from '@headlessui/react';
 import useSWR from 'swr';
 import fetchClients from '@/lib/fetchClients';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
-const CreateUserForm = () => {
+const UserForm = ({ user }) => {
+
+    // console.log(user)
     const [clientNamesArray, setClientNamesArray] = useState([]);
-    const [selectedClientName, setSelectedClientName] = useState(null);
+    const [selectedClientName, setSelectedClientName] = useState('');
     const [selectedTimezone, setSelectedTimezone] = useState('');
+    const [formType, setFormType] = useState('create');
 
     // State variables for each tier
     const [isStarter, setIsStarter] = useState(false);
     const [isProfessional, setIsProfessional] = useState(false);
     const [isScaling, setIsScaling] = useState(false);
 
-    // Define default values for the form
-    const defaultValues = {
-        email: '',
-        name: '',
-        displayName: '',
-        settings: {
-            timezone: '',
-            google: {
-                rootFolderID: '',
-                propertyFolderID: ''
-            },
-            podio: {
-                userID: 0,
-                spacesID: 0
-            }
-        },
-        isAdmin: false,
-        isStart: false,
-        isProfessional: false,
-        isScaling: false,
-    };
-
     const { control, setValue, getValues } = useForm({
-        defaultValues,
+        defaultValues: user,
     });
+
+    useEffect(() => {
+        if (user && user['_id']) {
+            setFormType('updat');
+        } else {
+            setFormType('creat');
+        }
+    }, [user]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -49,33 +41,69 @@ const CreateUserForm = () => {
         const formData = getValues();
 
         try {
-            const createUserResponse = await axios.post('/api/temp/users', formData, {
-                headers: {
-                    'Content-Type': 'application/json',
+
+            if (user && user['_id']) {
+                // Update user
+                const updateUserResponse = await axios.put('/api/temp/users/' + user['_id'], formData, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (updateUserResponse.status !== 200) {
+                    throw new Error('Error creating or updating user.');
                 }
-            });
 
-            console.log(createUserResponse, createUserResponse.status)
-            const { id } = createUserResponse.data;
+            } else {
 
-            const activateUserResponse = await axios.put(`/api/temp/users/${id}/toggle`, {}, {
-                headers: {
-                    'Content-Type': 'application/json',
+                const createUserResponse = await axios.post('/api/temp/users', formData, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (createUserResponse.status !== 200) {
+                    throw new Error('Error creating or updating user.');
                 }
-            });
 
-            console.log(activateUserResponse, activateUserResponse.status)
+            }
 
-            toast.success('User created and activated successfully.');
+            toast.success('User' + formType + 'ed successfully.')
 
         } catch (error) {
-            console.error('Error creating user:', error);
+            console.error('Error creating or updating user:', error);
+            toast.error('Error ' + formType + 'ing user.');
         }
     };
 
     const { data: clientsObj, error: clientsError } = useSWR('/api/spaces', fetchClients)
     const { data: timezones, error: tzError } = useSWR('/api/timezones', fetcher);
 
+    useEffect(() => {
+        if (user) {
+            // Set form values based on the user object
+            setValue('email', user.email || '');
+            setValue('name', user.name || '');
+            setValue('displayName', user.displayname || '');
+            setValue('settings.timezone', user.settings.timezone || '');
+            setValue('settings.google.rootFolderID', user.settings.google.rootfolderid || '');
+            setValue('settings.google.propertyFolderID', user.settings.google.propertyfolderid || '');
+            setValue('settings.podio.userID', user.settings.podio.userid || 0);
+            setValue('isAdmin', user.isadmin || false);
+            setValue('isStarter', user.isstarter || false);
+            setValue('isProfessional', user.isprofessional || false);
+            setValue('isScaling', user.isscaling || false);
+
+            // Set state variables for tier
+            setIsStarter(user.isstarter);
+            setIsProfessional(user.isprofessional);
+            setIsScaling(user.isscaling);
+
+            // Set state variables for dropdowns
+            setSelectedTimezone(user.settings.timezone || '');
+            setSelectedClientName(user.settings.podio.spaceid || 0); // Assuming you can map spaceid to client name
+        }
+    }, [user]);
 
     useEffect(() => {
         if (clientsObj) {
@@ -84,14 +112,24 @@ const CreateUserForm = () => {
     }, [clientsObj]);
 
     useEffect(() => {
-        if (selectedClientName) {
+        if (selectedClientName && selectedClientName !== 'Starter' && selectedClientName !== 'Professional') {
             const spacesID = clientsObj[selectedClientName];
             setValue('settings.podio.spacesID', spacesID);
         }
     }, [selectedClientName, clientsObj]);
 
     useEffect(() => {
+        if (selectedTimezone) {
+            setValue('settings.timezone', selectedTimezone);
+        }
+    }, [selectedTimezone]);
+
+    useEffect(() => {
         // Update form values based on state variables
+        if (isStarter || isProfessional) {
+            setValue('settings.podio.spacesID', 0);
+        }
+
         setValue('isStarter', isStarter);
         setValue('isProfessional', isProfessional);
         setValue('isScaling', isScaling);
@@ -104,10 +142,8 @@ const CreateUserForm = () => {
         setIsScaling(selectedTier === 'isScaling');
     };
 
-    if (!clientsObj) return <div>Loading...</div>
-    if (clientsError) return <div>Error...</div>
-
-
+    if (!clientsObj || !timezones) return <div>Loading...</div>
+    if (clientsError || tzError) return <div>Error...</div>
 
     return (
         <form onSubmit={handleSubmit} className="w-auto space-y-4">
@@ -247,4 +283,4 @@ const CreateUserForm = () => {
     );
 };
 
-export default CreateUserForm;
+export default UserForm;
