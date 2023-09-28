@@ -36,7 +36,7 @@ export default function CallScriptsPage() {
         }
     }, [user])
 
-    if (!user || !clientFolderID) return <div>Loading...</div>
+    if (!user || !clientFolderID && user && !user.isAdmin) return <div>Loading...</div>
     if (userError) return <div>Failed to load</div>
 
     const handleScriptChange = (script) => {
