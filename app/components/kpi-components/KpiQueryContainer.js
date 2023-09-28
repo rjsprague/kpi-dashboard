@@ -22,6 +22,7 @@ const KpiQueryContainer = ({
     handleRemoveQuery,
     handleAddQuery,
     handleTeamChange,
+    handleCloneLeaderboard,
     isLoadingData
 }) => {
 
@@ -48,6 +49,7 @@ const KpiQueryContainer = ({
                     onTeamChange={handleTeamChange}
                     isLoadingData={isLoadingData}
                     handleAddQuery={handleAddQuery}
+                    handleCloneLeaderboard={handleCloneLeaderboard}
                 />
             ))}
             <AddQueryButton handleAddQuery={handleAddQuery} />

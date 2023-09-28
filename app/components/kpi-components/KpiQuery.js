@@ -20,6 +20,7 @@ const KpiQuery = ({
     onFetchedKpiData,
     onTeamChange,
     isLoadingData,
+    handleCloneLeaderboard,
     ...props
 }) => {
     let id, dateRange, leadSource, departments, teamMembers, gte, lte;
@@ -63,7 +64,7 @@ const KpiQuery = ({
             return <FinancialsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} isProfessional={isProfessional} />;
         case 'Leaderboard':
             if (clientSpaceId === closersSpaceId) {
-                return <ClosersLeaderboard {...props} view={view} query={query} kpiList={kpiList} isProfessional={isProfessional} />;
+                return <ClosersLeaderboard {...props} view={view} query={query} kpiList={kpiList} isProfessional={isProfessional} onCloneLeaderboard={handleCloneLeaderboard} />;
             } else {
             return <Leaderboard {...props} view={view} query={query} kpiList={kpiList} isProfessional={isProfessional} />;
             }
