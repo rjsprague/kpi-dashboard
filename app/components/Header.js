@@ -9,6 +9,7 @@ import useSWR from 'swr'
 import { Menu, Transition } from '@headlessui/react'
 import { useRouter } from 'next/navigation'
 import LoadingQuotes from './LoadingQuotes';
+import Cookies from 'js-cookie';
 
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
@@ -28,9 +29,7 @@ export default function Header() {
     
     const logout = async () => {
         try {
-            const response = await fetch('/auth/logout', {
-                method: 'POST',
-            });
+            Cookies.remove('accessToken')
 
             if (response.ok) {
                 // Redirect to login page
