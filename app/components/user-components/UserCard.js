@@ -1,12 +1,22 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Switch } from '@headlessui/react';
 import UserModal from './UserModal';
 import { FiEdit } from 'react-icons/fi';
 
 const UserCard = ({ user, onToggleActive, clients }) => {
     const [showModal, setShowModal] = useState(false);
+    const [spacesID, setSpacesID] = useState(0);
+
+    console.log(user)
+
+    useEffect(() => {
+        if (user && user.settings && user.settings.podio && user.settings.podio.spaceID) {
+            setSpacesID(user.settings.podio.spaceID);
+        }
+    }, [user]);
+
 
     const toggleModal = () => {
         setShowModal(!showModal);
@@ -16,8 +26,8 @@ const UserCard = ({ user, onToggleActive, clients }) => {
         <div className="relative flex flex-col justify-between h-32 p-4 mb-4 mr-4 bg-blue-700 rounded-md w-46 shadow-super-3 ">
             <FiEdit className="absolute text-xl text-white cursor-pointer top-5 right-5" onClick={toggleModal} />
             {showModal && <UserModal user={user} isOpen={showModal} setIsOpen={setShowModal} />}
-            <h3 className="font-semibold text-md">{user.name}</h3>
-            <p className="text-sm text-gray-100 truncate">{user.settings.podio.spaceid === 0 ? 'Starter or Pro' : clients[user.settings.podio.spaceid]}</p>
+            <h3 className="font-semibold truncate w-30 text-md">{user.name}</h3>
+            <p className="text-sm text-gray-100 truncate">{spacesID && spacesID === 0 ? 'Starter or Pro' : clients[spacesID]}</p>
             <div className="">
                 <Switch.Group as="div" className="flex flex-col">
                     <Switch.Label>Status</Switch.Label>

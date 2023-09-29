@@ -40,7 +40,7 @@ const UserList = ({usersArray, clientsObj}) => {
     };
 
     return (
-        <div className="flex flex-row flex-wrap">
+        <div className="flex flex-row flex-wrap w-[88%] overflow-y-scroll">
             {users.map((user) => (
                 <UserCard key={user["_id"]} user={user} onToggleActive={toggleActiveStatus} clients={clients} />
             ))}

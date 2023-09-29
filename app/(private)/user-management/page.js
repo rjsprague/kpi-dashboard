@@ -59,7 +59,7 @@ function UserManagementPage() {
     const { data: clientsObj, error: clientsError } = useSWR('/api/spaces', fetchClients)
 
     // console.log(users)
-    console.log(clientsObj)
+    // console.log(clientsObj)
 
     const openModal = () => {
         setIsOpen(true);
@@ -85,7 +85,7 @@ function UserManagementPage() {
     }
 
     return (
-        <div className="relative right-0 flex flex-col items-center w-full h-screen px-2 py-20 space-y-8 sm:px-10 top-20 sm:left-20">
+        <div className="relative right-0 flex flex-col items-center w-full h-screen px-2 py-20 space-y-8 sm:px-10">
             <h1 className="text-2xl text-white">User Management</h1>
             <button onClick={openModal} className="p-2 text-white bg-blue-500 rounded">
                 Create User

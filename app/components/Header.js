@@ -8,6 +8,7 @@ import Image from 'next/image'
 import useSWR from 'swr'
 import { Menu, Transition } from '@headlessui/react'
 import { useRouter } from 'next/navigation'
+import LoadingQuotes from './LoadingQuotes';
 
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
@@ -18,7 +19,7 @@ export default function Header() {
     const { data: user, error: userError } = useSWR('/auth/getUser', fetcher)
 
     if (!user) {
-        return <div className='flex items-center justify-center w-full h-full'>Loading...</div>
+        return <div className='flex items-center justify-center w-full h-full'><LoadingQuotes /></div>
     }
     
     if (userError) {

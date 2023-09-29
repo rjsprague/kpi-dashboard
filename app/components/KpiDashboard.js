@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
 
 export default function KpiDashboard({ user }) {
-    // console.log(user)
+    console.log(user)
 
     const [isAdmin, setIsAdmin] = useState(user ? user.isAdmin : false);
     const [isProfessional, setIsProfessional] = useState(user ? user.isProfessional : false);
@@ -28,7 +28,8 @@ export default function KpiDashboard({ user }) {
     const [idCounter, setIdCounter] = useState(0);
     const [queries, setQueries] = useState([]);
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID);
-    const clientSpaceId = useSelector(selectSpaceId)
+    const [clientSpaceId, setClientSpaceId] = useState(user ? user.settings.podio.spacesID : 0);
+   
     const professionalQuery = { id: idCounter + 1, results: [], isOpen: true, isLoading: false, isUnavailable: false, leadSource: {}, dateRange: { gte: datePresets['Previous Week'].startDate, lte: datePresets['Previous Week'].endDate }, departments: ["Lead Manager"], teamMembers: [{"Lead Manager":"Bob"}, {"Acquisition Manager":"Bob"}, {"Deal Analyst": "Bob"}] }
 
     const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId, kpiView) => {
@@ -54,25 +55,22 @@ export default function KpiDashboard({ user }) {
     // Fetch lead sources and departmentData on component mount, create initial queries
     useEffect(() => {
 
-        if (clientSpaceId && clientSpaceId !== closersSpaceId && isProfessional) {
-            setLeadSources({});
-            setDepartments([]);
-            setTeamMembers([]);
-            setQueryType(KPI_VIEWS.Acquisitions);
-            setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
-            setQueries([professionalQuery]);
-            setIsLoadingData(false);
+        if (!user) {
             return;
         }
 
-        async function getLeadSources() {
+        setIsAdmin(user.isAdmin);
+        setIsProfessional(user.isProfessional);
+        setIsScaling(user.isScaling);
+        setIsStarter(user.isStarter);
+        setClientSpaceId(user.settings.podio.spacesID);
+
+        async function getSetData() {
             if (!clientSpaceId) {
                 return;
             }
-
             setIsLoadingData(true);
             try {
-
                 const leadSourcesData = await fetchLeadSources(clientSpaceId);
                 setLeadSources(leadSourcesData);
                 const leadSourcesObject = leadSourcesData;
@@ -93,8 +91,35 @@ export default function KpiDashboard({ user }) {
                 setIsLoadingData(false);
             }
         }
-        getLeadSources();
-    }, [clientSpaceId]);
+
+        if (clientSpaceId !== closersSpaceId && isProfessional) {
+            console.log("professional query")
+            setLeadSources({});
+            setDepartments([]);
+            setTeamMembers([]);
+            setQueryType(KPI_VIEWS.Acquisitions);
+            setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
+            setQueries([professionalQuery]);
+            setIsLoadingData(false);
+            return;
+        } else if (clientSpaceId !== closersSpaceId && isScaling) {
+            console.log("scaling query")
+            getSetData();
+        } else if (clientSpaceId === closersSpaceId) {
+            console.log("closers query")
+            getSetData();
+        } else {
+            console.log("no query")
+            setLeadSources({});
+            setDepartments([]);
+            setTeamMembers([]);
+            setQueryType(KPI_VIEWS.Acquisitions);
+            setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
+            setQueries([professionalQuery]);
+            setIsLoadingData(false);
+        }
+        
+    }, [clientSpaceId, isProfessional, isScaling, user]);
 
     if (isLoadingData) {
         return (

@@ -28,6 +28,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
     const startDate = dateRange.gte ? formatDate(new Date(dateRange.gte)) : null;
     const endDate = dateRange.lte ? formatDate(new Date(dateRange.lte)) : null;
     const clientSpaceId = useSelector(selectSpaceId);
+    console.log(prop)
 
     if (isLoading) {
         return ReactDOM.createPortal(

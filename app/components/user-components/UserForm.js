@@ -55,13 +55,15 @@ const UserForm = ({ user }) => {
                 }
 
             } else {
+                // console.log('Creating user')
+                // console.log(formData)
 
                 const createUserResponse = await axios.post('/api/temp/users', formData, {
                     headers: {
                         'Content-Type': 'application/json',
                     }
                 });
-
+                // console.log(createUserResponse)
                 if (createUserResponse.status !== 200) {
                     throw new Error('Error creating or updating user.');
                 }
@@ -85,7 +87,7 @@ const UserForm = ({ user }) => {
             setValue('email', user.email || '');
             setValue('name', user.name || '');
             setValue('displayName', user.displayname || '');
-            setValue('settings.timezone', user.settings.timezone || '');
+            setValue('settings.timezone', user.settings?.timezone && user.settings.timezone  || '');
             setValue('settings.google.rootFolderID', user.settings.google.rootfolderid || '');
             setValue('settings.google.propertyFolderID', user.settings.google.propertyfolderid || '');
             setValue('settings.podio.userID', user.settings.podio.userid || 0);
@@ -100,7 +102,7 @@ const UserForm = ({ user }) => {
             setIsScaling(user.isscaling);
 
             // Set state variables for dropdowns
-            setSelectedTimezone(user.settings.timezone || '');
+            setSelectedTimezone(user.settings?.timezone && user.settings.timezone || '');
             setSelectedClientName(user.settings.podio.spaceid || 0); // Assuming you can map spaceid to client name
         }
     }, [user]);
@@ -170,7 +172,7 @@ const UserForm = ({ user }) => {
                 <Controller
                     name="displayName"
                     control={control}
-                    render={({ field }) => <input {...field} type="text" className="w-full px-2 py-1 text-black border rounded" />}
+                    render={({ field }) => <input {...field} type="text" className="w-full px-2 py-1 text-black border rounded" required />}
                 />
             </div>
 
@@ -194,7 +196,7 @@ const UserForm = ({ user }) => {
                 <Controller
                     name="settings.google.rootFolderID"
                     control={control}
-                    render={({ field }) => <input {...field} type="text" className="w-full px-2 py-1 text-black border rounded" />}
+                    render={({ field }) => <input {...field} type="text" className="w-full px-2 py-1 text-black border rounded" required />}
                 />
             </div>
 
@@ -203,7 +205,7 @@ const UserForm = ({ user }) => {
                 <Controller
                     name="settings.google.propertyFolderID"
                     control={control}
-                    render={({ field }) => <input {...field} type="text" className="w-full px-2 py-1 text-black border rounded" />}
+                    render={({ field }) => <input {...field} type="text" className="w-full px-2 py-1 text-black border rounded" required />}
                 />
             </div>
 
@@ -214,7 +216,7 @@ const UserForm = ({ user }) => {
                 <Controller
                     name="settings.podio.userID"
                     control={control}
-                    render={({ field }) => <input {...field} type="number" className="w-full px-2 py-1 text-black border rounded" />}
+                    render={({ field }) => <input {...field} type="number" className="w-full px-2 py-1 text-black border rounded" required />}
                 />
             </div>
 
@@ -274,6 +276,7 @@ const UserForm = ({ user }) => {
                                 {tier}
                             </label>
                         )}
+                        required
                     />
                 ))}
             </div>

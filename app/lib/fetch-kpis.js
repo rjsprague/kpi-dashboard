@@ -98,7 +98,6 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
 
     if (isProfessional && clientSpaceId !== 8108305) {
         let emptyKpiData = [];
-        console.log("oops")
 
         if (view === "Team") {
             let teamKpiList = kpiList[departments[0]];
@@ -108,7 +107,8 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
                 const { redFlag, target, dataLabels, kpiFactors, dataKeys, kpiType, unit } = KPI_DEFINITIONS[kpiName];
                 const data1 = dataKeys.length > 0 && dataLabels[0] !== undefined ? createDataString(dataLabels[0], 0) : 0;
                 const data2 = dataKeys.length > 1 && dataLabels[1] !== undefined ? createDataString(dataLabels[1], 0) : 0;
-                return createKpiObject(name, current, redFlag, target, data1, data2, unit, kpiType, kpiFactors);
+                const data3 = dataKeys.length > 2 && dataLabels[2] !== undefined ? createDataString(dataLabels[2], 0) : 0;
+                return createKpiObject(name, current, redFlag, target, data1, data2, data3, unit, kpiType, kpiFactors);
             })
         } else {
             emptyKpiData = kpiList.map((kpiName) => {
@@ -117,7 +117,8 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
                 const { redFlag, target, dataLabels, kpiFactors, dataKeys, kpiType, unit } = KPI_DEFINITIONS[kpiName];
                 const data1 = dataKeys.length > 0 && dataLabels[0] !== undefined ? createDataString(dataLabels[0], 0) : 0;
                 const data2 = dataKeys.length > 1 && dataLabels[1] !== undefined ? createDataString(dataLabels[1], 0) : 0;
-                return createKpiObject(name, current, redFlag, target, data1, data2, unit, kpiType, kpiFactors);
+                const data3 = dataKeys.length > 2 && dataLabels[2] !== undefined ? createDataString(dataLabels[2], 0) : 0;
+                return createKpiObject(name, current, redFlag, target, data1, data2, data3, unit, kpiType, kpiFactors);
             })
         }
 
