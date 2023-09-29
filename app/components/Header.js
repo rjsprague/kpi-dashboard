@@ -10,13 +10,14 @@ import { Menu, Transition } from '@headlessui/react'
 import { useRouter } from 'next/navigation'
 import LoadingQuotes from './LoadingQuotes';
 import Cookies from 'js-cookie';
+import useAuth from '@/hooks/useAuth';
 
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export default function Header() {
     const router = useRouter()
-
+    const { setAuth } = useAuth();
     const { data: user, error: userError } = useSWR('/auth/getUser', fetcher)
 
     if (!user) {
@@ -30,6 +31,7 @@ export default function Header() {
     const logout = async () => {
         try {
             Cookies.remove('accessToken')
+            setAuth({ accessToken: null });
 
             if (response.ok) {
                 // Redirect to login page
