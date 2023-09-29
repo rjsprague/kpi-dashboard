@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOut } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link'
 import Image from 'next/image'
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 import { Menu, Transition } from '@headlessui/react'
 import { useRouter } from 'next/navigation'
 import LoadingQuotes from './LoadingQuotes';
@@ -18,7 +18,10 @@ const fetcher = (url) => fetch(url).then((res) => res.json())
 export default function Header() {
     const router = useRouter()
     const { setAuth } = useAuth();
-    const { data: user, error: userError } = useSWR('/auth/getUser', fetcher)
+    const { data: user, error: userError } = useSWR('/auth/getUser', fetcher, { 
+        revalidateOnFocus: false, 
+        revalidateOnReconnect: false 
+      })
 
     if (!user) {
         return <div className='flex items-center justify-center w-full h-full'><LoadingQuotes /></div>
@@ -32,6 +35,7 @@ export default function Header() {
         try {
             Cookies.remove('accessToken')
             setAuth({ accessToken: null });
+            mutate('/auth/getUser', null, false)
 
             if (response.ok) {
                 // Redirect to login page

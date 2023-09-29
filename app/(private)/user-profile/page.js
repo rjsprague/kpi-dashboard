@@ -23,7 +23,10 @@ function UserProfilePage() {
 
     const { data: timezones, error } = useSWR('/api/timezones', fetcher);
 
-    const { data: profileData, error: profileError } = useSWR('/auth/getUser', fetcher);
+    const { data: profileData, error: profileError } = useSWR('/auth/getUser', fetcher, { 
+        revalidateOnFocus: false, 
+        revalidateOnReconnect: false 
+      });
     if (profileData === 'No token') router.push('/login');
     console.log(profileData)
 

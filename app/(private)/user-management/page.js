@@ -54,7 +54,10 @@ function UserManagementPage() {
 
     const url = '/api/users';
     const accessToken = cookies.get('accessToken');
-    const { data: user, error: userError } = useSWR('/auth/getUser', fetcher)
+    const { data: user, error: userError } = useSWR('/auth/getUser', fetcher, { 
+        revalidateOnFocus: false, 
+        revalidateOnReconnect: false 
+      })
     const { data: users, error: usersError } = useSWR({ url, accessToken }, fetchWithToken)
     const { data: clientsObj, error: clientsError } = useSWR('/api/spaces', fetchClients)
 

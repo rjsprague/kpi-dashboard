@@ -36,7 +36,10 @@ export default function SideNav() {
     
     const router = useRouter();
 
-    const { data: user, error: userError } = useSWR('/auth/getUser', fetcher);
+    const { data: user, error: userError } = useSWR('/auth/getUser', fetcher, { 
+        revalidateOnFocus: false, 
+        revalidateOnReconnect: false 
+      });
     // console.log(user)
 
     useEffect(() => {

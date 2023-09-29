@@ -37,7 +37,6 @@ export async function GET(req) {
             value: token,
             path: '/',
             maxAge: 60 * 60 * 24 * 7, // 1 week
-            secure: true,
         })
 
         if (!decodedToken.settings.timezone) {

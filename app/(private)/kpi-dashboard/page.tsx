@@ -9,7 +9,10 @@ import { setSpaceId } from '../../GlobalRedux/Features/client/clientSlice'
 import { useDispatch } from 'react-redux';
 
 function KpiDashboardPage() {
-    const { data: user, error: userError } = useSWR('/auth/getUser')
+    const { data: user, error: userError } = useSWR('/auth/getUser', { 
+        revalidateOnFocus: false, 
+        revalidateOnReconnect: false 
+      })
     // console.log(user)
     const router = useRouter()
     const dispatch = useDispatch();
