@@ -5,6 +5,8 @@ export async function GET(req) {
     let token = '';
     if (accessToken) {
         token = accessToken.value;
+    } else {
+        return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/login`);
     }
     // console.log("accessToken", accessToken);
 
