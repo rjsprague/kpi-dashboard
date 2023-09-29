@@ -1,23 +1,19 @@
 // middleware.ts
 import { NextResponse, NextRequest } from 'next/server';
 import jwt from 'jsonwebtoken';
-import { cookies } from 'next/headers';
 
 export async function middleware(request: NextRequest) {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'; // Replace with your base URL
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const loginUrl = `${baseUrl}/login`;
-
-    // List of routes that should be protected
-    const protectedRoutes = ['/kpi-dashboard', '/user-profile', '/call-scripts', '/user-management']; // Add other protected routes here
+    const protectedRoutes = ['/kpi-dashboard', '/user-profile', '/call-scripts', '/user-management'];
     const currentPath = request.nextUrl.pathname;
-
+    
     // Only apply middleware to protected routes
     if (!protectedRoutes.includes(currentPath)) {
         return NextResponse.next();
     }
 
     const accessToken = request.cookies.get('accessToken');
-    // console.log('accessToken in middleware', accessToken)
 
     if (!accessToken) {
         // No access token found, redirect to login

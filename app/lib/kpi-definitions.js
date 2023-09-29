@@ -1211,15 +1211,15 @@ const KPI_DEFINITIONS = {
     },
     "Closers ROAS Projected": {
         name: "Closers ROAS Projected",
-        dataKeys: ["uncollectedRevenue", "totalClosersAdSpend"],
+        dataKeys: ["totalRevenueContracted", "totalClosersAdSpend"],
         formula: (apiData) => {
-            const { uncollectedRevenue, totalClosersAdSpend, } = apiData;
+            const { totalRevenueContracted, totalClosersAdSpend, } = apiData;
 
-            return totalClosersAdSpend > 0 ? uncollectedRevenue / totalClosersAdSpend * 100 : 0;
+            return totalClosersAdSpend > 0 ? totalRevenueContracted / totalClosersAdSpend * 100 : 0;
         },
         redFlag: 800,
         target: 1200,
-        dataLabels: ["Uncollected Revenue: $", "Ad Spend: $"],
+        dataLabels: ["Revenue Contracted: $", "Ad Spend: $"],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [

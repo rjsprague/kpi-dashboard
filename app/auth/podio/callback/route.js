@@ -12,7 +12,7 @@ export async function GET(req) {
     // console.log(code)
 
     if (!code) {
-        return NextResponse.redirect( public_base_url + '/login');
+        return NextResponse.redirect(public_base_url + '/login');
     }
 
     // Construct the absolute URL for the callback
@@ -20,31 +20,31 @@ export async function GET(req) {
     // console.log(callbackUrl)
     try {
         const response = await fetch(callbackUrl);
-        console.log(response)
+        // console.log(response)
 
-        const data = await response.json();      
+        const data = await response.json();
 
-        console.log(data)
+        // console.log(data)
 
         const { token } = data;
-        console.log(token)
+        // console.log(token)
 
         const decodedToken = jwt.decode(token);
-        console.log(decodedToken)
-        
+        // console.log(decodedToken)
+
         cookies().set({
             name: 'accessToken',
             value: token,
             path: '/',
             maxAge: 60 * 60 * 24 * 7, // 1 week
-            secure: process.env.NODE_ENV === 'production', // set to true in production
+            secure: true,
         })
 
         if (!decodedToken.settings.timezone) {
-            return NextResponse.redirect( public_base_url + '/user-profile')
+            return NextResponse.redirect(public_base_url + '/user-profile')
         }
 
-        return NextResponse.redirect( public_base_url + '/kpi-dashboard');
+        return NextResponse.redirect(public_base_url + '/kpi-dashboard');
     } catch (error) {
         // console.log(error, error.message);
         return NextResponse.redirect(public_base_url + '/login');

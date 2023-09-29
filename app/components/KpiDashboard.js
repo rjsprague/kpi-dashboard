@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
 
 export default function KpiDashboard({ user }) {
-    console.log(user)
+    // console.log(user)
 
     const [isAdmin, setIsAdmin] = useState(user ? user.isAdmin : false);
     const [isProfessional, setIsProfessional] = useState(user ? user.isProfessional : false);
@@ -28,8 +28,8 @@ export default function KpiDashboard({ user }) {
     const [idCounter, setIdCounter] = useState(0);
     const [queries, setQueries] = useState([]);
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID);
-    const [clientSpaceId, setClientSpaceId] = useState(user ? user.settings.podio.spacesID : 0);
-   
+    const clientSpaceId = useSelector(selectSpaceId);
+    
     const professionalQuery = { id: idCounter + 1, results: [], isOpen: true, isLoading: false, isUnavailable: false, leadSource: {}, dateRange: { gte: datePresets['Previous Week'].startDate, lte: datePresets['Previous Week'].endDate }, departments: ["Lead Manager"], teamMembers: [{"Lead Manager":"Bob"}, {"Acquisition Manager":"Bob"}, {"Deal Analyst": "Bob"}] }
 
     const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId, kpiView) => {
@@ -63,7 +63,6 @@ export default function KpiDashboard({ user }) {
         setIsProfessional(user.isProfessional);
         setIsScaling(user.isScaling);
         setIsStarter(user.isStarter);
-        setClientSpaceId(user.settings.podio.spacesID);
 
         async function getSetData() {
             if (!clientSpaceId) {
@@ -93,7 +92,7 @@ export default function KpiDashboard({ user }) {
         }
 
         if (clientSpaceId !== closersSpaceId && isProfessional) {
-            console.log("professional query")
+            // console.log("professional query")
             setLeadSources({});
             setDepartments([]);
             setTeamMembers([]);
@@ -103,10 +102,10 @@ export default function KpiDashboard({ user }) {
             setIsLoadingData(false);
             return;
         } else if (clientSpaceId !== closersSpaceId && isScaling) {
-            console.log("scaling query")
+            // console.log("scaling query")
             getSetData();
-        } else if (clientSpaceId === closersSpaceId) {
-            console.log("closers query")
+        } else if (clientSpaceId === closersSpaceId || isAdmin) {
+            // console.log("closers query")
             getSetData();
         } else {
             console.log("no query")

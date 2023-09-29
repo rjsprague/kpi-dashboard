@@ -40,8 +40,10 @@ const RightSlideModal = ({
     if (tableProps) {
         ({ startDate, endDate, leadSource, kpiView, teamMembers, apiName } = tableProps);
     }
+    console.log(startDate, endDate, leadSource, kpiView, teamMembers, apiName, clientSpaceId)
     
     const { data, error } = useSWR({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }, fetchSingleKpi);
+    console.log('data', data)
 
     useEffect(() => {
         if (data) {
@@ -183,8 +185,8 @@ const RightSlideModal = ({
                         </div>
                     ) : isProfessional ? (
                         <div className="flex flex-col justify-center 2xl:flex-row">
-                            { <DataTable className="flex" selectedTableKey={kpiToEndpointMapping[apiName][0]} data={[]} leadSources={leadSources} departments={departments} />}
-                            { <DataTable className="flex" selectedTableKey={kpiToEndpointMapping[apiName][1]} data={[]} leadSources={leadSources} departments={departments} />}
+                            { <DataTable className="flex" selectedTableKey={kpiToEndpointMapping[apiName][0]} data={[]} leadSources={leadSources} departments={departments} isProfessional={isProfessional} />}
+                            { <DataTable className="flex" selectedTableKey={kpiToEndpointMapping[apiName][1]} data={[]} leadSources={leadSources} departments={departments} isProfessional={isProfessional} />}
                         </div>
                     ) : (
                         <LoadingQuotes />

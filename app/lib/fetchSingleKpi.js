@@ -226,6 +226,9 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                                 : result["Last"] ? result["Last"]
                                     : result.Title ? result.Title
                                         : "No Name",
+                    "Status": result["Q or UNQ"] && result["Qualified?"] ? result["Q or UNQ"] + " " + result["Qualified?"]
+                        : result["Q or UNQ"] ? result["Q or UNQ"]
+                            : "No Status",
                     "Address": result["Property Address"] ? result["Property Address"] : result["*AS Address"] ? result["*AS Address"] : "No address",
                     "Lead Manager": result["Lead Manager Responsible"] ? result["Lead Manager Responsible"] : "No Lead Manager",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",

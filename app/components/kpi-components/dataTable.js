@@ -34,6 +34,7 @@ function stringifyObject(obj) {
 }
 
 function formatWords(str) {
+    if (!str) return '';
     // Insert a space before all found uppercase letters and trim extra spaces.
     let result = str.replace(/([A-Z])/g, ' $1').trim();
 
@@ -115,21 +116,16 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
     }).filter(Boolean);
 }
 
-const DataTable = ({ selectedTableKey, data, leadSources, departments }) => {
+const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfessional }) => {
+
+    console.log(isProfessional)
+
+    console.log('data', data)
+    console.log('leadSources', leadSources)
+    console.log('departments', departments)
+    console.log('selectedTableKey', selectedTableKey)
 
     const [tableTitle, setTableTitle] = useState('');
-
-    if (data.length === 0) {
-        return (
-            <div className="flex flex-col items-center justify-center w-1/3 m-4 h-1/4">
-                <h1 className="text-xl font-bold text-center text-gray-100">{formatWords(selectedTableKey)}</h1>
-                <div className="flex items-center justify-center w-full h-full py-40 mt-4 border">
-                    <h2 className="text-lg font-semibold text-center text-gray-100">No Data</h2>
-                </div>
-            </div>
-        )
-    }
-
     const [columns, setColumns] = useState([]);
     const [sorting, setSorting] = useState([]);
 
@@ -141,11 +137,16 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments }) => {
     const columnHelper = useMemo(() => createColumnHelper(), []);
     const newColumns = useMemo(() => columns, [columns]);
 
-    useEffect(() => {
-        if (selectedTableKey) {
-            setTableTitle(formatWords(selectedTableKey));
-        }
-    }, [selectedTableKey]);
+    if (data.length === 0 && isProfessional) {
+        return (
+            <div className="flex flex-col items-center justify-center w-1/3 m-4 h-1/4">
+                <h1 className="text-xl font-bold text-center text-gray-100">{selectedTableKey && formatWords(selectedTableKey)}</h1>
+                <div className="flex items-center justify-center w-full h-full py-40 mt-4 border">
+                    <h2 className="text-lg font-semibold text-center text-gray-100">No Data</h2>
+                </div>
+            </div>
+        )
+    }
 
     useEffect(() => {
         if (data) {
@@ -161,6 +162,12 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments }) => {
             });
         }
     }, [data]);
+
+    useEffect(() => {
+        if (selectedTableKey) {
+            setTableTitle(formatWords(selectedTableKey));
+        }
+    }, [selectedTableKey]);
 
     const table = useReactTable({
         data: data,
