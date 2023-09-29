@@ -36,7 +36,8 @@ export default function LoginPage() {
                 JSON.stringify({ email, password }),
                 {
                     headers: { 'Content-Type': 'application/json' },
-                    withCredentials: true
+                    withCredentials: true,
+                    cache: 'no-store'
                 }
             );
             const accessToken = response && response.data && response.data.token && response.data.token;

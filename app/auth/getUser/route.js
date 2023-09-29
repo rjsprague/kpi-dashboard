@@ -11,6 +11,7 @@ export async function GET(req) {
     // console.log("accessToken", accessToken);
 
         const response = await fetch(`${process.env.API_BASE_URL}/users/me`, {
+            cache: 'no-store',
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`

@@ -19,7 +19,7 @@ export async function GET(req) {
     const callbackUrl = `${process.env.API_BASE_URL}/auth/callback?code=${code}`;
     // console.log(callbackUrl)
     try {
-        const response = await fetch(callbackUrl);
+        const response = await fetch(callbackUrl, {cache: 'no-store'});
         // console.log(response)
 
         const data = await response.json();
