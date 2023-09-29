@@ -9,7 +9,7 @@ const UserCard = ({ user, onToggleActive, clients }) => {
     const [showModal, setShowModal] = useState(false);
     const [spacesID, setSpacesID] = useState(0);
 
-    console.log(user)
+    // console.log(user)
 
     useEffect(() => {
         if (user && user.settings && user.settings.podio && user.settings.podio.spaceID) {
