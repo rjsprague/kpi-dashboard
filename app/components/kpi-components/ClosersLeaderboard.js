@@ -230,10 +230,10 @@ export default function ClosersLeaderboard({
                 </div>
             </QueryPanel>
             <AnimateHeight duration={500} height={height}>
-                <div id="closers-leaderboard" className="flex flex-col items-center w-full px-4 py-4 mb-4 bg-blue-300 rounded-lg shadow-super-4">
+                <div id="closers-leaderboard" className="flex flex-col items-center w-full px-4 py-4 mb-4 bg-blue-600 rounded-lg shadow-super-4">
                     <div className="flex flex-col w-full bg-white rounded-lg shadow-super-4">
                         {/* Table Header */}
-                        <div className="flex flex-row justify-between px-4 py-2 font-bold text-blue-900 bg-blue-100">
+                        <div className="flex flex-row justify-between px-4 py-2 font-bold text-blue-900 bg-gray-100">
                             <div className="w-32"></div>
                             <div className="w-32 text-center">Highest Close Rate</div>
                             <div className="w-32 text-center">Most Closed Calls</div>

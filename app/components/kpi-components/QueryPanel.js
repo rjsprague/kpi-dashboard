@@ -6,21 +6,19 @@ import { faChevronDown, faGear, faTimes } from '@fortawesome/free-solid-svg-icon
 import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../../app/GlobalRedux/Features/client/clientSlice'
 import fetchClients from '../../lib/fetchClients';
+import useAuth from '@/hooks/useAuth';
 import useSWR from 'swr';
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
-
 export default function QueryPanel({ query, height, setHeight, handleToggleQuery, handleGearIconClick, handleRemoveQuery, children }) {
-
+    const { user, loading, logout } = useAuth();
     const clientSpaceId = useSelector(selectSpaceId);
-
-    const { data: user, error: userError } = useSWR('/auth/getUser', fetcher, { 
-        revalidateOnFocus: false, 
-        revalidateOnReconnect: false 
-      });
-    // console.log(user)
-
     let clientsMap = {};
+
+    useEffect(() => {
+        if (!user && !loading) {
+            logout();
+        }
+    }, [user, loading]);
 
     if (user && user.isAdmin === true) {
         const { data: clients, error: clientsError } = useSWR('/api/spaces', fetchClients);

@@ -2,12 +2,11 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from '../../../pages/api/axios';
 import Link from 'next/link';
 import useAuth from '../../hooks/useAuth';
 import Image from 'next/image';
 import Cookies from 'js-cookie';
-import { mutate } from 'swr';
+import { useUser } from '../../hooks/useUser';
 
 
 export default function LoginPage() {
@@ -15,14 +14,12 @@ export default function LoginPage() {
     const router = useRouter();
     const emailRef = useRef();
     const errRef = useRef();
-
+    const { login, fetchUser } = useUser();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const { setAuth } = useAuth();
-
-    mutate('/auth/getUser')
 
     useEffect(() => {
         emailRef.current.focus();
@@ -34,30 +31,26 @@ export default function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-
         try {
-            const response = await axios.post('/auth/login',
-                JSON.stringify({ email, password }),
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                    withCredentials: true,
-                    cache: 'no-store'
-                }
-            );
-            const accessToken = response && response.data && response.data.token && response.data.token;
-            Cookies.set('accessToken', accessToken, { expires: 7, path: '/' });
+            await login(email, password);
+
+            const accessToken = Cookies.get('accessToken');
+            if (!accessToken) {
+                throw new Error('No access token found');
+            }
+
             setAuth({ accessToken });
             setEmail('');
             setPassword('');
-            mutate('/auth/getUser');
 
             const preLoginRoute = Cookies.get('preLoginRoute');
 
             if (preLoginRoute && preLoginRoute !== '/login') {
+                console.log('prelogin route');
                 router.push(preLoginRoute);
                 Cookies.remove('preLoginRoute');
             } else {
+                console.log('no prelogin route');
                 router.push('/kpi-dashboard');
             }
         } catch (err) {
@@ -88,7 +81,7 @@ export default function LoginPage() {
                             type="text"
                             id="email"
                             ref={emailRef}
-                            autoComplete="off"
+                            autoComplete="on"
                             onChange={(e) => setEmail(e.target.value)}
                             value={email}
                             required

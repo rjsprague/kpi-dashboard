@@ -6,16 +6,16 @@ import { FaGoogleDrive } from "react-icons/fa6";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGaugeHigh, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import fetchClients from '../lib/fetchClients';
-import { setClientName, setSpaceId } from '../GlobalRedux/Features/client/clientSlice'
+import { client, setClientName, setSpaceId } from '../GlobalRedux/Features/client/clientSlice'
 import { useDispatch } from 'react-redux';
 import UniversalDropdown from './kpi-components/UniversalDropdown';
 import SidenavDropdownButton from './SidenavDropdownButton';
-import useSWR from 'swr';
-import { useRouter } from 'next/navigation';
+import useAuth from '@/hooks/useAuth'
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function SideNav() {
+    const { user, loading, logout } = useAuth();
+
     const [isOpen, setIsOpen] = useState(false);
     const [contentWidth, setContentWidth] = useState(0);
     const [clients, setClients] = useState({});
@@ -27,20 +27,12 @@ export default function SideNav() {
     const [isScaling, setIsScaling] = useState(false);
     const [isProfessional, setIsProfessional] = useState(false);
     const [isStarter, setIsStarter] = useState(false);
-    
+
     const sideNavRef = useRef(null);
     const sideNavContentRef = useRef(null);
     const buttonRef = useRef(null);
 
     const dispatch = useDispatch();
-    
-    const router = useRouter();
-
-    const { data: user, error: userError } = useSWR('/auth/getUser', fetcher, { 
-        revalidateOnFocus: false, 
-        revalidateOnReconnect: false 
-      });
-    // console.log(user)
 
     useEffect(() => {
         if (user && user.isScaling) {
@@ -57,8 +49,6 @@ export default function SideNav() {
             setIsAdmin(true);
         }
     }, [user])
-
-    
 
     useEffect(() => {
         if (isOpen) {
@@ -135,10 +125,16 @@ export default function SideNav() {
         // { icon: <FontAwesomeIcon icon={faCheckDouble} size="lg" />, text: 'To Dos', link: '/' },
         { icon: <FontAwesomeIcon icon={faGaugeHigh} size="xl" />, text: 'KPIs', link: '/kpi-dashboard' },
         { icon: <FontAwesomeIcon icon={faFileAlt} size="xl" />, text: 'Call Scripts', link: '/call-scripts', scripts: true, onClick: () => setScriptsOpen(!scriptsOpen) },
-        { icon: <FaGoogleDrive className="block text-xl" />, text: isScaling?`Files`:isProfessional?`Property Folders`:``, link: `https://drive.google.com/drive/folders/${clientFolderID}`, target: '_blank', rel: 'noopener noreferrer'},
+        clientFolderID ? {
+            icon: <FaGoogleDrive className="block text-xl" />,
+            text: isScaling ? `Files` : isProfessional ? `Property Folders` : ``,
+            link: `https://drive.google.com/drive/folders/${clientFolderID}`,
+            target: '_blank',
+            rel: 'noopener noreferrer'
+        } : null,
         // { icon: <FontAwesomeIcon icon={faChalkboardTeacher} size="lg" />, text: 'Training', link: '/' },
         { icon: <FiUsers className='text-xl' />, text: 'Clients', link: '/', clients: true, onClick: () => setClientsOpen(!clientsOpen) },
-    ];
+    ].filter(Boolean);
 
     // const teamItems = [
     //     { color: 'bg-blue-300', text: 'Lead Management', link: '/' },

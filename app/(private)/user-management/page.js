@@ -1,16 +1,15 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useSWR, { mutate } from 'swr';
 import withAuth from '../../lib/withAuth';
-import 'react-toastify/dist/ReactToastify.css';
-import cookies from 'js-cookie';
-import UserModal from '@/components/user-components/UserModal';
+import Cookies from 'js-cookie';
 import LoadingQuotes from '@/components/LoadingQuotes';
+import UserModal from '@/components/user-components/UserModal';
 import UserList from '@/components/user-components/UserList';
 import axios from 'axios';
 import fetchClients from '@/lib/fetchClients';
-
+import useAuth from '@/hooks/useAuth';
 
 const fetchWithToken = async ({ url, accessToken }) => {
     try {
@@ -25,13 +24,13 @@ const fetchWithToken = async ({ url, accessToken }) => {
     }
 };
 
-const fetcher = (url) => fetch(url).then((res) => res.json())
 
 function UserManagementPage() {
+    const { user, loading, logout } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
 
-     // Define default values for the form
-     const defaultValues = {
+    // Define default values for the form
+    const defaultValues = {
         email: '',
         name: '',
         displayName: '',
@@ -53,11 +52,8 @@ function UserManagementPage() {
     };
 
     const url = '/api/users';
-    const accessToken = cookies.get('accessToken');
-    const { data: user, error: userError } = useSWR('/auth/getUser', fetcher, { 
-        revalidateOnFocus: false, 
-        revalidateOnReconnect: false 
-      })
+    const accessToken = Cookies.get('accessToken');
+
     const { data: users, error: usersError } = useSWR({ url, accessToken }, fetchWithToken)
     const { data: clientsObj, error: clientsError } = useSWR('/api/spaces', fetchClients)
 
@@ -68,20 +64,24 @@ function UserManagementPage() {
         setIsOpen(true);
     };
 
-    if (user && !user.isAdmin) {
-        <div className="flex justify-center w-full h-full items center">
-            <h1>Unauthorized</h1>
-        </div>
-    }
-    
+    useEffect(() => {
+        if (!user && !loading) {
+            logout();
+        }
+    }, [user, loading]);
+
     if (!user || !users || !clientsObj) {
         return <div className="flex items-center justify-center w-full h-screen"><LoadingQuotes mode={'dark'} /></div>
     }
+    if (user && !user.isAdmin) {
+        return (
+            <div className="flex justify-center w-full h-full items center">
+                <h1>Unauthorized</h1>
+            </div>
+        )
+    }
     if (usersError) {
         console.error('Failed to load users:', usersError)
-    }
-    if (userError) {
-        console.error('Failed to load user:', userError)
     }
     if (clientsError) {
         console.error('Failed to load clients:', clientsError)

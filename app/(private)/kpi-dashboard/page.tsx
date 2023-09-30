@@ -7,20 +7,16 @@ import useSWR from 'swr'
 import { useRouter } from 'next/navigation'
 import { setSpaceId } from '../../GlobalRedux/Features/client/clientSlice'
 import { useDispatch } from 'react-redux';
+import useAuth from '@/hooks/useAuth';
 
 function KpiDashboardPage() {   
-
-    const { data: user, error: userError } = useSWR('/auth/getUser', { 
-        revalidateOnFocus: false, 
-        revalidateOnReconnect: false 
-      })
-    // console.log(user)
+    const { user, loading, logout } = useAuth();    
     const router = useRouter()
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (userError) {
-            router.push('/login')
+        if (!user && !loading) {
+            logout();
         }
         if (user && user.settings.podio.spacesID === 8108305) {
             dispatch(setSpaceId(Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)))
@@ -33,7 +29,7 @@ function KpiDashboardPage() {
         if (user && user.settings && !user.settings.timezone && user.settings.podio.userID !== 0) {
             router.push('/user-profile')
         }
-    }, [user])
+    }, [user, loading])
 
     return (
         <>
@@ -50,8 +46,4 @@ function KpiDashboardPage() {
 }
 
 export default withAuth(KpiDashboardPage)
-
-function getUser() {
-    throw new Error('Function not implemented.')
-}
 

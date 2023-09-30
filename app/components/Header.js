@@ -5,52 +5,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOut } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link'
 import Image from 'next/image'
-import useSWR, { mutate } from 'swr'
 import { Menu, Transition } from '@headlessui/react'
-import { useRouter } from 'next/navigation'
 import LoadingQuotes from './LoadingQuotes';
-import Cookies from 'js-cookie';
 import useAuth from '@/hooks/useAuth';
 
 
-const fetcher = (url) => fetch(url).then((res) => res.json())
-
 export default function Header() {
-    const router = useRouter()
-    const { setAuth } = useAuth();
-    const { data: user, error: userError } = useSWR('/auth/getUser', fetcher, { 
-        revalidateOnFocus: false, 
-        revalidateOnReconnect: false 
-      })
+    const { logout, user, loading } = useAuth();
 
-    if (!user) {
+    if (!user || loading) {
         return <div className='flex items-center justify-center w-full h-full'><LoadingQuotes /></div>
     }
-    
-    if (userError) {
-        console.error('Failed to load user:', userError)
-    }
-    
-    const logout = async () => {
-        try {
-            Cookies.remove('accessToken')
-            setAuth({ accessToken: null });
-            mutate('/auth/getUser', null);
-            
-            if (response.ok) {
-                // Redirect to login page
-                router.push('/login');
-            } else {
-                console.error('Logout failed');
-            }
-        } catch (error) {
-            console.error('An error occurred during logout:', error);
-        } finally {
-            router.push('/login');
-        }
-    };
-
-
 
     return (
         <section className="fixed top-0 right-0 z-10 flex flex-col max-w-screen left-20">
@@ -68,7 +33,7 @@ export default function Header() {
                     <a className="flex items-center justify-center w-12 h-12 p-1 text-blue-800 transition duration-150 bg-blue-100 border-2 border-gray-100 rounded-full hover:shadow-none hover:text-gray-100 shadow-super-4 hover:bg-blue-400 hover:bg-opacity-40" href="#">
                         <AiOutlineSearch size={20} />
                     </a> */}
-                    <Menu as="div" className="relative inline-block text-left text-gray-900 transition duration-150 border-2 border-gray-100 rounded-2xl bg-teal-950 hover:shadow-none hover:text-gray-100 shadow-super-4 hover:bg-blue-400 hover:bg-opacity-40">
+                    <Menu as="div" className="relative inline-block text-left text-white transition duration-150 bg-blue-500 border-2 border-gray-100 rounded-2xl hover:shadow-none hover:text-gray-100 shadow-super-4 hover:bg-blue-400 hover:bg-opacity-40">
                         <Menu.Button className="flex flex-row items-center w-40 gap-2 px-4 py-2">
                             {user && user.avatar ? (
                                 <Image className="object-cover w-8 h-8 rounded-full sm:mr-3 lg:h-8" src={user.avatar} alt="" />

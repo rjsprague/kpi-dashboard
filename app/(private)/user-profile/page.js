@@ -1,41 +1,33 @@
 "use client"
 
+import withAuth from '@/lib/withAuth';
+import useAuth from '@/hooks/useAuth';
+import DropdownButton from '@/components/kpi-components/DropdownButton';
+import UniversalDropdown from '@/components/kpi-components/UniversalDropdown';
+
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import useSWR, { mutate } from 'swr';
-import UniversalDropdown from '../../components/kpi-components/UniversalDropdown';
-import withAuth from '../../lib/withAuth';
-import useAuth from '../../hooks/useAuth';
-import DropdownButton from '../../components/kpi-components/DropdownButton';
-import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-const fetcher = (url) => axios.get(url).then((res) => res.data);
-
 function UserProfilePage() {
+    const { user, loading, logout, auth, updateUser } = useAuth(); // Replaced useSWR with useAuth
     const [selectedTimezone, setSelectedTimezone] = useState('');
-    const [profile, setProfile] = useState({});
-    const [displayName, setDisplayName] = useState('');
-    const { auth } = useAuth();
-    const router = useRouter();
-
-    const { data: timezones, error } = useSWR('/api/timezones', fetcher);
-
-    const { data: profileData, error: profileError } = useSWR('/auth/getUser', fetcher, { 
-        revalidateOnFocus: false, 
-        revalidateOnReconnect: false 
-      });
-    if (profileData === 'No token') router.push('/login');
-    console.log(profileData)
+    const [timezones, setTimezones] = useState([]);
+    const accessToken = auth?.accessToken;
 
     useEffect(() => {
-        if (profileData) {
-            setProfile(profileData);
-            setSelectedTimezone(profileData.settings.timezone);
+        axios.get('/api/timezones')
+            .then(response => setTimezones(response.data))
+            .catch(error => console.error('Failed to fetch timezones:', error));
+    }, []);
+
+    useEffect(() => {
+        if (user) {
+            setSelectedTimezone(user.settings.timezone);
         }
-    }, [profileData]);
+    }, [user]);
 
     const handleTimezoneChange = (selectedOption) => {
         setSelectedTimezone(selectedOption[0]);
@@ -43,54 +35,77 @@ function UserProfilePage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await axios.post('/auth/updateUser',
-            { profile, auth, selectedTimezone },
-            { 'Content-Type': 'application/json' }
-        );
+        try {
+            const response = await axios.put(`/api/users/${user.id}`,
+                {
+                    "email": user.email,
+                    "name": user.name,
+                    "displayName": user.displayName,
+                    "settings": {
+                        "timezone": selectedTimezone,
+                        "podio": {
+                            "userID": user.settings.podio.userID,
+                            "spacesID": user.settings.podio.spacesID
+                        },
+                        "google": {
+                            "rootFolderID": user.settings.google.rootFolderID,
+                            "propertyFolderID": user.settings.google.propertyFolderID
+                        }
+                    },
+                    "isAdmin": user.isAdmin,
+                    "isActive": user.isActive,
+                    "isProfessional": user.isProfessional,
+                    "isScaling": user.isScaling,
+                    "isStarter": user.isStarter
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                }
+            );
 
-        console.log(response)
+            if (response.status === 200) {
+                toast.success('Timezone updated successfully!', {
+                    position: toast.POSITION.TOP_CENTER,
+                });
+                console.log(response.data)
+                updateUser();
+            } else {
+                throw new Error('Failed to update timezone');
+            }
+        } catch (err) {
+            const status = err.response?.status;
 
-        if (response.data.status === 401) {
-            toast.error('You are not authorized to update this user.', {
+            if (status === 401 || status === 403) {
+                logout();
+                return;
+            }
+
+            const errorMsgs = {
+                401: 'You are not authorized to update this user.',
+                403: 'You are not authorized to update this user.',
+                404: 'User not found.',
+                default: 'Failed to update timezone. Please try again. Contact support if this issue persists.',
+            };
+            toast.error(errorMsgs[status] || errorMsgs.default, {
                 position: toast.POSITION.TOP_CENTER,
-            })
-            return;
-        }
-        if (response.data.status === 403) {
-            toast.error('You are not authorized to update this user.', {
-                position: toast.POSITION.TOP_CENTER,
-            })
-            return;
-        }
-        if (response.data.status === 404) {
-            toast.error('User not found.', {
-                position: toast.POSITION.TOP_CENTER,
-            })
-            return;
-        }
-        if (response.data.status === 200) {
-            toast.success('Timezone updated successfully!', {
-                position: toast.POSITION.TOP_CENTER,
-            })
-            mutate('/auth/getUser');
-        } else {
-            toast.error('Failed to update timezone. Please try again. Contact support if this issue persists.', {
-                position: toast.POSITION.TOP_CENTER,
-            })
-            console.error('Failed to update user:', response);
+            });
+            console.error('Failed to update user:', err);
         }
     };
 
     useEffect(() => {
-        if (profileData?.settings?.timezone == "" && !toast.isActive('timezone-toast')) {
+        if (user?.settings?.timezone == "" && !toast.isActive('timezone-toast')) {
             toast.error('Please select a timezone', {
                 position: toast.POSITION.TOP_CENTER,
                 toastId: 'timezone-toast',
             });
         }
-    }, [profileData?.settings?.timezone]);
+    }, [user?.settings?.timezone]);
 
-    if (!profileData || !timezones) {
+    if (loading || !timezones) {
         return <div className='flex items-center justify-center w-full h-full'>Loading...</div>;
     }
 
@@ -100,19 +115,19 @@ function UserProfilePage() {
                 <h1 className='text-xl font-semibold text-center'>User Profile</h1>
                 <section className='flex flex-row gap-2 p-2 rounded-md'>
                     <label htmlFor="name">Name: </label>
-                    <p>{profile?.name}</p>
+                    <p>{user?.name}</p>
                 </section>
                 <section className='flex flex-row gap-2 p-2 rounded-md'>
                     <label htmlFor="displayName">Display Name: </label>
-                    <p>{profile?.displayName}</p>
+                    <p>{user?.displayName}</p>
                 </section>
                 <section className='flex flex-row gap-2 p-2 rounded-md'>
                     <label htmlFor="email">Email: </label>
-                    <p>{profile?.email}</p>
+                    <p>{user?.email}</p>
                 </section>
                 <section className='flex flex-row gap-2 p-2 rounded-md'>
                     <label htmlFor="timezone">Timezone:</label>
-                    <p>{profile?.settings?.timezone && profile.settings.timezone}</p>
+                    <p>{user?.settings?.timezone && user.settings.timezone}</p>
 
                 </section>
                 <section className='flex flex-row gap-2 p-2 rounded-md'>
