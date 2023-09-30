@@ -8,7 +8,8 @@ import { useRouter } from 'next/navigation'
 import { setSpaceId } from '../../GlobalRedux/Features/client/clientSlice'
 import { useDispatch } from 'react-redux';
 
-function KpiDashboardPage() {
+function KpiDashboardPage() {   
+
     const { data: user, error: userError } = useSWR('/auth/getUser', { 
         revalidateOnFocus: false, 
         revalidateOnReconnect: false 
@@ -49,4 +50,8 @@ function KpiDashboardPage() {
 }
 
 export default withAuth(KpiDashboardPage)
+
+function getUser() {
+    throw new Error('Function not implemented.')
+}
 

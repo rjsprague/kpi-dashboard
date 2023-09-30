@@ -18,10 +18,10 @@ export default function CallScriptsPage() {
 
     const callScripts = ['Triage Call', 'Perfect Presentation']
 
-    const { data: user, error: userError } = useSWR('/auth/getUser', fetcher, { 
-        revalidateOnFocus: false, 
-        revalidateOnReconnect: false 
-      })
+    const { data: user, error: userError } = useSWR('/auth/getUser', fetcher, {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false
+    })
 
     useEffect(() => {
         if (user && user.isScaling) {

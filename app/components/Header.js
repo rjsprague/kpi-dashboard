@@ -35,8 +35,8 @@ export default function Header() {
         try {
             Cookies.remove('accessToken')
             setAuth({ accessToken: null });
-            mutate('/auth/getUser', null, false)
-
+            mutate('/auth/getUser', null);
+            
             if (response.ok) {
                 // Redirect to login page
                 router.push('/login');

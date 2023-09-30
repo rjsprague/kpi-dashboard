@@ -7,6 +7,8 @@ import Link from 'next/link';
 import useAuth from '../../hooks/useAuth';
 import Image from 'next/image';
 import Cookies from 'js-cookie';
+import { mutate } from 'swr';
+
 
 export default function LoginPage() {
 
@@ -20,6 +22,8 @@ export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     const { setAuth } = useAuth();
 
+    mutate('/auth/getUser')
+
     useEffect(() => {
         emailRef.current.focus();
     }, [])
@@ -30,6 +34,7 @@ export default function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
 
         try {
             const response = await axios.post('/auth/login',
@@ -45,6 +50,7 @@ export default function LoginPage() {
             setAuth({ accessToken });
             setEmail('');
             setPassword('');
+            mutate('/auth/getUser');
 
             const preLoginRoute = Cookies.get('preLoginRoute');
 
