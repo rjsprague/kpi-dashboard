@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import EllipsisLoader from '@/components/EllipsisLoader';
 
 
 function UserProfilePage() {
@@ -16,7 +17,7 @@ function UserProfilePage() {
     const [selectedTimezone, setSelectedTimezone] = useState('');
     const [timezones, setTimezones] = useState([]);
     const accessToken = auth?.accessToken;
-
+    
     useEffect(() => {
         axios.get('/api/timezones')
             .then(response => setTimezones(response.data))
@@ -61,7 +62,7 @@ function UserProfilePage() {
                 {
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${accessToken}`
+                        'Authorization': `Bearer ${accessToken}`
                     }
                 }
             );
@@ -70,13 +71,13 @@ function UserProfilePage() {
                 toast.success('Timezone updated successfully!', {
                     position: toast.POSITION.TOP_CENTER,
                 });
-                console.log(response.data)
                 updateUser();
             } else {
                 throw new Error('Failed to update timezone');
             }
         } catch (err) {
-            const status = err.response?.status;
+            const status = err.response.data.errors;
+            console.log(err.response.data.errors)
 
             if (status === 401 || status === 403) {
                 logout();
@@ -84,12 +85,9 @@ function UserProfilePage() {
             }
 
             const errorMsgs = {
-                401: 'You are not authorized to update this user.',
-                403: 'You are not authorized to update this user.',
-                404: 'User not found.',
                 default: 'Failed to update timezone. Please try again. Contact support if this issue persists.',
             };
-            toast.error(errorMsgs[status] || errorMsgs.default, {
+            toast.error(status || errorMsgs.default, {
                 position: toast.POSITION.TOP_CENTER,
             });
             console.error('Failed to update user:', err);
@@ -131,16 +129,21 @@ function UserProfilePage() {
 
                 </section>
                 <section className='flex flex-row gap-2 p-2 rounded-md'>
-                    <UniversalDropdown
-                        type={"timezone"}
-                        options={timezones}
-                        onOptionSelected={handleTimezoneChange}
-                        selectedOptions={selectedTimezone ? [selectedTimezone] : []}
-                        isSingleSelect={true}
-                        className={"dropdown"}
-                        ButtonComponent={DropdownButton}
-                        defaultValue={"Select a timezone..."}
-                    />
+                    {
+                        timezones ?
+                            <UniversalDropdown
+                                type={"timezone"}
+                                options={timezones}
+                                onOptionSelected={handleTimezoneChange}
+                                selectedOptions={selectedTimezone ? [selectedTimezone] : []}
+                                isSingleSelect={true}
+                                className={"dropdown"}
+                                ButtonComponent={DropdownButton}
+                                defaultValue={"Select a timezone..."}
+                            />
+                            :
+                            <EllipsisLoader />
+                    }
                 </section>
                 <section className='flex flex-row gap-2 p-2 rounded-md'>
                     <button type="submit" className='z-10 px-4 py-2 mx-auto mt-4 border rounded-md border-gray hover:bg-gray-100 hover:text-blue-800'>Save</button>
