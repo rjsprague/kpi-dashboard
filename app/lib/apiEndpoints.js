@@ -5,8 +5,8 @@ const generateFilters = (startDate, endDate, leadSource, kpiView, leadSourceFiel
         filters.push({
             "type": 'date',
             "fieldName": dateFieldName,
-            "gte": startDate+" 00:00:00",
-            "lte": endDate+" 23:59:59",
+            "gte": startDate + " 00:00:00",
+            "lte": endDate + " 23:59:59",
         });
     }
 
@@ -27,7 +27,7 @@ const generateFilters = (startDate, endDate, leadSource, kpiView, leadSourceFiel
 // Define the endpoints and filters for each KPI
 const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
     // console.log(teamMembers)
-    // console.log(kpiView)
+    console.log(kpiView)
     return {
         marketingExpenses: {
             name: "Marketing Expenses",
@@ -240,26 +240,16 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
         },
         closersQualifiedBookings: {
             name: "Closers Qualified Bookings",
-            url: "/api/closers/acquisitions/lead-events",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
+            url: "/api/closers/acquisitions/reia-leads",
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source Item", "Lead Created On", [
                 {
                     "type": "category",
-                    "fieldName": "Event",
-                    "values": ["Discovery Call Scheduled"]
-                },
-                {
-                    "type": "category",
-                    "fieldName": "calendly_slug",
-                    "values": ["discovery-call-web-preq", "discovery-call-fbad-preq", "discovery-call"]
-                },
-                {
-                    "type": "category",
-                    "fieldName": "lead_event #",
-                    "values": ["1.0000"]
+                    "fieldName": "Pre-Qualification Status",
+                    "values": ["Qualified"]
                 },
                 {
                     "type": "app",
-                    "fieldName": "Team Member Responsible",
+                    "fieldName": "Lead Assignee",
                     "values": teamMembers
                 }
             ])
@@ -347,13 +337,14 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
         closersPayments: {
             name: "Closers Payments",
             url: "/api/closers/management/payment-plans",
-            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date", kpiView !== "Financial" && [
-                {
-                    "type": "app",
-                    "fieldName": "Closer Responsible",
-                    "values": teamMembers
-                }
-            ])
+            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date")
+                // kpiView !== "Financial" && [
+                //     {
+                //         "type": "app",
+                //         "fieldName": "Closer Responsible",
+                //         "values": teamMembers
+                //     }
+                // ])
         },
         setterStlMedian: {
             name: "Setter STL Median",

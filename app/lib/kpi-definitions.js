@@ -33,7 +33,7 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 60,
         target: 35,
-        dataLabels: ["Marketing: $", "Leads: "],
+        dataLabels: ["Ad Spend: $", "Leads: "],
         kpiType: "meter",
         unit: "$",
         kpiFactors: [
@@ -532,6 +532,49 @@ const KPI_DEFINITIONS = {
             {
                 id: 0,
                 title: "TBD",
+            },
+        ],
+    },
+    "Cost Per Approved SLS Q": {
+        name: "Cost Per Approved SLS Q",
+        dataKeys: ["totalMarketingExpenses", "triageApproval"],
+        formula: (apiData) => {
+            const { totalMarketingExpenses, triageApproval } = apiData;
+            return triageApproval !== 0 ? Math.round((totalMarketingExpenses / triageApproval)) : 0;
+        },
+        redFlag: 500,
+        target: 300,
+        dataLabels: ["Ad Spend: $", "Approved: "],
+        kpiType: "meter",
+        unit: "$",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Cost Per Approved SLS Q",
+            },
+            {
+                id: 1,
+                desc: "How to Optimize your Ad Spend",
+                linkName: "Learn More",
+                link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/40235797-how-to-optimize-your-ad-spend-this-will-change-your-life"
+            },
+            {
+                id: 2,
+                desc: "Weekly Marketing Manager Reports",
+                linkName: "Learn More",
+                link: "https://knowledge.reiautomated.io/courses/take/scaling/multimedia/40235798-example-weekly-marketing-report"
+            },
+            {
+                id: 3,
+                desc: "Mislabeling 'Qualified' leads",
+                linkName: "Learn More",
+                link: "https://knowledge.reiautomated.io/courses/take/scaling/multimedia/40235775-lead-statuses-mind-map"
+            },
+            {
+                id: 4,
+                desc: "Not submitting SLS",
+                linkName: "Learn More",
+                link: "https://knowledge.reiautomated.io/courses/take/scaling/lessons/42977333-how-to-fill-out-the-triage-call-formerly-the-sls"
             },
         ],
     },
@@ -1184,8 +1227,8 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
-    "Closers ROAS Actualized": {
-        name: "Closers ROAS Actualized",
+    "Closers ROAS Cash Collected": {
+        name: "Closers ROAS Cash Collected",
         dataKeys: ["cashCollectedUpFront", "totalClosersAdSpend"],
         formula: (apiData) => {
             const { cashCollectedUpFront, totalClosersAdSpend } = apiData;
@@ -1199,7 +1242,7 @@ const KPI_DEFINITIONS = {
         kpiFactors: [
             {
                 id: 0,
-                title: "How to Optimize ROAS Actualized",
+                title: "How to Optimize ROAS Cash Collected",
             },
             {
                 id: 1,
@@ -1235,31 +1278,31 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
-    "Closers ROAS Total": {
-        name: "Closers ROAS Total",
-        dataKeys: ["totalRevenue", "totalClosersAdSpend"],
-        formula: (apiData) => {
-            const { totalRevenue, totalClosersAdSpend } = apiData;
-            return totalClosersAdSpend > 0 ? totalRevenue / totalClosersAdSpend * 100 : 0;
-        },
-        redFlag: 800,
-        target: 1200,
-        dataLabels: ["Total Revenue: $", "Ad Spend: $"],
-        kpiType: "meter",
-        unit: "%",
-        kpiFactors: [
-            {
-                id: 0,
-                title: "How to Optimize ROAS Total",
-            },
-            {
-                id: 1,
-                desc: "Description TBD",
-                linkName: "Learn More",
-                link: ""
-            },
-        ],
-    },
+    // "Closers ROAS Total": {
+    //     name: "Closers ROAS Total",
+    //     dataKeys: ["totalRevenueContracted", "totalClosersAdSpend"],
+    //     formula: (apiData) => {
+    //         const { totalRevenueContracted, totalClosersAdSpend } = apiData;
+    //         return totalClosersAdSpend > 0 ? totalRevenueContracted / totalClosersAdSpend * 100 : 0;
+    //     },
+    //     redFlag: 800,
+    //     target: 1200,
+    //     dataLabels: ["Total Revenue: $", "Ad Spend: $"],
+    //     kpiType: "meter",
+    //     unit: "%",
+    //     kpiFactors: [
+    //         {
+    //             id: 0,
+    //             title: "How to Optimize ROAS Total",
+    //         },
+    //         {
+    //             id: 1,
+    //             desc: "Description TBD",
+    //             linkName: "Learn More",
+    //             link: ""
+    //         },
+    //     ],
+    // },
 };
 
 export default KPI_DEFINITIONS;
