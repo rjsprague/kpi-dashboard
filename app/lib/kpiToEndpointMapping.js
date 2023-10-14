@@ -16,7 +16,6 @@ const kpiToEndpointMapping = {
     'DA STL Median': ['daStlMedian'],
     'BiG Checks': ['bigChecks'],
     'Ad Spend': ['marketingExpenses'],
-    'Cost Per Approved SLS Q': ['marketingExpenses', 'triageApproval'],
     'Cost Per Contract': ['marketingExpenses', 'contracts'],
     'Cost Per Acquisition': ['marketingExpenses', 'acquisitions'],
     'Cost Per Deal': ['marketingExpenses', 'deals'],
@@ -41,9 +40,9 @@ const kpiToEndpointMapping = {
     'Setter STL Median': ['setterStlMedian'],
     'Closers Cost Per Lead': ['closersAdSpend', 'closersLeadsCreated'],
     'Closers Cost Per Close': ['closersAdSpend', 'closersDcClosed'],
-    'Closers ROAS Cash Collected': ['closersAdSpend', 'closersPayments'],
+    'Closers ROAS Actualized': ['closersAdSpend', 'closersPayments'],
     'Closers ROAS Projected': ['closersAdSpend', 'closersPayments'],
-    // 'Closers ROAS Total': ['closersAdSpend', 'closersPayments'],
+    'Closers ROAS Total': ['closersAdSpend', 'closersPayments'],
 };
 
 export default kpiToEndpointMapping;

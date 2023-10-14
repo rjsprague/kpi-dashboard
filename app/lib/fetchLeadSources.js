@@ -43,13 +43,9 @@ async function fetchLeadSources(clientSpaceId) {
             }
         });
 
-        // console.log("filteredData", filteredData)
-
         const sortedData = filteredData.sort(
             (a, b) => b["Count of Seller Leads"] - a["Count of Seller Leads"]
         );
-
-        // console.log("sortedData", sortedData)
 
         const leadSourceMap = {};
 

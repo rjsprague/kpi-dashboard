@@ -62,7 +62,6 @@ export const VIEW_KPIS = {
         "Clients": [
             "Ad Spend",
             "Cost Per Lead",
-            "Cost Per Approved SLS Q",
             "Cost Per Contract",
             "Cost Per Acquisition",
             "Cost Per Deal",
@@ -83,9 +82,9 @@ export const VIEW_KPIS = {
             "Closers Cost Per Close",
             "Closers Avg Cash Collected",
             "Closers Avg Revenue Contracted",
-            "Closers ROAS Cash Collected",
+            "Closers ROAS Actualized",
             "Closers ROAS Projected",
-            // "Closers ROAS Total",
+            "Closers ROAS Total",
         ]
     },
     Leaderboard: {

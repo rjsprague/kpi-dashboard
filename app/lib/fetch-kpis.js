@@ -221,27 +221,25 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
                 }
             }, 0);
 
-            console.log(endpointData.closersPayments[0]["Status"][0] !== "Canceled")
             const cashCollectedUpFront = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
-
-                if (curr["Cash Collected Up Front"]) {
+                if ("Cash Collected Up Front" in curr && curr["Status"][0] !== "Canceled") {
                     acc += parseFloat(curr["Cash Collected Up Front"]);
                 }
                 return acc;
             }, 0);
 
             const totalRevenueContracted = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
-                console.log(curr)
-                if ("Contract Total" in curr) {
+
+                if ("Contract Total" in curr && curr["Status"][0] !== "Canceled") {
                     acc += parseFloat(curr["Contract Total"]);
                 }
                 return acc;
             }, 0);
 
             const numPaymentPlans = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
-                // if ("Closer Responsible" in curr) {
-                acc += 1;
-                // }
+                if ("Closer Responsible" in curr && curr["Status"][0] !== "Canceled") {
+                    acc += 1;
+                }
                 return acc;
             }, 0);
 
@@ -253,6 +251,7 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
             endpointData.totalProfit = actualizedProfit + projectedProfit + contractedProfit;
             endpointData.cashCollectedUpFront = cashCollectedUpFront;
             endpointData.totalRevenueContracted = totalRevenueContracted;
+            endpointData.totalRevenue = totalRevenueContracted + cashCollectedUpFront;
             endpointData.numPaymentPlans = numPaymentPlans;
         }
 

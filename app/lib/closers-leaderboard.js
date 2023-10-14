@@ -176,7 +176,7 @@ export default async function getClosersLeaderboard({ startDate, endDate, depart
             }, 0) : 0;
 
             teamMemberData[teamMemberID] = {
-                closeRate: totalDCs && totalDCs.total !== 0 ? ((dcClosed.total / totalDCs.total) * 100).toPrecision(3) : 0,
+                closeRate: totalDCs && totalDCs.total !== 0 ? ((dcClosed.total / totalDCs.total) * 100).toPrecision(2) : 0,
                 dcClosed: (dcClosed.total),
                 totalCashCollected: cashCollectedUpFront
             };

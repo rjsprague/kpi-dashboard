@@ -6,13 +6,13 @@ import cookies from 'js-cookie';
 export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }) {
     const accessToken = cookies.get('accessToken');
     // console.log("accessToken", accessToken)
-    console.log("api name: ", apiName)
+    // console.log("api name: ", apiName)
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
     let teamMembersNum = teamMembers.map(Number);
     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
 
-    console.log(apiEndpointsKeys)
-    console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
+    // console.log(apiEndpointsKeys)
+    // console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
 
     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
         throw new Error('Invalid API name');
@@ -150,7 +150,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     Object.keys(results).forEach(key => {
         results[key] = filterResults(results[key], key, namesAddresses);
     });
-    console.log(results)
+    // console.log(results)
 
     return results;
 };
@@ -171,8 +171,9 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     podio_item_id: result.itemid ? result.itemid : "No itemid",
                 }
             })
-        } else if (apiEndpointKey === "leads" || apiEndpointKey === "closersLeadsCreated" || apiEndpointKey === "closersQualifiedBookings") {
+        } else if (apiEndpointKey === "leads" || apiEndpointKey === "closersLeadsCreated") {
             return results.map((result) => {
+
                 if (apiEndpointKey === "leads") {
                     return {
                         "Date": result["Lead Created On"]["start"] ? formatDate(result["Lead Created On"]["start"]) : result["Lead Created On"]["start"] ? formatDate(result["Lead Created On"]["start"]) : "Not a Lead",
@@ -182,7 +183,6 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                                     : result["Last"] ? result["Last"]
                                         : result.Title ? result.Title
                                             : "No Name",
-                        "Lead Status": result["Lead Status"] ? result["Lead Status"] : "No Lead Status",
                         "Address": result["Property Address"] ? result["Property Address"] : result["*AS Address"] ? result["*AS Address"] : "No address",
                         "Lead Source": result["Lead Source Item"] ? result["Lead Source Item"] : "No Lead Source",
                         podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
@@ -196,8 +196,6 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                                     : result["Last"] ? result["Last"]
                                         : result.Title ? result.Title
                                             : "No Name",
-                        "Pre-Qualification Status": result["Pre-Qualification Status"] ? result["Pre-Qualification Status"] : "No Pre-Qualification Status",
-                        "Lead Status": result["Lead Status"] ? result["Lead Status"] : "No Lead Status",
                         "Lead Source": result["Lead Source Item"] ? result["Lead Source Item"] : "No Lead Source",
                         podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     }
@@ -214,7 +212,6 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                                     : result.Title ? result.Title
                                         : "No Name",
                     "Address": result["Property Address"] ? result["Property Address"] : result["*AS Address"] ? result["*AS Address"] : "No address",
-                    "Lead Status": result["Lead Status"] ? result["Lead Status"] : "No Lead Status",
                     "Lead Source": result["Lead Source Item"] ? result["Lead Source Item"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                 }
@@ -410,19 +407,42 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                 }
             })
         } else if (apiEndpointKey === "closersPayments") {
-            return results.map((result) => {
+            const calcResults = results.reduce((acc, curr) => {
+                if (curr.hasOwnProperty("Closer Responsible")) {
+                    acc.push(curr)
+                }
+                return acc
+            }, [])
+            return calcResults.map((result) => {
                 return {
                     "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No date given",
                     // "Payment Start": result["Date Start"] && result["Date Start"]["start"] ? formatDate(result["Date Start"]["start"]) : "No start date",
                     "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "No closer given", //get name converted from id in table
                     "Cash Up Front": result["Cash Collected Up Front"] ? result["Cash Collected Up Front"] : "No cash up front",
                     "Revenue Contracted": result["Contract Total"] ? result["Contract Total"] : "No revenue contracted",
-                    "Closer Commission Monthly": result["Closer Commision Monthly"] ? result["Closer Commision Monthly"] : "No closer commission monthly",
                     podio_item_id: result.itemid ? result.itemid : podio_item_id,
                 }
             })
         } else if (apiEndpointKey === "closersUniqueAttended" || apiEndpointKey === "closersTotalAttended" || apiEndpointKey === "closersBookings" || apiEndpointKey === "closersAppointments") {
             return results.map((result) => {
+                return {
+                    "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No Date",
+                    "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name",
+                    "Event": result["Event"] ? result["Event"] : "No event given",
+                    "Team Member Responsible": result["Team Member Responsible [Name]"] ? result["Team Member Responsible [Name]"] : "No team member responsible",
+                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                }
+            })
+        } else if (apiEndpointKey === "closersQualifiedBookings") {
+            const calcResults = results.reduce((acc, curr) => {
+                let slug = curr && curr["lead_event_slug"] && curr["lead_event_slug"];
+                let splitSlug = slug && slug.split(" ");
+                if (splitSlug && splitSlug[splitSlug.length - 1] === "discovery-call" && curr["lead_event #"] === "1.0000") {
+                    acc.push(curr);
+                }
+                return acc;
+            }, [])
+            return calcResults.map((result) => {
                 return {
                     "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No Date",
                     "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name",
