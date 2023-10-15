@@ -171,7 +171,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     podio_item_id: result.itemid ? result.itemid : "No itemid",
                 }
             })
-        } else if (apiEndpointKey === "leads" || apiEndpointKey === "closersLeadsCreated") {
+        } else if (apiEndpointKey === "leads" || apiEndpointKey === "closersLeadsCreated" || apiEndpointKey === "closersQualifiedBookings") {
             return results.map((result) => {
 
                 if (apiEndpointKey === "leads") {
@@ -197,6 +197,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                                     : result["Last"] ? result["Last"]
                                         : result.Title ? result.Title
                                             : "No Name",
+                        "Pre-Qualification Status": result["Pre-Qualification Status"] ? result["Pre-Qualification Status"] : "No Status",
                         "Lead Source": result["Lead Source Item"] ? result["Lead Source Item"] : "No Lead Source",
                         podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     }
@@ -427,24 +428,6 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
             })
         } else if (apiEndpointKey === "closersUniqueAttended" || apiEndpointKey === "closersTotalAttended" || apiEndpointKey === "closersBookings" || apiEndpointKey === "closersAppointments") {
             return results.map((result) => {
-                return {
-                    "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No Date",
-                    "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name",
-                    "Event": result["Event"] ? result["Event"] : "No event given",
-                    "Team Member Responsible": result["Team Member Responsible [Name]"] ? result["Team Member Responsible [Name]"] : "No team member responsible",
-                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
-                }
-            })
-        } else if (apiEndpointKey === "closersQualifiedBookings") {
-            const calcResults = results.reduce((acc, curr) => {
-                let slug = curr && curr["lead_event_slug"] && curr["lead_event_slug"];
-                let splitSlug = slug && slug.split(" ");
-                if (splitSlug && splitSlug[splitSlug.length - 1] === "discovery-call" && curr["lead_event #"] === "1.0000") {
-                    acc.push(curr);
-                }
-                return acc;
-            }, [])
-            return calcResults.map((result) => {
                 return {
                     "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No Date",
                     "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name",
