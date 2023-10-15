@@ -118,12 +118,12 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
 
 const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfessional }) => {
 
-    console.log(isProfessional)
+    // console.log(isProfessional)
 
-    console.log('data', data)
-    console.log('leadSources', leadSources)
-    console.log('departments', departments)
-    console.log('selectedTableKey', selectedTableKey)
+    // console.log('data', data)
+    // console.log('leadSources', leadSources)
+    // console.log('departments', departments)
+    // console.log('selectedTableKey', selectedTableKey)
 
     const [tableTitle, setTableTitle] = useState('');
     const [columns, setColumns] = useState([]);
@@ -137,9 +137,9 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
     const columnHelper = useMemo(() => createColumnHelper(), []);
     const newColumns = useMemo(() => columns, [columns]);
 
-    if (data.length === 0 && isProfessional) {
+    if (data.length === 0 || isProfessional) {
         return (
-            <div className="flex flex-col items-center justify-center w-1/3 m-4 h-1/4">
+            <div className="flex flex-col w-full px-10 m-4 md:w-3/4 xl:w-1/3 h-1/4">
                 <h1 className="text-xl font-bold text-center text-gray-100">{selectedTableKey && formatWords(selectedTableKey)}</h1>
                 <div className="flex items-center justify-center w-full h-full py-40 mt-4 border">
                     <h2 className="text-lg font-semibold text-center text-gray-100">No Data</h2>

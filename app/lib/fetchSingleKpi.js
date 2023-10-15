@@ -184,6 +184,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                                         : result.Title ? result.Title
                                             : "No Name",
                         "Address": result["Property Address"] ? result["Property Address"] : result["*AS Address"] ? result["*AS Address"] : "No address",
+                        "Status": result["Lead Status"] ? result["Lead Status"] : "No Status",
                         "Lead Source": result["Lead Source Item"] ? result["Lead Source Item"] : "No Lead Source",
                         podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     }
@@ -212,6 +213,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                                     : result.Title ? result.Title
                                         : "No Name",
                     "Address": result["Property Address"] ? result["Property Address"] : result["*AS Address"] ? result["*AS Address"] : "No address",
+                    "Status": result["Lead Status"] ? result["Lead Status"] : "No Status",
                     "Lead Source": result["Lead Source Item"] ? result["Lead Source Item"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                 }
@@ -407,13 +409,13 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                 }
             })
         } else if (apiEndpointKey === "closersPayments") {
-            const calcResults = results.reduce((acc, curr) => {
-                if (curr.hasOwnProperty("Closer Responsible")) {
-                    acc.push(curr)
-                }
-                return acc
-            }, [])
-            return calcResults.map((result) => {
+            // const calcResults = results.reduce((acc, curr) => {
+            //     if (curr.hasOwnProperty("Closer Responsible")) {
+            //         acc.push(curr)
+            //     }
+            //     return acc
+            // }, [])
+            return results.map((result) => {
                 return {
                     "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No date given",
                     // "Payment Start": result["Date Start"] && result["Date Start"]["start"] ? formatDate(result["Date Start"]["start"]) : "No start date",

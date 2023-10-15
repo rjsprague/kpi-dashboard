@@ -178,7 +178,7 @@ const RightSlideModal = ({
 
                 {modalType === "table" && tableProps ? (
                     data ? (
-                        <div className="flex flex-col justify-center 2xl:flex-row">
+                        <div className="flex flex-col items-center justify-center 2xl:flex-row">
                             {error && <div className="text-red-500">Error fetching data</div>}
                             {dataTable1 && <DataTable className="flex" selectedTableKey={dataTable1Key} data={dataTable1} leadSources={leadSources} departments={departments} />}
                             {dataTable2 && <DataTable className="flex" selectedTableKey={dataTable2Key} data={dataTable2} leadSources={leadSources} departments={departments} />}

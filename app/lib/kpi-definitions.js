@@ -535,6 +535,31 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
+    "Cost Per Approved SLS Q": {
+        name: "Cost Per Approved SLS Q",
+        dataKeys: ["marketingExpenses", "triageApproval"],
+        formula: (apiData) => {
+            const { totalMarketingExpenses, triageApproval } = apiData;
+            return totalMarketingExpenses != null && totalMarketingExpenses != NaN && triageApproval !== 0 ? Math.round(totalMarketingExpenses / triageApproval) : 0;
+        },
+        redFlag: 1200,
+        target: 400,
+        dataLabels: ["Ad Spend: $", "Approved SLS Q: "],
+        kpiType: "meter",
+        unit: "$",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Cost Per Approved SLS Q",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
     "Cost Per Contract": {
         name: "Cost Per Contract",
         dataKeys: ["marketingExpenses", "contracts"],
@@ -1184,8 +1209,8 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
-    "Closers ROAS Actualized": {
-        name: "Closers ROAS Actualized",
+    "Closers ROAS Cash Collected": {
+        name: "Closers ROAS Cash Collected",
         dataKeys: ["cashCollectedUpFront", "totalClosersAdSpend"],
         formula: (apiData) => {
             const { cashCollectedUpFront, totalClosersAdSpend } = apiData;
@@ -1199,7 +1224,7 @@ const KPI_DEFINITIONS = {
         kpiFactors: [
             {
                 id: 0,
-                title: "How to Optimize ROAS Actualized",
+                title: "How to Optimize ROAS Cash Collected",
             },
             {
                 id: 1,
@@ -1235,31 +1260,31 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
-    "Closers ROAS Total": {
-        name: "Closers ROAS Total",
-        dataKeys: ["totalRevenue", "totalClosersAdSpend"],
-        formula: (apiData) => {
-            const { totalRevenue, totalClosersAdSpend } = apiData;
-            return totalClosersAdSpend > 0 ? totalRevenue / totalClosersAdSpend * 100 : 0;
-        },
-        redFlag: 800,
-        target: 1200,
-        dataLabels: ["Total Revenue: $", "Ad Spend: $"],
-        kpiType: "meter",
-        unit: "%",
-        kpiFactors: [
-            {
-                id: 0,
-                title: "How to Optimize ROAS Total",
-            },
-            {
-                id: 1,
-                desc: "Description TBD",
-                linkName: "Learn More",
-                link: ""
-            },
-        ],
-    },
+    // "Closers ROAS Total": {
+    //     name: "Closers ROAS Total",
+    //     dataKeys: ["totalRevenue", "totalClosersAdSpend"],
+    //     formula: (apiData) => {
+    //         const { totalRevenue, totalClosersAdSpend } = apiData;
+    //         return totalClosersAdSpend > 0 ? totalRevenue / totalClosersAdSpend * 100 : 0;
+    //     },
+    //     redFlag: 800,
+    //     target: 1200,
+    //     dataLabels: ["Total Revenue: $", "Ad Spend: $"],
+    //     kpiType: "meter",
+    //     unit: "%",
+    //     kpiFactors: [
+    //         {
+    //             id: 0,
+    //             title: "How to Optimize ROAS Total",
+    //         },
+    //         {
+    //             id: 1,
+    //             desc: "Description TBD",
+    //             linkName: "Learn More",
+    //             link: ""
+    //         },
+    //     ],
+    // },
 };
 
 export default KPI_DEFINITIONS;

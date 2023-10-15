@@ -347,13 +347,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
         closersPayments: {
             name: "Closers Payments",
             url: "/api/closers/management/payment-plans",
-            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date", kpiView !== "Financial" && [
-                {
-                    "type": "app",
-                    "fieldName": "Closer Responsible",
-                    "values": teamMembers
-                }
-            ])
+            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date")
         },
         setterStlMedian: {
             name: "Setter STL Median",

@@ -25,7 +25,6 @@ function calculateKPIs(startDate, endDate, endpointData, kpiList) {
             console.error(`Error calculating ${kpiName}:`, error);
         }
     }
-    // console.log("kpiData: ", kpiData)
     return kpiData;
 }
 
@@ -152,8 +151,6 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
         requestedKpiList = kpiList
     }
 
-    // console.log(requestedKpiList)
-
     try {
         const startDate = gte ? formatDate(new Date(gte)) : null;
         const endDate = lte ? formatDate(new Date(lte)) : null;
@@ -189,7 +186,6 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
                 throw new Error("Error fetching endpoint data. Please try again later.");
             });
 
-        // console.log(endpointData)
 
         if (view === 'Financial' || view === 'Acquisitions') {
             const totalMarketingExpenses = endpointData.marketingExpenses && Array.isArray(endpointData.marketingExpenses) && endpointData.marketingExpenses.reduce((acc, curr) => {
@@ -232,7 +228,6 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
                 }
             }, 0);
 
-
             const cashCollectedUpFront = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
                 if (curr["Cash Collected Up Front"]) {
                     acc += parseFloat(curr["Cash Collected Up Front"]);
@@ -262,14 +257,10 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
             endpointData.totalProfit = actualizedProfit + projectedProfit + contractedProfit;
             endpointData.cashCollectedUpFront = cashCollectedUpFront;
             endpointData.totalRevenueContracted = totalRevenueContracted;
-            endpointData.totalRevenue = totalRevenueContracted + cashCollectedUpFront;
             endpointData.numPaymentPlans = numPaymentPlans;
         }
 
         const calculatedKPIs = calculateKPIs(startDate, endDate, endpointData, requestedKpiList);
-        // console.log(calculatedKPIs)
-
-
 
         // Helper function for creating KPI objects
         const kpiObjects = requestedKpiList.map((kpiName) => {
@@ -282,7 +273,6 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
             return createKpiObject(name, current, redFlag, target, data1, data2, data3, unit, kpiType, kpiFactors);
         })
 
-        // console.log(kpiObjects);
         return kpiObjects;
 
     } catch (error) {
