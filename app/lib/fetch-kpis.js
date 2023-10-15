@@ -91,6 +91,13 @@ function getKpiValue(calculatedKPIs, endpointData, dataKey) {
 async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, leadSource, gte, lte, departments, teamMembers }) {
 
     // console.log(isProfessional, clientSpaceId)
+    // console.log(kpiList)
+    // console.log(leadSource)
+    // console.log(gte)
+    // console.log(lte)
+    // console.log(departments)
+    // console.log(teamMembers)
+    // console.log(view)
 
     if (view === "Leaderboard") {
         return null;
@@ -145,6 +152,8 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
         requestedKpiList = kpiList
     }
 
+    // console.log(requestedKpiList)
+
     try {
         const startDate = gte ? formatDate(new Date(gte)) : null;
         const endDate = lte ? formatDate(new Date(lte)) : null;
@@ -179,6 +188,8 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
                 console.error(error);
                 throw new Error("Error fetching endpoint data. Please try again later.");
             });
+
+        // console.log(endpointData)
 
         if (view === 'Financial' || view === 'Acquisitions') {
             const totalMarketingExpenses = endpointData.marketingExpenses && Array.isArray(endpointData.marketingExpenses) && endpointData.marketingExpenses.reduce((acc, curr) => {
@@ -221,9 +232,8 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
                 }
             }, 0);
 
-            console.log(endpointData.closersPayments[0]["Status"][0] !== "Canceled")
+            // console.log(endpointData.closersPayments[0]["Status"][0] !== "Canceled")
             const cashCollectedUpFront = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
-
                 if (curr["Cash Collected Up Front"]) {
                     acc += parseFloat(curr["Cash Collected Up Front"]);
                 }
@@ -231,7 +241,7 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
             }, 0);
 
             const totalRevenueContracted = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
-                console.log(curr)
+                // console.log(curr)
                 if ("Contract Total" in curr) {
                     acc += parseFloat(curr["Contract Total"]);
                 }
@@ -239,9 +249,9 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
             }, 0);
 
             const numPaymentPlans = endpointData.closersPayments && Array.isArray(endpointData.closersPayments) && endpointData.closersPayments.reduce((acc, curr) => {
-                // if ("Closer Responsible" in curr) {
+                if (curr) {
                 acc += 1;
-                // }
+                }
                 return acc;
             }, 0);
 
@@ -257,6 +267,7 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
         }
 
         const calculatedKPIs = calculateKPIs(startDate, endDate, endpointData, requestedKpiList);
+        // console.log(calculatedKPIs)
 
 
 

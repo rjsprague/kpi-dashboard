@@ -68,6 +68,7 @@ export default function KpiDashboard({ user }) {
             if (!clientSpaceId) {
                 return;
             }
+            // console.log(clientSpaceId)
             setIsLoadingData(true);
             try {
                 const leadSourcesData = await fetchLeadSources(clientSpaceId);
