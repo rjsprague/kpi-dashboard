@@ -77,7 +77,7 @@ const dateColumnKeys = {
 const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap) => {
 
     return Object.keys(data[0]).map(key => {
-        if (key !== 'podio_item_id') {
+        if (key !== 'podio_item_id' && key !== 'seller_id') {
             const dateColumnKey = dateColumnKeys[selectedTableKey];
 
             return columnHelper.accessor(key, {
@@ -137,19 +137,10 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
     const columnHelper = useMemo(() => createColumnHelper(), []);
     const newColumns = useMemo(() => columns, [columns]);
 
-    if (data.length === 0 || isProfessional) {
-        return (
-            <div className="flex flex-col w-full px-10 m-4 md:w-3/4 xl:w-1/3 h-1/4">
-                <h1 className="text-xl font-bold text-center text-gray-100">{selectedTableKey && formatWords(selectedTableKey)}</h1>
-                <div className="flex items-center justify-center w-full h-full py-40 mt-4 border">
-                    <h2 className="text-lg font-semibold text-center text-gray-100">No Data</h2>
-                </div>
-            </div>
-        )
-    }
+    
 
     useEffect(() => {
-        if (data) {
+        if (data && data.length > 0) {
             const newColumns = generateColumns(selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap);
             setColumns(prevColumns => {
                 // Only update columns if they have changed
@@ -179,6 +170,17 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
     });
+
+    if (data.length === 0 || isProfessional) {
+        return (
+            <div className="flex flex-col max-w-sm px-10 m-4 w-100 h-1/4">
+                <h1 className="text-xl font-bold text-center text-gray-100">{selectedTableKey && formatWords(selectedTableKey)}</h1>
+                <div className="flex items-center justify-center w-full h-full py-40 mt-4 border">
+                    <h2 className="text-lg font-semibold text-center text-gray-100">No Data</h2>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="flex flex-col items-center mt-4">

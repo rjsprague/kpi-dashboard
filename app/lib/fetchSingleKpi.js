@@ -108,7 +108,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     let leadsArray = [];
 
     let resultsValues = Object.values(results).flat();
-    // console.log(resultsValues)
+    console.log(resultsValues)
 
     resultsValues.forEach(item => {
         if (item["Seller Lead"]) {
@@ -119,17 +119,23 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
             leadsArray.push(item["Contact"])
         }
     });
+
+    console.log(leadsArray)
     // query the leads endpoint for each of the leads in the leadsArray
     let leadsEndpoint;
+
+    console.log(clientSpaceId)
+    console.log(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
 
     if (clientSpaceId == process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID) {
         leadsEndpoint = apiEndpointsObj["closersLeadsCreated"]
     } else {
         leadsEndpoint = apiEndpointsObj["leads"]
     }
+
     leadsEndpoint.filters = [{ type: "app", fieldName: "itemid", values: leadsArray.flat() }];
     const leads = await fetchPage(leadsEndpoint);
-    // console.log(leads)
+    console.log(leads)
 
     let namesAddresses = {};
     leads.forEach(lead => {
@@ -141,25 +147,26 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
                             : lead.Title ? lead.Title
                                 : "No Name",
             "Address": lead["Property Address"] ? lead["Property Address"] : lead["*AS Address"] ? lead["*AS Address"] : "No address",
+            seller_id: lead.itemid ? lead.itemid : lead.podio_item_id,
         }
     });
 
-    // console.log(namesAddresses)
-    // console.log(results)
+    console.log(namesAddresses)
+    console.log(results)
 
     Object.keys(results).forEach(key => {
         results[key] = filterResults(results[key], key, namesAddresses);
     });
-    // console.log(results)
+    console.log(results)
 
     return results;
 };
 
 function filterResults(results, apiEndpointKey, namesAddresses) {
 
-    // console.log(results)
-    // console.log(apiEndpointKey)
-    // console.log(namesAddresses)
+    console.log(results)
+    console.log(apiEndpointKey)
+    console.log(namesAddresses)
 
     try {
         if (apiEndpointKey === "marketingExpenses" || apiEndpointKey === "closersAdSpend") {
@@ -173,7 +180,6 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
             })
         } else if (apiEndpointKey === "leads" || apiEndpointKey === "closersLeadsCreated" || apiEndpointKey === "closersQualifiedBookings") {
             return results.map((result) => {
-
                 if (apiEndpointKey === "leads") {
                     return {
                         "Date": result["Lead Created On"]["start"] ? formatDate(result["Lead Created On"]["start"]) : result["Lead Created On"]["start"] ? formatDate(result["Lead Created On"]["start"]) : "Not a Lead",
@@ -187,6 +193,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                         "Status": result["Lead Status"] ? result["Lead Status"] : "No Status",
                         "Lead Source": result["Lead Source Item"] ? result["Lead Source Item"] : "No Lead Source",
                         podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                        seller_id: result.itemid ? result.itemid : result.podio_item_id,
                     }
                 } else {
                     return {
@@ -200,6 +207,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                         "Pre-Qualification Status": result["Pre-Qualification Status"] ? result["Pre-Qualification Status"] : "No Status",
                         "Lead Source": result["Lead Source Item"] ? result["Lead Source Item"] : "No Lead Source",
                         podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                        seller_id: result.itemid ? result.itemid : result.podio_item_id,
                     }
                 }
             })
@@ -207,7 +215,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
             return results.map((result) => {
                 return {
                     "Date Connected": result["First lead connection"]["start"] ? formatDate(result["First lead connection"]["start"]) : "Not a Lead Connection",
-                    "Lead Name": result["Seller Contact Name"] ? result["Seller Contact Name"]
+                    "Name": result["Seller Contact Name"] ? result["Seller Contact Name"]
                         : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
                             : result["First"] ? result["First"]
                                 : result["Last"] ? result["Last"]
@@ -217,13 +225,14 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Status": result["Lead Status"] ? result["Lead Status"] : "No Status",
                     "Lead Source": result["Lead Source Item"] ? result["Lead Source Item"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: result.itemid ? result.itemid : result.podio_item_id,
                 }
             })
-        } else if (apiEndpointKey === "triageCalls") {
+        } else if (apiEndpointKey === "triageCalls" || apiEndpointKey === "qualifiedTriageCalls" || apiEndpointKey === "triageApproval") {
             return results.map((result) => {
                 return {
                     "Date SLS Submitted": result["SLS Created On"]["start"] ? formatDate(result["SLS Created On"]["start"]) : "Not an SLS",
-                    "Lead Name": result["Seller Contact Name"] ? result["Seller Contact Name"]
+                    "Name": result["Seller Contact Name"] ? result["Seller Contact Name"]
                         : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
                             : result["First"] ? result["First"]
                                 : result["Last"] ? result["Last"]
@@ -236,58 +245,31 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Lead Manager": result["Lead Manager Responsible"] ? result["Lead Manager Responsible"] : "No Lead Manager",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
-                }
-            })
-        } else if (apiEndpointKey === "qualifiedTriageCalls") {
-            return results.map((result) => {
-                return {
-                    "Date SLS Submitted": result["SLS Created On"]["start"] ? formatDate(result["SLS Created On"]["start"]) : "Not an SLS",
-                    "Lead Name": result["Seller Contact Name"] ? result["Seller Contact Name"]
-                        : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
-                            : result["First"] ? result["First"]
-                                : result["Last"] ? result["Last"]
-                                    : result.Title ? result.Title
-                                        : "No Name",
-                    "Address": result["Property Address"] ? result["Property Address"] : result["*AS Address"] ? result["*AS Address"] : "No address",
-                    "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
-                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
-                }
-            })
-        } else if (apiEndpointKey === "triageApproval") {
-            return results.map((result) => {
-                return {
-                    "Date SLS Submitted": result["SLS Created On"]["start"] ? formatDate(result["SLS Created On"]["start"]) : "Not an SLS",
-                    "Lead Name": result["Seller Contact Name"] ? result["Seller Contact Name"]
-                        : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
-                            : result["First"] ? result["First"]
-                                : result["Last"] ? result["Last"]
-                                    : result.Title ? result.Title
-                                        : "No Name",
-                    "Address": result["Property Address"] ? result["Property Address"] : result["*AS Address"] ? result["*AS Address"] : "No address",
-                    "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
-                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: result["Linked Lead"] ? result["Linked Lead"][0] : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "dealAnalysis") {
             return results.map((result) => {
                 return {
                     "Date DA Submitted": result["Timestamp"] && result["Timestamp"]["start"] ? formatDate(result["Timestamp"]["start"]) : "Not an SLS",
-                    "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
+                    "Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "Status": result["--Current Seller Lead Status"] ? result["--Current Seller Lead Status"] : "No Status",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "perfectPresentations") {
             return results.map((result) => {
                 return {
                     "Date AS Submitted": result["AS Created On"]["start"] ? formatDate(result["AS Created On"]["start"]) : "Not an SLS",
-                    "Lead Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "Ask Ryan",
+                    "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "Ask Ryan",
                     "Address": result["*AS Address"] ? result["*AS Address"] : "No address",
                     "Result": result["**What was the result of this lead?**"] ? result["**What was the result of this lead?**"] : "No Result",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: result["Related Lead"] ? result["Related Lead"][0] : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "lmStlMedian") {
@@ -295,33 +277,36 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
             return results.map((result) => {
                 return {
                     "Date": result["Timestamp"]["start"] ? formatDate(result["Timestamp"]["start"]) : "No Date",
-                    "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
+                    "Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 60) + " mins" : "No LM STL Median",
                     //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "amStlMedian") {
             return results.map((result) => {
                 return {
                     "Date": result["Timestamp"]["start"] ? formatDate(result["Timestamp"]["start"]) : "No Date",
-                    "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
+                    "Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "AM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 3600).toFixed(2) + " hours" : "No AM STL Median",
                     //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "daStlMedian") {
             return results.map((result) => {
                 return {
                     "Date": result["Timestamp"]["start"] ? formatDate(result["Timestamp"]["start"]) : "No Date",
-                    "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
+                    "Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 3600).toFixed(2) + " hours" : "No DA STL Median",
                     //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "bigChecks") {
@@ -331,27 +316,30 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Team Member": result["Team Member Responsible"] ? result["Team Member Responsible"] : "No Team Member",
                     //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "contracts" || apiEndpointKey === "contractedProfit") {
             return results.map((result) => {
                 return {
                     "Date Contracted": result["*Date Ratified"]["start"] ? formatDate(result["*Date Ratified"]["start"]) : "No Date",
-                    "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
+                    "Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "Expected Profit": result["Expected Profit Center"] ? result["Expected Profit Center"] : "No Profit Center",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "acquisitions") {
             return results.map((result) => {
                 return {
                     "Date Acquired": result["Date Acquired"]["start"] ? formatDate(result["Date Acquired"]["start"]) : "No Date",
-                    "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
+                    "Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "pendingDeals") {
@@ -364,32 +352,35 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
             return calcResults.map((result) => {
                 return {
                     "Date Acquired": result["Date Acquired"]["start"] ? formatDate(result["Date Acquired"]["start"]) : "No Date",
-                    "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
+                    "Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "Projected Profit": result["Expected Profit Center"] ? result["Expected Profit Center"] : "No Projected Profit",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "deals") {
             return results.map((result) => {
                 return {
                     "Date Deal Sold": result["Closing (Sell)"]["start"] ? formatDate(result["Closing (Sell)"]["start"]) : "No Date",
-                    "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
+                    "Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "profit") {
             return results.map((result) => {
                 return {
                     "Date Deal Sold": result["Closing (Sell)"]["start"] ? formatDate(result["Closing (Sell)"]["start"]) : "No Date",
-                    "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
+                    "Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "Amount of Profit": result["Net Profit Center"] ? result["Net Profit Center"] : "No Profit",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "projectedProfit") {
@@ -402,11 +393,12 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
             return calcResults.map((result) => {
                 return {
                     "Date Acquired": result["Date Acquired"]["start"] ? formatDate(result["Date Acquired"]["start"]) : "No Date",
-                    "Lead Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
+                    "Name": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Name"] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] && namesAddresses[result["Seller Lead"]]["Address"] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "Projected Profit": result["Expected Profit Center"] ? result["Expected Profit Center"] : "No Projected Profit",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "closersPayments") {
@@ -424,6 +416,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Cash Up Front": result["Cash Collected Up Front"] ? result["Cash Collected Up Front"] : "No cash up front",
                     "Revenue Contracted": result["Contract Total"] ? result["Contract Total"] : "No revenue contracted",
                     podio_item_id: result.itemid ? result.itemid : podio_item_id,
+                    seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "closersUniqueAttended" || apiEndpointKey === "closersTotalAttended" || apiEndpointKey === "closersBookings" || apiEndpointKey === "closersAppointments") {
@@ -434,6 +427,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Event": result["Event"] ? result["Event"] : "No event given",
                     "Team Member Responsible": result["Team Member Responsible [Name]"] ? result["Team Member Responsible [Name]"] : "No team member responsible",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]].seller_id : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "closersDcOffers" || apiEndpointKey === "closersDcClosed") {
@@ -444,7 +438,8 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Status": result["Status of the Call"] ? result["Status of the Call"] : "No Status",
                     "Lead Source": result["Related Lead Source Item"] ? result["Related Lead Source Item"] : "No lead source",
                     "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "Closer not given",
-                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id
+                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]].seller_id : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "closersLeadsSetPrequalified") {
@@ -456,7 +451,8 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Call Confirmed": result["Call Confirmed"] ? result["Call Confirmed"] : "No call confirmed",
                     // "Lead Source": result["Related Lead Source Item"] ? result["Related Lead Source Item"] : "No lead source",
                     "Setter": result["Team Member Responsible"] ? result["Team Member Responsible"] : "Setter not given",
-                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id
+                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]].seller_id : "No Seller ID",
                 }
             })
         } else {

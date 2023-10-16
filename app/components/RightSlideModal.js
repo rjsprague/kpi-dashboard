@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { FiX } from 'react-icons/fi';
 import DataTable from './kpi-components/dataTable';
 import ReactDOM from 'react-dom';
@@ -9,6 +9,7 @@ import LoadingQuotes from './LoadingQuotes';
 import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
 import kpiToEndpointMapping from '../lib/kpiToEndpointMapping';
+import { Switch } from '@headlessui/react';
 
 const RightSlideModal = ({
     isOpen,
@@ -32,6 +33,8 @@ const RightSlideModal = ({
     const [dataTable1Key, setDataTable1Key] = useState(null);
     const [dataTable2, setDataTable2] = useState(null);
     const [dataTable2Key, setDataTable2Key] = useState(null);
+    const [enabled, setEnabled] = useState(false);
+    const [attritionList, setAttritionList] = useState([]);
     const clientSpaceId = useSelector(selectSpaceId);
 
 
@@ -41,15 +44,29 @@ const RightSlideModal = ({
         ({ startDate, endDate, leadSource, kpiView, teamMembers, apiName } = tableProps);
     }
     // console.log(startDate, endDate, leadSource, kpiView, teamMembers, apiName, clientSpaceId)
-    
-    const { data, error } = useSWR({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }, fetchSingleKpi);
+
+    const swrKey = useMemo(() => {
+        return {
+            startDate,
+            endDate,
+            leadSource,
+            kpiView,
+            teamMembers,
+            clientSpaceId,
+            apiName
+        };
+    }, [startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName]);
+
+    const { data, error } = useSWR(swrKey, fetchSingleKpi);
     // console.log('data', data)
 
     useEffect(() => {
         if (data) {
             setDataTable1(Object.values(data)[0])
+            console.log('dataTable1', Object.values(data)[0])
             setDataTable1Key(Object.keys(data)[0])
             setDataTable2(Object.values(data)[1])
+            console.log('dataTable2', Object.values(data)[1])
             setDataTable2Key(Object.keys(data)[1])
         }
     }, [data])
@@ -68,7 +85,7 @@ const RightSlideModal = ({
                 setSelectedViewKpiList(VIEW_KPIS[selectedView]["Clients"]);
             }
         }
-    }, [selectedView, selectedDepartment]);
+    }, [selectedView, selectedDepartment, VIEW_KPIS, clientSpaceId]);
 
     useEffect(() => {
         const handleEscape = (e) => {
@@ -99,7 +116,32 @@ const RightSlideModal = ({
         });
     };
 
+    const handleToggleAttritionList = () => {
+        setEnabled(!enabled);
 
+        // Create attrition list by removing the elements that exist in dataTable2 from dataTable1
+        // Must use the seller_id as the key to compare
+        if (data) {
+            // console.log(dataTable1)
+            // console.log(dataTable2)
+
+            const dataTable1SellerIDSet = dataTable1 ? new Set(dataTable1.map(item => item.seller_id)) : new Set();
+            // console.log('dataTable1Set', dataTable1SellerIDSet)
+            const dataTable2SellerIDSet = dataTable2 ? new Set(dataTable2.map(item => item.seller_id)) : new Set();
+            // console.log('dataTable2Set', dataTable2SellerIDSet)
+            for (let item of dataTable2SellerIDSet) {
+                // console.log(item)
+                dataTable1SellerIDSet.delete(item);
+            }
+            // console.log('dataTable1Set', dataTable1SellerIDSet)
+            const attritionList = dataTable1.filter(item => dataTable1SellerIDSet.has(item.seller_id));
+            // console.log('attritionList', attritionList)
+            setAttritionList(attritionList);
+        } else {
+            setAttritionList([]);
+        }
+    };
+    // console.log('attritionList', attritionList)
 
     return ReactDOM.createPortal(
         <div
@@ -178,15 +220,41 @@ const RightSlideModal = ({
 
                 {modalType === "table" && tableProps ? (
                     data ? (
-                        <div className="flex flex-col items-center justify-center 2xl:flex-row">
-                            {error && <div className="text-red-500">Error fetching data</div>}
-                            {dataTable1 && <DataTable className="flex" selectedTableKey={dataTable1Key} data={dataTable1} leadSources={leadSources} departments={departments} />}
-                            {dataTable2 && <DataTable className="flex" selectedTableKey={dataTable2Key} data={dataTable2} leadSources={leadSources} departments={departments} />}
+                        <div className="flex flex-col items-center justify-center pt-10">
+                            {selectedView === 'Acquisitions' && (
+                                <div className="flex flex-row items-center justify-center">
+                                    <Switch
+                                        checked={enabled}
+                                        onChange={() => handleToggleAttritionList()}
+                                        className={`${enabled ? 'bg-blue-600' : 'bg-gray-200'
+                                            } relative inline-flex items-center h-6 rounded-full w-11`}
+                                    >
+                                        <span className="text-white sr-only">Attrition List</span>
+                                        <span
+                                            className={`${enabled ? 'translate-x-6' : 'translate-x-1'
+                                                } inline-block w-4 h-4 transform bg-white rounded-full transition ease-in-out duration-200`}
+                                        />
+                                    </Switch>
+                                    <div className="ml-2 text-gray-100">Attrition List</div>
+                                </div>
+                            )}
+                            <div className="flex flex-row flex-wrap items-center justify-center">
+                                {enabled ? (
+                                    <DataTable className="flex" selectedTableKey={dataTable1Key} data={attritionList} leadSources={leadSources} departments={departments} />
+                                ) : (
+                                    <>
+                                        {error && <div className="text-red-500">Error fetching data</div>}
+                                        {dataTable1 && <DataTable className="flex" selectedTableKey={dataTable1Key} data={dataTable1} leadSources={leadSources} departments={departments} />}
+                                        {dataTable2 && <DataTable className="flex" selectedTableKey={dataTable2Key} data={dataTable2} leadSources={leadSources} departments={departments} />}
+                                    </>
+                                )}
+
+                            </div>
                         </div>
                     ) : isProfessional ? (
                         <div className="flex flex-col justify-center 2xl:flex-row">
-                            { <DataTable className="flex" selectedTableKey={kpiToEndpointMapping[apiName][0]} data={[]} leadSources={leadSources} departments={departments} isProfessional={isProfessional} />}
-                            { <DataTable className="flex" selectedTableKey={kpiToEndpointMapping[apiName][1]} data={[]} leadSources={leadSources} departments={departments} isProfessional={isProfessional} />}
+                            {<DataTable className="flex" selectedTableKey={kpiToEndpointMapping[apiName][0]} data={[]} leadSources={leadSources} departments={departments} isProfessional={isProfessional} />}
+                            {<DataTable className="flex" selectedTableKey={kpiToEndpointMapping[apiName][1]} data={[]} leadSources={leadSources} departments={departments} isProfessional={isProfessional} />}
                         </div>
                     ) : (
                         <LoadingQuotes />
