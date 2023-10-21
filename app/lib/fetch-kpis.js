@@ -81,6 +81,12 @@ function getKpiValue(calculatedKPIs, endpointData, dataKey) {
         return endpointData.cashCollectedUpFront;
     } else if (dataKey === 'closersRevenueContracted') {
         return endpointData.totalRevenueContracted;
+    } else if (dataKey === 'closerCommission') {
+        return calculatedKPIs["Closer Commission"];
+    } else if (dataKey === 'setterCommission') {
+        return calculatedKPIs["Setter Commission"];
+    } else if (dataKey === 'currentPassiveIncome') {
+        return calculatedKPIs["Current Passive Income"];
     } else {
         return data;
     }
@@ -150,6 +156,8 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
     } else {
         requestedKpiList = kpiList
     }
+
+    // console.log(requestedKpiList)
 
     try {
         const startDate = gte ? formatDate(new Date(gte)) : null;

@@ -5,8 +5,8 @@ const generateFilters = (startDate, endDate, leadSource, kpiView, leadSourceFiel
         filters.push({
             "type": 'date',
             "fieldName": dateFieldName,
-            "gte": startDate+" 00:00:00",
-            "lte": endDate+" 23:59:59",
+            "gte": startDate + " 00:00:00",
+            "lte": endDate + " 23:59:59",
         });
     }
 
@@ -349,7 +349,50 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                     "values": ["Setter Speed to Lead"]
                 }
             ])
-        }
+        },
+        closerCommission: {
+            name: "Closer Commission",
+            url: "/api/closers/management/team-events",
+            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date", [
+                {
+                    "type": "app",
+                    "fieldName": "Team Member",
+                    "values": teamMembers
+                },
+                {
+                    "type": "category",
+                    "fieldName": "Type",
+                    "values": ["Closer Commission"]
+                }
+            ])
+        },
+        setterCommission: {
+            name: "Setter Commission",
+            url: "/api/closers/management/team-events",
+            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date", [
+                {
+                    "type": "app",
+                    "fieldName": "Team Member",
+                    "values": teamMembers
+                },
+                {
+                    "type": "category",
+                    "fieldName": "Type",
+                    "values": ["Setter Commission"]
+                }
+            ])
+        },
+        currentPassiveIncome: {
+            name: "Current Passive Income",
+            url: "/api/closers/management/payment-plans",
+            filters: generateFilters(null, null, null, kpiView, null, null, [
+                {
+                    "type": "app",
+                    "fieldName": "Closer Responsible",
+                    "values": teamMembers
+                }
+            ])
+        },
     };
 };
 

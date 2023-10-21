@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
 import kpiToEndpointMapping from '../lib/kpiToEndpointMapping';
 import { Switch } from '@headlessui/react';
+import fetchClients from '@/lib/fetchClients';
 
 const RightSlideModal = ({
     isOpen,
@@ -36,6 +37,7 @@ const RightSlideModal = ({
     const [enabled, setEnabled] = useState(false);
     const [attritionList, setAttritionList] = useState([]);
     const clientSpaceId = useSelector(selectSpaceId);
+    const [clients, setClients] = useState({});
 
 
     // Check if tableProps is defined before destructuring
@@ -59,14 +61,29 @@ const RightSlideModal = ({
 
     const { data, error } = useSWR(swrKey, fetchSingleKpi);
     // console.log('data', data)
+    const { data: clientsData, error: clientsError } = useSWR(["/api/spaces"], fetchClients);
+
+    // console.log('clientsData', clientsData)
+
+    // reverse client names and ids from clientsData object
+    useEffect(() => {
+        let clients = {}
+        if (clientsData) {
+            Object.keys(clientsData).forEach((key) => {
+                clients[clientsData[key]] = key
+            })
+        }
+        setClients(clients)
+        // console.log(clients)
+    }, [clientsData]) 
 
     useEffect(() => {
         if (data) {
             setDataTable1(Object.values(data)[0])
-            console.log('dataTable1', Object.values(data)[0])
+            // console.log('dataTable1', Object.values(data)[0])
             setDataTable1Key(Object.keys(data)[0])
             setDataTable2(Object.values(data)[1])
-            console.log('dataTable2', Object.values(data)[1])
+            // console.log('dataTable2', Object.values(data)[1])
             setDataTable2Key(Object.keys(data)[1])
         }
     }, [data])
@@ -240,15 +257,14 @@ const RightSlideModal = ({
                             )}
                             <div className="flex flex-row flex-wrap items-center justify-center">
                                 {enabled ? (
-                                    <DataTable className="flex" selectedTableKey={dataTable1Key} data={attritionList} leadSources={leadSources} departments={departments} />
+                                    <DataTable className="flex" selectedTableKey={dataTable1Key} data={attritionList} leadSources={leadSources} departments={departments} clients={clients} />
                                 ) : (
                                     <>
                                         {error && <div className="text-red-500">Error fetching data</div>}
-                                        {dataTable1 && <DataTable className="flex" selectedTableKey={dataTable1Key} data={dataTable1} leadSources={leadSources} departments={departments} />}
-                                        {dataTable2 && <DataTable className="flex" selectedTableKey={dataTable2Key} data={dataTable2} leadSources={leadSources} departments={departments} />}
+                                        {dataTable1 && <DataTable className="flex" selectedTableKey={dataTable1Key} data={dataTable1} leadSources={leadSources} departments={departments} clients={clients} />}
+                                        {dataTable2 && <DataTable className="flex" selectedTableKey={dataTable2Key} data={dataTable2} leadSources={leadSources} departments={departments} clients={clients} />}
                                     </>
                                 )}
-
                             </div>
                         </div>
                     ) : isProfessional ? (

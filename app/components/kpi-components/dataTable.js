@@ -29,7 +29,6 @@ function stringifyObject(obj) {
             output += key + ': ' + value + '\n';
         }
     }
-
     return output;
 }
 
@@ -74,7 +73,9 @@ const dateColumnKeys = {
     closersDcClosed: "Date Submitted",
 };
 
-const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap) => {
+const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap, clients) => {
+
+    // console.log(clients)
 
     return Object.keys(data[0]).map(key => {
         if (key !== 'podio_item_id' && key !== 'seller_id') {
@@ -98,8 +99,13 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
                         } else {
                             return cellValue;
                         }
+                    } else if (info.column.columnDef.header === 'Client') {
+                        if (cellValue && Array.isArray(cellValue)) {
+                            return cellValue[0]
+                        } else {
+                            return cellValue;
+                        }
                     }
-
                     if (Array.isArray(cellValue)) {
                         return cellValue.join(', ');
                     } else if (typeof cellValue === 'string' || typeof cellValue === 'number') {
@@ -116,7 +122,7 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
     }).filter(Boolean);
 }
 
-const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfessional }) => {
+const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfessional, clients }) => {
 
     // console.log(isProfessional)
 
@@ -141,7 +147,7 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
 
     useEffect(() => {
         if (data && data.length > 0) {
-            const newColumns = generateColumns(selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap);
+            const newColumns = generateColumns(selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap, clients);
             setColumns(prevColumns => {
                 // Only update columns if they have changed
                 const prevColumnIds = new Set(prevColumns.map(column => column.id));

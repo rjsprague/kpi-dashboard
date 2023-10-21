@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { selectSpaceId } from '../../../app/GlobalRedux/Features/client/clientSlice'
 import useSWR from 'swr';
 import ClosersLeaderboard from './ClosersLeaderboard';
+import ClosersPayments from './ClosersPayments';
 
 const KpiQuery = ({
     isProfessional,
@@ -68,6 +69,8 @@ const KpiQuery = ({
             } else {
             return <Leaderboard {...props} view={view} query={query} kpiList={kpiList} isProfessional={isProfessional} />;
             }
+        case 'Payments':
+            return <ClosersPayments {...props} view={view} query={query} kpiList={kpiList}  />;
         default:
             return <AcquisitionsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} isProfessional={isProfessional} />;
     }

@@ -1260,31 +1260,99 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
-    // "Closers ROAS Total": {
-    //     name: "Closers ROAS Total",
-    //     dataKeys: ["totalRevenue", "totalClosersAdSpend"],
-    //     formula: (apiData) => {
-    //         const { totalRevenue, totalClosersAdSpend } = apiData;
-    //         return totalClosersAdSpend > 0 ? totalRevenue / totalClosersAdSpend * 100 : 0;
-    //     },
-    //     redFlag: 800,
-    //     target: 1200,
-    //     dataLabels: ["Total Revenue: $", "Ad Spend: $"],
-    //     kpiType: "meter",
-    //     unit: "%",
-    //     kpiFactors: [
-    //         {
-    //             id: 0,
-    //             title: "How to Optimize ROAS Total",
-    //         },
-    //         {
-    //             id: 1,
-    //             desc: "Description TBD",
-    //             linkName: "Learn More",
-    //             link: ""
-    //         },
-    //     ],
-    // },
+    "Closer Commission": {
+        name: "Closer Commission",
+        dataKeys: ["closerCommission"],
+        formula: (apiData) => {
+            const { closerCommission } = apiData;
+            const closerCommissionTotal = (closerCommission && closerCommission.length > 0) ? closerCommission.reduce((acc, curr) => {
+                if ("Compensation" in curr) {
+                    acc += parseFloat(curr["Compensation"]);
+                }
+                return acc;
+            }, 0) : [];
+            return closerCommissionTotal;
+        },
+        redFlag: 0,
+        target: 0,
+        dataLabels: ["Commission: $"],
+        kpiType: "",
+        unit: "$",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Closer Commission",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Setter Commission": {
+        name: "Setter Commission",
+        dataKeys: ["setterCommission"],
+        formula: (apiData) => {
+            const { setterCommission } = apiData;
+            const setterCommissionTotal = (setterCommission && setterCommission.length > 0) ? setterCommission.reduce((acc, curr) => {
+                if ("Compensation" in curr) {
+                    acc += parseFloat(curr["Compensation"]);
+                }
+                return acc;
+            }, 0) : [];
+            return setterCommissionTotal;
+        },
+        redFlag: 0,
+        target: 0,
+        dataLabels: ["Commission: $"],
+        kpiType: "",
+        unit: "$",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Setter Commission",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Current Passive Income": {
+        name: "Current Passive Income",
+        dataKeys: ["currentPassiveIncome"],
+        formula: (apiData) => {
+            const { currentPassiveIncome } = apiData;
+            const currentPassiveIncomeTotal = (currentPassiveIncome && currentPassiveIncome.length > 0) ? currentPassiveIncome.reduce((acc, curr) => {
+                if ("Closer Commision Monthly" in curr) {
+                    acc += parseFloat(curr["Closer Commision Monthly"]);
+                }
+                return acc;
+            }, 0) : [];
+            return currentPassiveIncomeTotal;
+        },
+        redFlag: 0,
+        target: 0,
+        dataLabels: ["Passive Income: $"],
+        kpiType: "",
+        unit: "$",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Current Passive Income",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    }
 };
 
 export default KPI_DEFINITIONS;

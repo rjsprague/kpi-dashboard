@@ -43,6 +43,9 @@ const kpiToEndpointMapping = {
     'Closers Cost Per Close': ['closersAdSpend', 'closersDcClosed'],
     'Closers ROAS Cash Collected': ['closersAdSpend', 'closersPayments'],
     'Closers ROAS Projected': ['closersAdSpend', 'closersPayments'],
+    'Closer Commission': ['closerCommission'],
+    'Setter Commission': ['setterCommission'],
+    'Current Passive Income': ['currentPassiveIncome'],
 };
 
 export default kpiToEndpointMapping;

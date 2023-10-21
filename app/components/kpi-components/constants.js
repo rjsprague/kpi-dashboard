@@ -2,7 +2,8 @@ export const KPI_VIEWS = {
     Acquisitions: 'Acquisitions',
     Team: 'Team',
     Financial: 'Financial',
-    Leaderboard: 'Leaderboard'
+    Leaderboard: 'Leaderboard',
+    Payments: 'Payments',
 };
 
 export const VIEW_KPIS = {
@@ -99,6 +100,13 @@ export const VIEW_KPIS = {
             "Closers Close Rate",
             "Closers Closed Deals",
             "Closers Avg Cash Collected",
+        ]
+    },
+    Payments: {
+        "Closers": [
+            "Setter Commission",
+            "Closer Commission",
+            "Current Passive Income",
         ]
     }
 };

@@ -53,6 +53,8 @@ export default function ClosersLeaderboard({
     ];
 
     const [height, setHeight] = useState('auto');
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalType, setModalType] = useState('settings');
 
     const [selectedDay, setSelectedDay] = useState("");
     const [selectedWeek, setSelectedWeek] = useState("");
@@ -197,7 +199,7 @@ export default function ClosersLeaderboard({
 
     const handleGearIconClick = () => {
         setModalType("settings");
-        setOpenModal(true);
+        setModalOpen(true);
     };
 
     const handleCloneLeaderboard = (dayStart, dayEnd, weekStart, weekEnd, monthStart, monthEnd) => {

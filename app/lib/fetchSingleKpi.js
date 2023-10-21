@@ -35,7 +35,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
                 'Authorization': `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
-                "spaceid": requestObject.name === "Closers Payments" ? managementSpaceId : clientSpaceId,
+                "spaceid": requestObject.name === "Closers Payments" || requestObject.name === "Closer Commission" || requestObject.name === "Setter Commission" || requestObject.name === "Current Passive Income" ? managementSpaceId : clientSpaceId,
                 "filters": requestObject.filters,
                 "offset": 0,
                 "limit": 1,
@@ -60,7 +60,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
                 'Authorization': `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
-                "spaceid": requestObject.name === "Closers Payments" ? managementSpaceId : clientSpaceId,
+                "spaceid": requestObject.name === "Closers Payments" || requestObject.name === "Closer Commission" || requestObject.name === "Setter Commission" || requestObject.name === "Current Passive Income" ? managementSpaceId : clientSpaceId,
                 "filters": requestObject.filters,
                 "offset": offset,
                 "limit": 1000,
@@ -108,7 +108,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     let leadsArray = [];
 
     let resultsValues = Object.values(results).flat();
-    console.log(resultsValues)
+    // console.log(resultsValues)
 
     resultsValues.forEach(item => {
         if (item["Seller Lead"]) {
@@ -120,12 +120,12 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         }
     });
 
-    console.log(leadsArray)
+    // console.log(leadsArray)
     // query the leads endpoint for each of the leads in the leadsArray
     let leadsEndpoint;
 
-    console.log(clientSpaceId)
-    console.log(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
+    // console.log(clientSpaceId)
+    // console.log(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
 
     if (clientSpaceId == process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID) {
         leadsEndpoint = apiEndpointsObj["closersLeadsCreated"]
@@ -135,7 +135,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
 
     leadsEndpoint.filters = [{ type: "app", fieldName: "itemid", values: leadsArray.flat() }];
     const leads = await fetchPage(leadsEndpoint);
-    console.log(leads)
+    // console.log(leads)
 
     let namesAddresses = {};
     leads.forEach(lead => {
@@ -151,22 +151,22 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         }
     });
 
-    console.log(namesAddresses)
-    console.log(results)
+    // console.log(namesAddresses)
+    // console.log(results)
 
     Object.keys(results).forEach(key => {
         results[key] = filterResults(results[key], key, namesAddresses);
     });
-    console.log(results)
+    // console.log(results)
 
     return results;
 };
 
 function filterResults(results, apiEndpointKey, namesAddresses) {
 
-    console.log(results)
-    console.log(apiEndpointKey)
-    console.log(namesAddresses)
+    // console.log(results)
+    // console.log(apiEndpointKey)
+    // console.log(namesAddresses)
 
     try {
         if (apiEndpointKey === "marketingExpenses" || apiEndpointKey === "closersAdSpend") {
@@ -453,6 +453,29 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Setter": result["Team Member Responsible"] ? result["Team Member Responsible"] : "Setter not given",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]].seller_id : "No Seller ID",
+                }
+            })
+        } else if (apiEndpointKey === "closerCommission" || apiEndpointKey === "setterCommission") {
+            return results.map((result) => {
+                return {
+                    "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No date given",
+                    "Client": result["Client"] ? result["Client"] : "No client given",
+                    "Team Member": result["Team Member"] ? result["Team Member"] : "No Name",
+                    "Status": result["Status"] ? result["Status"] : "No Status",
+                    "Type": result["Type"] ? result["Type"] : "No Type",
+                    "Compensation": result["Compensation"] ? result["Compensation"] : "No compensation",
+                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                }
+            })
+        } else if (apiEndpointKey === "currentPassiveIncome") {
+            return results.map((result) => {
+                return {
+                    "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No date given",
+                    "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "No closer given",
+                    "Client": result["Workspace Name"] ? result["Workspace Name"] : "No Workspace Name",
+                    "Status": result["Status"] ? result["Status"] : "No Status",
+                    "Closer Commission Monthly": result["Closer Commision Monthly"] ? result["Closer Commision Monthly"] : "No closer commission monthly",
+                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                 }
             })
         } else {

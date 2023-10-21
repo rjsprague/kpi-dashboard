@@ -30,6 +30,8 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
     const clientSpaceId = useSelector(selectSpaceId);
     // console.log(prop)
 
+    // console.log(prop)
+
     if (isLoading) {
         return ReactDOM.createPortal(
             <div className='absolute inset-0 flex items-center justify-center w-screen h-screen'>
@@ -103,7 +105,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
                             :
                             prop.data1 !== null && prop.data2 !== null ? (
                                 <div className="flex flex-row justify-center gap-4 text-xs">
-                                    <div className="">{prop.data1.length > 1 && prop.data1}</div>
+                                    <div>{prop.data1.length > 1 && prop.data1}</div>
                                     <div>{prop.data2.length > 1 && prop.data2}</div>
                                 </div>
                             ) : (
