@@ -874,43 +874,18 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
-    "Closers Leads Created": {
-        name: "Closers Leads Created",
-        dataKeys: ["closersLeadsCreated"],
-        formula: (apiData) => {
-            const { closersLeadsCreated } = apiData;
-            return closersLeadsCreated;
-        },
-        redFlag: 0,
-        target: 0,
-        dataLabels: ["Leads Created: "],
-        kpiType: "",
-        unit: "",
-        kpiFactors: [
-            {
-                id: 0,
-                title: "How to Optimize Leads Created",
-            },
-            {
-                id: 1,
-                desc: "Description TBD",
-                linkName: "Learn More",
-                link: ""
-            },
-        ],
-    },
     "Closers Leads Set Prequalified": {
         name: "Closers Leads Set Prequalified",
-        dataKeys: ["closersLeadsSetPrequalified"],
+        dataKeys: ["closersLeadsCreated", "closersLeadsSetPrequalified"],
         formula: (apiData) => {
-            const { closersLeadsSetPrequalified } = apiData;
-            return closersLeadsSetPrequalified;
+            const { closersLeadsCreated, closersLeadsSetPrequalified } = apiData;
+            return closersLeadsCreated > 0 ? closersLeadsSetPrequalified / closersLeadsCreated * 100 : 0;
         },
-        redFlag: 0,
-        target: 0,
-        dataLabels: ["Leads Set Prequalified: "],
-        kpiType: "",
-        unit: "",
+        redFlag: 10,
+        target: 20,
+        dataLabels: ["Leads: ", "LSP: "],
+        kpiType: "meter",
+        unit: "%",
         kpiFactors: [
             {
                 id: 0,
@@ -1083,8 +1058,8 @@ const KPI_DEFINITIONS = {
 
             return numPaymentPlans && numPaymentPlans !== 0 ? (cashCollectedUpFront / numPaymentPlans).toFixed(2) : 0;
         },
-        redFlag: 4000,
-        target: 10000,
+        redFlag: 2500,
+        target: 4000,
         dataLabels: ["Cash Collected: $", "Payment Plans: "],
         kpiType: "meter",
         unit: "$",
@@ -1166,8 +1141,8 @@ const KPI_DEFINITIONS = {
             const { totalClosersAdSpend, closersLeadsCreated } = apiData;
             return closersLeadsCreated > 0 ? totalClosersAdSpend / closersLeadsCreated : 0;
         },
-        redFlag: 100,
-        target: 50,
+        redFlag: 35,
+        target: 20,
         dataLabels: ["Ad Spend: $", "Leads Created: "],
         kpiType: "meter",
         unit: "$",

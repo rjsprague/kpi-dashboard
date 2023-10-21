@@ -26,7 +26,7 @@ export const VIEW_KPIS = {
         ],
         "Closers": [
             "Closers Ad Spend",
-            "Closers Leads Created",
+            "Closers Cost Per Lead",
             "Closers Leads Set Prequalified",
             "Closers Booking Rate",
             "Closers Total Attendance Rate",
