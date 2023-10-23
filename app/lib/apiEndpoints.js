@@ -204,7 +204,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
         closersLeadsSetPrequalified: {
             name: "Closers Leads Set Prequalified",
             url: "/api/closers/acquisitions/setter-calls",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, null, "created_on", [
+            filters: generateFilters(startDate, endDate, null, kpiView, null, "created_on", [
                 {
                     "type": "category",
                     "fieldName": "Qualification",
