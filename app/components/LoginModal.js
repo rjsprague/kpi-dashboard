@@ -3,7 +3,6 @@ import { Dialog } from '@headlessui/react';
 import { useState, useRef, useEffect } from 'react';
 import { useUser } from '@/hooks/useUser';
 import Cookies from 'js-cookie';
-import useAuth from '@/hooks/useAuth';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -19,7 +18,6 @@ export default function LoginModal({ isOpen, onClose }) {
     const [password, setPassword] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const { setAuth } = useAuth();
 
     useEffect(() => {
         if (isOpen) {
