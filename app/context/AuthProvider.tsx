@@ -1,8 +1,8 @@
-// "use client"
+"use client"
 import { createContext, useState, ReactNode } from 'react';
 import { useUser } from '@/hooks/useUser';
 import Cookies from 'js-cookie';
-import { useRouter } from 'next/router'; // Note: Corrected 'next/navigation' to 'next/router'
+import { useRouter } from 'next/navigation';
 
 // Define types
 interface Auth {
@@ -10,7 +10,7 @@ interface Auth {
   refreshToken?: string;
 }
 
-type User = any; // Replace 'any' with your User type definition
+type User = any;
 
 interface AuthContextProps {
   auth: Auth;
@@ -70,6 +70,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setAuth({ ...auth, token: data.token });
       } else {
         // Handle failure
+        console.error('Failed to refresh token');
       }
     } catch (error) {
       console.error('Error refreshing token:', error);
