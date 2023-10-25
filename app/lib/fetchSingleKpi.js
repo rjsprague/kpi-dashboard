@@ -4,7 +4,7 @@ import { formatDate } from './date-utils';
 import cookies from 'js-cookie';
 
 export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }) {
-    const accessToken = cookies.get('accessToken');
+    const accessToken = cookies.get('token');
     // console.log("accessToken", accessToken)
     // console.log("api name: ", apiName)
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
@@ -458,8 +458,8 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
         } else if (apiEndpointKey === "closerCommission" || apiEndpointKey === "setterCommission") {
             return results.map((result) => {
                 return {
-                    "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No date given",
-                    "Client": result["Client"] ? result["Client"] : "No client given",
+                    "Date Completed": result["Date Completed"]["start"] ? formatDate(result["Date Completed"]["start"]) : "No date given",
+                    "Client": result["Client Name"] ? result["Client Name"] : result["Client"] ? result["Client"] : "No client given",
                     "Team Member": result["Team Member"] ? result["Team Member"] : "No Name",
                     "Status": result["Status"] ? result["Status"] : "No Status",
                     "Type": result["Type"] ? result["Type"] : "No Type",

@@ -2,7 +2,7 @@ import cookies from 'js-cookie';
 
 export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, filters, kpiView) {
 
-    const accessToken = cookies.get('accessToken');
+    const accessToken = cookies.get('token');
     // console.log("accessToken", accessToken)
     // console.log("apiName: ", apiName)
     // console.log("apiEndpoint: ", apiEndpoint)

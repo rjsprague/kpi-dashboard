@@ -2,7 +2,7 @@ import cookies from 'js-cookie';
 
 async function fetchActiveTeamMembers(clientSpaceId) {
     
-    const accessToken = cookies.get('accessToken');
+    const accessToken = cookies.get('token');
     // console.log("accessToken", accessToken)
 
     const closersSpaceId = process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID

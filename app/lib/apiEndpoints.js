@@ -337,7 +337,13 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
         closersPayments: {
             name: "Closers Payments",
             url: "/api/closers/management/payment-plans",
-            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date")
+            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date", [
+                {
+                    "type": "category",
+                    "fieldName": "Plan #",
+                    "values": ["1.0000"]
+                }
+            ])
         },
         setterStlMedian: {
             name: "Setter STL Median",
@@ -353,7 +359,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
         closerCommission: {
             name: "Closer Commission",
             url: "/api/closers/management/team-events",
-            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date", [
+            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date Completed", [
                 {
                     "type": "app",
                     "fieldName": "Team Member",
@@ -363,13 +369,18 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                     "type": "category",
                     "fieldName": "Type",
                     "values": ["Closer Commission"]
+                },
+                {
+                    "type": "category",
+                    "fieldName": "Status",
+                    "values": ["Pending", "Completed"]
                 }
             ])
         },
         setterCommission: {
             name: "Setter Commission",
             url: "/api/closers/management/team-events",
-            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date", [
+            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date Completed", [
                 {
                     "type": "app",
                     "fieldName": "Team Member",
@@ -379,6 +390,11 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                     "type": "category",
                     "fieldName": "Type",
                     "values": ["Setter Commission"]
+                },
+                {
+                    "type": "category",
+                    "fieldName": "Status",
+                    "values": ["Pending", "Completed"]
                 }
             ])
         },
@@ -390,6 +406,16 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                     "type": "app",
                     "fieldName": "Closer Responsible",
                     "values": teamMembers
+                },
+                {
+                    "type": "category",
+                    "fieldName": "Plan #",
+                    "values": ["1.0000"]
+                },
+                {
+                    "type": "category",
+                    "fieldName": "Status",
+                    "values": ["Active"]
                 }
             ])
         },

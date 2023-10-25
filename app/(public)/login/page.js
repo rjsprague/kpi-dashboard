@@ -19,7 +19,6 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const { setAuth } = useAuth();
 
     useEffect(() => {
         emailRef.current.focus();
@@ -34,23 +33,15 @@ export default function LoginPage() {
         try {
             await login(email, password);
 
-            const accessToken = Cookies.get('accessToken');
-            if (!accessToken) {
-                throw new Error('No access token found');
-            }
-
-            setAuth({ accessToken });
             setEmail('');
             setPassword('');
 
             const preLoginRoute = Cookies.get('preLoginRoute');
 
             if (preLoginRoute && preLoginRoute !== '/login') {
-                console.log('prelogin route');
                 router.push(preLoginRoute);
                 Cookies.remove('preLoginRoute');
             } else {
-                console.log('no prelogin route');
                 router.push('/kpi-dashboard');
             }
         } catch (err) {
@@ -91,6 +82,7 @@ export default function LoginPage() {
                         <input
                             type={showPassword ? 'text' : 'password'}
                             id="password"
+                            autoComplete="current-password"
                             onChange={(e) => setPassword(e.target.value)}
                             value={password}
                             required

@@ -3,7 +3,6 @@ import KpiDashboard from '../../components/KpiDashboard'
 import withAuth from '../../lib/withAuth'
 import LoadingQuotes from '../../components/LoadingQuotes'
 import { useEffect } from 'react'
-import useSWR from 'swr'
 import { useRouter } from 'next/navigation'
 import { setSpaceId } from '../../GlobalRedux/Features/client/clientSlice'
 import { useDispatch } from 'react-redux';
