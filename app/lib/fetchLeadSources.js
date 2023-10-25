@@ -2,7 +2,7 @@ import cookies from 'js-cookie';
 
 async function fetchLeadSources(clientSpaceId) {
 
-    const accessToken = cookies.get('accessToken');
+    const accessToken = cookies.get('token');
 
     // console.log("fetchLeadSources clientSpaceId", clientSpaceId)
     // console.log("fetchLeadSources accessToken", accessToken)

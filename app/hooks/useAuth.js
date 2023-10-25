@@ -8,15 +8,17 @@ const useAuth = () => {
 
     let updatedAuth = originalAuth;
 
-    // If auth.accessToken is undefined, try to get it from a cookie
-    if (!originalAuth?.accessToken) {
-        const accessToken = Cookies.get('accessToken');
-        if (accessToken) {
-            updatedAuth = { ...originalAuth, accessToken };
+    // If auth.token is undefined, try to get it from a cookie
+    if (!originalAuth?.token) {
+        const token = Cookies.get('token');
+        const tokenExpiry = Cookies.get('tokenExpiry');
+        // console.log('token', token, 'tokenExpiry', tokenExpiry)
+        if (token) {
+            updatedAuth = { ...originalAuth, token: token, tokenExpiry: tokenExpiry };
         }
     }
 
-    // useDebugValue(auth, auth => auth?.accessToken ? "Logged In" : "Logged Out");
+    // useDebugValue(auth, auth => auth?.token ? "Logged In" : "Logged Out");
 
     return { auth: updatedAuth, setAuth, logout, user, loading, handleLogin, updateUser };
 }

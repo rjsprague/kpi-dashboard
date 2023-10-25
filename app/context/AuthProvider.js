@@ -4,7 +4,11 @@ import { useUser } from '@/hooks/useUser';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
-const AuthContext = createContext();
+const AuthContext = createContext({
+    auth: {},
+    user: null,
+    loading: true,
+});
 
 export const AuthProvider = ({ children }) => {
     const { user, loading, fetchUser, login } = useUser();
@@ -13,7 +17,7 @@ export const AuthProvider = ({ children }) => {
 
     const handleLogin = async (email, password) => {
         await login(email, password);
-        setAuth({ user, loading });
+        console.log(user)
     };
 
     const logout = async () => {
@@ -22,23 +26,45 @@ export const AuthProvider = ({ children }) => {
             router.push('/login');
 
             // After successful navigation, perform the cleanup
-            Cookies.remove('accessToken');
-            setAuth({ accessToken: null });
+            Cookies.remove('token');
+            setAuth({ token: null });
             fetchUser(); // To re-fetch and set user to null
-            console.log('User logged out')
         } catch (error) {
             console.error('An error occurred during logout:', error);
         }
     };
 
-
-
-    const updateUser = (newUserData) => {
+    const updateUser = () => {
         fetchUser();
     };
 
+    const refreshToken = async () => {
+        try {
+            const res = await fetch(`api/auth/refresh`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${auth.refreshToken}`,
+                },
+            });
+
+            if (res.status === 200) {
+                const data = await res.json();
+                Cookies.set('token', data.token);
+                setAuth({ ...auth, token: data.token });
+            } else {
+                // Open login modal here
+                
+            }
+        } catch (error) {
+            console.error('Error refreshing token:', error);
+            // Open login modal here
+
+        }
+    }
+
     return (
-        <AuthContext.Provider value={{ auth, setAuth, user, loading, handleLogin, logout, updateUser }}>
+        <AuthContext.Provider value={{ auth, setAuth, user, loading, handleLogin, logout, updateUser, refreshToken }}>
             {children}
         </AuthContext.Provider>
     )

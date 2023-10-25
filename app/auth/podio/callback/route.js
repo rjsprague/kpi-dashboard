@@ -3,13 +3,15 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers'
 
 // callback handler for Podio OAuth
-export async function GET(req) {
+export async function GET(req, res) {
     const public_base_url = process.env.NEXT_PUBLIC_BASE_URL
 
     const url = new URL(req.url);
     // console.log(url)
     const code = url.searchParams.get('code');
     // console.log(code)
+    const preLoginRoute = url.searchParams.get('preLoginRoute')
+    // console.log(preLoginRoute)
 
     if (!code) {
         return NextResponse.redirect(public_base_url + '/login');
@@ -19,7 +21,7 @@ export async function GET(req) {
     const callbackUrl = `${process.env.API_BASE_URL}/auth/callback?code=${code}`;
     // console.log(callbackUrl)
     try {
-        const response = await fetch(callbackUrl, {cache: 'no-store'});
+        const response = await fetch(callbackUrl, { cache: 'no-store' });
         // console.log(response)
 
         const data = await response.json();
@@ -33,17 +35,24 @@ export async function GET(req) {
         // console.log(decodedToken)
 
         cookies().set({
-            name: 'accessToken',
+            name: 'token',
             value: token,
             path: '/',
             maxAge: 60 * 60 * 24 * 7, // 1 week
         })
 
-        if (!decodedToken.settings.timezone) {
-            return NextResponse.redirect(public_base_url + '/user-profile')
-        }
+        cookies().set({
+            name: 'tokenExpiry',
+            value: decodedToken.exp,
+            path: '/',
+            maxAge: 60 * 60 * 24 * 7, // 1 week
+        })
 
-        return NextResponse.redirect(public_base_url + '/kpi-dashboard');
+        if (preLoginRoute) {
+            return NextResponse.redirect(public_base_url + '/auth-success');
+        } else {
+            return NextResponse.redirect(public_base_url + '/kpi-dashboard');
+        }
     } catch (error) {
         // console.log(error, error.message);
         return NextResponse.redirect(public_base_url + '/login');

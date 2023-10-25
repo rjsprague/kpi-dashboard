@@ -2,7 +2,7 @@ import cookies from 'js-cookie';
 
 async function fetchClients(url = '/api/spaces') {
 
-    const accessToken = cookies.get('accessToken');
+    const accessToken = cookies.get('token');
 
     try {
         const response = await fetch(url, {

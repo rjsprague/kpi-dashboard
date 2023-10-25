@@ -15,7 +15,7 @@ export default function NavigationBar({ items, onItemChange, initialActiveItem }
         onItemChange(item);
     };
 
-    console.log(items)
+    // console.log(items)
 
     const getButtonClasses = (item) => {
         return activeItem === item
