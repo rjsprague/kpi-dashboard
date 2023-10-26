@@ -450,7 +450,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Qualification": result["Qualification"] ? result["Qualification"] : "No qualification",
                     "Call Confirmed": result["Call Confirmed"] ? result["Call Confirmed"] : "No call confirmed",
                     // "Lead Source": result["Related Lead Source Item"] ? result["Related Lead Source Item"] : "No lead source",
-                    "Setter": result["Team Member Responsible"] ? result["Team Member Responsible"] : "Setter not given",
+                    "Setter": result["Team Member Responsible Name"] ? result["Team Member Responsible Name"] : result["Team Member Responsible"] ? result["Team Member Responsible"] : "Setter not given",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]].seller_id : "No Seller ID",
                 }

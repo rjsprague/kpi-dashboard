@@ -320,6 +320,11 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                     "type": "category",
                     "fieldName": "Status of the Call",
                     "values": ["Closed", "Interested", "Lost"]
+                },
+                {
+                    "type": "app",
+                    "fieldName": "Closer Responsible",
+                    "values": teamMembers
                 }
             ])
         },
@@ -331,6 +336,11 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                     "type": "category",
                     "fieldName": "Status of the Call",
                     "values": ["Closed"]
+                },
+                {
+                    "type": "app",
+                    "fieldName": "Closer Responsible",
+                    "values": teamMembers
                 }
             ])
         },
@@ -342,6 +352,11 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                     "type": "category",
                     "fieldName": "Plan #",
                     "values": ["1.0000"]
+                },
+                {
+                    "type": "app",
+                    "fieldName": "Closer Responsible",
+                    "values": teamMembers
                 }
             ])
         },

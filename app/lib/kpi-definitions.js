@@ -883,7 +883,7 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 10,
         target: 20,
-        dataLabels: ["Leads: ", "LSP: "],
+        dataLabels: ["Leads Created: ", "LSP: "],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [

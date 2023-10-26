@@ -12,6 +12,8 @@ type UseAuthReturn = {
     auth: Auth | null;
     setAuth: (auth: Auth) => void;
     logout: () => void;
+    isLoggingOut: boolean;
+    setIsLoggingOut: (isLoggingOut: boolean) => void;
     user: any;
     loading: boolean;
     handleLogin: (email: string, password: string) => Promise<void>;
@@ -25,7 +27,7 @@ const useAuth = (): UseAuthReturn => {
         throw new Error("useAuth must be used within an AuthProvider");
     }
 
-    const { auth: originalAuth, setAuth, logout, user, loading, handleLogin, updateUser } = context;
+    const { auth: originalAuth, setAuth, logout, isLoggingOut, setIsLoggingOut, user, loading, handleLogin, updateUser } = context;
 
     let updatedAuth: Auth | null = originalAuth;
 
@@ -38,7 +40,7 @@ const useAuth = (): UseAuthReturn => {
         }
     }
 
-    return { auth: updatedAuth, setAuth, logout, user, loading, handleLogin, updateUser };
+    return { auth: updatedAuth, setAuth, logout, isLoggingOut, setIsLoggingOut, user, loading, handleLogin, updateUser };
 };
 
 export default useAuth;

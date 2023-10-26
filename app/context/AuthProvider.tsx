@@ -19,6 +19,8 @@ interface AuthContextProps {
     loading: boolean;
     handleLogin: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
+    isLoggingOut: boolean;
+    setIsLoggingOut: (isLoggingOut: boolean) => void;
     updateUser: (user: any) => void;
     refreshToken: () => Promise<void>;
 }
@@ -31,6 +33,8 @@ const AuthContext = createContext<AuthContextProps>({
     loading: false,
     handleLogin: async () => { },
     logout: async () => { },
+    isLoggingOut: false,
+    setIsLoggingOut: () => { },
     updateUser: () => { },
     refreshToken: async () => { },
 });
@@ -42,6 +46,7 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const { user, loading, fetchUser, login } = useUser();
     const [auth, setAuth] = useState<Auth>({});
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
     const router = useRouter();
 
     const handleLogin = async (email: string, password: string) => {
@@ -50,11 +55,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const logout = async () => {
         try {
-            router.push('/login');
+            setIsLoggingOut(true);            
+            setAuth({ token: undefined, tokenExpiry: undefined });
+            fetchUser();
             Cookies.remove('token');
             Cookies.remove('tokenExpiry');
-            setAuth({ token: undefined });
-            fetchUser();
+            Cookies.remove('preLoginRoute');
+
+            router.push('/login');
+            setIsLoggingOut(false);
         } catch (error) {
             console.error('An error occurred during logout:', error);
         }
@@ -88,7 +97,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     return (
-        <AuthContext.Provider value={{ auth, setAuth, user, loading, handleLogin, logout, updateUser, refreshToken }}>
+        <AuthContext.Provider value={{ auth, setAuth, user, loading, handleLogin, logout, isLoggingOut, setIsLoggingOut, updateUser, refreshToken }}>
             {children}
         </AuthContext.Provider>
     );
