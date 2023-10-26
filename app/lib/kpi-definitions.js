@@ -542,8 +542,8 @@ const KPI_DEFINITIONS = {
             const { totalMarketingExpenses, triageApproval } = apiData;
             return totalMarketingExpenses != null && totalMarketingExpenses != NaN && triageApproval !== 0 ? Math.round(totalMarketingExpenses / triageApproval) : 0;
         },
-        redFlag: 1200,
-        target: 400,
+        redFlag: 150,
+        target: 90,
         dataLabels: ["Ad Spend: $", "Approved SLS Q: "],
         kpiType: "meter",
         unit: "$",

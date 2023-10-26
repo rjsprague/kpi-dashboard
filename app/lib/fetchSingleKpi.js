@@ -402,19 +402,13 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                 }
             })
         } else if (apiEndpointKey === "closersPayments") {
-            // const calcResults = results.reduce((acc, curr) => {
-            //     if (curr.hasOwnProperty("Closer Responsible")) {
-            //         acc.push(curr)
-            //     }
-            //     return acc
-            // }, [])
             return results.map((result) => {
                 return {
                     "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No date given",
-                    // "Payment Start": result["Date Start"] && result["Date Start"]["start"] ? formatDate(result["Date Start"]["start"]) : "No start date",
-                    "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "No closer given", //get name converted from id in table
-                    "Cash Up Front": result["Cash Collected Up Front"] ? result["Cash Collected Up Front"] : "No cash up front",
-                    "Revenue Contracted": result["Contract Total"] ? result["Contract Total"] : "No revenue contracted",
+                    "Client": result["Workspace Name"] ? result["Workspace Name"] : "Update in Podio",
+                    "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "Update in Podio",
+                    "Cash Up Front": result["Cash Collected Up Front"] ? result["Cash Collected Up Front"] : "Update in Podio",
+                    "Revenue Contracted": result["Contract Total"] ? result["Contract Total"] : "Update in Podio",
                     podio_item_id: result.itemid ? result.itemid : podio_item_id,
                     seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
