@@ -37,15 +37,6 @@ export default function withAuth(Component) {
 
         }, [auth]);
 
-        if (isLoading) {
-            return (
-                <div className='absolute inset-0 flex items-center justify-center w-screen h-screen bg-black bg-opacity-20'>
-                    <LoadingQuotes mode={'dark'} />
-                </div>
-            )
-
-        }
-
         return (
             <>
                 {showLoginModal && !isLoggingOut && <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />}

@@ -16,7 +16,7 @@ function UserProfilePage() {
     const { user, loading, logout, auth, updateUser } = useAuth();
     const [selectedTimezone, setSelectedTimezone] = useState('');
     const [timezones, setTimezones] = useState([]);
-    const accessToken = auth?.accessToken;
+    const accessToken = auth?.token;
     
     useEffect(() => {
         axios.get('/api/timezones')
