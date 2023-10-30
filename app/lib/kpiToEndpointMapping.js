@@ -32,6 +32,7 @@ const kpiToEndpointMapping = {
     'Closers Booking Rate': ['closersLeadsCreated', 'closersBookings'],
     'Closers Cost Per Booking': ['closersAdSpend', 'closersBookings'],
     'Closers Cost Per Qualified Booking': ['closersAdSpend', 'closersQualifiedBookings'],
+    'Closers Sales Capacity': ['closersAppointments'],
     'Closers Total Attendance Rate': ['closersAppointments', 'closersTotalAttended'],
     'Closers Offer Rate': ['closersUniqueAttended', 'closersDcOffers'],
     'Closers Close Rate': ['closersUniqueAttended', 'closersDcClosed'],

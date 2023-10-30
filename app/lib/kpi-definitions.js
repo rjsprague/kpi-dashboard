@@ -975,6 +975,31 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
+    "Closers Sales Capacity": {
+        name: "Closers Sales Capacity",
+        dataKeys: ["closersSalesCapacity", "closersAppointments"],
+        formula: (apiData) => {
+            const { closersSalesCapacity, closersAppointments } = apiData;
+            return closersSalesCapacity > 0 ? closersAppointments / closersSalesCapacity * 100 : 0;
+        },
+        redFlag: 50,
+        target: 70,
+        dataLabels: ["Sales Capacity: ", "Appointments: "],
+        kpiType: "meter",
+        unit: "%",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Sales Capacity",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
     "Closers Total Attendance Rate": {
         name: "Closers Total Attendance Rate",
         dataKeys: ["closersAppointments", "closersTotalAttended"],
