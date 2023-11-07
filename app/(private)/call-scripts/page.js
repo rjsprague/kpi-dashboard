@@ -13,7 +13,7 @@ function CallScriptsPage() {
     const [script, setScript] = useState('Triage Call');
     const [clientFolderID, setClientFolderID] = useState('');
 
-    const callScripts = ['Triage Call', 'Perfect Presentation']
+    const callScripts = ['Triage Call', 'Perfect Presentation', 'Post-Contract']
 
     useEffect(() => {
         if (user && user.isScaling) {
@@ -34,7 +34,12 @@ function CallScriptsPage() {
         if (!user) {
             return <EllipsisLoader />;
         }
-        const srcBase = `https://scripts.reiautomated.io/callscripts/${script.toLowerCase().replace(' ', '')}/?clientFolderID=${clientFolderID}&user=${user.email}`;
+        let srcBase = '';
+        if (script === 'Triage Call' || script === 'Perfect Presentation') {
+            srcBase = `https://scripts.reiautomated.io/callscripts/${script.toLowerCase().replace(' ', '')}/?clientFolderID=${clientFolderID}&user=${user.email}`;
+        } else if (script === 'Post-Contract') {
+            srcBase = `https://scripts.reiautomated.io/callscripts/${script.toLowerCase()}/`;
+        }
         return <MyIframe src={srcBase} title={script} />;
     }
 

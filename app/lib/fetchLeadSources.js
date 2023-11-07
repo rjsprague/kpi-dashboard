@@ -1,28 +1,39 @@
-import cookies from 'js-cookie';
+import Cookies from 'js-cookie';
 
 async function fetchLeadSources(clientSpaceId) {
+    const accessToken = Cookies.get('token')
+    const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
 
-    const accessToken = cookies.get('token');
 
     // console.log("fetchLeadSources clientSpaceId", clientSpaceId)
     // console.log("fetchLeadSources accessToken", accessToken)
-
-    // const closersSpaceId = process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID
     // console.log("fetchLeadSources closersSpaceId", closersSpaceId)
 
     try {
-        const response = await fetch('/api/lead-sources', {
+
+        let apiUrl;
+        let bearerToken;
+
+        if (clientSpaceId === closersSpaceId) {
+            apiUrl = '/api/closers/acquisitions/lead-sources';
+            bearerToken = closersSpaceId;
+        } else {
+            apiUrl = '/api/lead-sources';
+            bearerToken = clientSpaceId;
+        }
+
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
-                "spaceid": clientSpaceId,
+                "spaceid": bearerToken,
             })
         });
 
-        //console.log('Lead Sources Response:', response);
+        // console.log('Lead Sources Response:', response);
 
         if (!response.ok) {
             console.error(response)
@@ -30,7 +41,7 @@ async function fetchLeadSources(clientSpaceId) {
         }
 
         const data = await response.json();
-
+        // console.log(data)
         // console.log("data", data?.data[1]?.Status && data.data[1].Status[0])
 
         // filter out object with a field called "Status" that has a value of "Inactive"

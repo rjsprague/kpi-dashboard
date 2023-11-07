@@ -191,7 +191,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                                             : "No Name",
                         "Address": result["Property Address"] ? result["Property Address"] : result["*AS Address"] ? result["*AS Address"] : "No address",
                         "Status": result["Lead Status"] ? result["Lead Status"] : "No Status",
-                        "Lead Source": result["Lead Source Item"] ? result["Lead Source Item"] : "No Lead Source",
+                        "Lead Source": result["Lead Source Item"] ? result["Lead Source Item"] : result["Related Lead Source Item"] ? result["Related Lead Source Item"] : "No Lead Source",
                         podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                         seller_id: result.itemid ? result.itemid : result.podio_item_id,
                     }

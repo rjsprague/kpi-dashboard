@@ -52,7 +52,7 @@ function UserManagementPage() {
     };
 
     const url = '/api/users';
-    const accessToken = Cookies.get('accessToken');
+    const accessToken = Cookies.get('token');
 
     const { data: users, error: usersError } = useSWR({ url, accessToken }, fetchWithToken)
     const { data: clientsObj, error: clientsError } = useSWR('/api/spaces', fetchClients)
