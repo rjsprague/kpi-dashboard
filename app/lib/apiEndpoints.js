@@ -354,6 +354,11 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                     "values": ["1.0000"]
                 },
                 {
+                    "type": "category",
+                    "fieldName": "Status",
+                    "values": ["Active", "Inactive"]
+                },
+                {
                     "type": "app",
                     "fieldName": "Closer Responsible",
                     "values": teamMembers

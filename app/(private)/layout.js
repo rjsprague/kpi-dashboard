@@ -8,6 +8,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Script from 'next/script';
 
+export const fetchCache = 'force-no-store';
+
 export default function RootLayout({ children }) {
 
     return (

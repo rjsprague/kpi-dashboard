@@ -8,6 +8,8 @@ import { ReduxProvider } from '../GlobalRedux/provider';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+export const fetchCache = 'force-no-store';
+
 export default function RootLayout({ children }) {
     return (
         <AuthProvider>
