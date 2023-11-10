@@ -23,14 +23,22 @@ function removeWord(str, word) {
     return str.replace(regex, '');
 }
 
+function formatTime(time) {
+    if (time >= 3600) {
+        return `${Math.round(time / 3600)} hour(s)`;
+    } else if (time >= 60) {
+        return `${Math.round(time / 60)} minute(s)`;
+    } else {
+        return `${time} second(s)`;
+    }
+}
+
 export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick, dateRange, leadSource, kpiView, teamMembers }) {
     const [isLoading, setIsLoading] = useState(false);
     const startDate = dateRange.gte ? formatDate(new Date(dateRange.gte)) : null;
     const endDate = dateRange.lte ? formatDate(new Date(dateRange.lte)) : null;
     const clientSpaceId = useSelector(selectSpaceId);
-    // console.log(prop)
-
-    // console.log(prop)
+    console.log(prop)
 
     if (isLoading) {
         return ReactDOM.createPortal(
@@ -98,7 +106,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
                     {
                         prop.data1 !== null && prop.data2 !== null && prop.data3 !== null ?
                             <div className="flex flex-row justify-center gap-2 px-1 text-xs">
-                                <div className="">{prop.data1.length > 1 && prop.data1}</div>
+                                <div className="">{prop.data1.length > 1 && prop.name === "Setter STL Median" ? formatTime(prop.current) : prop.data1.length > 1 ? prop.data1 : ""}</div>
                                 <div>{prop.data2.length > 1 && prop.data2}</div>
                                 <div>{prop.data3.length > 1 && prop.data3}</div>
                             </div>

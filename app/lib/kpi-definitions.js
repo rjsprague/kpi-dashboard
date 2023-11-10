@@ -1131,20 +1131,21 @@ const KPI_DEFINITIONS = {
         dataKeys: ["setterStlMedian"],
         formula: (apiData) => {
             const { setterStlMedian } = apiData;
+            console.log('setterStlMedian', setterStlMedian)
             let stlArray = (setterStlMedian && setterStlMedian.length > 0) ? setterStlMedian.reduce((acc, curr) => {
-                if ('Speed to Lead Adjusted' in curr) {
-                    acc.push(curr['Speed to Lead Adjusted']);
+                if ('STL Outbound Call' in curr) {
+                    acc.push(curr['STL Outbound Call']);
                 }
                 return acc;
             }, []) : [];
             stlArray.sort((a, b) => a - b);
             let setterStlMedianSorted = stlArray.length % 2 === 0 ? (stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2 : stlArray[(stlArray.length - 1) / 2];
-            return Number((setterStlMedianSorted / 60).toFixed(2));
+            return setterStlMedianSorted;
         },
-        redFlag: 60,
-        target: 90,
+        redFlag: 15,
+        target: 5,
         dataLabels: [" minutes"],
-        kpiType: "meter",
+        kpiType: "STL",
         unit: " mins",
         kpiFactors: [
             {

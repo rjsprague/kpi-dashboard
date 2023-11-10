@@ -76,6 +76,8 @@ function getKpiValue(calculatedKPIs, endpointData, dataKey) {
         return calculatedKPIs["AM STL Median"];
     } else if (dataKey === 'daStlMedian') {
         return calculatedKPIs["DA STL Median"];
+    } else if (dataKey === 'setterStlMedian') {
+        return calculatedKPIs["Setter STL Median"];
     } else if (dataKey === 'bigChecks') {
         return calculatedKPIs["BiG Checks"];
     } else if (dataKey === 'closersCashCollected') {

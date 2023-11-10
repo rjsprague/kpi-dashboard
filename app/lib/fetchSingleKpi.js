@@ -3,6 +3,18 @@ import apiEndpoints from './apiEndpoints';
 import { formatDate } from './date-utils';
 import cookies from 'js-cookie';
 
+
+// function to format time that is in seconds to minutes if greater than 60 seconds and hours if greater than 3600 seconds
+function formatTime(time) {
+    if (time >= 3600) {
+        return `${Math.round(time / 3600)}h`;
+    } else if (time >= 60) {
+        return `${Math.round(time / 60)}m`;
+    } else {
+        return `${time}s`;
+    }
+}
+
 export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }) {
     const accessToken = cookies.get('token');
     // console.log("accessToken", accessToken)
@@ -307,6 +319,23 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
+                }
+            })
+        } else if (apiEndpointKey === "setterStlMedian") {
+            return results.map((result) => {
+                return {
+                    "Date": result["Lead Created On"] && result["Lead Created On"]["start"] ? formatDate(result["Lead Created On"]["start"]) : "No Date",
+                    "Name": result["Contact Name"] ? result["Contact Name"] : result["Seller Contact Name"] ? result["Seller Contact Name"]
+                        : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
+                            : result["First"] ? result["First"]
+                                : result["Last"] ? result["Last"]
+                                    : result.Title ? result.Title
+                                        : "No Name",
+                    "Status": result["Lead Status"] ? result["Lead Status"] : "No Status",
+                    "Setter STL Median": result["STL Outbound Call"] ? formatTime(result["STL Outbound Call"]) : "Call ASAP!",
+                    //"Lead Source": result["Lead Source Item"] ? result["Lead Source Item"] : result["Related Lead Source Item"] ? result["Related Lead Source Item"] : "No Lead Source",
+                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
+                    seller_id: result.itemid ? result.itemid : result.podio_item_id,
                 }
             })
         } else if (apiEndpointKey === "bigChecks") {
