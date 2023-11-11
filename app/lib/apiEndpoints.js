@@ -264,11 +264,6 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                     "values": ["Discovery Call Attended", "Discovery Call NO-SHOW"]
                 },
                 {
-                    "type": "category",
-                    "fieldName": "lead_event #",
-                    "values": ["1.0000"]
-                },
-                {
                     "type": "app",
                     "fieldName": "Team Member Responsible",
                     "values": teamMembers

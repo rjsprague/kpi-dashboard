@@ -448,6 +448,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No Date",
                     "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name",
                     "Event": result["Event"] ? result["Event"] : "No event given",
+                    "Event #": result["lead_event #"] ? result["lead_event #"] : "No event number given",
                     "Team Member Responsible": result["Team Member Responsible [Name]"] ? result["Team Member Responsible [Name]"] : "No team member responsible",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]].seller_id : "No Seller ID",
