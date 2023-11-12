@@ -1,34 +1,65 @@
 
 
-const salesCapacity = {
-    2306132453: { // Keith Gillispie
-        0: 0, // Sunday
-        1: 0, // Monday
-        2: 0, // Tuesday
-        3: 0, // Wednesday
-        4: 0, // Thursday
-        5: 0, // Friday
-        6: 0, // Saturday
-    },
-    2593542815: { // Brandon Pringle
-        0: 0, // Sunday
-        1: 3, // Monday
-        2: 3, // Tuesday
-        3: 3, // Wednesday
-        4: 3, // Thursday
-        5: 0, // Friday
-        6: 0, // Saturday  
-    },
-    2337227317: { // Jacob Carey
-        0: 4, // Sunday
-        1: 4, // Monday
-        2: 0, // Tuesday
-        3: 0, // Wednesday
-        4: 4, // Thursday
-        5: 4, // Friday
-        6: 4, // Saturday
+// Utility function to convert time strings to minutes
+const timeToMinutes = (time) => {
+    if (!time) return 0;
+    const [hours, minutesPart] = time.split(':');
+    const minutes = minutesPart.slice(0, -2);
+    const meridian = minutesPart.slice(-2);
+    return (parseInt(hours) % 12 + (meridian.toLowerCase() === 'pm' ? 12 : 0)) * 60 + parseInt(minutes);
+};
+
+// Function to calculate the number of 90-minute slots in a day
+const calculateDailySlots = (start, end, slotDuration, lunchBreak) => {
+    if (!start || !end) return 0; // If the day is unavailable, return 0 slots
+
+    const totalMinutes = timeToMinutes(end) - timeToMinutes(start);
+    const usableMinutes = totalMinutes - lunchBreak;
+    return Math.floor(usableMinutes / slotDuration);
+};
+
+// Function to calculate slots for each team member's weekly schedule
+const calculateSlotsForTeam = (teamSchedules) => {
+    const slotDuration = 90; // Slot duration in minutes
+    const lunchBreak = 30; // Lunch break duration in minutes
+    let teamMemberSlots = {};
+
+    // Loop over each team member's schedule
+    for (const [memberId, weeklySchedule] of Object.entries(teamSchedules)) {
+        teamMemberSlots[memberId] = {};
+        for (const [day, hours] of Object.entries(weeklySchedule)) {
+            teamMemberSlots[memberId][day] = calculateDailySlots(hours.start, hours.end, slotDuration, lunchBreak);
+        }
     }
-}
+
+    return teamMemberSlots;
+};
+
+// Sample nested object with schedules for each team member
+const teamSchedules = {
+    '2593542815': { // Brandon Pringle
+        '0': { start: null, end: null }, // Sunday
+        '1': { start: '12:00pm', end: '5:30pm' }, // Monday
+        '2': { start: '12:00pm', end: '5:30pm' }, // Tuesday
+        '3': { start: '12:00pm', end: '5:30pm' }, // Wednesday
+        '4': { start: '12:00pm', end: '5:30pm' }, // Thursday
+        '5': { start: null, end: null }, // Friday
+        '6': { start: null, end: null }, // Saturday
+    },
+    '2637469614': { // Chris Kaczmarski
+        '0': { start: null, end: null }, // Sunday
+        '1': { start: '9:00am', end: '8:00pm' }, // Monday
+        '2': { start: '9:00am', end: '5:30pm' }, // Tuesday
+        '3': { start: '9:00am', end: '5:30pm' }, // Wednesday
+        '4': { start: '9:00am', end: '5:30pm' }, // Thursday
+        '5': { start: '9:00am', end: '5:30pm' }, // Friday
+        '6': { start: null, end: null }, // Saturday
+    },
+    // ... other team members
+};
+
+// Calculate slots for the entire team
+const salesTeamMemberSlots = calculateSlotsForTeam(teamSchedules);
 
 // Utility function to get the day of the week as a number
 const getDayOfWeek = (date) => {
@@ -53,8 +84,8 @@ const calculateTotalSalesCapacity = (startDate, endDate, closerIDs) => {
         // iterate over the closerIDs array to add up the capacity for each closer
         try {
             closerIDs.forEach(closerID => {
-                if (closerID in salesCapacity) {
-                    const capacity = salesCapacity[closerID][dayOfWeek];
+                if (closerID in salesTeamMemberSlots) {
+                    const capacity = salesTeamMemberSlots[closerID][dayOfWeek];
                     if (typeof capacity === 'number') {
                         totalCapacity += capacity;
                     } else {

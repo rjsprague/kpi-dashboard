@@ -55,14 +55,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const logout = async () => {
         try {
-            setIsLoggingOut(true);            
+            setIsLoggingOut(true);  
+            router.push('/login');          
             setAuth({ token: undefined, tokenExpiry: undefined });
             fetchUser();
-            Cookies.remove('token');
-            Cookies.remove('tokenExpiry');
-            Cookies.remove('preLoginRoute');
-
-            router.push('/login');
             setIsLoggingOut(false);
         } catch (error) {
             console.error('An error occurred during logout:', error);

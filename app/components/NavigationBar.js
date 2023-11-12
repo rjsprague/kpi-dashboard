@@ -10,7 +10,7 @@ export default function NavigationBar({ items, onItemChange, initialActiveItem }
     const [activeItem, setActiveItem] = useState(initialActiveItem || items[0]);
 
     const handleItemClick = (item) => {
-        console.log(item)
+        // console.log(item)
         setActiveItem(item);
         onItemChange(item);
     };

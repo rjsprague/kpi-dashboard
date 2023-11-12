@@ -18,12 +18,15 @@ export default function withAuth(Component) {
         const [isLoading, setIsLoading] = useState(true);
         const [showLoginModal, setShowLoginModal] = useState(false);
 
-        useEffect(() => {          
+        useEffect(() => {
             let interval;
+            // get tokenExpiry from cookie
+            const tokenExpiry = Cookies.get('tokenExpiry');
 
-            if (auth?.tokenExpiry) {
+
+            if (auth?.tokenExpiry && tokenExpiry && !isLoggingOut) {
                 interval = setInterval(() => {
-                    if (new Date().getTime()  > auth.tokenExpiry * 1000) {
+                    if (new Date().getTime() > auth.tokenExpiry * 1000) {
                         // Clear cookie and show login modal
                         Cookies.remove('token');
                         Cookies.remove('tokenExpiry')
@@ -33,9 +36,15 @@ export default function withAuth(Component) {
                 }, 1000); // Check every second
 
                 setIsLoading(false);
+            } else {
+                if (!isLoggingOut) {
+                    setIsLoading(false);
+                    setShowLoginModal(true);
+                }
+
             }
 
-        }, [auth]);
+        }, [auth, isLoggingOut]);
 
         return (
             <>

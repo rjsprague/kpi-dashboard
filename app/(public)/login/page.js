@@ -14,11 +14,12 @@ export default function LoginPage() {
     const router = useRouter();
     const emailRef = useRef();
     const errRef = useRef();
-    const { login, fetchUser } = useUser();
+    const { login } = useUser();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const { auth } = useAuth();
 
     useEffect(() => {
         emailRef.current.focus();
@@ -57,6 +58,13 @@ export default function LoginPage() {
             errRef.current.focus();
         }
     }
+
+    // if auth has a token and the token has not expired, redirect to dashboard
+    useEffect(() => {
+        if (auth && auth.token && Number(auth.tokenExpiry)*1000 > Date.now()) {
+            router.push('/kpi-dashboard');
+        }
+    }, [auth])
 
     return (
         <main>

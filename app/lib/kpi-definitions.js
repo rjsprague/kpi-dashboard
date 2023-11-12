@@ -1131,7 +1131,7 @@ const KPI_DEFINITIONS = {
         dataKeys: ["setterStlMedian"],
         formula: (apiData) => {
             const { setterStlMedian } = apiData;
-            console.log('setterStlMedian', setterStlMedian)
+            // console.log('setterStlMedian', setterStlMedian)
             let stlArray = (setterStlMedian && setterStlMedian.length > 0) ? setterStlMedian.reduce((acc, curr) => {
                 if ('STL Outbound Call' in curr) {
                     acc.push(curr['STL Outbound Call']);
