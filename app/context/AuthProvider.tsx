@@ -56,22 +56,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
 
     const logout = async () => {
-        setIsLoggingOut(true);
 
         try {
-            router.push('/login');
-
+            // Perform the logout logic
+            setTimeout(() => {
+                setIsLoggingOut(true);
+                setAuth({ token: undefined, tokenExpiry: undefined });
+                router.push('/login');
+                Cookies.remove('token');
+                Cookies.remove('tokenExpiry');
+                Cookies.remove('preLoginRoute');
+                fetchUser();
+            }, 2000);
         } catch (error) {
             console.error('An error occurred during logout:', error);
-        } finally {
-            setAuth({ token: undefined, tokenExpiry: undefined });
-            Cookies.remove('token');
-            Cookies.remove('tokenExpiry');
-            Cookies.remove('preLoginRoute')
-            fetchUser();
-            setIsLoggingOut(false);
+            setIsLoggingOut(false); // Make sure to set this in case of error as well
         }
+        setIsLoggingOut(false);
     };
+
 
     const updateUser = () => {
         fetchUser();
@@ -101,7 +104,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     return (
-        <AuthContext.Provider value={{ auth, setAuth, user, loading, handleLogin, logout, isLoggingOut, setIsLoggingOut, updateUser, refreshToken}}>
+        <AuthContext.Provider value={{ auth, setAuth, user, loading, handleLogin, logout, isLoggingOut, setIsLoggingOut, updateUser, refreshToken }}>
             {children}
         </AuthContext.Provider>
     );

@@ -8,14 +8,25 @@ async function fetchActiveTeamMembers(clientSpaceId) {
     const closersSpaceId = process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID
 
     try {
-        const response = await fetch('/api/team-members', {
+        let apiUrl;
+        let bearerToken;
+
+        if (clientSpaceId === closersSpaceId) {
+            apiUrl = '/api/closers/acquisitions/team-members';
+            bearerToken = closersSpaceId;
+        } else {
+            apiUrl = '/api/team-members';
+            bearerToken = clientSpaceId;
+        }
+
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
-                "spaceid": clientSpaceId,
+                "spaceid": bearerToken,
             })
         });
 

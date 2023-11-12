@@ -21,7 +21,8 @@ export default function LoginModal({ isOpen, onClose }) {
     const [showPassword, setShowPassword] = useState(false);
     const { isLoggingOut } = useAuth();
 
-
+    console.log(isLoggingOut)
+    
     useEffect(() => {
         if (isOpen) {
             emailRef.current.focus();
@@ -82,7 +83,7 @@ export default function LoginModal({ isOpen, onClose }) {
 
 
     return (
-        <Dialog open={isOpen && !isLoggingOut} onClose={onClose}>
+        <Dialog open={isOpen && isLoggingOut === false} onClose={onClose}>
             <Dialog.Overlay className="fixed inset-0 bg-black opacity-50" />
             <div className="fixed inset-0 flex items-center justify-center">
                 <div className="relative w-full max-w-md p-6 mx-auto bg-blue-700 rounded-md shadow-super-3">
