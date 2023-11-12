@@ -11,7 +11,7 @@ import useAuth from '@/hooks/useAuth';
 
 
 export default function Header() {
-    const { logout, user, loading } = useAuth();
+    const { logout, user, loading, setIsLoggingOut } = useAuth();
 
     if (!user || loading) {
         return <div className='flex items-center justify-center w-full h-full'><LoadingQuotes /></div>
@@ -73,7 +73,7 @@ export default function Header() {
                             )}
                             <Menu.Item>
                                 {({ active }) => (
-                                    <button type="button" onClick={logout} className={`flex items-center text-left w-full px-4 py-2 rounded-b-2xl ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
+                                    <button type="button" onClick={() => {setIsLoggingOut(true); logout();}} className={`flex items-center text-left w-full px-4 py-2 rounded-b-2xl ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
                                         <FontAwesomeIcon icon={faSignOut} size="lg" className='mr-2' />
                                         Logout
                                     </button>

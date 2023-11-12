@@ -1,20 +1,13 @@
 // lib/withAuth.js
-import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import useAuth from '../hooks/useAuth';
 import LoginModal from '@/components/LoginModal';
 import Cookies from 'js-cookie';
 import LoadingQuotes from '@/components/LoadingQuotes';
-import { useUser } from '@/hooks/useUser';
-
 
 export default function withAuth(Component) {
     return function AuthenticatedComponent(props) {
-        const { auth, setAuth, refreshToken, isLoggingOut } = useAuth();
-        // const { user, loading, fetchUser } = useUser();
-        // const router = useRouter();
-        // const pathname = usePathname()
-        // const refresh = useRefreshToken();
+        const { auth, isLoggingOut } = useAuth();
         const [isLoading, setIsLoading] = useState(true);
         const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -23,8 +16,8 @@ export default function withAuth(Component) {
             // get tokenExpiry from cookie
             const tokenExpiry = Cookies.get('tokenExpiry');
 
+            if (auth?.tokenExpiry && tokenExpiry && isLoggingOut === false) {
 
-            if (auth?.tokenExpiry && tokenExpiry && !isLoggingOut) {
                 interval = setInterval(() => {
                     if (new Date().getTime() > auth.tokenExpiry * 1000) {
                         // Clear cookie and show login modal
@@ -36,12 +29,6 @@ export default function withAuth(Component) {
                 }, 1000); // Check every second
 
                 setIsLoading(false);
-            } else {
-                if (!isLoggingOut) {
-                    setIsLoading(false);
-                    setShowLoginModal(true);
-                }
-
             }
 
         }, [auth, isLoggingOut]);

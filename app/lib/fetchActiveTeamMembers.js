@@ -24,7 +24,7 @@ async function fetchActiveTeamMembers(clientSpaceId) {
         }
 
         const data = await response.json();
-        console.log("data", data)
+        // console.log("data", data)
 
         let activeMembers;
 
@@ -54,7 +54,7 @@ async function fetchActiveTeamMembers(clientSpaceId) {
             }
         });
 
-        console.log("activeMembers", activeMembers)
+        // console.log("activeMembers", activeMembers)
         return activeMembers;
 
     } catch (error) {

@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import useAuth from '../hooks/useAuth';
 
 export default function LoginModal({ isOpen, onClose }) {
     const router = useRouter();
@@ -18,6 +19,8 @@ export default function LoginModal({ isOpen, onClose }) {
     const [password, setPassword] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const { isLoggingOut } = useAuth();
+
 
     useEffect(() => {
         if (isOpen) {
@@ -79,7 +82,7 @@ export default function LoginModal({ isOpen, onClose }) {
 
 
     return (
-        <Dialog open={isOpen} onClose={onClose}>
+        <Dialog open={isOpen && !isLoggingOut} onClose={onClose}>
             <Dialog.Overlay className="fixed inset-0 bg-black opacity-50" />
             <div className="fixed inset-0 flex items-center justify-center">
                 <div className="relative w-full max-w-md p-6 mx-auto bg-blue-700 rounded-md shadow-super-3">

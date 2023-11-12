@@ -1,5 +1,5 @@
 "use client"
-import { createContext, useState, ReactNode } from 'react';
+import { createContext, useState, ReactNode, useRef, useEffect } from 'react';
 import { useUser } from '@/hooks/useUser';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
@@ -53,15 +53,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         await login(email, password);
     };
 
+
+
     const logout = async () => {
+        setIsLoggingOut(true);
+
         try {
-            setIsLoggingOut(true);  
-            router.push('/login');          
-            setAuth({ token: undefined, tokenExpiry: undefined });
-            fetchUser();
-            setIsLoggingOut(false);
+            router.push('/login');
+
         } catch (error) {
             console.error('An error occurred during logout:', error);
+        } finally {
+            setAuth({ token: undefined, tokenExpiry: undefined });
+            Cookies.remove('token');
+            Cookies.remove('tokenExpiry');
+            Cookies.remove('preLoginRoute')
+            fetchUser();
+            setIsLoggingOut(false);
         }
     };
 
@@ -93,7 +101,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     return (
-        <AuthContext.Provider value={{ auth, setAuth, user, loading, handleLogin, logout, isLoggingOut, setIsLoggingOut, updateUser, refreshToken }}>
+        <AuthContext.Provider value={{ auth, setAuth, user, loading, handleLogin, logout, isLoggingOut, setIsLoggingOut, updateUser, refreshToken}}>
             {children}
         </AuthContext.Provider>
     );
