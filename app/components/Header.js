@@ -13,10 +13,6 @@ import useAuth from '@/hooks/useAuth';
 export default function Header() {
     const { logout, user, loading, setIsLoggingOut } = useAuth();
 
-    if (!user || loading) {
-        return <div className='flex items-center justify-center w-full h-full'><LoadingQuotes /></div>
-    }
-
     return (
         <section className="fixed top-0 right-0 z-10 flex flex-col max-w-screen left-20">
             <div className="flex flex-row items-center justify-between h-20 px-4 bg-blue-800">

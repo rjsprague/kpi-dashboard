@@ -50,6 +50,7 @@ async function fetchActiveTeamMembers(clientSpaceId) {
                 "Lead Manager": {},
                 "Acquisition Manager": {},
                 "Deal Analyst": {},
+                "Transaction Coordinator": {},
             };
         }
         

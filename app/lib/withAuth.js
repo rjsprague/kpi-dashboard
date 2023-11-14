@@ -25,13 +25,21 @@ export default function withAuth(Component) {
         const [isLoading, setIsLoading] = useState(true);
         const [showLoginModal, setShowLoginModal] = useState(false);
 
+        
+
         useEffect(() => {
             const { tokenExists, tokenExpiryExists } = checkCookies();
             let interval;
             // get tokenExpiry from cookie
             const tokenExpiry = Cookies.get('tokenExpiry');
 
-            if (auth?.tokenExpiry && tokenExpiry && isLoggingOut === false) {
+            // if the Cookies.get('token') and/or Cookies.get('tokenExpiry') is missing, show login modal
+            if (!tokenExists && isLoggingOut === false || !tokenExpiryExists && isLoggingOut === false) {
+                setIsLoading(false);
+                setShowLoginModal(true);
+            }
+
+            if (auth?.tokenExpiry && tokenExpiry && isLoggingOut === false ) {
 
                 interval = setInterval(() => {
                     if (new Date().getTime() > Number(auth.tokenExpiry) * 1000) {
@@ -43,12 +51,6 @@ export default function withAuth(Component) {
                     }
                 }, 1000); // Check every second
 
-                setIsLoading(false);
-            }
-
-            // if the Cookies.get('token') and/or Cookies.get('tokenExpiry') is missing, show login modal
-            if (!tokenExists && isLoggingOut === false || !tokenExpiryExists && isLoggingOut === false) {
-                setShowLoginModal(true);
                 setIsLoading(false);
             }
 

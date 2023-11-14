@@ -13,19 +13,34 @@ export const useUser = () => {
     // console.log("useUser auth", auth)
 
     const fetchUser = async () => {
-        setLoading(true);
-        const res = await fetch('/api/users/me', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${auth.token}`
-            },
-            cache: 'no-store'
-        });
-        const data = await res.json();
-        // console.log("useUser fetchUser", data)
-        setUser(data);
-        setLoading(false);
+        if (!auth.token) {
+            setLoading(false);
+            return;
+        }
+
+        try {
+            // setLoading(true);
+            const res = await fetch('/api/users/me', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${auth.token}`
+                },
+                cache: 'no-store'
+            });
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+
+            const data = await res.json();
+            setUser(data);
+        } catch (err) {
+            console.error("Error fetching user:", err);
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const login = async (email, password) => {
@@ -39,18 +54,28 @@ export const useUser = () => {
                 }
             );
             const { exp } = jwt.decode(response.data.token);
-            // console.log("useUser login expiry", exp)
+            console.log("useUser login expiry", exp)
             const expiryDate = new Date(exp * 1000);
-            // console.log("useUser login expiryDate", expiryDate)
+            console.log("useUser login expiryDate", expiryDate)
 
             Cookies.set('token', response.data.token, { expires: expiryDate, path: '/' });
             Cookies.set('tokenExpiry', exp.toString(), { expires: expiryDate, path: '/' });
 
             setAuth({ token: response.data.token, tokenExpiry: exp });
-            fetchUser();
+            await fetchUser();
         } catch (err) {
             // Handle error
             console.log(err)
+            if (!err?.response) {
+                throw new Error('No Server Response');
+            } else if (err.response?.status === 400) {
+                throw new Error('Missing Username or Password');
+            } else if (err.response?.status === 401) {
+                throw new Error('Unauthorized');
+            } else {
+                throw new Error('Login Failed');
+            }
+
         }
     };
 
@@ -58,7 +83,7 @@ export const useUser = () => {
         if (auth?.token) {
             fetchUser();
         }
-    }, []);
+    }, [auth.token]);
 
     return { user, loading, fetchUser, login };
 };

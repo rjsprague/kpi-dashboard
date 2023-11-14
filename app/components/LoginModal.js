@@ -24,7 +24,7 @@ export default function LoginModal({ isOpen, onClose }) {
     console.log(isLoggingOut)
     
     useEffect(() => {
-        if (isOpen) {
+        if (isOpen && emailRef.current) {
             emailRef.current.focus();
         }
     }, [isOpen])
