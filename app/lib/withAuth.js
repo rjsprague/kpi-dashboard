@@ -4,6 +4,7 @@ import useAuth from '../hooks/useAuth';
 import LoginModal from '@/components/LoginModal';
 import Cookies from 'js-cookie';
 import LoadingQuotes from '@/components/LoadingQuotes';
+import { useRouter } from 'next/navigation';
 
 function checkCookies() {
 
@@ -25,7 +26,7 @@ export default function withAuth(Component) {
         const [isLoading, setIsLoading] = useState(true);
         const [showLoginModal, setShowLoginModal] = useState(false);
 
-        
+        const router = useRouter();
 
         useEffect(() => {
             const { tokenExists, tokenExpiryExists } = checkCookies();
@@ -35,8 +36,8 @@ export default function withAuth(Component) {
 
             // if the Cookies.get('token') and/or Cookies.get('tokenExpiry') is missing, show login modal
             if (!tokenExists && isLoggingOut === false || !tokenExpiryExists && isLoggingOut === false) {
-                setIsLoading(false);
-                setShowLoginModal(true);
+                // TODO: redirect to login page
+                router.push('/login');                
             }
 
             if (auth?.tokenExpiry && tokenExpiry && isLoggingOut === false ) {
