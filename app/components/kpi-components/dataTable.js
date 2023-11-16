@@ -1,6 +1,8 @@
 "use client"
 
 import React, { useMemo, useState, useEffect } from 'react';
+import Tooltip from '@/components/data-table/Tooltips';
+
 import {
     createColumnHelper,
     getCoreRowModel,
@@ -73,10 +75,7 @@ const dateColumnKeys = {
     closersDcClosed: "Date Submitted",
 };
 
-const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap, clients) => {
-
-    // console.log(clients)
-
+const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap, clients, showTooltip, hideTooltip) => {
     return Object.keys(data[0]).map(key => {
         if (key !== 'podio_item_id' && key !== 'seller_id') {
             const dateColumnKey = dateColumnKeys[selectedTableKey];
@@ -86,33 +85,37 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
                 header: key,
                 cell: info => {
                     const cellValue = info.getValue();
-                    // If the cell is a leadSource cell, replace the cellValue with the corresponding name
+                    let displayValue;
+
+                    // Your logic for determining the displayValue
                     if (info.column.columnDef.header === 'Lead Source') {
                         if (cellValue && Array.isArray(cellValue)) {
-                            return invertedLeadSources[cellValue[0]];
+                            displayValue = invertedLeadSources[cellValue[0]];
                         } else {
-                            return cellValue;
+                            displayValue = cellValue;
                         }
-                    } else if (info.column.columnDef.header === 'Team Member' || info.column.columnDef.header === 'Lead Manager' || info.column.columnDef.header === 'Closer') {
+                    } else if (['Team Member', 'Lead Manager', 'Closer'].includes(info.column.columnDef.header)) {
                         if (cellValue && Array.isArray(cellValue)) {
-                            return teamMembersMap[cellValue[0]];
+                            displayValue = teamMembersMap[cellValue[0]];
                         } else {
-                            return cellValue;
+                            displayValue = cellValue;
                         }
                     } else if (info.column.columnDef.header === 'Client') {
-                        if (cellValue && Array.isArray(cellValue)) {
-                            return cellValue[0]
-                        } else {
-                            return cellValue;
-                        }
-                    }
-                    if (Array.isArray(cellValue)) {
-                        return cellValue.join(', ');
-                    } else if (typeof cellValue === 'string' || typeof cellValue === 'number') {
-                        return cellValue;
+                        displayValue = cellValue && Array.isArray(cellValue) ? cellValue[0] : cellValue;
+                    } else if (Array.isArray(cellValue)) {
+                        displayValue = cellValue.join(', ');
                     } else {
-                        return stringifyObject(cellValue);
+                        displayValue = typeof cellValue === 'string' || typeof cellValue === 'number' ? cellValue : stringifyObject(cellValue);
                     }
+
+                    // Wrap the display value with TruncatedText
+                    return (
+                        <Tooltip
+                            text={String(displayValue)}
+                            showTooltip={showTooltip}
+                            hideTooltip={hideTooltip}
+                        />
+                    );
                 },
                 enableSorting: true,
                 sortingFn: key === dateColumnKey ? 'datetime' : 'alphanumeric',
@@ -120,7 +123,8 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
             });
         }
     }).filter(Boolean);
-}
+};
+
 
 const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfessional, clients }) => {
 
@@ -134,6 +138,25 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
     const [tableTitle, setTableTitle] = useState('');
     const [columns, setColumns] = useState([]);
     const [sorting, setSorting] = useState([]);
+    const [tooltipInfo, setTooltipInfo] = useState({
+        show: false,
+        text: '',
+        top: 0,
+        left: 0,
+    });
+
+    const showTooltip = (text, top, left) => {
+        setTooltipInfo({
+            show: true,
+            text,
+            top: top - 30,
+            left: left - 30,
+        });
+    };
+
+    const hideTooltip = () => {
+        setTooltipInfo(prev => ({ ...prev, show: false }));
+    };
 
     const invertedLeadSources = leadSources && Object.fromEntries(
         Object.entries(leadSources).map(([key, value]) => [value, key])
@@ -143,11 +166,11 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
     const columnHelper = useMemo(() => createColumnHelper(), []);
     const newColumns = useMemo(() => columns, [columns]);
 
-    
+
 
     useEffect(() => {
         if (data && data.length > 0) {
-            const newColumns = generateColumns(selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap, clients);
+            const newColumns = generateColumns(selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap, clients, showTooltip, hideTooltip);
             setColumns(prevColumns => {
                 // Only update columns if they have changed
                 const prevColumnIds = new Set(prevColumns.map(column => column.id));
@@ -158,7 +181,7 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
                 return prevColumns;
             });
         }
-    }, [data]);
+    }, [data, showTooltip, hideTooltip]);
 
     useEffect(() => {
         if (selectedTableKey) {
@@ -190,10 +213,21 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
 
     return (
         <div className="flex flex-col items-center mt-4">
+            {tooltipInfo.show && (
+                <div
+                    className="fixed z-50 px-2 py-1 text-xs text-white bg-gray-700 rounded"
+                    style={{ top: tooltipInfo.top + 'px', left: tooltipInfo.left + 'px' }}
+                >
+                    {tooltipInfo.text}
+                </div>
+            )}
             <div className="flex h-auto px-2 py-4 overflow-auto max-h-screen9">
+
                 <div className="table w-full h-auto overflow-y-scroll max-h-screen9">
+
                     <div className='flex justify-center mb-2 text-xl font-semibold'>{tableTitle} ({data.length})</div>
                     <div>
+
                         {table.getHeaderGroups().map((headerGroup, i) => (
                             <div key={i} className="uppercase bg-blue-700 border-l border-gray-200 tr">
                                 {headerGroup.headers.map((header, j) => (
@@ -209,10 +243,14 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
                                         {flexRender(header.column.columnDef.header, header.getContext())}
                                     </div>
                                 ))}
+
+
                             </div>
                         ))}
+
                     </div>
                     <div>
+
                         {data && table.getRowModel().rows && table.getRowModel().rows.length > 0 ? (
                             table.getRowModel().rows.map((row, i) => (
                                 <a
