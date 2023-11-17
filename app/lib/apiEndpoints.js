@@ -1,6 +1,6 @@
 const generateFilters = (startDate, endDate, leadSource, kpiView, leadSourceFieldName, dateFieldName, extraFilters) => {
     const filters = [];
-
+    console.log(leadSource)
     if (startDate && endDate) {
         filters.push({
             "type": 'date',
@@ -10,7 +10,7 @@ const generateFilters = (startDate, endDate, leadSource, kpiView, leadSourceFiel
         });
     }
 
-    if (leadSource && leadSource.length > 0 && kpiView !== "Team") {
+    if (leadSource && leadSource.length > 0) {
         filters.push({
             "type": "app",
             "fieldName": leadSourceFieldName,
@@ -25,9 +25,11 @@ const generateFilters = (startDate, endDate, leadSource, kpiView, leadSourceFiel
     return filters;
 };
 // Define the endpoints and filters for each KPI
-const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
-    // console.log(teamMembers)
-    // console.log(kpiView)
+const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, closers, setters) => {
+    console.log(teamMembers)
+    console.log(kpiView)
+    console.log(closers)
+    console.log(setters)
     return {
         marketingExpenses: {
             name: "Marketing Expenses",
@@ -120,7 +122,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
         lmStlMedian: {
             name: "LM STL Median",
             url: "/api/acquisition-kpis",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Null", "Timestamp", [
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Timestamp", [
                 {
                     "type": "category",
                     "fieldName": "Type",
@@ -136,7 +138,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
         amStlMedian: {
             name: "AM STL Median",
             url: "/api/acquisition-kpis",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Null", "Timestamp", [
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Timestamp", [
                 {
                     "type": "category",
                     "fieldName": "Type",
@@ -152,7 +154,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
         daStlMedian: {
             name: "DA STL Median",
             url: "/api/acquisition-kpis",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Null", "Timestamp", [
+            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Timestamp", [
                 {
                     "type": "category",
                     "fieldName": "Type",
@@ -168,7 +170,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
         bigChecks: {
             name: "BiG Checks",
             url: "/api/acquisition-kpis",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Null", "Timestamp", [
+            filters: generateFilters(startDate, endDate, null, kpiView, "Null", "Timestamp", [
                 {
                     "type": "category",
                     "fieldName": "Type",
@@ -212,8 +214,8 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                 },
                 {
                     "type": "app",
-                    "fieldName": "Team Member Responsible",
-                    "values": teamMembers
+                    "fieldName": "Setter Responsible",
+                    "values": setters
                 }
             ])
         },
@@ -233,8 +235,8 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                 },
                 {
                     "type": "app",
-                    "fieldName": "Team Member Responsible",
-                    "values": teamMembers
+                    "fieldName": "Closer Responsible",
+                    "values": closers
                 }
             ])
         },
@@ -265,8 +267,13 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                 },
                 {
                     "type": "app",
-                    "fieldName": "Team Member Responsible",
-                    "values": teamMembers
+                    "fieldName": "Closer Responsible",
+                    "values": closers
+                },
+                {
+                    "type": "app",
+                    "fieldName": "Setter Responsible",
+                    "values": setters
                 }
             ])
         },
@@ -281,8 +288,13 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                 },
                 {
                     "type": "app",
-                    "fieldName": "Team Member Responsible",
-                    "values": teamMembers
+                    "fieldName": "Closer Responsible",
+                    "values": closers
+                },
+                {
+                    "type": "app",
+                    "fieldName": "Setter Responsible",
+                    "values": setters
                 }
             ])
         },
@@ -302,8 +314,13 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                 },
                 {
                     "type": "app",
-                    "fieldName": "Team Member Responsible",
-                    "values": teamMembers
+                    "fieldName": "Closer Responsible",
+                    "values": closers
+                },
+                {
+                    "type": "app",
+                    "fieldName": "Setter Responsible",
+                    "values": setters
                 }
             ])
         },
@@ -319,7 +336,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                 {
                     "type": "app",
                     "fieldName": "Closer Responsible",
-                    "values": teamMembers
+                    "values": closers
                 }
             ])
         },
@@ -335,7 +352,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                 {
                     "type": "app",
                     "fieldName": "Closer Responsible",
-                    "values": teamMembers
+                    "values": closers
                 }
             ])
         },
@@ -356,7 +373,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers) => {
                 {
                     "type": "app",
                     "fieldName": "Closer Responsible",
-                    "values": teamMembers
+                    "values": closers
                 }
             ])
         },

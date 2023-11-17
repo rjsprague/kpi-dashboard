@@ -26,6 +26,7 @@ export const VIEW_KPIS = {
         ],
         "Closers": [
             "Closers Ad Spend",
+            "Closers Leads Per Day",
             "Closers Cost Per Lead",
             "Closers Leads Set Prequalified",
             "Closers Booking Rate",
@@ -52,6 +53,9 @@ export const VIEW_KPIS = {
             ],
             "Deal Analyst": [
                 "DA STL Median",
+            ],
+            "Transaction Coordinator": [
+                "BiG Checks"
             ],
         },
         "Closers": {

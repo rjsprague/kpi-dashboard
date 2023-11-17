@@ -874,6 +874,31 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
+    "Closers Leads Per Day": {
+        name: "Closers Leads Per Day",
+        dataKeys: ["closersLeadsCreated", "closersSalesCapacity"],
+        formula: (apiData) => {
+            const { closersLeadsCreated, closersSalesCapacity } = apiData;
+            return closersSalesCapacity !== 0 ? closersLeadsCreated / closersSalesCapacity : 0;
+        },
+        redFlag: 5.2,
+        target: 8.7,
+        dataLabels: ["Leads Created: ", "Sales Capacity: "],
+        kpiType: "",
+        unit: "",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Leads Per Day",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
     "Closers Leads Set Prequalified": {
         name: "Closers Leads Set Prequalified",
         dataKeys: ["closersLeadsCreated", "closersLeadsSetPrequalified"],

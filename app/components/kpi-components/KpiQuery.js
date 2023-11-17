@@ -24,16 +24,16 @@ const KpiQuery = ({
     handleCloneLeaderboard,
     ...props
 }) => {
-    let id, dateRange, leadSource, departments, teamMembers, gte, lte;
+    let id, dateRange, leadSource, departments, teamMembers, gte, lte, closers, setters;
     if (query) {
-        ({ id, dateRange, leadSource, departments, teamMembers } = query);
+        ({ id, dateRange, leadSource, departments, teamMembers, closers, setters } = query);
         gte = dateRange?.gte || '';
         lte = dateRange?.lte || '';
     }
     const clientSpaceId = useSelector(selectSpaceId);
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
 
-    const { data, error } = useSWR({ isProfessional, clientSpaceId, view, kpiList, leadSource, gte, lte, departments, teamMembers }, fetchKpiData);
+    const { data, error } = useSWR({ isProfessional, clientSpaceId, view, kpiList, leadSource, gte, lte, departments, teamMembers, closers, setters }, fetchKpiData);
     
     useEffect(() => {
 

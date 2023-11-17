@@ -33,6 +33,18 @@ function formatTime(time) {
     }
 }
 
+function formatCurrent(current, unit) {
+    if (unit === '$' && current !== Infinity) {
+        return `$${current.toFixed(2)}`;
+    } else if (unit === '%' && current !== Infinity) {
+        return `${current}%`;
+    } else if (current !== Infinity) {
+        return `${current} ${unit}`;
+    } else {
+        return `${current.toFixed(1)}`;
+    }
+}
+
 export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick, dateRange, leadSource, kpiView, teamMembers }) {
     const [isLoading, setIsLoading] = useState(false);
     const startDate = dateRange.gte ? formatDate(new Date(dateRange.gte)) : null;
@@ -82,11 +94,13 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
             return (<div className="flex justify-center text-3xl font-bold w-70">
                 {
                     prop.unit === "$" && prop.current !== Infinity ? (
-                        <span>$<CountUp delay={1} start={0} end={prop.current} /></span>
+                        <span>{'$'}<CountUp delay={1} start={0} end={prop.current} /></span>
                     ) : prop.unit === "%" && prop.current !== Infinity ? (
                         <span><CountUp delay={1} start={0} end={prop.current} />{'%'}</span>
-                    ) : prop.current !== Infinity ? (
+                    ) : prop.current !== Infinity && prop.unit !== "" ? (                        
                         <span><CountUp delay={1} start={0} end={prop.current} />{' '}{prop.unit}</span>
+                    ) : prop.current !== Infinity && prop.unit === "" ? (
+                        <span className={`${prop.current < prop.redFlag ? 'text-red-500' : prop.redFlag < prop.current < prop.target ? 'text-yellow-500' : prop.current > prop.target ? 'text-green-500' : 'text-black'}`}><CountUp delay={1} start={0} decimals={1} end={prop.current} /></span>
                     ) : (
                         <span>{prop.current}</span>
                     )

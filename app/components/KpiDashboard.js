@@ -23,6 +23,8 @@ export default function KpiDashboard({ user }) {
     const [leadSources, setLeadSources] = useState({});
     const [teamMembers, setTeamMembers] = useState([]);
     const [departments, setDepartments] = useState([]);
+    const [closers, setClosers] = useState([]);
+    const [setters, setSetters] = useState([]);
     const [kpiList, setKpiList] = useState();
     const datePresets = getDatePresets();
     const [idCounter, setIdCounter] = useState(0);
@@ -33,6 +35,8 @@ export default function KpiDashboard({ user }) {
     const professionalQuery = { id: idCounter + 1, results: [], isOpen: true, isLoading: false, isUnavailable: false, leadSource: {}, dateRange: { gte: datePresets['Previous Week'].startDate, lte: datePresets['Previous Week'].endDate }, departments: ["Lead Manager"], teamMembers: [{"Lead Manager":"Bob"}, {"Acquisition Manager":"Bob"}, {"Deal Analyst": "Bob"}] }
 
     const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId, kpiView) => {
+        // console.log(departmentsDataObject)
+        // console.log(Object.keys(departmentsDataObject["Closer"]))
         const firstDepartment = Object?.keys(departmentsDataObject)[0]
         const firstDeptTeamMembers = Object?.keys(departmentsDataObject[firstDepartment])
 
@@ -47,6 +51,8 @@ export default function KpiDashboard({ user }) {
                 dateRange: { gte: datePresets['Previous Week'].startDate, lte: datePresets['Previous Week'].endDate },
                 departments: [firstDepartment],
                 teamMembers: firstDeptTeamMembers,
+                closers: clientSpaceId === closersSpaceId ? Object?.keys(departmentsDataObject["Closer"]) : [],
+                setters: clientSpaceId === closersSpaceId ?  Object?.keys(departmentsDataObject["Setter"]) : [],
             },
         ];
         return initialQuery;
@@ -81,6 +87,11 @@ export default function KpiDashboard({ user }) {
                 setQueryType(KPI_VIEWS.Acquisitions);
                 if (clientSpaceId === closersSpaceId) {
                     setKpiList(VIEW_KPIS["Acquisitions"]["Closers"]);
+                    // set closers and setters
+                    const closers = Object.keys(departmentsDataObject["Closer"])
+                    const setters = Object.keys(departmentsDataObject["Setter"])
+                    setClosers(closers)
+                    setSetters(setters)
                 } else {
                     setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
                 }
@@ -253,14 +264,30 @@ export default function KpiDashboard({ user }) {
         setQueries(createInitialQueries(leadSources, departments, datePresets, idCounter + 1, type));
     };
 
-    const handleTeamMemberForClosersChange = (teamMember, queryId) => {
-        // console.log("team member ", teamMember)
+    const handleClosersChange = (closers, queryId) => {
+        // console.log("closers", closers)
         setQueries((prevQueries) => {
             return prevQueries.map((query) => {
                 if (query.id === queryId) {
                     return {
                         ...query,
-                        teamMembers: teamMember,
+                        closers: closers,
+                    };
+                } else {
+                    return query;
+                }
+            });
+        });
+    };
+
+    const handleSettersChange = (setters, queryId) => {
+        // console.log("setters", setters)
+        setQueries((prevQueries) => {
+            return prevQueries.map((query) => {
+                if (query.id === queryId) {
+                    return {
+                        ...query,
+                        setters: setters,
                     };
                 } else {
                     return query;
@@ -284,7 +311,8 @@ export default function KpiDashboard({ user }) {
             handleFetchedKpiData={handleFetchedKpiData}
             handleDateRangeChange={handleDateRangeChange}
             handleLeadSourceChange={handleLeadSourceChange}
-            handleTeamMemberForClosersChange={handleTeamMemberForClosersChange}
+            handleClosersChange={handleClosersChange}
+            handleSettersChange={handleSettersChange}
             handleTeamChange={handleTeamChange}
             handleToggleQuery={handleToggleQuery}
             handleRemoveQuery={handleRemoveQuery}

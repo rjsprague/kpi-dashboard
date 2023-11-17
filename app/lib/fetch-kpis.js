@@ -96,7 +96,7 @@ function getKpiValue(calculatedKPIs, endpointData, dataKey) {
 
 }
 
-async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, leadSource, gte, lte, departments, teamMembers }) {
+async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, leadSource, gte, lte, departments, teamMembers, closers, setters }) {
 
     // console.log(isProfessional, clientSpaceId)
     // console.log(kpiList)
@@ -106,6 +106,8 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
     // console.log(departments)
     // console.log(teamMembers)
     // console.log(view)
+    // console.log(closers)
+    // console.log(setters)
 
     if (view === "Leaderboard") {
         return null;
@@ -141,6 +143,8 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
     }
 
     const teamMember = teamMembers.map(Number);
+    const closer = closers.map(Number);
+    const setter = setters.map(Number);
 
     let requestedKpiList = [];
 
@@ -165,7 +169,7 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
     try {
         const startDate = gte ? formatDate(new Date(gte)) : null;
         const endDate = lte ? formatDate(new Date(lte)) : null;
-        const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, view, teamMember);
+        const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, view, teamMember, closer, setter);
 
         const requiredEndpoints = new Set();
 
@@ -200,7 +204,7 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
 
         if (view === 'Financial' || view === 'Acquisitions') {
 
-            const closersSalesCapacity = calculateTotalSalesCapacity(startDate, endDate, teamMember);
+            const closersSalesCapacity = calculateTotalSalesCapacity(startDate, endDate, closers);
 
             const totalMarketingExpenses = endpointData.marketingExpenses && Array.isArray(endpointData.marketingExpenses) && endpointData.marketingExpenses.reduce((acc, curr) => {
                 if ("Amount" in curr) {
@@ -288,6 +292,7 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
             return createKpiObject(name, current, redFlag, target, data1, data2, data3, unit, kpiType, kpiFactors);
         })
 
+        console.log("kpiObjects: ", kpiObjects);
         return kpiObjects;
 
     } catch (error) {

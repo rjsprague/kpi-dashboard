@@ -8,6 +8,7 @@ import QueryPanel from './QueryPanel';
 import AnimateHeight from 'react-animate-height';
 import RightSlideModal from '../RightSlideModal';
 import ServiceUnavailable from '../ServiceUnavailable';
+import LeadSourcesDropdown from './LeadSourcesDropdown';
 
 const TeamKpiQuery = ({
     view,
@@ -15,7 +16,9 @@ const TeamKpiQuery = ({
     query,
     departments,
     kpiList,
+    leadSources,
     onDateRangeChange,
+    onLeadSourceChange,
     onToggleQuery,
     onRemoveQuery,
     onTeamChange,
@@ -30,6 +33,8 @@ const TeamKpiQuery = ({
     const [teamKpiList, setTeamKpiList] = useState([]);
     const [department, setDepartment] = useState([]);
     const [tableProps, setTableProps] = useState(null);
+
+    console.log(leadSources)
 
     const updateKpiList = (department) => {
         setTeamKpiList(kpiList[department]);
@@ -58,7 +63,8 @@ const TeamKpiQuery = ({
 
     const handleKpiCardClick = async (startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName) => {
         // console.log("handleKpiCardClick: ", startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
-        setTableProps({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName });
+        console.log(leadSource)
+        setTableProps({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers: [], setters: [] });
         setModalType("table")
         setOpenModal(true)
     };
@@ -93,6 +99,13 @@ const TeamKpiQuery = ({
                             isLoadingData={isLoadingData}
                         />
                     </div>
+                    <LeadSourcesDropdown
+                        onOptionSelected={onLeadSourceChange}
+                        queryId={query.id}
+                        leadSources={leadSources}
+                        isLoadingData={isLoadingData}
+                        isUnavailable={query.isUnavailable}
+                    />
                     <div className="">
                         <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
                     </div>
@@ -129,6 +142,7 @@ const TeamKpiQuery = ({
                                     setSelectedKpis={setSelectedKpis}
                                     selectedDepartment={query.departments}
                                     tableProps={tableProps}
+                                    leadSources={leadSources}
                                     departments={departments}
                                     isProfessional={isProfessional}
                                 />

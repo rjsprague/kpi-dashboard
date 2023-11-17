@@ -15,16 +15,22 @@ function formatTime(time) {
     }
 }
 
-export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName }) {
+export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters }) {
+
+    // console.log(closers)
+    // console.log(setters)
+
     const accessToken = cookies.get('token');
     // console.log("accessToken", accessToken)
-    // console.log("api name: ", apiName)
+    console.log("api name: ", apiName)
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
     let teamMembersNum = teamMembers.map(Number);
+    let closersNum = closers.map(Number);
+    let settersNum = setters.map(Number);
     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
 
-    // console.log(apiEndpointsKeys)
-    // console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
+    console.log(apiEndpointsKeys)
+    // console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters)
 
     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
         throw new Error('Invalid API name');
@@ -37,7 +43,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         };
     }, {});
 
-    const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMembersNum);
+    const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMembersNum, closersNum, settersNum);
 
     const getInitialData = async (requestObject) => {
         const response = await fetch(`${requestObject.url}`, {
@@ -292,7 +298,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 60) + " mins" : "No LM STL Median",
-                    //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
+                    "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
@@ -304,7 +310,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "AM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 3600).toFixed(2) + " hours" : "No AM STL Median",
-                    //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
+                    "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
@@ -316,7 +322,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 3600).toFixed(2) + " hours" : "No DA STL Median",
-                    //"Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
+                    "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
@@ -449,7 +455,8 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name",
                     "Event": result["Event"] ? result["Event"] : "No event given",
                     "Event #": result["lead_event #"] ? result["lead_event #"] : "No event number given",
-                    "Team Member Responsible": result["Team Member Responsible [Name]"] ? result["Team Member Responsible [Name]"] : "No team member responsible",
+                    "Setter": result["Setter Responsible"] ? result["Setter Responsible"] : "No setter responsible",
+                    "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "No closer responsible",                    
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]].seller_id : "No Seller ID",
                 }
@@ -474,7 +481,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Qualification": result["Qualification"] ? result["Qualification"] : "No qualification",
                     "Call Confirmed": result["Call Confirmed"] ? result["Call Confirmed"] : "No call confirmed",
                     // "Lead Source": result["Related Lead Source Item"] ? result["Related Lead Source Item"] : "No lead source",
-                    "Setter": result["Team Member Responsible Name"] ? result["Team Member Responsible Name"] : result["Team Member Responsible"] ? result["Team Member Responsible"] : "Setter not given",
+                    "Setter": result["Setter Responsible"] ? result["Setter Responsible"] : result["Team Member Responsible"] ? result["Team Member Responsible"] : "Setter not given",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]].seller_id : "No Seller ID",
                 }

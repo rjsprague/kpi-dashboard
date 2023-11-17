@@ -17,7 +17,8 @@ const KpiQueryContainer = ({
     handleFetchedKpiData,
     handleDateRangeChange,
     handleLeadSourceChange,
-    handleTeamMemberForClosersChange,
+    handleClosersChange,
+    handleSettersChange,
     handleToggleQuery,
     handleRemoveQuery,
     handleAddQuery,
@@ -40,7 +41,8 @@ const KpiQueryContainer = ({
                     departments={departments}
                     onDateRangeChange={handleDateRangeChange}
                     onLeadSourceChange={handleLeadSourceChange}
-                    onTeamMemberForClosersChange={handleTeamMemberForClosersChange}
+                    onClosersChange={handleClosersChange}
+                    onSettersChange={handleSettersChange}
                     onToggleQuery={handleToggleQuery}
                     onRemoveQuery={handleRemoveQuery}
                     onFetchedKpiData={handleFetchedKpiData}

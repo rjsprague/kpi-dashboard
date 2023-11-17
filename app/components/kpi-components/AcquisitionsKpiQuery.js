@@ -22,7 +22,8 @@ const AcquisitionsKpiQuery = ({
     leadSources,
     onDateRangeChange,
     onLeadSourceChange,
-    onTeamMemberForClosersChange,
+    onClosersChange,
+    onSettersChange,
     onToggleQuery,
     onRemoveQuery,
     isLoadingData,
@@ -34,31 +35,68 @@ const AcquisitionsKpiQuery = ({
     const [selectedResult, setSelectedResult] = useState(null);
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
     const [tableProps, setTableProps] = useState(null);
-    const [teamMembersForClosers, setTeamMembersForClosers] = useState([]);
-    const [selectedTeamMembersForClosers, setSelectedTeamMembersForClosers] = useState([]);
-    const [reversedTeamMembersForClosers, setReversedTeamMembersForClosers] = useState([]);
-    const [teamMembersForClosersOpen, setTeamMembersForClosersOpen] = useState(false);
-    const clientSpaceId = useSelector(selectSpaceId);
 
-    // console.log("AcquisitionsKpiQuery: ", query)
+    const [closers, setClosers] = useState([]);
+    const [selectedClosers, setSelectedClosers] = useState([]);
+    const [reversedClosers, setReversedClosers] = useState([]);
+    const [closersOpen, setClosersOpen] = useState(false);
+
+    const [setters, setSetters] = useState([]);
+    const [selectedSetters, setSelectedSetters] = useState([]);
+    const [reversedSetters, setReversedSetters] = useState([]);
+    const [settersOpen, setSettersOpen] = useState(false);
+
+    const clientSpaceId = useSelector(selectSpaceId);
+    const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
+
 
     useEffect(() => {
-        const teamMembersObj = {};
-        Object.entries(departments).forEach(([department, members]) => {
-            Object.entries(members).forEach(([id, name]) => {
-                if (!teamMembersObj[id]) {
-                    teamMembersObj[id] = name + " (" + department + ")";
+        // put all of the closers in an object
+        if (clientSpaceId === closersSpaceId) {
+            const closersObj = {};
+            Object.entries(departments).forEach(([department, members]) => {
+                if (department === "Closer") {
+                    Object.entries(members).forEach(([id, name]) => {
+                        if (!closersObj[id]) {
+                            closersObj[id] = name;
+                        }
+                    });
                 }
             });
-        });
-        setTeamMembersForClosers(teamMembersObj);
-        setSelectedTeamMembersForClosers(Object.values(teamMembersObj));
-        onTeamMemberForClosersChange(Object.keys(teamMembersObj), query.id)
-        let reversedTeamMembersObj = {};
-        Object.entries(teamMembersObj).forEach(([id, name]) => {
-            reversedTeamMembersObj[name] = id;
-        });
-        setReversedTeamMembersForClosers(reversedTeamMembersObj);
+            setClosers(closersObj);
+            setSelectedClosers(Object.values(closersObj));
+            onClosersChange(Object.keys(closersObj), query.id)
+            let reversedClosersObj = {};
+            Object.entries(closersObj).forEach(([id, name]) => {
+                reversedClosersObj[name] = id;
+            });
+            setReversedClosers(reversedClosersObj);
+        }
+    }, [departments])
+
+
+    useEffect(() => {
+        // put all of the setters in an object
+        if (clientSpaceId === closersSpaceId) {
+            const settersObj = {};
+            Object.entries(departments).forEach(([department, members]) => {
+                if (department === "Setter") {
+                    Object.entries(members).forEach(([id, name]) => {
+                        if (!settersObj[id]) {
+                            settersObj[id] = name;
+                        }
+                    });
+                }
+            });
+            setSetters(settersObj);
+            setSelectedSetters(Object.values(settersObj));
+            onSettersChange(Object.keys(settersObj), query.id);
+            let reversedSettersObj = {};
+            Object.entries(settersObj).forEach(([id, name]) => {
+                reversedSettersObj[name] = id;
+            });
+            setReversedSetters(reversedSettersObj);
+        }
     }, [departments])
 
     const handleCardInfoClick = (result) => {
@@ -73,8 +111,8 @@ const AcquisitionsKpiQuery = ({
     };
 
     const handleKpiCardClick = async (startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName) => {
-        //console.log("handleKpiCardClick: ", startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
-        setTableProps({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName });
+        // console.log(leadSource)
+        setTableProps({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers: Object.keys(closers), setters: Object.keys(setters) });
         setModalType("table")
         setOpenModal(true)
     };
@@ -88,10 +126,18 @@ const AcquisitionsKpiQuery = ({
         setHeight(height === 0 ? 'auto' : 0);
     };
 
-    const handleTeamMemberForClosersChange = (selectedTeamMembers) => {
-        const selectedTeamMemberIds = selectedTeamMembers.map(option => reversedTeamMembersForClosers[option])
-        setSelectedTeamMembersForClosers(selectedTeamMembers)
-        onTeamMemberForClosersChange(selectedTeamMemberIds, query.id)
+    const handleClosersChange = (selectedClosers) => {
+        // console.log(selectedClosers)
+        const selectedCloserIds = selectedClosers.map(option => reversedClosers[option])
+        // console.log(selectedCloserIds)
+        setSelectedClosers(selectedClosers)
+        onClosersChange(selectedCloserIds, query.id)
+    };
+
+    const handleSettersChange = (selectedSetters) => {
+        const selectedSetterIds = selectedSetters.map(option => reversedSetters[option])
+        setSelectedSetters(selectedSetters)
+        onSettersChange(selectedSetterIds, query.id)
     };
 
     const handleRemoveQuery = () => {
@@ -107,18 +153,33 @@ const AcquisitionsKpiQuery = ({
             {/* Main KPI Results */}
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
                 <div className='flex flex-col gap-2 xs:flex-row'>
-                    {clientSpaceId == process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID && teamMembersForClosers &&
-                        <UniversalDropdown
-                            options={Object.values(teamMembersForClosers)}
-                            onOptionSelected={handleTeamMemberForClosersChange}
-                            selectedOptions={selectedTeamMembersForClosers}
-                            queryId={query.id}
-                            isSingleSelect={false}
-                            isLoadingData={isLoadingData}
-                            className={""}
-                            ButtonComponent={DropdownButton}
-                            showButton={teamMembersForClosersOpen}
-                        />
+                    {clientSpaceId === closersSpaceId && closers && setters &&
+                        <>
+                            <UniversalDropdown
+                                options={Object.values(setters)}
+                                onOptionSelected={handleSettersChange}
+                                selectedOptions={selectedSetters}
+                                queryId={query.id}
+                                isSingleSelect={false}
+                                isLoadingData={isLoadingData}
+                                className={""}
+                                ButtonComponent={DropdownButton}
+                                showButton={settersOpen}
+                                label={"All Setters"}
+                            />
+                            <UniversalDropdown
+                                options={Object.values(closers)}
+                                onOptionSelected={handleClosersChange}
+                                selectedOptions={selectedClosers}
+                                queryId={query.id}
+                                isSingleSelect={false}
+                                isLoadingData={isLoadingData}
+                                className={""}
+                                ButtonComponent={DropdownButton}
+                                showButton={closersOpen}
+                                label={"All Closers"}
+                            />
+                        </>
                     }
                     {/* Lead Source and Date Range Selectors */}
                     <LeadSourcesDropdown

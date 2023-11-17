@@ -39,13 +39,14 @@ const RightSlideModal = ({
     const clientSpaceId = useSelector(selectSpaceId);
     const [clients, setClients] = useState({});
 
-
+    console.log(leadSources)
     // Check if tableProps is defined before destructuring
     let startDate, endDate, leadSource, kpiView, teamMembers, apiName;
+    let closers, setters = [];
     if (tableProps) {
-        ({ startDate, endDate, leadSource, kpiView, teamMembers, apiName } = tableProps);
+        ({ startDate, endDate, leadSource, kpiView, teamMembers, apiName, closers, setters } = tableProps);
     }
-    // console.log(startDate, endDate, leadSource, kpiView, teamMembers, apiName, clientSpaceId)
+    console.log(startDate, endDate, leadSource, kpiView, teamMembers, apiName, clientSpaceId, closers, setters)
 
     const swrKey = useMemo(() => {
         return {
@@ -55,12 +56,14 @@ const RightSlideModal = ({
             kpiView,
             teamMembers,
             clientSpaceId,
-            apiName
+            apiName,
+            closers,
+            setters
         };
-    }, [startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName]);
+    }, [startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters]);
 
     const { data, error } = useSWR(swrKey, fetchSingleKpi);
-    // console.log('data', data)
+    console.log('data', data)
     const { data: clientsData, error: clientsError } = useSWR(["/api/spaces"], fetchClients);
 
     // console.log('clientsData', clientsData)

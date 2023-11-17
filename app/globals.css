@@ -151,11 +151,12 @@ body {
     display: table;
     border-collapse: collapse;
     border-spacing: 0;
-    width: 100%;
+    width: fit-content;
 }
 
 .tr {
-    display: table-row;
+    display: flex;
+    width: fit-content;
     vertical-align: middle;
     border-bottom: rgba(255, 255, 255, 0.5) solid 1px;
 }
@@ -164,10 +165,8 @@ body {
 .td {
     display: table-cell;
     vertical-align: middle;
-    width: 150px;
-    max-width: 150px;
-    min-width: 150px;
     box-sizing: border-box;
+    width: 100px;
     padding: 3px;
     white-space: nowrap;
     border-right: rgba(255, 255, 255, 0.5) solid 1px;
@@ -176,6 +175,7 @@ body {
     min-height: 30px;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size:medium;
 }
 
 .th {
@@ -186,9 +186,32 @@ body {
     border-bottom: rgba(255, 255, 255, 0.5) solid 1px;
 }
 
-.cursor-col-resize {
+.resizer {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 5px;
+    background: rgba(0, 0, 0, 0.5);
     cursor: col-resize;
-}
+    user-select: none;
+    touch-action: none;
+  }
+  
+  .resizer.isResizing {
+    background: blue;
+    opacity: 1;
+  }
+  
+  @media (hover: hover) {
+    .resizer {
+      opacity: 0;
+    }
+  
+    *:hover > .resizer {
+      opacity: 1;
+    }
+  }
 
 .lds-ellipsis {
     display: inline-block;

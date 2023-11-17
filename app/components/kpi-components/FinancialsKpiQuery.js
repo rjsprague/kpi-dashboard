@@ -35,17 +35,17 @@ const FinancialsKpiQuery = ({
     const [selectedKpis, setSelectedKpis] = useState([]);
     const [tableProps, setTableProps] = useState(null);
 
-    useEffect(() => {
-        const teamMembersObj = {};
-        Object.entries(departments).forEach(([department, members]) => {
-            Object.entries(members).forEach(([id, name]) => {
-                if (!teamMembersObj[id]) {
-                    teamMembersObj[id] = name + " (" + department + ")";
-                }
-            });
-        });
-        onTeamMemberForClosersChange(Object.keys(teamMembersObj), query.id)
-    }, [departments])
+    // useEffect(() => {
+    //     const teamMembersObj = {};
+    //     Object.entries(departments).forEach(([department, members]) => {
+    //         Object.entries(members).forEach(([id, name]) => {
+    //             if (!teamMembersObj[id]) {
+    //                 teamMembersObj[id] = name + " (" + department + ")";
+    //             }
+    //         });
+    //     });
+    //     onTeamMemberForClosersChange(Object.keys(teamMembersObj), query.id)
+    // }, [departments])
 
     useEffect(() => {
         setSelectedKpis(kpiList)
@@ -64,7 +64,7 @@ const FinancialsKpiQuery = ({
 
     const handleKpiCardClick = async (startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName) => {
         //console.log("handleKpiCardClick: ", startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
-        setTableProps({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName });
+        setTableProps({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers: [], setters: [] });
         setModalType("table")
         setOpenModal(true)
     };
