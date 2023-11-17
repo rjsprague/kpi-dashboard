@@ -15,7 +15,9 @@ function checkCookies() {
     }, {});
 
     const tokenExists = cookies.hasOwnProperty('token');
+    console.log(tokenExists)
     const tokenExpiryExists = cookies.hasOwnProperty('tokenExpiry');
+    console.log(tokenExpiryExists)
 
     return { tokenExists, tokenExpiryExists };
 }
@@ -34,19 +36,15 @@ export default function withAuth(Component) {
             // get tokenExpiry from cookie
             const tokenExpiry = Cookies.get('tokenExpiry');
 
-            // if the Cookies.get('token') and/or Cookies.get('tokenExpiry') is missing, show login modal
             if (!tokenExists && isLoggingOut === false || !tokenExpiryExists && isLoggingOut === false) {
-                // TODO: redirect to login page
-                router.push('/login');                
+                // if the Cookies.get('token') and/or Cookies.get('tokenExpiry') is missing redirect to login
+                router.push('/login');
             }
 
-            if (auth?.tokenExpiry && tokenExpiry && isLoggingOut === false ) {
-
+            if (auth?.tokenExpiry && tokenExpiry && isLoggingOut === false) {
                 interval = setInterval(() => {
                     if (new Date().getTime() > Number(auth.tokenExpiry) * 1000) {
-                        // Clear cookie and show login modal
-                        Cookies.remove('token');
-                        Cookies.remove('tokenExpiry')
+                        // show login modal
                         setShowLoginModal(true);
                         clearInterval(interval);
                     }
