@@ -20,7 +20,7 @@ const calculateDailySlots = (start, end, slotDuration, lunchBreak) => {
 
 // Function to calculate slots for each team member's weekly schedule
 const calculateSlotsForTeam = (teamSchedules) => {
-    const slotDuration = 90; // Slot duration in minutes
+    const slotDuration = 60; // Slot duration in minutes
     const lunchBreak = 30; // Lunch break duration in minutes
     let teamMemberSlots = {};
 

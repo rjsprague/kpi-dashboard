@@ -112,7 +112,7 @@ const AcquisitionsKpiQuery = ({
 
     const handleKpiCardClick = async (startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName) => {
         // console.log(leadSource)
-        setTableProps({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers: Object.keys(closers), setters: Object.keys(setters) });
+        setTableProps({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers: query.closers, setters: query.setters });
         setModalType("table")
         setOpenModal(true)
     };

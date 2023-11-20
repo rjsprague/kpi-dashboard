@@ -1,9 +1,9 @@
 const Tooltip = ({ text, showTooltip, hideTooltip }) => {
     const handleMouseEnter = (e) => {
-        console.log(showTooltip)
+        // console.log(showTooltip)
         const { pageX, pageY } = e;
-        console.log('Tooltip position:', pageX, pageY); // Add this line for debugging
-        console.log(text)
+        // console.log('Tooltip position:', pageX, pageY); // Add this line for debugging
+        // console.log(text)
         showTooltip(text, pageY, pageX); // Pass coordinates as separate arguments
     };
 

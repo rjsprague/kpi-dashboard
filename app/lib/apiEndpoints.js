@@ -1,6 +1,6 @@
 const generateFilters = (startDate, endDate, leadSource, kpiView, leadSourceFieldName, dateFieldName, extraFilters) => {
     const filters = [];
-    console.log(leadSource)
+    // console.log(leadSource)
     if (startDate && endDate) {
         filters.push({
             "type": 'date',
@@ -26,10 +26,10 @@ const generateFilters = (startDate, endDate, leadSource, kpiView, leadSourceFiel
 };
 // Define the endpoints and filters for each KPI
 const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, closers, setters) => {
-    console.log(teamMembers)
-    console.log(kpiView)
-    console.log(closers)
-    console.log(setters)
+    // console.log(teamMembers)
+    // console.log(kpiView)
+    // console.log(closers)
+    // console.log(setters)
     return {
         marketingExpenses: {
             name: "Marketing Expenses",

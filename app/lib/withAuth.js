@@ -15,9 +15,9 @@ function checkCookies() {
     }, {});
 
     const tokenExists = cookies.hasOwnProperty('token');
-    console.log(tokenExists)
+    // console.log(tokenExists)
     const tokenExpiryExists = cookies.hasOwnProperty('tokenExpiry');
-    console.log(tokenExpiryExists)
+    // console.log(tokenExpiryExists)
 
     return { tokenExists, tokenExpiryExists };
 }
