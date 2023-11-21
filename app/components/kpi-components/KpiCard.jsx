@@ -33,18 +33,6 @@ function formatTime(time) {
     }
 }
 
-function formatCurrent(current, unit) {
-    if (unit === '$' && current !== Infinity) {
-        return `$${current.toFixed(2)}`;
-    } else if (unit === '%' && current !== Infinity) {
-        return `${current}%`;
-    } else if (current !== Infinity) {
-        return `${current} ${unit}`;
-    } else {
-        return `${current.toFixed(1)}`;
-    }
-}
-
 export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick, dateRange, leadSource, kpiView, teamMembers }) {
     const [isLoading, setIsLoading] = useState(false);
     const startDate = dateRange.gte ? formatDate(new Date(dateRange.gte)) : null;

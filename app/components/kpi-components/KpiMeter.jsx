@@ -14,19 +14,11 @@ const KpiMeter = ({ redFlag, current, target, unit }) => {
     const valRef = useRef(null);
 
     // Used by KPIs that have a $ as the unit
-    let dollarFill;
+    let fill;
     if (target > redFlag) {
-        dollarFill = currentNum >= target ? "green" : currentNum >= redFlag ? "yellow" : "red";
+        fill = currentNum >= target ? "green" : currentNum >= redFlag ? "yellow" : "red";
     } else {
-        dollarFill = currentNum <= target ? "green" : currentNum <= redFlag ? "yellow" : "red";
-    }
-
-    // Used by KPIs that have a % as the unit
-    let percentFill;
-    if (target > redFlag) {
-        percentFill = currentNum >= target ? "green" : currentNum >= redFlag ? "yellow" : "red";
-    } else {
-        percentFill = currentNum <= target ? "green" : currentNum <= redFlag ? "yellow" : "red";
+        fill = currentNum <= target ? "green" : currentNum <= redFlag ? "yellow" : "red";
     }
 
     const { currentPosition, redFlagPosition, targetPosition } = calculatePositions(current, redFlag, target, unit);
@@ -36,12 +28,12 @@ const KpiMeter = ({ redFlag, current, target, unit }) => {
         gsap.to(rectRef.current, {
             duration: 2,
             width: currentPosition,
-            fill: unit === "$" ? dollarFill : percentFill
+            fill: fill
         });
         gsap.to(triRef.current, { x: currentPosition, duration: 2 });
         gsap.to(labelRef.current, { x: currentPosition, duration: 2 });
         gsap.to(valRef.current, { x: currentPosition, duration: 2 });
-    }, [current, currentNum, dollarFill, percentFill]);
+    }, [current, currentNum, fill]);
 
     return (
         <div className="relative -right-3 -bottom-4">
@@ -68,28 +60,29 @@ const KpiMeter = ({ redFlag, current, target, unit }) => {
                     {
                         current === Infinity ? prettyCurNum.toString().slice(0, 3).toUpperCase() :
                             unit === "$" ? "$" + prettyCurNum :
-                                prettyCurNum + "%"
+                                unit === "%" ? prettyCurNum + "%" :
+                                prettyCurNum + " " + unit
                     }
                 </text>
 
                 { redFlag < target ? (
                     <>
                         <text x={`${targetPosition + 30}`} y="115" textAnchor="middle" fontSize="12" className="text-md">
-                            {target === 0 ? "" : unit === "$" && target > 0 ? "$" + target : target + "%"}
+                            {target === 0 ? "" : unit === "$" && target > 0 ? "$" + target : unit === "%" && target > 0 ? target + "%" : target + unit}
                         </text>
 
                         <text x={`${redFlagPosition + 20}`} y="115" textAnchor="middle" fontSize="12" className="text-md">
-                            {redFlag === 0 ? "" : unit === "$" && redFlag > 0 ? "$" + redFlag : redFlag + "%"}
+                            {redFlag === 0 ? "" : unit === "$" && redFlag > 0 ? "$" + redFlag : unit === "%" && redFlag > 0 ? redFlag + "%" : redFlag + unit}
                         </text>
                     </>
                 ) : (
                     <>
                         <text x={`${targetPosition + 20}`} y="115" textAnchor="middle" fontSize="12" className="text-md">
-                            {target === 0 ? "" : unit === "$" && target > 0 ? "$" + target : target + "%"}
+                            {target === 0 ? "" : unit === "$" && target > 0 ? "$" + target : unit === "%" && target > 0 ? target + "%" : target + unit}
                         </text>
 
                         <text x={`${redFlagPosition + 30}`} y="115" textAnchor="middle" fontSize="12" className="text-md">
-                            {redFlag === 0 ? "" : unit === "$" && redFlag > 0 ? "$" + redFlag : redFlag + "%"}
+                        {redFlag === 0 ? "" : unit === "$" && redFlag > 0 ? "$" + redFlag : unit === "%" && redFlag > 0 ? redFlag + "%" : redFlag + unit}
                         </text>
                     </>
                 )}
@@ -124,7 +117,7 @@ const calculatePositions = (current, redFlag, target, unit) => {
       redFlagPosition = (redFlag * scale / 100) * svgWidth;
       targetPosition = (target * scale / 100) * svgWidth;
       currentPosition = (current * scale / 100) * svgWidth;
-    } else if (unit === '$') {
+    } else {
       const diff = Math.abs(redFlag - target);
       const spacing = (diff / (redFlag + target)) * svgWidth;
   

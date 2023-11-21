@@ -16,18 +16,36 @@ function calculateKPIs(startDate, endDate, endpointData, kpiList) {
     for (const kpiName of kpiList) {
         const kpiDefinition = KPI_DEFINITIONS[kpiName];
         if (!kpiDefinition) continue;
+
+        kpiData[kpiName] = {}; // Initialize kpiName as an object
+
         try {
+            // Calculate and assign the main KPI value
             if (kpiDefinition.createFormula) {
-                kpiData[kpiName] = kpiDefinition.createFormula(startDate, endDate)(endpointData);
+                kpiData[kpiName]['current'] = kpiDefinition.createFormula(startDate, endDate)(endpointData);
             } else {
-                kpiData[kpiName] = kpiDefinition.formula(endpointData);
+                kpiData[kpiName]['current'] = kpiDefinition.formula(endpointData);
             }
+
+            // Calculate and assign redFlag and target
+            if (kpiDefinition.createRedFlag) {
+                kpiData[kpiName]['redFlag'] = kpiDefinition.createRedFlag(startDate, endDate)(endpointData);
+            } else {
+                kpiData[kpiName]['redFlag'] = kpiDefinition.redFlag;
+            }
+            if (kpiDefinition.createTarget) {
+                kpiData[kpiName]['target'] = kpiDefinition.createTarget(startDate, endDate)(endpointData);
+            } else {
+                kpiData[kpiName]['target'] = kpiDefinition.target;
+            }
+
         } catch (error) {
             console.error(`Error calculating ${kpiName}:`, error);
         }
     }
     return kpiData;
 }
+
 
 const createDataString = (dataLabel, value) => {
     if (value > 999) {
@@ -69,27 +87,27 @@ function getKpiValue(calculatedKPIs, endpointData, dataKey) {
     } else if (dataKey === 'profit') {
         return endpointData.actualizedProfit;
     } else if (dataKey === 'pendingDeals') {
-        return calculatedKPIs["Pending Deals"];
+        return calculatedKPIs["Pending Deals"].current;
     } else if (dataKey === 'lmStlMedian') {
-        return calculatedKPIs["LM STL Median"];
+        return calculatedKPIs["LM STL Median"].current;
     } else if (dataKey === 'amStlMedian') {
-        return calculatedKPIs["AM STL Median"];
+        return calculatedKPIs["AM STL Median"].current;
     } else if (dataKey === 'daStlMedian') {
-        return calculatedKPIs["DA STL Median"];
+        return calculatedKPIs["DA STL Median"].current;
     } else if (dataKey === 'setterStlMedian') {
-        return calculatedKPIs["Setter STL Median"];
+        return calculatedKPIs["Setter STL Median"].current;
     } else if (dataKey === 'bigChecks') {
-        return calculatedKPIs["BiG Checks"];
+        return calculatedKPIs["BiG Checks"].current;
     } else if (dataKey === 'closersCashCollected') {
         return endpointData.cashCollectedUpFront;
     } else if (dataKey === 'closersRevenueContracted') {
         return endpointData.totalRevenueContracted;
     } else if (dataKey === 'closerCommission') {
-        return calculatedKPIs["Closer Commission"];
+        return calculatedKPIs["Closer Commission"].current;
     } else if (dataKey === 'setterCommission') {
-        return calculatedKPIs["Setter Commission"];
+        return calculatedKPIs["Setter Commission"].current;
     } else if (dataKey === 'currentPassiveIncome') {
-        return calculatedKPIs["Current Passive Income"];
+        return calculatedKPIs["Current Passive Income"].current;
     } else {
         return data;
     }
@@ -284,15 +302,17 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
         // Helper function for creating KPI objects
         const kpiObjects = requestedKpiList.map((kpiName) => {
             const name = KPI_DEFINITIONS[kpiName].name;
-            const current = calculatedKPIs[kpiName];
-            const { redFlag, target, dataLabels, kpiFactors, dataKeys, kpiType, unit } = KPI_DEFINITIONS[kpiName];
+            const current = calculatedKPIs[kpiName].current;
+            const redFlag = calculatedKPIs[kpiName].redFlag;
+            const target = calculatedKPIs[kpiName].target;
+            const { dataLabels, kpiFactors, dataKeys, kpiType, unit } = KPI_DEFINITIONS[kpiName];
             const data1 = dataKeys.length > 0 && dataLabels[0] !== undefined ? createDataString(dataLabels[0], getKpiValue(calculatedKPIs, endpointData, dataKeys[0])) : 0;
             const data2 = dataKeys.length > 1 && dataLabels[1] !== undefined ? createDataString(dataLabels[1], getKpiValue(calculatedKPIs, endpointData, dataKeys[1])) : 0;
             const data3 = dataKeys.length > 2 && dataLabels[2] !== undefined ? createDataString(dataLabels[2], getKpiValue(calculatedKPIs, endpointData, dataKeys[2])) : 0;
             return createKpiObject(name, current, redFlag, target, data1, data2, data3, unit, kpiType, kpiFactors);
         })
 
-        console.log("kpiObjects: ", kpiObjects);
+        // console.log("kpiObjects: ", kpiObjects);
         return kpiObjects;
 
     } catch (error) {

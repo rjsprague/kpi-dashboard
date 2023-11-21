@@ -877,15 +877,43 @@ const KPI_DEFINITIONS = {
     "Closers Leads Per Day": {
         name: "Closers Leads Per Day",
         dataKeys: ["closersLeadsCreated", "closersSalesCapacity"],
-        formula: (apiData) => {
-            const { closersLeadsCreated, closersSalesCapacity } = apiData;
-            return closersSalesCapacity !== 0 ? closersLeadsCreated / closersSalesCapacity : 0;
+        createFormula: (startDate, endDate) => (apiData) => {
+            const { closersLeadsCreated } = apiData;
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const timeDifference = Math.abs(end.getTime() - start.getTime());
+            const daysInRange = Math.ceil(timeDifference / (1000 * 3600 * 24));
+            return closersLeadsCreated / daysInRange;
         },
-        redFlag: 5.2,
-        target: 8.7,
+        createRedFlag: (startDate, endDate) => (apiData) => {
+            const { closersSalesCapacity } = apiData;
+            const leadsPerSlotRedFlag = 3.46;
+           
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const timeDifference = Math.abs(end.getTime() - start.getTime());
+            const daysInRange = Math.ceil(timeDifference / (1000 * 3600 * 24));
+
+            const leadsPerDayRedFlagString = (closersSalesCapacity*leadsPerSlotRedFlag/daysInRange).toFixed(2);
+
+            return parseFloat(leadsPerDayRedFlagString);
+        },
+        createTarget: (startDate, endDate) => (apiData) => {
+            const { closersSalesCapacity } = apiData;
+            const leadsPerSlotTarget = 5.77;
+
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const timeDifference = Math.abs(end.getTime() - start.getTime());
+            const daysInRange = Math.ceil(timeDifference / (1000 * 3600 * 24));
+
+            const leadsPerDayTargetString = (closersSalesCapacity*leadsPerSlotTarget/daysInRange).toFixed(2);
+
+            return parseFloat(leadsPerDayTargetString);
+        },
         dataLabels: ["Leads Created: ", "Sales Capacity: "],
-        kpiType: "",
-        unit: "",
+        kpiType: "meter",
+        unit: "LPD",
         kpiFactors: [
             {
                 id: 0,
