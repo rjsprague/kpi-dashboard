@@ -516,7 +516,7 @@ const KPI_DEFINITIONS = {
             }
 
             const start = new Date(startDate);
-            const end = new Date(endDate);
+            const end = new Date(endDate + "T23:59:59");
             const oneDay = 1000 * 60 * 60 * 24;
             const diffDays = Math.abs((end - start) / oneDay);
             const numWeeks = diffDays / 7;
@@ -822,7 +822,7 @@ const KPI_DEFINITIONS = {
 
             // Calculate the number of days in the date range
             const start = new Date(startDate);
-            const end = new Date(endDate);
+            const end = new Date(endDate + "T23:59:59");
             const timeDifference = Math.abs(end.getTime() - start.getTime());
             const daysInRange = Math.ceil(timeDifference / (1000 * 3600 * 24));
 
@@ -880,36 +880,34 @@ const KPI_DEFINITIONS = {
         createFormula: (startDate, endDate) => (apiData) => {
             const { closersLeadsCreated } = apiData;
             const start = new Date(startDate);
-            const end = new Date(endDate);
+            const end = new Date(endDate + "T23:59:59.999Z");
             const timeDifference = Math.abs(end.getTime() - start.getTime());
             const daysInRange = Math.ceil(timeDifference / (1000 * 3600 * 24));
-            return closersLeadsCreated / daysInRange;
+            return Math.ceil(closersLeadsCreated / daysInRange);
         },
         createRedFlag: (startDate, endDate) => (apiData) => {
             const { closersSalesCapacity } = apiData;
             const leadsPerSlotRedFlag = 3.46;
            
             const start = new Date(startDate);
-            const end = new Date(endDate);
+            const end = new Date(endDate + "T23:59:59.999Z");
             const timeDifference = Math.abs(end.getTime() - start.getTime());
             const daysInRange = Math.ceil(timeDifference / (1000 * 3600 * 24));
+            const leadsPerDayRedFlag = Math.floor(closersSalesCapacity / daysInRange * leadsPerSlotRedFlag);
 
-            const leadsPerDayRedFlagString = (closersSalesCapacity*leadsPerSlotRedFlag/daysInRange).toFixed(2);
-
-            return parseFloat(leadsPerDayRedFlagString);
+            return leadsPerDayRedFlag;
         },
         createTarget: (startDate, endDate) => (apiData) => {
             const { closersSalesCapacity } = apiData;
             const leadsPerSlotTarget = 5.77;
 
             const start = new Date(startDate);
-            const end = new Date(endDate);
+            const end = new Date(endDate + "T23:59:59.999Z");
             const timeDifference = Math.abs(end.getTime() - start.getTime());
             const daysInRange = Math.ceil(timeDifference / (1000 * 3600 * 24));
+            const leadsPerDayTarget = Math.floor(closersSalesCapacity / daysInRange * leadsPerSlotTarget);
 
-            const leadsPerDayTargetString = (closersSalesCapacity*leadsPerSlotTarget/daysInRange).toFixed(2);
-
-            return parseFloat(leadsPerDayTargetString);
+            return leadsPerDayTarget;
         },
         dataLabels: ["Leads Created: ", "Sales Capacity: "],
         kpiType: "meter",

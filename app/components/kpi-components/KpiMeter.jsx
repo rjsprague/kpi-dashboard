@@ -68,21 +68,21 @@ const KpiMeter = ({ redFlag, current, target, unit }) => {
                 { redFlag < target ? (
                     <>
                         <text x={`${targetPosition + 30}`} y="115" textAnchor="middle" fontSize="12" className="text-md">
-                            {target === 0 ? "" : unit === "$" && target > 0 ? "$" + target : unit === "%" && target > 0 ? target + "%" : target + unit}
+                            {target === 0 ? "" : unit === "$" && target > 0 ? "$" + target : unit === "%" && target > 0 ? target + "%" : target + " " + unit}
                         </text>
 
                         <text x={`${redFlagPosition + 20}`} y="115" textAnchor="middle" fontSize="12" className="text-md">
-                            {redFlag === 0 ? "" : unit === "$" && redFlag > 0 ? "$" + redFlag : unit === "%" && redFlag > 0 ? redFlag + "%" : redFlag + unit}
+                            {redFlag === 0 ? "" : unit === "$" && redFlag > 0 ? "$" + redFlag : unit === "%" && redFlag > 0 ? redFlag + "%" : redFlag + " " + unit}
                         </text>
                     </>
                 ) : (
                     <>
                         <text x={`${targetPosition + 20}`} y="115" textAnchor="middle" fontSize="12" className="text-md">
-                            {target === 0 ? "" : unit === "$" && target > 0 ? "$" + target : unit === "%" && target > 0 ? target + "%" : target + unit}
+                            {target === 0 ? "" : unit === "$" && target > 0 ? "$" + target : unit === "%" && target > 0 ? target + "%" : target + " " + unit}
                         </text>
 
                         <text x={`${redFlagPosition + 30}`} y="115" textAnchor="middle" fontSize="12" className="text-md">
-                        {redFlag === 0 ? "" : unit === "$" && redFlag > 0 ? "$" + redFlag : unit === "%" && redFlag > 0 ? redFlag + "%" : redFlag + unit}
+                        {redFlag === 0 ? "" : unit === "$" && redFlag > 0 ? "$" + redFlag : unit === "%" && redFlag > 0 ? redFlag + "%" : redFlag + " " + unit}
                         </text>
                     </>
                 )}
