@@ -18,7 +18,6 @@ const FinancialsKpiQuery = ({
     leadSources,
     onDateRangeChange,
     onLeadSourceChange,
-    onTeamMemberForClosersChange,
     onToggleQuery,
     onRemoveQuery,
     isLoadingData,
@@ -34,18 +33,6 @@ const FinancialsKpiQuery = ({
     const [selectedResult, setSelectedResult] = useState(null);
     const [selectedKpis, setSelectedKpis] = useState([]);
     const [tableProps, setTableProps] = useState(null);
-
-    // useEffect(() => {
-    //     const teamMembersObj = {};
-    //     Object.entries(departments).forEach(([department, members]) => {
-    //         Object.entries(members).forEach(([id, name]) => {
-    //             if (!teamMembersObj[id]) {
-    //                 teamMembersObj[id] = name + " (" + department + ")";
-    //             }
-    //         });
-    //     });
-    //     onTeamMemberForClosersChange(Object.keys(teamMembersObj), query.id)
-    // }, [departments])
 
     useEffect(() => {
         setSelectedKpis(kpiList)
@@ -73,10 +60,6 @@ const FinancialsKpiQuery = ({
         onDateRangeChange(startDate, endDate, query.id);
     };
 
-    const handleOptionSelected = (values) => {
-        onLeadSourceChange(values, query.id);
-    };
-
     const handleToggleQuery = () => {
         onToggleQuery(query.id);
         setHeight(height === 0 ? 'auto' : 0);
@@ -98,13 +81,14 @@ const FinancialsKpiQuery = ({
                 <div className='flex flex-col gap-1 xs:flex-row sm:gap-4'>
                     {/* Lead Source and Date Range Selectors */}
                     <LeadSourcesDropdown
-                        onOptionSelected={handleOptionSelected}
+                        onOptionSelected={onLeadSourceChange}
+                        selectedLeadsources={query.leadSources}
                         queryId={query.id}
                         leadSources={leadSources}
                         isLoadingData={isLoadingData}
                         isUnavailable={query.isUnavailable}
                     />
-                    <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
+                    <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} selectedDateRange={query.dateRange} />
                 </div>
             </QueryPanel>
 

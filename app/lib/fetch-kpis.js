@@ -114,11 +114,11 @@ function getKpiValue(calculatedKPIs, endpointData, dataKey) {
 
 }
 
-async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, leadSource, gte, lte, departments, teamMembers, closers, setters }) {
+async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, leadSources, gte, lte, departments, teamMembers, closers, setters }) {
 
     // console.log(isProfessional, clientSpaceId)
     // console.log(kpiList)
-    // console.log(leadSource)
+    // console.log(leadSources)
     // console.log(gte)
     // console.log(lte)
     // console.log(departments)
@@ -187,7 +187,7 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
     try {
         const startDate = gte ? formatDate(new Date(gte)) : null;
         const endDate = lte ? formatDate(new Date(lte)) : null;
-        const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, view, teamMember, closer, setter);
+        const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSources, view, teamMember, closer, setter);
 
         const requiredEndpoints = new Set();
 

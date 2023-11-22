@@ -18,13 +18,14 @@ const KpiSwiper = ({ query, view, selectedKpis, handleCardInfoClick, handleKpiCa
 
     const slides = query?.results?.length > 0 && query.isOpen
         && query.results
-            .filter((result) => selectedKpis?.includes(result.name))
+            .filter((result) => view === 'Team' && !selectedKpis ? []
+            : view === 'Team' ? Object.values(selectedKpis)?.includes(result.name) :  selectedKpis?.includes(result.name))
             .map((result) => (
                 <SwiperSlide key={result.name} style={{ width: '300px' }}>
                     <div className='absolute h-full mx-2 w-72 top-2' >
                         <KpiCard
                             dateRange={query.dateRange}
-                            leadSource={query.leadSource}
+                            leadSource={query.leadSources}
                             kpiView={view}
                             teamMembers={query.teamMembers}
                             prop={result}
@@ -51,86 +52,6 @@ const KpiSwiper = ({ query, view, selectedKpis, handleCardInfoClick, handleKpiCa
             direction="horizontal"
             mousewheel={{ forceToAxis: true, releaseOnEdges: true, sensitivity: 6 }}
             slidesPerView="auto"
-            // breakpoints={{
-            //     360: {
-            //         slidesPerView: 1,
-            //         spaceBetween: 10,
-            //         slidesOffsetBefore: 15,
-            //         slidesOffsetAfter: 15,                
-            //     },
-            //     375: {
-            //         slidesPerView: 1,
-            //         spaceBetween: 20,
-            //         slidesOffsetBefore: 23,
-            //         slidesOffsetAfter: 23,
-            //     },
-            //     390: {
-            //         slidesPerView: 1,
-            //         spaceBetween: 20,
-            //         // slidesOffsetBefore: 30,
-            //         // slidesOffsetAfter: 30,
-            //     },
-            //     412: {
-            //         slidesPerView: 1,
-            //         spaceBetween: 20,
-            //         // slidesOffsetBefore: 40,
-            //         // slidesOffsetAfter: 40,
-            //     },
-            //     540: {
-            //         slidesPerView: 2,
-            //         spaceBetween: 20,
-            //         // slidesOffsetBefore: 100,
-            //         // slidesOffsetAfter: 100,
-            //     },
-            //     650: {
-            //         slidesPerView: 2,
-            //         spaceBetween: 20,
-            //         slidesOffsetBefore: 5,
-            //         slidesOffsetAfter: 5,
-            //     },
-            //     768: {
-            //         slidesPerView: 2,
-            //         spaceBetween: 20,
-            //         // slidesOffsetBefore: 35,
-            //         // slidesOffsetAfter: 35,
-            //     },
-            //     820: {
-            //         slidesPerView: 3,
-            //         spaceBetween: 20,
-            //         // slidesOffsetBefore: 50,
-            //         // slidesOffsetAfter: 50,
-            //     },
-            //     912: {
-            //         slidesPerView: 3,
-            //         spaceBetween: 20,
-            //         // slidesOffsetBefore: 70,
-            //         // slidesOffsetAfter: 70,
-            //     },
-            //     950: {
-            //         slidesPerView: 3,
-            //         spaceBetween: 20,
-            //         slidesOffsetBefore: 5,
-            //         slidesOffsetAfter: 5,
-            //     },
-            //     1250: {
-            //         slidesPerView: 4,
-            //         spaceBetween: 20,
-            //         // slidesOffsetBefore: 10,
-            //         // slidesOffsetAfter: 10,
-            //     },
-            //     1550: {
-            //         slidesPerView: 6,
-            //         spaceBetween: 5,
-            //         slidesOffsetBefore: 5,
-            //         slidesOffsetAfter: 5,
-            //     },
-            //     1900: {
-            //         slidesPerView: 8,
-            //         spaceBetween: 5,
-            //         slidesOffsetBefore: 10,
-            //         slidesOffsetAfter: 10,
-            //     },
-            // }}
             className="flex items-center justify-center h-60"
         >
             {slides}

@@ -36,9 +36,9 @@ export default function ClosersPayments({
     const [selectedTeamMembersForClosers, setSelectedTeamMembersForClosers] = useState([]);
     const [reversedTeamMembersForClosers, setReversedTeamMembersForClosers] = useState([]);
     const [teamMembersForClosersOpen, setTeamMembersForClosersOpen] = useState(false);
-    const clientSpaceId = useSelector(selectSpaceId);
+    const clientSpaceId = useSelector(selectSpaceId);   
 
-    // const { data: paymentsData, error: paymentsError } = useSWR({ departments: departments, dateRange: dateRange }, getClosersPayments);
+    // console.log(query.teamMembers)
 
     useEffect(() => {
         const teamMembersObj = {};
@@ -50,14 +50,25 @@ export default function ClosersPayments({
             });
         });
         setTeamMembersForClosers(teamMembersObj);
-        setSelectedTeamMembersForClosers(Object.values(teamMembersObj));
-        onTeamMemberForClosersChange(Object.keys(teamMembersObj), query.id)
         let reversedTeamMembersObj = {};
         Object.entries(teamMembersObj).forEach(([id, name]) => {
             reversedTeamMembersObj[name] = id;
         });
         setReversedTeamMembersForClosers(reversedTeamMembersObj);
     }, [departments])
+
+    useEffect(() => {
+        // use query.teamMembers to set selectedTeamMembersForClosers
+        if (query.teamMembers) {
+            const selectedTeamMembers = query.teamMembers.map(id => teamMembersForClosers[id]);
+            setSelectedTeamMembersForClosers(selectedTeamMembers);
+        }
+    }, [query, query.teamMembers])
+
+    const handleTeamMemberForClosersChange = (selectedTeamMembers) => {
+        const selectedTeamMemberIds = selectedTeamMembers.map(option => reversedTeamMembersForClosers[option])
+        onTeamMemberForClosersChange(selectedTeamMemberIds, query.id)
+    };
 
     const handleToggleQuery = () => {
         setHeight(height === 'auto' ? 0 : 'auto');
@@ -90,11 +101,7 @@ export default function ClosersPayments({
         onDateRangeChange(startDate, endDate, query.id);
     };
 
-    const handleTeamMemberForClosersChange = (selectedTeamMembers) => {
-        const selectedTeamMemberIds = selectedTeamMembers.map(option => reversedTeamMembersForClosers[option])
-        setSelectedTeamMembersForClosers(selectedTeamMembers)
-        onTeamMemberForClosersChange(selectedTeamMemberIds, query.id)
-    };
+    
 
     return (
         <>
@@ -111,7 +118,7 @@ export default function ClosersPayments({
                         ButtonComponent={DropdownButton}
                         showButton={teamMembersForClosersOpen}
                     />
-                    <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
+                    <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} selectedDateRange={query.dateRange} />
                 </div>
             </QueryPanel>
             <AnimateHeight id={query.id} duration={500} height={height}>

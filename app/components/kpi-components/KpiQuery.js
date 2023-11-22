@@ -7,7 +7,7 @@ import FinancialsKpiQuery from './FinancialsKpiQuery';
 import Leaderboard from './Leaderboard';
 import fetchKpiData from '../../lib/fetch-kpis';
 import { useSelector } from 'react-redux';
-import { selectSpaceId } from '../../../app/GlobalRedux/Features/client/clientSlice'
+import { selectSpaceId } from '@/GlobalRedux/Features/client/clientSlice'
 import useSWR from 'swr';
 import ClosersLeaderboard from './ClosersLeaderboard';
 import ClosersPayments from './ClosersPayments';
@@ -24,16 +24,17 @@ const KpiQuery = ({
     handleCloneLeaderboard,
     ...props
 }) => {
-    let id, dateRange, leadSource, departments, teamMembers, gte, lte, closers, setters;
+
+    let id, dateRange, leadSources, departments, teamMembers, gte, lte, closers, setters;
     if (query) {
-        ({ id, dateRange, leadSource, departments, teamMembers, closers, setters } = query);
+        ({ id, dateRange, leadSources, departments, teamMembers, closers, setters } = query);
         gte = dateRange?.gte || '';
         lte = dateRange?.lte || '';
     }
     const clientSpaceId = useSelector(selectSpaceId);
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
 
-    const { data, error } = useSWR({ isProfessional, clientSpaceId, view, kpiList, leadSource, gte, lte, departments, teamMembers, closers, setters }, fetchKpiData);
+    const { data, error } = useSWR({ isProfessional, clientSpaceId, view, kpiList, leadSources, gte, lte, departments, teamMembers, closers, setters }, fetchKpiData);
     
     useEffect(() => {
 

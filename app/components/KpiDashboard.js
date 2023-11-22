@@ -8,8 +8,21 @@ import { getDatePresets } from '../lib/date-utils'
 import fetchLeadSources from '../lib/fetchLeadSources';
 import fetchActiveTeamMembers from '../lib/fetchActiveTeamMembers';
 import LoadingQuotes from './LoadingQuotes';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectSpaceId } from '../../app/GlobalRedux/Features/client/clientSlice'
+
+// import {
+//     setQueries,
+//     updateQuery,
+//     updateQueryDateRange,
+//     updateQueryLeadSource,
+//     updateQueryDepartmentsAndTeamMembers,
+//     removeQuery,
+//     addQuery,
+//     toggleQuery,
+//     toggleLoading,
+//     selectAllQueries
+// } from '@/GlobalRedux/Features/kpiQueries/kpiQueriesSlice';
 
 export default function KpiDashboard({ user }) {
     // console.log(user)
@@ -31,8 +44,12 @@ export default function KpiDashboard({ user }) {
     const [queries, setQueries] = useState([]);
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID);
     const clientSpaceId = useSelector(selectSpaceId);
-    
-    const professionalQuery = { id: idCounter + 1, results: [], isOpen: true, isLoading: false, isUnavailable: false, leadSource: {}, dateRange: { gte: datePresets['Previous Week'].startDate, lte: datePresets['Previous Week'].endDate }, departments: ["Lead Manager"], teamMembers: [{"Lead Manager":"Bob"}, {"Acquisition Manager":"Bob"}, {"Deal Analyst": "Bob"}] }
+
+    // const dispatch = useDispatch();
+    // const queries = useSelector(selectAllQueries);
+    // console.log(clientSpaceId)
+
+    const professionalQuery = { id: idCounter + 1, results: [], isOpen: true, isLoading: false, isUnavailable: false, leadSources: {}, dateRange: { gte: datePresets['Last Week'].startDate, lte: datePresets['Last Week'].endDate }, departments: ["Lead Manager"], teamMembers: [{ "Lead Manager": "Bob" }, { "Acquisition Manager": "Bob" }, { "Deal Analyst": "Bob" }] }
 
     const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId, kpiView) => {
         // console.log(departmentsDataObject)
@@ -43,16 +60,17 @@ export default function KpiDashboard({ user }) {
         const initialQuery = [
             {
                 id: newQueryId ? 1 + newQueryId : 1,
+                kpiView: kpiView ? kpiView : KPI_VIEWS.Acquisitions,
                 results: [],
                 isOpen: true,
                 isLoading: true,
                 isUnavailable: false,
-                leadSource: leadSourcesObject,
-                dateRange: { gte: datePresets['Previous Week'].startDate, lte: datePresets['Previous Week'].endDate },
+                leadSources: Object.values(leadSourcesObject),
+                dateRange: { gte: datePresets['Last Week'].startDate, lte: datePresets['Last Week'].endDate },
                 departments: [firstDepartment],
                 teamMembers: firstDeptTeamMembers,
                 closers: clientSpaceId === closersSpaceId ? Object?.keys(departmentsDataObject["Closer"]) : [],
-                setters: clientSpaceId === closersSpaceId ?  Object?.keys(departmentsDataObject["Setter"]) : [],
+                setters: clientSpaceId === closersSpaceId ? Object?.keys(departmentsDataObject["Setter"]) : [],
             },
         ];
         return initialQuery;
@@ -95,7 +113,9 @@ export default function KpiDashboard({ user }) {
                 } else {
                     setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
                 }
+
                 setQueries(createInitialQueries(leadSourcesObject, departmentsDataObject, datePresets));
+                // dispatch(addQuery(createInitialQueries(leadSourcesObject, departmentsDataObject, datePresets)[0]))
             } catch (error) {
                 console.error(error);
             } finally {
@@ -111,6 +131,7 @@ export default function KpiDashboard({ user }) {
             setQueryType(KPI_VIEWS.Acquisitions);
             setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
             setQueries([professionalQuery]);
+            dispatch(addQuery([professionalQuery]))
             setIsLoadingData(false);
             return;
         } else if (clientSpaceId !== closersSpaceId && isScaling) {
@@ -127,9 +148,10 @@ export default function KpiDashboard({ user }) {
             setQueryType(KPI_VIEWS.Acquisitions);
             setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
             setQueries([professionalQuery]);
+            dispatch(addQuery([professionalQuery]))
             setIsLoadingData(false);
         }
-        
+
     }, [clientSpaceId, isProfessional, isScaling, user]);
 
     if (isLoadingData) {
@@ -162,6 +184,8 @@ export default function KpiDashboard({ user }) {
                 query.id === queryId ? { ...query, results: data } : query
             )
         );
+        // console.log(data)
+        // dispatch(updateQuery(queryId, data))
     };
 
     const handleDateRangeChange = (startDate, endDate, queryId) => {
@@ -178,22 +202,24 @@ export default function KpiDashboard({ user }) {
                     : query
             )
         );
+        // dispatch(updateQueryDateRange(queryId, startDate, endDate))
     };
 
-    const handleLeadSourceChange = (values, queryId) => {
+    const handleLeadSourceChange = (queryId, leadSources) => {
         setQueries((prevQueries) =>
             prevQueries.map((query) =>
                 query.id === queryId
                     ? {
                         ...query,
-                        leadSource: values,
+                        leadSources: leadSources,
                     }
                     : query
             )
         );
+        // dispatch(updateQueryLeadSource(queryId, leadSources))
     };
 
-    const handleTeamChange = (department, teamMembers, queryId) => {
+    const handleTeamChange = (queryId, department, teamMembers) => {
         setQueries((prevQueries) =>
             prevQueries.map((query) =>
                 query.id === queryId
@@ -205,6 +231,7 @@ export default function KpiDashboard({ user }) {
                     : query
             )
         );
+        // dispatch(updateQueryDepartmentsAndTeamMembers(queryId, department, teamMembers))
     };
 
     const handleToggleQuery = (queryId) => {
@@ -218,25 +245,28 @@ export default function KpiDashboard({ user }) {
                     : query
             )
         );
+        // dispatch(toggleQuery(queryId))
     };
 
     const handleRemoveQuery = (queryId) => {
         setQueries((prevQueries) => prevQueries.filter((query) => query.id !== queryId));
+        // dispatch(removeQuery(queryId))
     };
 
-    const handleAddQuery = () => {
+    const handleAddQuery = (type) => {
         setIdCounter(idCounter + 1);
         if (user.isProfessional && clientSpaceId !== closersSpaceId) {
             setQueries([...queries, professionalQuery]);
             return;
         }
-        setQueries([...queries, ...createInitialQueries(leadSources, departments, datePresets, idCounter + 1)]);
+        setQueries([...queries, ...createInitialQueries(leadSources, departments, datePresets, idCounter + 1, type)]);
+        // dispatch(addQuery(createInitialQueries(leadSources, departments, datePresets, idCounter + 1)[0]))
     };
 
     const createClonedLeaderboardQuery = (queryId, dayStart, dayEnd, weekStart, weekEnd, monthStart, monthEnd) => {
         const clonedQuery = [{
             id: queryId + 1,
-            results: { "dayStart":dayStart, "dayEnd":dayEnd, "weekStart":weekStart, "weekEnd":weekEnd, "monthStart":monthStart, "monthEnd":monthEnd },
+            results: { "dayStart": dayStart, "dayEnd": dayEnd, "weekStart": weekStart, "weekEnd": weekEnd, "monthStart": monthStart, "monthEnd": monthEnd },
             isOpen: true,
             isLoading: true,
             isUnavailable: false,
@@ -250,7 +280,6 @@ export default function KpiDashboard({ user }) {
     }
 
     const handleQueryTypeChange = (type) => {
-        setQueryType(type);
         if (clientSpaceId === closersSpaceId) {
             setKpiList(VIEW_KPIS[type]["Closers"]);
         } else {
@@ -261,11 +290,19 @@ export default function KpiDashboard({ user }) {
             setQueries([professionalQuery]);
             return;
         }
-        setQueries(createInitialQueries(leadSources, departments, datePresets, idCounter + 1, type));
+
+        // If the type is the same as the queryType, don't add a new query
+        // Else if the type is different and there are no queries of that type, add a new query
+        if (type === queryType) {
+            return;
+        } else if (type !== queryType && queries.filter((query) => query.kpiView === type).length === 0) {
+            setQueries([...queries, ...createInitialQueries(leadSources, departments, datePresets, idCounter + 1, type)]);
+        }
+        setQueryType(type);
     };
 
     const handleClosersChange = (closers, queryId) => {
-        // console.log("closers", closers)
+        console.log("closers", closers)
         setQueries((prevQueries) => {
             return prevQueries.map((query) => {
                 if (query.id === queryId) {
@@ -281,13 +318,29 @@ export default function KpiDashboard({ user }) {
     };
 
     const handleSettersChange = (setters, queryId) => {
-        // console.log("setters", setters)
+        console.log(queryId)
+        console.log("setters", setters)
         setQueries((prevQueries) => {
             return prevQueries.map((query) => {
                 if (query.id === queryId) {
                     return {
                         ...query,
                         setters: setters,
+                    };
+                } else {
+                    return query;
+                }
+            });
+        });
+    };
+
+    const handleTeamMemberForClosersChange = (teamMembers, queryId) => {
+        setQueries((prevQueries) => {
+            return prevQueries.map((query) => {
+                if (query.id === queryId) {
+                    return {
+                        ...query,
+                        teamMembers: teamMembers,
                     };
                 } else {
                     return query;
@@ -314,6 +367,7 @@ export default function KpiDashboard({ user }) {
             handleClosersChange={handleClosersChange}
             handleSettersChange={handleSettersChange}
             handleTeamChange={handleTeamChange}
+            handleTeamMemberForClosersChange={handleTeamMemberForClosersChange}
             handleToggleQuery={handleToggleQuery}
             handleRemoveQuery={handleRemoveQuery}
             handleAddQuery={handleAddQuery}

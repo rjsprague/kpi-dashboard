@@ -4,29 +4,34 @@ import React, { useEffect, useState } from 'react';
 import UniversalDropdown from './UniversalDropdown';
 import DropdownButton from './DropdownButton';
 
-function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, departments, isLoadingData }) {
+function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, departments, isLoadingData }) {    
     const [selectedDepartment, setSelectedDepartment] = useState(query.departments);
-    const [selectedTeamMembers, setSelectedTeamMembers] = useState([]);
-    
-    useEffect(() => {
-        setSelectedTeamMembers(query.teamMembers.map(id => getTeamMemberNameById(id)));
-    }, [query.teamMembers]);
+    const [selectedTeamMembers, setSelectedTeamMembers] = useState(query.teamMembers);
 
     useEffect(() => {
-        const teamMembers = departments[selectedDepartment] ? Object.values(departments[selectedDepartment]) : [];
-        setSelectedTeamMembers(teamMembers);
-        // console.log(selectedDepartment)
-        onTeamChange(selectedDepartment, teamMembers.map(name => getTeamMemberIdByName(name)), queryId);
-    }, [selectedDepartment]);
+        setSelectedDepartment(query.departments);
+        // if there are no team members selected from the current department select all team members from the new department
+        if (query.teamMembers.length > 0 && query.teamMembers.filter((id) => departments[query.departments[0]][id]).length === 0) {
+            console.log("no team members selected")
+            onTeamChange(queryId, query.departments, Object.keys(departments[query.departments[0]]));
+        }
+        
+    }, [query, query.departments]);
 
-    const handleDepartmentSelected = (department, queryId) => {
-        setSelectedDepartment(department);
+    useEffect(() => {
+        // check if selected team members are in the selected department
+        const teamMembers = query.teamMembers.length > 0 ? query.teamMembers.filter(id => departments[query.departments[0]][id]) : [];
+        const teamMemberNames = teamMembers.map(id => getTeamMemberNameById(id));
+        setSelectedTeamMembers(teamMemberNames);
+    }, [query, query.teamMembers, query.departments, departments]);
+
+    const handleDepartmentSelected = (department) => {
         onDepartmentChange(department);
+        onTeamChange(queryId, department, Object.keys(departments[department]));
     };
 
-    const handleTeamSelected = (teamMembers, queryId) => {
-        setSelectedTeamMembers(teamMembers);
-        onTeamChange(selectedDepartment, teamMembers.map(name => getTeamMemberIdByName(name)), queryId);
+    const handleTeamSelected = (teamMembers) => {
+        onTeamChange(queryId, selectedDepartment, teamMembers.map(name => getTeamMemberIdByName(name)) );
     };
 
     const getTeamMemberNameById = (id) => {

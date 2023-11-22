@@ -7,12 +7,16 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Transition } from "react-transition-group";
 import DropdownButton from "./DropdownButton";
 
-function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
+function SingleDateRangeSelector({ queryId, onDateRangeChange, selectedDateRange }) {
     const [datePresets, setDatePresets] = useState(getDatePresets());
-    const [dateRange, setDateRange] = useState([datePresets["Previous Week"].startDate, datePresets["Previous Week"].endDate]);
+    const [dateRange, setDateRange] = useState(selectedDateRange);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [contentHeight, setContentHeight] = useState(0);
     const datePickerContentRef = useRef(null);
+
+    useEffect(() => {
+        setDateRange(selectedDateRange);
+    }, [selectedDateRange]);
 
     useEffect(() => {
         if (showDatePicker) {
@@ -76,9 +80,9 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
         <div className="relative justify-center text-xs sm:text-sm bg-opacity-80 date-picker">
             <DropdownButton onClick={toggleDatePicker} isOpen={showDatePicker}>
                 <div className="truncate">
-                    {dateRange && dateRange[0] instanceof Date && !isNaN(dateRange[0]) && dateRange[0] === datePresets['All Time'].startDate ? 'All Time' :
-                        dateRange && dateRange[0] instanceof Date && !isNaN(dateRange[0]) && dateRange[1] && dateRange[0].toLocaleDateString() === dateRange[1]?.toLocaleDateString() ? dateRange[0]?.toLocaleDateString() :
-                            dateRange && dateRange[0] instanceof Date && !isNaN(dateRange[0]) && dateRange[1] instanceof Date && !isNaN(dateRange[1]) ? `${dateRange[0].toLocaleDateString()} - ${dateRange[1].toLocaleDateString()}`
+                    {dateRange && dateRange.gte instanceof Date && !isNaN(dateRange.gte) && dateRange.gte === datePresets['All Time'].startDate ? 'All Time' :
+                        dateRange && dateRange.gte instanceof Date && !isNaN(dateRange.gte) && dateRange.lte && dateRange.gte.toLocaleDateString() === dateRange.lte?.toLocaleDateString() ? dateRange.gte?.toLocaleDateString() :
+                            dateRange && dateRange.gte instanceof Date && !isNaN(dateRange.gte) && dateRange.lte instanceof Date && !isNaN(dateRange.lte) ? `${dateRange.gte.toLocaleDateString()} - ${dateRange.lte.toLocaleDateString()}`
                                 : "Select Date Range"}
                 </div>
             </DropdownButton>
@@ -119,10 +123,10 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange }) {
                                 </select>
                             </div>
                             <DatePicker
-                                key={`${dateRange[0]}-${dateRange[1]}`}
+                                key={`${dateRange.gte}-${dateRange.lte}`}
                                 onChange={handleDateRangeChange}
-                                startDate={dateRange[0]}
-                                endDate={dateRange[1]}
+                                startDate={dateRange.gte}
+                                endDate={dateRange.lte}
                                 selectsRange
                                 inline
                                 showMonthDropdown

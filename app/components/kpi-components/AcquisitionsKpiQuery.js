@@ -64,8 +64,6 @@ const AcquisitionsKpiQuery = ({
                 }
             });
             setClosers(closersObj);
-            setSelectedClosers(Object.values(closersObj));
-            onClosersChange(Object.keys(closersObj), query.id)
             let reversedClosersObj = {};
             Object.entries(closersObj).forEach(([id, name]) => {
                 reversedClosersObj[name] = id;
@@ -89,8 +87,6 @@ const AcquisitionsKpiQuery = ({
                 }
             });
             setSetters(settersObj);
-            setSelectedSetters(Object.values(settersObj));
-            onSettersChange(Object.keys(settersObj), query.id);
             let reversedSettersObj = {};
             Object.entries(settersObj).forEach(([id, name]) => {
                 reversedSettersObj[name] = id;
@@ -127,18 +123,26 @@ const AcquisitionsKpiQuery = ({
     };
 
     const handleClosersChange = (selectedClosers) => {
-        // console.log(selectedClosers)
         const selectedCloserIds = selectedClosers.map(option => reversedClosers[option])
-        // console.log(selectedCloserIds)
-        setSelectedClosers(selectedClosers)
         onClosersChange(selectedCloserIds, query.id)
     };
 
+    useEffect(() => {
+        setSelectedClosers(query.closers.map(id => closers[id]))
+    }, [query, query.closers])
+
+    // console.log(selectedClosers)
+
     const handleSettersChange = (selectedSetters) => {
         const selectedSetterIds = selectedSetters.map(option => reversedSetters[option])
-        setSelectedSetters(selectedSetters)
         onSettersChange(selectedSetterIds, query.id)
     };
+
+    useEffect(() => {
+        setSelectedSetters(query.setters.map(id => setters[id]))
+    }, [query, query.setters])
+
+    // console.log(selectedSetters)
 
     const handleRemoveQuery = () => {
         onRemoveQuery && onRemoveQuery(query.id);
@@ -184,12 +188,13 @@ const AcquisitionsKpiQuery = ({
                     {/* Lead Source and Date Range Selectors */}
                     <LeadSourcesDropdown
                         onOptionSelected={onLeadSourceChange}
+                        selectedLeadsources={query.leadSources}
                         queryId={query.id}
                         leadSources={leadSources}
                         isLoadingData={isLoadingData}
                         isUnavailable={query.isUnavailable}
                     />
-                    <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
+                    <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} selectedDateRange={query.dateRange} />
                 </div>
             </QueryPanel>
             <AnimateHeight

@@ -91,7 +91,7 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
             }
         }
 
-        onOptionSelected(newSelectedOptions, queryId);
+        onOptionSelected(newSelectedOptions);
     };
 
 

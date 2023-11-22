@@ -133,13 +133,13 @@ export function getDatePresets() {
 
     return {
         'Yesterday': { startDate: yesterday, endDate: yesterday },
+        'Today': { startDate: startOfToday, endDate: endOfToday },
         'Last 7 Days': { startDate: new Date(yesterday - 6 * 86400000), endDate: yesterday },
-        'Previous Week': { startDate: previousWeek, endDate: endOfPreviousWeek },
+        'Last Week': { startDate: previousWeek, endDate: endOfPreviousWeek },
         'Last 30 Days': { startDate: new Date(yesterday - 29 * 86400000), endDate: yesterday },
-        'Previous Month': { startDate: startOfPreviousMonth, endDate: endOfPreviousMonth },
+        'Last Month': { startDate: startOfPreviousMonth, endDate: endOfPreviousMonth },
         'Last Quarter': { startDate: startOfPreviousQuarter, endDate: endOfPreviousQuarter },
         'Last Year': { startDate: startOfPreviousYear, endDate: endOfPreviousYear },
-        'Today': { startDate: startOfToday, endDate: endOfToday },
         'Week to Date': { startDate: startOfWeek, endDate: endOfToday },
         'Month to Date': { startDate: startOfMonth, endDate: endOfToday },
         'Quarter to Date': { startDate: startOfQuarter, endDate: endOfToday },

@@ -15,6 +15,8 @@ async function fetchClients(url = '/api/spaces') {
 
         const clientsObj = await response.json();
 
+        // console.log("clientsObj: ", clientsObj)
+
         // filter clients list to include only the "name" and "spaceid" properties with the "name" property as the key and the "spaceid" property as the value
         const clientsMap = clientsObj.data.reduce((acc, client) => {
             acc[client.name] = client.spaceid;

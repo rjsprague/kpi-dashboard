@@ -23,38 +23,47 @@ const KpiQueryContainer = ({
     handleRemoveQuery,
     handleAddQuery,
     handleTeamChange,
+    handleTeamMemberForClosersChange,
     handleCloneLeaderboard,
     isLoadingData
 }) => {
 
+    // console.log('queries', queries)
+    // console.log('view', view)
+
     return (
         <div>
-            {queries.map((query) => (
-                <KpiQuery
-                    isProfessional={isProfessional}
-                    key={query.id}
-                    view={view}
-                    VIEW_KPIS={VIEW_KPIS}
-                    query={query}
-                    kpiList={kpiList}
-                    leadSources={leadSources}
-                    departments={departments}
-                    onDateRangeChange={handleDateRangeChange}
-                    onLeadSourceChange={handleLeadSourceChange}
-                    onClosersChange={handleClosersChange}
-                    onSettersChange={handleSettersChange}
-                    onToggleQuery={handleToggleQuery}
-                    onRemoveQuery={handleRemoveQuery}
-                    onFetchedKpiData={handleFetchedKpiData}
-                    onSetLoading={handleSetLoading}
-                    onSetLeadSourcesLoading={handleSetLeadSourcesLoading}
-                    onTeamChange={handleTeamChange}
-                    isLoadingData={isLoadingData}
-                    handleAddQuery={handleAddQuery}
-                    handleCloneLeaderboard={handleCloneLeaderboard}
-                />
-            ))}
-            <AddQueryButton handleAddQuery={handleAddQuery} />
+            {
+                // Only render queries that match the current view
+                queries.filter((query) => query.kpiView === view)
+                .map((query) => (
+                    <KpiQuery
+                        isProfessional={isProfessional}
+                        key={query.id}
+                        view={view}
+                        VIEW_KPIS={VIEW_KPIS}
+                        query={query}
+                        kpiList={kpiList}
+                        leadSources={leadSources}
+                        departments={departments}
+                        onDateRangeChange={handleDateRangeChange}
+                        onLeadSourceChange={handleLeadSourceChange}
+                        onClosersChange={handleClosersChange}
+                        onSettersChange={handleSettersChange}
+                        onToggleQuery={handleToggleQuery}
+                        onRemoveQuery={handleRemoveQuery}
+                        onFetchedKpiData={handleFetchedKpiData}
+                        onSetLoading={handleSetLoading}
+                        onSetLeadSourcesLoading={handleSetLeadSourcesLoading}
+                        onTeamChange={handleTeamChange}
+                        onTeamMemberForClosersChange={handleTeamMemberForClosersChange}
+                        isLoadingData={isLoadingData}
+                        handleAddQuery={handleAddQuery}
+                        handleCloneLeaderboard={handleCloneLeaderboard}
+                    />
+                ))
+            }
+            <AddQueryButton handleAddQuery={handleAddQuery} view={view} />
         </div>
     );
 };

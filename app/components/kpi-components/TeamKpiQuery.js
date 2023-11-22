@@ -34,7 +34,7 @@ const TeamKpiQuery = ({
     const [department, setDepartment] = useState([]);
     const [tableProps, setTableProps] = useState(null);
 
-    console.log(leadSources)
+    // console.log(leadSources)
 
     const updateKpiList = (department) => {
         setTeamKpiList(kpiList[department]);
@@ -101,13 +101,14 @@ const TeamKpiQuery = ({
                     </div>
                     <LeadSourcesDropdown
                         onOptionSelected={onLeadSourceChange}
+                        selectedLeadsources={query.leadSources}
                         queryId={query.id}
                         leadSources={leadSources}
                         isLoadingData={isLoadingData}
                         isUnavailable={query.isUnavailable}
                     />
                     <div className="">
-                        <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} />
+                        <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} selectedDateRange={query.dateRange} />
                     </div>
                 </div>
             </QueryPanel>

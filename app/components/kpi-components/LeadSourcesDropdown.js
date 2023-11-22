@@ -1,23 +1,33 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import UniversalDropdown from './UniversalDropdown';
 import ServiceUnavailable from '../ServiceUnavailable';
 import DropdownButton from './DropdownButton';
 
 
-export default function LeadSourceDropdown({ onOptionSelected, queryId, leadSources, isLoadingData, isUnavailable}) {
+export default function LeadSourceDropdown({ onOptionSelected, selectedLeadsources, queryId, leadSources, isLoadingData, isUnavailable}) {
     const [selectedOptions, setSelectedOptions] = useState(Object.keys(leadSources));
     const allsourcesLabel = "All Lead Sources";
 
-    //console.log("lead sources dropdown: ", leadSources)
+    // console.log(leadSources)
+    // console.log(selectedLeadsources)
 
-    const handleOptionSelected = (selectedOptions) => {
-        //console.log("selected options: ", selectedOptions)
-        const selectedIds = selectedOptions.map(option => leadSources[option]);
-        //console.log("selected ids: ", selectedIds)
+    useEffect(() => {
+        const leadSourcesObj = {};
+        Object.entries(leadSources).forEach(([name, id]) => {
+            leadSourcesObj[id] = name;
+        });
+        let selectedOptionNames = selectedLeadsources.map(id => leadSourcesObj[id])
+        setSelectedOptions(selectedOptionNames);
+    }, [selectedLeadsources, leadSources])
+
+
+    const handleOptionSelected = (selectedOptionsNames) => {
+        console.log("handleOptionSelected: ", queryId, selectedOptionsNames)
+        const selectedIds = selectedOptionsNames.map(option => leadSources[option]);
+        console.log("selectedIds: ", selectedIds)
         onOptionSelected(queryId, selectedIds);
-        setSelectedOptions(selectedOptions);
     };
 
     if (isUnavailable) {

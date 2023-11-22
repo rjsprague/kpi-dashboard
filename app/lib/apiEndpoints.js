@@ -1,6 +1,6 @@
-const generateFilters = (startDate, endDate, leadSource, kpiView, leadSourceFieldName, dateFieldName, extraFilters) => {
+const generateFilters = (startDate, endDate, leadSources, kpiView, leadSourcesFieldName, dateFieldName, extraFilters) => {
     const filters = [];
-    // console.log(leadSource)
+    // console.log(leadSources)
     if (startDate && endDate) {
         filters.push({
             "type": 'date',
@@ -10,11 +10,11 @@ const generateFilters = (startDate, endDate, leadSource, kpiView, leadSourceFiel
         });
     }
 
-    if (leadSource && leadSource.length > 0) {
+    if (leadSources && leadSources.length > 0) {
         filters.push({
             "type": "app",
-            "fieldName": leadSourceFieldName,
-            "values": leadSource,
+            "fieldName": leadSourcesFieldName,
+            "values": leadSources,
         });
     }
 
@@ -25,7 +25,8 @@ const generateFilters = (startDate, endDate, leadSource, kpiView, leadSourceFiel
     return filters;
 };
 // Define the endpoints and filters for each KPI
-const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, closers, setters) => {
+const apiEndpoints = (startDate, endDate, leadSources, kpiView, teamMembers, closers, setters) => {
+    // console.log(leadSources)
     // console.log(teamMembers)
     // console.log(kpiView)
     // console.log(closers)
@@ -34,27 +35,27 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, clos
         marketingExpenses: {
             name: "Marketing Expenses",
             url: "/api/marketing-expenses",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Date")
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source", "Date")
         },
         leads: {
             name: "Leads",
             url: "/api/seller-leads",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source Item", "Lead Created On")
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source Item", "Lead Created On")
         },
         leadConnections: {
             name: "Lead Connections",
             url: "/api/seller-leads",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source Item", "First lead connection")
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source Item", "First lead connection")
         },
         triageCalls: {
             name: "Triage Calls",
             url: "/api/seller-lead-sheets",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "SLS Created On")
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source", "SLS Created On")
         },
         qualifiedTriageCalls: {
             name: "Qualified Triage Calls",
             url: "/api/seller-lead-sheets",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "SLS Created On", [
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source", "SLS Created On", [
                 {
                     "type": "category",
                     "fieldName": "Q or UNQ",
@@ -65,7 +66,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, clos
         triageApproval: {
             name: "Triage Approval",
             url: "/api/seller-lead-sheets",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "SLS Created On", [
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source", "SLS Created On", [
                 {
                     "type": "category",
                     "fieldName": "Q or UNQ",
@@ -81,7 +82,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, clos
         dealAnalysis: {
             name: "Deal Analysis",
             url: "/api/acquisition-kpis",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Timestamp", [
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source", "Timestamp", [
                 {
                     "type": "category",
                     "fieldName": "Type",
@@ -92,37 +93,37 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, clos
         perfectPresentations: {
             name: "Perfect Presentations",
             url: "/api/acquisition-scripts",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "AS Created On")
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source", "AS Created On")
         },
         contracts: {
             name: "Contracts",
             url: "/api/contracts",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "*Date Ratified")
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source", "*Date Ratified")
         },
         acquisitions: {
             name: "Acquisitions",
             url: "/api/acquisitions",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Date Acquired")
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source", "Date Acquired")
         },
         pendingDeals: {
             name: "Pending Deals",
             url: "/api/acquisitions",
-            filters: generateFilters(null, null, leadSource, kpiView, "Lead Source", "Date Acquired")
+            filters: generateFilters(null, null, leadSources, kpiView, "Lead Source", "Date Acquired")
         },
         deals: {
             name: "Deals",
             url: "/api/deals",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Closing (Sell)")
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source", "Closing (Sell)")
         },
         profit: {
             name: "Profit",
             url: "/api/deals",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Closing (Sell)")
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source", "Closing (Sell)")
         },
         lmStlMedian: {
             name: "LM STL Median",
             url: "/api/acquisition-kpis",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Timestamp", [
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source", "Timestamp", [
                 {
                     "type": "category",
                     "fieldName": "Type",
@@ -138,7 +139,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, clos
         amStlMedian: {
             name: "AM STL Median",
             url: "/api/acquisition-kpis",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Timestamp", [
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source", "Timestamp", [
                 {
                     "type": "category",
                     "fieldName": "Type",
@@ -154,7 +155,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, clos
         daStlMedian: {
             name: "DA STL Median",
             url: "/api/acquisition-kpis",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Timestamp", [
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source", "Timestamp", [
                 {
                     "type": "category",
                     "fieldName": "Type",
@@ -186,22 +187,22 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, clos
         contractedProfit: {
             name: "Contracted Profit",
             url: "/api/contracts",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "*Date Ratified")
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source", "*Date Ratified")
         },
         projectedProfit: {
             name: "Projected Profit",
             url: "/api/acquisitions",
-            filters: generateFilters(null, null, leadSource, kpiView, "Lead Source", "Date Acquired")
+            filters: generateFilters(null, null, leadSources, kpiView, "Lead Source", "Date Acquired")
         },
         closersAdSpend: {
             name: "Closers Ad Spend",
             url: "/api/closers/acquisitions/marketing-expenses",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source", "Date")
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source", "Date")
         },
         closersLeadsCreated: {
             name: "Closers Leads Created",
             url: "/api/closers/acquisitions/reia-leads",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source Item", "Lead Created On")
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source Item", "Lead Created On")
         },
         closersLeadsSetPrequalified: {
             name: "Closers Leads Set Prequalified",
@@ -222,7 +223,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, clos
         closersBookings: {
             name: "Closers Bookings",
             url: "/api/closers/acquisitions/lead-events",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Related Lead Source Item", "Date", [
                 {
                     "type": "category",
                     "fieldName": "Event",
@@ -243,7 +244,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, clos
         closersQualifiedBookings: {
             name: "Closers Qualified Bookings",
             url: "/api/closers/acquisitions/reia-leads",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source Item", "Lead Created On", [
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source Item", "Lead Created On", [
                 {
                     "type": "category",
                     "fieldName": "Pre-Qualification Status",
@@ -259,7 +260,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, clos
         closersAppointments: {
             name: "Closers Appointments",
             url: "/api/closers/acquisitions/lead-events",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Related Lead Source Item", "Date", [
                 {
                     "type": "category",
                     "fieldName": "Event",
@@ -280,7 +281,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, clos
         closersTotalAttended: {
             name: "Closers Total Attended",
             url: "/api/closers/acquisitions/lead-events",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Related Lead Source Item", "Date", [
                 {
                     "type": "category",
                     "fieldName": "Event",
@@ -301,7 +302,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, clos
         closersUniqueAttended: {
             name: "Closers Unique Attended",
             url: "/api/closers/acquisitions/lead-events",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "Date", [
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Related Lead Source Item", "Date", [
                 {
                     "type": "category",
                     "fieldName": "Event",
@@ -327,7 +328,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, clos
         closersDcOffers: {
             name: "Closers DC Offers",
             url: "/api/closers/acquisitions/discovery-calls",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "created_on", [
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Related Lead Source Item", "created_on", [
                 {
                     "type": "category",
                     "fieldName": "Status of the Call",
@@ -343,7 +344,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, clos
         closersDcClosed: {
             name: "Closers DC Closed",
             url: "/api/closers/acquisitions/discovery-calls",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Related Lead Source Item", "created_on", [
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Related Lead Source Item", "created_on", [
                 {
                     "type": "category",
                     "fieldName": "Status of the Call",
@@ -380,7 +381,7 @@ const apiEndpoints = (startDate, endDate, leadSource, kpiView, teamMembers, clos
         setterStlMedian: {
             name: "Setter STL Median",
             url: "/api/closers/acquisitions/reia-leads",
-            filters: generateFilters(startDate, endDate, leadSource, kpiView, "Lead Source Item", "Lead Created On")
+            filters: generateFilters(startDate, endDate, leadSources, kpiView, "Lead Source Item", "Lead Created On")
         },
         closerCommission: {
             name: "Closer Commission",
