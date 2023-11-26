@@ -39,12 +39,12 @@ const calculateSlotsForTeam = (teamSchedules) => {
 const teamSchedules = {
     '2593542815': { // Brandon Pringle
         '0': { start: null, end: null }, // Sunday
-        '1': { start: '12:00pm', end: '5:30pm' }, // Monday
-        '2': { start: '12:00pm', end: '5:30pm' }, // Tuesday
-        '3': { start: '12:00pm', end: '5:30pm' }, // Wednesday
-        '4': { start: '12:00pm', end: '5:30pm' }, // Thursday
-        '5': { start: null, end: null }, // Friday
-        '6': { start: null, end: null }, // Saturday
+        '1': { start: '3:30pm', end: '11:45pm' }, // Monday
+        '2': { start: '3:30pm', end: '11:45pm' }, // Tuesday
+        '3': { start: '3:30pm', end: '11:45pm' }, // Wednesday
+        '4': { start: '3:30pm', end: '11:45pm' }, // Thursday
+        '5': { start: '3:30pm', end: '11:45pm' }, // Friday
+        '6': { start: '2:00pm', end: '11:45pm' }, // Saturday
     },
     '2637469614': { // Chris Kaczmarski
         '0': { start: null, end: null }, // Sunday
