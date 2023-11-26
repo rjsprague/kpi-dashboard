@@ -77,7 +77,7 @@ function UserProfilePage() {
             }
         } catch (err) {
             const status = err.response.data.errors;
-            console.log(err.response.data.errors)
+            // console.log(err.response.data.errors)
 
             if (status === 401 || status === 403) {
                 logout();

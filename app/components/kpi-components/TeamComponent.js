@@ -4,21 +4,28 @@ import React, { useEffect, useState } from 'react';
 import UniversalDropdown from './UniversalDropdown';
 import DropdownButton from './DropdownButton';
 
-function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, departments, isLoadingData }) {    
+function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, departments, isLoadingData, isProfessional, isStarter }) {
     const [selectedDepartment, setSelectedDepartment] = useState(query.departments);
     const [selectedTeamMembers, setSelectedTeamMembers] = useState(query.teamMembers);
 
     useEffect(() => {
         setSelectedDepartment(query.departments);
+        if (isProfessional || isStarter) {
+            setSelectedTeamMembers(query.teamMembers);
+            return;
+        }
         // if there are no team members selected from the current department select all team members from the new department
         if (query.teamMembers.length > 0 && query.teamMembers.filter((id) => departments[query.departments[0]][id]).length === 0) {
-            console.log("no team members selected")
+            // console.log("no team members selected")
             onTeamChange(queryId, query.departments, Object.keys(departments[query.departments[0]]));
         }
-        
+
     }, [query, query.departments]);
 
     useEffect(() => {
+        if (isProfessional || isStarter) {
+            return;
+        }
         // check if selected team members are in the selected department
         const teamMembers = query.teamMembers.length > 0 ? query.teamMembers.filter(id => departments[query.departments[0]][id]) : [];
         const teamMemberNames = teamMembers.map(id => getTeamMemberNameById(id));
@@ -31,7 +38,7 @@ function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, depar
     };
 
     const handleTeamSelected = (teamMembers) => {
-        onTeamChange(queryId, selectedDepartment, teamMembers.map(name => getTeamMemberIdByName(name)) );
+        onTeamChange(queryId, selectedDepartment, teamMembers.map(name => getTeamMemberIdByName(name)));
     };
 
     const getTeamMemberNameById = (id) => {

@@ -97,7 +97,7 @@ const handleAcquisitionKpis = async (accessToken, clientSpaceId, apiName, apiEnd
         }
     } catch (error) {
         console.error(error);
-        console.log(error)
+        // console.log(error)
         throw new Error("Error fetching data. Please try again later.");
     }
 };

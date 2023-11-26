@@ -32,7 +32,7 @@ export default function KpiDashboard({ user }) {
     const [isScaling, setIsScaling] = useState(user ? user.isScaling : false);
     const [isStarter, setIsStarter] = useState(user ? user.isStarter : false);
     const [isLoadingData, setIsLoadingData] = useState(true);
-    const [queryType, setQueryType] = useState();
+    const [queryType, setQueryType] = useState("Acquisitions");
     const [leadSources, setLeadSources] = useState({});
     const [teamMembers, setTeamMembers] = useState([]);
     const [departments, setDepartments] = useState([]);
@@ -49,7 +49,12 @@ export default function KpiDashboard({ user }) {
     // const queries = useSelector(selectAllQueries);
     // console.log(clientSpaceId)
 
-    const professionalQuery = { id: idCounter + 1, results: [], isOpen: true, isLoading: false, isUnavailable: false, leadSources: {}, dateRange: { gte: datePresets['Last Week'].startDate, lte: datePresets['Last Week'].endDate }, departments: ["Lead Manager"], teamMembers: [{ "Lead Manager": "Bob" }, { "Acquisition Manager": "Bob" }, { "Deal Analyst": "Bob" }] }
+    // console.log(user)
+    // console.log(isStarter)
+
+    const professionalQuery = (type) => {
+        return ({ id: idCounter + 1, kpiView: type ? type : "Acquisitions", results: [], isOpen: true, isLoading: false, isUnavailable: false, leadSources: [], dateRange: { gte: datePresets['Last Week'].startDate, lte: datePresets['Last Week'].endDate }, departments: ["Lead Manager"], teamMembers: [{ "Lead Manager": "Bob" }, { "Acquisition Manager": "Bob" }, { "Deal Analyst": "Bob" }] })
+    }
 
     const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId, kpiView) => {
         // console.log(departmentsDataObject)
@@ -123,15 +128,17 @@ export default function KpiDashboard({ user }) {
             }
         }
 
-        if (clientSpaceId !== closersSpaceId && isProfessional) {
+        if (clientSpaceId !== closersSpaceId && isProfessional || clientSpaceId !== closersSpaceId && isStarter) {
             // console.log("professional query")
             setLeadSources({});
             setDepartments([]);
             setTeamMembers([]);
             setQueryType(KPI_VIEWS.Acquisitions);
             setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
-            setQueries([professionalQuery]);
-            dispatch(addQuery([professionalQuery]))
+            let newQuery = professionalQuery("Acquisitions");
+            setIdCounter(newQuery.id);
+            setQueries([newQuery]);
+            // dispatch(addQuery([professionalQuery]))
             setIsLoadingData(false);
             return;
         } else if (clientSpaceId !== closersSpaceId && isScaling) {
@@ -141,18 +148,19 @@ export default function KpiDashboard({ user }) {
             // console.log("closers query")
             getSetData();
         } else {
-            console.log("no query")
+            // console.log("no query")
             setLeadSources({});
             setDepartments([]);
             setTeamMembers([]);
             setQueryType(KPI_VIEWS.Acquisitions);
             setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
-            setQueries([professionalQuery]);
-            dispatch(addQuery([professionalQuery]))
+            let newQuery = professionalQuery("Acquisitions");
+            setQueries([newQuery]);
+            // dispatch(addQuery([professionalQuery]))
             setIsLoadingData(false);
         }
 
-    }, [clientSpaceId, isProfessional, isScaling, user]);
+    }, [clientSpaceId, user]);
 
     if (isLoadingData) {
         return (
@@ -184,6 +192,7 @@ export default function KpiDashboard({ user }) {
                 query.id === queryId ? { ...query, results: data } : query
             )
         );
+
         // console.log(data)
         // dispatch(updateQuery(queryId, data))
     };
@@ -255,8 +264,9 @@ export default function KpiDashboard({ user }) {
 
     const handleAddQuery = (type) => {
         setIdCounter(idCounter + 1);
-        if (user.isProfessional && clientSpaceId !== closersSpaceId) {
-            setQueries([...queries, professionalQuery]);
+        if (user.isProfessional && clientSpaceId !== closersSpaceId || user.isStarter && clientSpaceId !== closersSpaceId) {
+            let newQuery = professionalQuery(type);
+            setQueries([...queries, newQuery]);
             return;
         }
         setQueries([...queries, ...createInitialQueries(leadSources, departments, datePresets, idCounter + 1, type)]);
@@ -280,21 +290,22 @@ export default function KpiDashboard({ user }) {
     }
 
     const handleQueryTypeChange = (type) => {
+        // console.log(type)
+        // console.log(queryType)
         if (clientSpaceId === closersSpaceId) {
             setKpiList(VIEW_KPIS[type]["Closers"]);
         } else {
             setKpiList(VIEW_KPIS[type]["Clients"]);
         }
         setIdCounter(idCounter + 1);
-        if (user.isProfessional && clientSpaceId !== closersSpaceId) {
-            setQueries([professionalQuery]);
-            return;
-        }
 
         // If the type is the same as the queryType, don't add a new query
         // Else if the type is different and there are no queries of that type, add a new query
         if (type === queryType) {
             return;
+        } else if (user.isProfessional && clientSpaceId !== closersSpaceId && queries.filter((query) => query.kpiView === type).length === 0 || user.isStarter && clientSpaceId !== closersSpaceId && queries.filter((query) => query.kpiView === type).length === 0) {
+            let newQuery = professionalQuery(type);
+            setQueries([...queries, newQuery]);
         } else if (type !== queryType && queries.filter((query) => query.kpiView === type).length === 0) {
             setQueries([...queries, ...createInitialQueries(leadSources, departments, datePresets, idCounter + 1, type)]);
         }
@@ -302,7 +313,7 @@ export default function KpiDashboard({ user }) {
     };
 
     const handleClosersChange = (closers, queryId) => {
-        console.log("closers", closers)
+        // console.log("closers", closers)
         setQueries((prevQueries) => {
             return prevQueries.map((query) => {
                 if (query.id === queryId) {
@@ -318,8 +329,8 @@ export default function KpiDashboard({ user }) {
     };
 
     const handleSettersChange = (setters, queryId) => {
-        console.log(queryId)
-        console.log("setters", setters)
+        // console.log(queryId)
+        // console.log("setters", setters)
         setQueries((prevQueries) => {
             return prevQueries.map((query) => {
                 if (query.id === queryId) {
@@ -351,6 +362,7 @@ export default function KpiDashboard({ user }) {
 
     const renderKpiResultsSection = () => {
         return <KpiQueryContainer
+            isStarter={isStarter}
             isProfessional={isProfessional}
             view={queryType}
             kpiList={kpiList}

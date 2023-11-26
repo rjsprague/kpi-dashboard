@@ -66,7 +66,7 @@ export default function ForgotPasswordPage() {
                 }
             );
 
-            console.log(response)
+            // console.log(response)
 
             if (response && response.status !== 200) {
                 toast.error('Error resetting password. Please try again. Contact support@reiautomated.io if you are unable to reset your password.', {

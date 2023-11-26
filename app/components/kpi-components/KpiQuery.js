@@ -13,6 +13,7 @@ import ClosersLeaderboard from './ClosersLeaderboard';
 import ClosersPayments from './ClosersPayments';
 
 const KpiQuery = ({
+    isStarter,
     isProfessional,
     view,
     kpiList,
@@ -34,8 +35,10 @@ const KpiQuery = ({
     const clientSpaceId = useSelector(selectSpaceId);
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
 
-    const { data, error } = useSWR({ isProfessional, clientSpaceId, view, kpiList, leadSources, gte, lte, departments, teamMembers, closers, setters }, fetchKpiData);
-    
+    const { data, error } = useSWR({ isStarter, isProfessional, clientSpaceId, view, kpiList, leadSources, gte, lte, departments, teamMembers, closers, setters }, fetchKpiData);
+
+    // console.log(id, data)
+
     useEffect(() => {
 
         onSetLoading(id, true);
@@ -45,11 +48,17 @@ const KpiQuery = ({
         }
     }, [data])
 
-    if (error) return <div>Failed to load.</div>;
+    if (error) {
+        // console.log(error)
+        
+        return (
+            <div>Failed to load.</div>
+        )
+    }
 
     switch (view) {
         case 'Acquisitions':
-            return <AcquisitionsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} isProfessional={isProfessional} />;
+            return <AcquisitionsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} isProfessional={isProfessional} isStarter={isStarter} />;
         case 'Team':
             return (
                 <TeamKpiQuery
@@ -60,20 +69,21 @@ const KpiQuery = ({
                     kpiList={kpiList}
                     isLoadingData={isLoadingData}
                     isProfessional={isProfessional}
+                    isStarter={isStarter}
                 />
             );
         case 'Financial':
-            return <FinancialsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} isProfessional={isProfessional} />;
+            return <FinancialsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} isProfessional={isProfessional} isStarter={isStarter} />;
         case 'Leaderboard':
             if (clientSpaceId === closersSpaceId) {
                 return <ClosersLeaderboard {...props} view={view} query={query} kpiList={kpiList} isProfessional={isProfessional} onCloneLeaderboard={handleCloneLeaderboard} />;
             } else {
-            return <Leaderboard {...props} view={view} query={query} kpiList={kpiList} isProfessional={isProfessional} />;
+                return <Leaderboard {...props} view={view} query={query} kpiList={kpiList} isProfessional={isProfessional} isStarter={isStarter} />;
             }
         case 'Payments':
-            return <ClosersPayments {...props} view={view} query={query} kpiList={kpiList}  />;
+            return <ClosersPayments {...props} view={view} query={query} kpiList={kpiList} />;
         default:
-            return <AcquisitionsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} isProfessional={isProfessional} />;
+            return <AcquisitionsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} isProfessional={isProfessional} isStarter={isStarter} />;
     }
 };
 

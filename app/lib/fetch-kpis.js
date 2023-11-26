@@ -114,8 +114,9 @@ function getKpiValue(calculatedKPIs, endpointData, dataKey) {
 
 }
 
-async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, leadSources, gte, lte, departments, teamMembers, closers, setters }) {
+async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kpiList, leadSources, gte, lte, departments, teamMembers, closers, setters }) {
 
+    // console.log(isStarter, clientSpaceId)
     // console.log(isProfessional, clientSpaceId)
     // console.log(kpiList)
     // console.log(leadSources)
@@ -131,7 +132,7 @@ async function fetchKpiData({ isProfessional, clientSpaceId, view, kpiList, lead
         return null;
     }
 
-    if (isProfessional && clientSpaceId !== 8108305) {
+    if (isProfessional && clientSpaceId !== 8108305 || isStarter && clientSpaceId !== 8108305) {
         let emptyKpiData = [];
 
         if (view === "Team") {

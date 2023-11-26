@@ -24,9 +24,7 @@ export default function LeadSourceDropdown({ onOptionSelected, selectedLeadsourc
 
 
     const handleOptionSelected = (selectedOptionsNames) => {
-        console.log("handleOptionSelected: ", queryId, selectedOptionsNames)
         const selectedIds = selectedOptionsNames.map(option => leadSources[option]);
-        console.log("selectedIds: ", selectedIds)
         onOptionSelected(queryId, selectedIds);
     };
 

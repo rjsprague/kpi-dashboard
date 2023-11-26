@@ -27,7 +27,8 @@ const AcquisitionsKpiQuery = ({
     onToggleQuery,
     onRemoveQuery,
     isLoadingData,
-    isProfessional
+    isProfessional,
+    isStarter
 }) => {
     const [height, setHeight] = useState('auto');
     const [openModal, setOpenModal] = useState(false);
@@ -128,7 +129,9 @@ const AcquisitionsKpiQuery = ({
     };
 
     useEffect(() => {
-        setSelectedClosers(query.closers.map(id => closers[id]))
+        if (clientSpaceId === closersSpaceId) {
+            setSelectedClosers(query.closers.map(id => closers[id]))
+        }
     }, [query, query.closers])
 
     // console.log(selectedClosers)
@@ -139,7 +142,9 @@ const AcquisitionsKpiQuery = ({
     };
 
     useEffect(() => {
-        setSelectedSetters(query.setters.map(id => setters[id]))
+        if (clientSpaceId === closersSpaceId) {
+            setSelectedSetters(query.setters.map(id => setters[id]))
+        }
     }, [query, query.setters])
 
     // console.log(selectedSetters)

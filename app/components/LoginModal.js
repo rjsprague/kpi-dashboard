@@ -21,7 +21,7 @@ export default function LoginModal({ isOpen, onClose }) {
     const [showPassword, setShowPassword] = useState(false);
     const { isLoggingOut } = useAuth();
 
-    console.log(isLoggingOut)
+    // console.log(isLoggingOut)
     
     useEffect(() => {
         if (isOpen && emailRef.current) {

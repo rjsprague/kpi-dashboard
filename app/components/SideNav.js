@@ -34,6 +34,8 @@ export default function SideNav() {
 
     const dispatch = useDispatch();
 
+    // console.log(user)
+
     useEffect(() => {
         if (user && user.isScaling) {
             setClientFolderID(user.settings.google.rootFolderID)
@@ -42,6 +44,7 @@ export default function SideNav() {
             setClientFolderID(user.settings.google.propertyFolderID);
             setIsProfessional(true);
         } else if (user && user.isStarter) {
+            setClientFolderID(user.settings.google.propertyFolderID);
             setIsStarter(true);
         }
 
@@ -127,7 +130,7 @@ export default function SideNav() {
         { icon: <FontAwesomeIcon icon={faFileAlt} size="xl" />, text: 'Call Scripts', link: '/call-scripts', scripts: true, onClick: () => setScriptsOpen(!scriptsOpen) },
         clientFolderID ? {
             icon: <FaGoogleDrive className="block text-xl" />,
-            text: isScaling ? `Files` : isProfessional ? `Property Folders` : ``,
+            text: isScaling ? `Files` : isProfessional ? `Property Folders` : isStarter ? `Property Folders` : ``,
             link: `https://drive.google.com/drive/folders/${clientFolderID}`,
             target: '_blank',
             rel: 'noopener noreferrer'

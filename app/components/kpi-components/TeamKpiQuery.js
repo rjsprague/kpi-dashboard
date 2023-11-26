@@ -23,7 +23,8 @@ const TeamKpiQuery = ({
     onRemoveQuery,
     onTeamChange,
     isLoadingData,
-    isProfessional
+    isProfessional,
+    isStarter,
 }) => {
     const [height, setHeight] = useState('auto');
     const [openModal, setOpenModal] = useState(false);
@@ -63,7 +64,7 @@ const TeamKpiQuery = ({
 
     const handleKpiCardClick = async (startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName) => {
         // console.log("handleKpiCardClick: ", startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName)
-        console.log(leadSource)
+        // console.log(leadSource)
         setTableProps({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers: [], setters: [] });
         setModalType("table")
         setOpenModal(true)
@@ -97,6 +98,8 @@ const TeamKpiQuery = ({
                             onDepartmentChange={handleDepartmentChange}
                             departments={departments}
                             isLoadingData={isLoadingData}
+                            isProfessional={isProfessional}
+                            isStarter={isStarter}
                         />
                     </div>
                     <LeadSourcesDropdown
