@@ -22,14 +22,14 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
 
     const accessToken = cookies.get('token');
     // console.log("accessToken", accessToken)
-    console.log("api name: ", apiName)
+    // console.log("api name: ", apiName)
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
     let teamMembersNum = teamMembers.map(Number);
     let closersNum = closers.map(Number);
     let settersNum = setters.map(Number);
     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
 
-    console.log(apiEndpointsKeys)
+    // console.log(apiEndpointsKeys)
     // console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters)
 
     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {

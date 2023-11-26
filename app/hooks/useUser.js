@@ -44,7 +44,7 @@ export const useUser = () => {
     };
 
     const login = async (email, password) => {
-        try {
+        // try {
             const response = await axios.post('/api/auth/login',
                 JSON.stringify({ email, password }),
                 {
@@ -54,29 +54,27 @@ export const useUser = () => {
                 }
             );
             const { exp } = jwt.decode(response.data.token);
-            console.log("useUser login expiry", exp)
+            // console.log("useUser login expiry", exp)
             const expiryDate = new Date(exp * 1000);
-            console.log("useUser login expiryDate", expiryDate)
+            // console.log("useUser login expiryDate", expiryDate)
 
             Cookies.set('token', response.data.token, { expires: expiryDate, path: '/' });
             Cookies.set('tokenExpiry', exp.toString(), { expires: expiryDate, path: '/' });
 
             setAuth({ token: response.data.token, tokenExpiry: exp });
             await fetchUser();
-        } catch (err) {
-            // Handle error
-            console.log(err)
-            if (!err?.response) {
-                throw new Error('No Server Response');
-            } else if (err.response?.status === 400) {
-                throw new Error('Missing Username or Password');
-            } else if (err.response?.status === 401) {
-                throw new Error('Unauthorized');
-            } else {
-                throw new Error('Login Failed');
-            }
+        // } catch (err) {
+        //     // Handle error
+        //     console.log(err.request.status)
+        //     if (err.request?.status === 400) {
+        //         throw new Error('Missing Username or Password');
+        //     } else if (err.request?.status === 401) {
+        //         throw new Error('Bad credentials');
+        //     } else {
+        //         throw new Error('Login Failed');
+        //     }
 
-        }
+        // }
     };
 
     useEffect(() => {
