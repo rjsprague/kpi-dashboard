@@ -120,7 +120,7 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
                     );
                 },
                 enableSorting: true,
-                sortingFn: key === dateColumnKey ? 'datetime' : 'alphanumeric',
+                sortingFn: key === dateColumnKey ? 'datetime': 'basic',
                 sortDescFirst: true,
             });
         }
