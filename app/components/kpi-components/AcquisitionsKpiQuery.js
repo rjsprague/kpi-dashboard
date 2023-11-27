@@ -115,6 +115,7 @@ const AcquisitionsKpiQuery = ({
     };
 
     const handleDateRangeChange = (startDate, endDate) => {
+        console.log(startDate, endDate)
         onDateRangeChange(startDate, endDate, query.id);
     };
 

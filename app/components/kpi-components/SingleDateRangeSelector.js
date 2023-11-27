@@ -13,6 +13,12 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange, selectedDateRange
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [contentHeight, setContentHeight] = useState(0);
     const datePickerContentRef = useRef(null);
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(null);
+
+    // console.log("selectedDateRange", selectedDateRange)
+    // console.log("dateRange", dateRange)
+    // console.log("showDatePicker", showDatePicker)
 
     useEffect(() => {
         setDateRange(selectedDateRange);
@@ -34,12 +40,13 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange, selectedDateRange
         handleDateRangeChange([range.startDate, range.endDate]);
     };
 
-    const handleDateRangeChange = (dates) => {
-        setDateRange(dates);
-        const [startDate, endDate] = dates;
-        if (startDate && endDate) {
-            onDateRangeChange(startDate, endDate, queryId);
-            toggleDatePicker();
+    const onChange = (dates) => {
+        const [start, end] = dates;
+        setStartDate(start);
+        setEndDate(end);
+        if (start && end) {
+            onDateRangeChange(start, end, queryId);
+            setDateRange({ gte: start, lte: end });
         }
     };
 
@@ -60,7 +67,7 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange, selectedDateRange
         };
     }, []);
 
-    const duration = 250;
+    const duration = 150;
     const defaultStyle = {
         transition: `height ${duration}ms ease-in-out, opacity ${duration}ms ease-in-out`,
         height: 0,
@@ -103,7 +110,7 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange, selectedDateRange
                                 <button
                                     key={index}
                                     className="w-32 px-2 py-0 mb-0.5 border-b text-left text-white hover:bg-blue-100 focus:bg-blue-100 focus:outline-none"
-                                    onClick={() => handleDateRangeChange([preset.startDate, preset.endDate])}
+                                    onClick={() => onChange([preset.startDate, preset.endDate])}
                                 >
                                     {key}
                                 </button>
@@ -123,10 +130,10 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange, selectedDateRange
                                 </select>
                             </div>
                             <DatePicker
-                                key={`${dateRange.gte}-${dateRange.lte}`}
-                                onChange={handleDateRangeChange}
-                                startDate={dateRange.gte}
-                                endDate={dateRange.lte}
+                                key={queryId}
+                                onChange={onChange}
+                                startDate={startDate}
+                                endDate={endDate}
                                 selectsRange
                                 inline
                                 showMonthDropdown
