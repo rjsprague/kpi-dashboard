@@ -153,10 +153,11 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
 
     leadsEndpoint.filters = [{ type: "app", fieldName: "itemid", values: leadsArray.flat() }];
     const leads = await fetchPage(leadsEndpoint);
-    // console.log(leads)
+    // console.log(leads[0]["Followup Reminder: Specific Date"])
 
     let namesAddresses = {};
     leads.forEach(lead => {
+        // console.log(lead["Followup Reminder: Specific Date"])
         namesAddresses[lead.itemid] = {
             "Name": lead["Contact Name"] ? lead["Contact Name"] : lead["Seller Contact Name"] ? lead["Seller Contact Name"]
                 : lead["First"] && lead["Last"] ? lead["First"] + " " + lead["Last"]
@@ -165,6 +166,8 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
                             : lead.Title ? lead.Title
                                 : "No Name",
             "Address": lead["Property Address"] ? lead["Property Address"] : lead["*AS Address"] ? lead["*AS Address"] : "No address",
+            "Status": lead["Lead Status"] ? lead["Lead Status"] : "No lead status",
+            "Follow Up": lead['Followup Reminder: Specific Date'] ? lead['Followup Reminder: Specific Date']['start'] : "No followup date",
             seller_id: lead.itemid ? lead.itemid : lead.podio_item_id,
         }
     });
@@ -455,6 +458,8 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name",
                     "Event": result["Event"] ? result["Event"] : "No event given",
                     "Event #": result["lead_event #"] ? result["lead_event #"] : "No event number given",
+                    "Status": namesAddresses && namesAddresses[result["Related Lead"]] && namesAddresses[result["Related Lead"]]["Status"] ? namesAddresses[result["Related Lead"]]["Status"] : "No status given",
+                    "Follow Up": namesAddresses && namesAddresses[result["Related Lead"]] && namesAddresses[result["Related Lead"]]["Follow Up"] ? namesAddresses[result["Related Lead"]]["Follow Up"] : "No follow up given",
                     "Setter": result["Setter Responsible"] ? result["Setter Responsible"] : "No setter responsible",
                     "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "No closer responsible",                    
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
