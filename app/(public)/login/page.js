@@ -7,6 +7,7 @@ import useAuth from '../../hooks/useAuth';
 import Image from 'next/image';
 import Cookies from 'js-cookie';
 import { useUser } from '../../hooks/useUser';
+import { toast } from 'react-toastify';
 
 
 export default function LoginPage() {
@@ -31,6 +32,24 @@ export default function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // validate email address
+        if (!email) {
+            toast.error('Please enter your email address.', {
+                position: toast.POSITION.TOP_CENTER,
+            });
+            return;
+        }
+
+        // validate email format
+        const emailRegex = /\S+@\S+\.\S+/;
+        if (!emailRegex.test(email)) {
+            toast.error('Please enter a valid email address.', {
+                position: toast.POSITION.TOP_CENTER,
+            });
+            return;
+        }
+
         try {
             await login(email, password);
 
@@ -47,7 +66,7 @@ export default function LoginPage() {
             }
         } catch (err) {
             if (err.request?.status === 400) {
-                setErrMsg('Missing Username or Password');
+                setErrMsg('Bad Credentials.');
             } else if (err.request?.status === 401) {
                 setErrMsg('Bad credentials.');
             } else {
@@ -59,7 +78,7 @@ export default function LoginPage() {
 
     // if auth has a token and the token has not expired, redirect to dashboard
     useEffect(() => {
-        if (auth && auth.token && Number(auth.tokenExpiry)*1000 > Date.now()) {
+        if (auth && auth.token && Number(auth.tokenExpiry) * 1000 > Date.now()) {
             router.push('/kpi-dashboard');
         }
     }, [auth])
@@ -79,7 +98,7 @@ export default function LoginPage() {
                             id="email"
                             ref={emailRef}
                             autoComplete="on"
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e) => setEmail((e.target.value))}
                             value={email}
                             required
                             className='w-full p-2 text-black border border-gray-300 rounded'

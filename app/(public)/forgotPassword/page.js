@@ -16,10 +16,30 @@ export default function ForgotPasswordPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Validate email
+        if (!email) {
+            toast.error('Please enter your email address.', {
+                position: toast.POSITION.TOP_CENTER,
+            });
+            return;
+        }
+
+        // Validate email format
+        const emailRegex = /\S+@\S+\.\S+/;
+        if (!emailRegex.test(email)) {
+            toast.error('Please enter a valid email address.', {
+                position: toast.POSITION.TOP_CENTER,
+            });
+            return;
+        }
+
+        // Sanitize email address
+        const sanitizedEmail = email.trim().toLowerCase();
+        
         // Post to /auth/forgot-password
         try {
             const response = await axios.post('/api/auth/forgot-password',
-                JSON.stringify({ email: email }),
+                JSON.stringify({ email: sanitizedEmail }),
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true

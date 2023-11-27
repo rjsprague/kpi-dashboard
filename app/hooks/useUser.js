@@ -43,38 +43,31 @@ export const useUser = () => {
         }
     };
 
-    const login = async (email, password) => {
-        // try {
-            const response = await axios.post('/api/auth/login',
-                JSON.stringify({ email, password }),
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                    withCredentials: true,
-                    cache: 'no-store'
-                }
-            );
-            const { exp } = jwt.decode(response.data.token);
-            // console.log("useUser login expiry", exp)
-            const expiryDate = new Date(exp * 1000);
-            // console.log("useUser login expiryDate", expiryDate)
+    const login = async (rawEmail, password) => {
 
-            Cookies.set('token', response.data.token, { expires: expiryDate, path: '/' });
-            Cookies.set('tokenExpiry', exp.toString(), { expires: expiryDate, path: '/' });
+        console.log(rawEmail)
 
-            setAuth({ token: response.data.token, tokenExpiry: exp });
-            await fetchUser();
-        // } catch (err) {
-        //     // Handle error
-        //     console.log(err.request.status)
-        //     if (err.request?.status === 400) {
-        //         throw new Error('Missing Username or Password');
-        //     } else if (err.request?.status === 401) {
-        //         throw new Error('Bad credentials');
-        //     } else {
-        //         throw new Error('Login Failed');
-        //     }
+        // sanitize email address
+        const email = rawEmail.trim().toLowerCase();
+        console.log("sanitizedEmail", email)
 
-        // }
+        const response = await axios.post('/api/auth/login',
+            JSON.stringify({ email, password }),
+            {
+                headers: { 'Content-Type': 'application/json' },
+                withCredentials: true,
+                cache: 'no-store'
+            }
+        );
+        const { exp } = jwt.decode(response.data.token);
+        const expiryDate = new Date(exp * 1000);
+
+        Cookies.set('token', response.data.token, { expires: expiryDate, path: '/' });
+        Cookies.set('tokenExpiry', exp.toString(), { expires: expiryDate, path: '/' });
+
+        setAuth({ token: response.data.token, tokenExpiry: exp });
+        await fetchUser();
+
     };
 
     useEffect(() => {
