@@ -1268,8 +1268,8 @@ const KPI_DEFINITIONS = {
             const { cashCollectedUpFront, totalClosersAdSpend } = apiData;
             return totalClosersAdSpend > 0 ? cashCollectedUpFront / totalClosersAdSpend * 100 : 0;
         },
-        redFlag: 800,
-        target: 1200,
+        redFlag: 300,
+        target: 500,
         dataLabels: ["Cash Collected: $", "Ad Spend: $"],
         kpiType: "meter",
         unit: "%",
@@ -1294,8 +1294,8 @@ const KPI_DEFINITIONS = {
 
             return totalClosersAdSpend > 0 ? totalRevenueContracted / totalClosersAdSpend * 100 : 0;
         },
-        redFlag: 800,
-        target: 1200,
+        redFlag: 500,
+        target: 800,
         dataLabels: ["Revenue Contracted: $", "Ad Spend: $"],
         kpiType: "meter",
         unit: "%",
