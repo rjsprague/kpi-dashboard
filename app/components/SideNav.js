@@ -163,7 +163,7 @@ export default function SideNav() {
         {
             icon: <FontAwesomeIcon icon={faChalkboardTeacher} size="lg" />,
             text: "Training",
-            link: "https://knowledge.reiautomated.io",
+            link: "https://knowledge.reiautomated.io/enrollments",
             target: "_blank",
             rel: "noopener noreferrer",
         },
