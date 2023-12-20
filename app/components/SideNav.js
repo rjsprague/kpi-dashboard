@@ -1,17 +1,24 @@
-"use client"
-import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
-import { FiUsers } from 'react-icons/fi';
+"use client";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { FiUsers } from "react-icons/fi";
 import { FaGoogleDrive } from "react-icons/fa6";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGaugeHigh, faFileAlt } from '@fortawesome/free-solid-svg-icons';
-import fetchClients from '../lib/fetchClients';
-import { client, setClientName, setSpaceId } from '../GlobalRedux/Features/client/clientSlice'
-import { useDispatch } from 'react-redux';
-import UniversalDropdown from './kpi-components/UniversalDropdown';
-import SidenavDropdownButton from './SidenavDropdownButton';
-import useAuth from '@/hooks/useAuth'
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faGaugeHigh,
+    faFileAlt,
+    faChalkboardTeacher,
+} from "@fortawesome/free-solid-svg-icons";
+import fetchClients from "../lib/fetchClients";
+import {
+    client,
+    setClientName,
+    setSpaceId,
+} from "../GlobalRedux/Features/client/clientSlice";
+import { useDispatch } from "react-redux";
+import UniversalDropdown from "./kpi-components/UniversalDropdown";
+import SidenavDropdownButton from "./SidenavDropdownButton";
+import useAuth from "@/hooks/useAuth";
 
 export default function SideNav() {
     const { user, loading, logout } = useAuth();
@@ -38,7 +45,7 @@ export default function SideNav() {
 
     useEffect(() => {
         if (user && user.isScaling) {
-            setClientFolderID(user.settings.google.rootFolderID)
+            setClientFolderID(user.settings.google.rootFolderID);
             setIsScaling(true);
         } else if (user && user.isProfessional) {
             setClientFolderID(user.settings.google.propertyFolderID);
@@ -51,7 +58,7 @@ export default function SideNav() {
         if (user && user.isAdmin) {
             setIsAdmin(true);
         }
-    }, [user])
+    }, [user]);
 
     useEffect(() => {
         if (isOpen) {
@@ -67,7 +74,7 @@ export default function SideNav() {
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (sideNavRef.current && !sideNavRef.current.contains(event.target)) {
-                if (clientsOpen && event.target.closest('.dropdown')) {
+                if (clientsOpen && event.target.closest(".dropdown")) {
                 } else {
                     setIsOpen(false);
                 }
@@ -82,7 +89,7 @@ export default function SideNav() {
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (buttonRef.current && !buttonRef.current.contains(event.target)) {
-                if (clientsOpen && event.target.closest('.dropdown')) {
+                if (clientsOpen && event.target.closest(".dropdown")) {
                 } else {
                     setClientsOpen(false);
                 }
@@ -117,7 +124,7 @@ export default function SideNav() {
     };
 
     const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
+        if (event.key === "Escape") {
             setIsOpen(false);
             setClientsOpen(false);
         }
@@ -126,17 +133,47 @@ export default function SideNav() {
     const navItems = [
         // { icon: <FontAwesomeIcon icon={faThLarge} size="lg" />, text: 'Overview', link: '/' },
         // { icon: <FontAwesomeIcon icon={faCheckDouble} size="lg" />, text: 'To Dos', link: '/' },
-        { icon: <FontAwesomeIcon icon={faGaugeHigh} size="xl" />, text: 'KPIs', link: '/kpi-dashboard' },
-        { icon: <FontAwesomeIcon icon={faFileAlt} size="xl" />, text: 'Call Scripts', link: '/call-scripts', scripts: true, onClick: () => setScriptsOpen(!scriptsOpen) },
-        clientFolderID ? {
-            icon: <FaGoogleDrive className="block text-xl" />,
-            text: isScaling ? `Files` : isProfessional ? `Property Folders` : isStarter ? `Property Folders` : ``,
-            link: `https://drive.google.com/drive/folders/${clientFolderID}`,
-            target: '_blank',
-            rel: 'noopener noreferrer'
-        } : null,
-        // { icon: <FontAwesomeIcon icon={faChalkboardTeacher} size="lg" />, text: 'Training', link: '/' },
-        { icon: <FiUsers className='text-xl' />, text: 'Clients', link: '/', clients: true, onClick: () => setClientsOpen(!clientsOpen) },
+        {
+            icon: <FontAwesomeIcon icon={faGaugeHigh} size="xl" />,
+            text: "KPIs",
+            link: "/kpi-dashboard",
+        },
+        {
+            icon: <FontAwesomeIcon icon={faFileAlt} size="xl" />,
+            text: "Call Scripts",
+            link: "/call-scripts",
+            scripts: true,
+            onClick: () => setScriptsOpen(!scriptsOpen),
+        },
+        clientFolderID
+            ? {
+                icon: <FaGoogleDrive className="block text-xl" />,
+                text: isScaling
+                    ? `Files`
+                    : isProfessional
+                        ? `Property Folders`
+                        : isStarter
+                            ? `Property Folders`
+                            : ``,
+                link: `https://drive.google.com/drive/folders/${clientFolderID}`,
+                target: "_blank",
+                rel: "noopener noreferrer",
+            }
+            : null,
+        {
+            icon: <FontAwesomeIcon icon={faChalkboardTeacher} size="lg" />,
+            text: "Training",
+            link: "https://knowledge.reiautomated.io",
+            target: "_blank",
+            rel: "noopener noreferrer",
+        },
+        {
+            icon: <FiUsers className="text-xl" />,
+            text: "Clients",
+            link: "/",
+            clients: true,
+            onClick: () => setClientsOpen(!clientsOpen),
+        },
     ].filter(Boolean);
 
     // const teamItems = [
@@ -147,14 +184,15 @@ export default function SideNav() {
     // ];
 
     return (
-
         <div className="fixed z-10 overflow-visible">
-            <div
-                className={`relative flex`}
-                ref={sideNavRef}
-            >
+            <div className={`relative flex`} ref={sideNavRef}>
                 <div className="relative">
-                    <nav className={`fixed top-0 bottom-0 left-0 flex flex-col pl-5 pr-2 bg-gradient-to-r from-blue-900 to-blue-700 shadow-super-2 lg:shadow-black transition-all duration-300 ease-in-out ${isOpen ? 'w-60 h-screen' : 'w-20 h-20 lg:h-screen overflow-hidden lg:overflow-visible'}`}>
+                    <nav
+                        className={`fixed top-0 bottom-0 left-0 flex flex-col pl-5 pr-2 bg-gradient-to-r from-blue-900 to-blue-700 shadow-super-2 lg:shadow-black transition-all duration-300 ease-in-out ${isOpen
+                                ? "w-60 h-screen"
+                                : "w-20 h-20 lg:h-screen overflow-hidden lg:overflow-visible"
+                            }`}
+                    >
                         <div className={`relative flex flex-col flex-grow`}>
                             <div className={`relative flex flex-row top-5 left-1 mb-10`}>
                                 <img
@@ -162,34 +200,62 @@ export default function SideNav() {
                                     alt="REI Automated Logo"
                                     className="w-8 h-8 text-white transition-all duration-300 ease-in-out animate-pulse"
                                     onClick={toggleOpen}
-                                    style={{ transform: `${isOpen ? 'rotate(360deg)' : 'rotate(0deg)'}` }}
+                                    style={{
+                                        transform: `${isOpen ? "rotate(360deg)" : "rotate(0deg)"}`,
+                                    }}
                                 />
-                                <p className={`text-xl transition-all duration-300 ease-in-out whitespace-nowrap ${isOpen ? 'ml-2 w-40 opacity-100' : 'w-0 opacity-0'}`}>REI AUTOMATED</p>
+                                <p
+                                    className={`text-xl transition-all duration-300 ease-in-out whitespace-nowrap ${isOpen ? "ml-2 w-40 opacity-100" : "w-0 opacity-0"
+                                        }`}
+                                >
+                                    REI AUTOMATED
+                                </p>
                             </div>
-                            <ul className={`relative transition-all ease-in delay-300 flex flex-col mt-8 lg:space-y-2 gap-2 ${isOpen ? '' : 'pl-2'}`}>
+                            <ul
+                                className={`relative transition-all ease-in delay-300 flex flex-col mt-8 lg:space-y-2 gap-2 ${isOpen ? "" : "pl-2"
+                                    }`}
+                            >
                                 {navItems.map((item, index) => (
                                     <li key={index}>
                                         {item.clients ? (
-                                            user && isAdmin && (
+                                            user &&
+                                            isAdmin && (
                                                 <div
                                                     ref={buttonRef}
                                                     className="relative flex w-full rounded-md"
                                                     onClick={item.onClick}
                                                     onKeyDown={handleKeyDown}
                                                 >
-                                                    <div className='flex flex-row gap-2 p-1 text-left cursor-pointer whitespace-nowrap'>
-                                                        <span className={`transition-all duration-300 ease-out hover:animate-bounce ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}>{item.icon}</span>
-                                                        <span className={`truncate transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>{item.text}{selectedClient && `: ` + selectedClient}</span>
+                                                    <div className="flex flex-row gap-2 p-1 text-left cursor-pointer whitespace-nowrap">
+                                                        <span
+                                                            className={`transition-all duration-300 ease-out hover:animate-bounce ${isOpen
+                                                                    ? "opacity-100"
+                                                                    : "opacity-0 lg:opacity-100"
+                                                                }`}
+                                                        >
+                                                            {item.icon}
+                                                        </span>
+                                                        <span
+                                                            className={`truncate transition-all duration-300 ease-out whitespace-nowrap ${isOpen
+                                                                    ? "w-44 overflow-visible opacity-100"
+                                                                    : "w-0 overflow-hidden opacity-0"
+                                                                }`}
+                                                        >
+                                                            {item.text}
+                                                            {selectedClient && `: ` + selectedClient}
+                                                        </span>
                                                     </div>
                                                     {clientsOpen && (
                                                         <div
-                                                            className='absolute top-0 left-[50%]'
+                                                            className="absolute top-0 left-[50%]"
                                                             onClick={(e) => e.stopPropagation()}
                                                         >
                                                             <UniversalDropdown
                                                                 options={clientsNamesArray}
                                                                 onOptionSelected={handleClientSelect}
-                                                                selectedOptions={selectedClient ? [selectedClient] : []}
+                                                                selectedOptions={
+                                                                    selectedClient ? [selectedClient] : []
+                                                                }
                                                                 queryId={null}
                                                                 isSingleSelect={true}
                                                                 isLoadingData={null}
@@ -202,12 +268,31 @@ export default function SideNav() {
                                                     )}
                                                 </div>
                                             )
-
                                         ) : (
-                                            <Link href={item.link} target={item.target ? item.target : ""} rel={item.rel ? item.rel : ""} className={`flex flex-row gap-2 whitespace-nowrap rounded-md ${isOpen ? '' : ''}`}>
-                                                <div className='flex flex-row gap-2 p-1 text-left whitespace-nowrap '>
-                                                    <span className={`transition-all duration-300 ease-out hover:animate-bounce ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100'}`}>{item.icon}</span>
-                                                    <span className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>{item.text}</span>
+                                            <Link
+                                                href={item.link}
+                                                target={item.target ? item.target : ""}
+                                                rel={item.rel ? item.rel : ""}
+                                                className={`flex flex-row gap-2 whitespace-nowrap rounded-md ${isOpen ? "" : ""
+                                                    }`}
+                                            >
+                                                <div className="flex flex-row gap-2 p-1 text-left whitespace-nowrap ">
+                                                    <span
+                                                        className={`transition-all duration-300 ease-out hover:animate-bounce ${isOpen
+                                                                ? "opacity-100"
+                                                                : "opacity-0 lg:opacity-100"
+                                                            }`}
+                                                    >
+                                                        {item.icon}
+                                                    </span>
+                                                    <span
+                                                        className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen
+                                                                ? "w-44 overflow-visible opacity-100"
+                                                                : "w-0 overflow-hidden opacity-0"
+                                                            }`}
+                                                    >
+                                                        {item.text}
+                                                    </span>
                                                 </div>
                                             </Link>
                                         )}
@@ -246,6 +331,5 @@ export default function SideNav() {
                 </div>
             </div>
         </div>
-
     );
 }
