@@ -30,7 +30,7 @@ async function fetchLeadSources(clientSpaceId) {
             },
             body: JSON.stringify({
                 "spaceid": bearerToken,
-                "limit": 100,
+                "limit": 200,
             })
         });
 

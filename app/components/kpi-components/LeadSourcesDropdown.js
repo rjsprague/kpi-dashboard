@@ -6,7 +6,7 @@ import ServiceUnavailable from '../ServiceUnavailable';
 import DropdownButton from './DropdownButton';
 
 
-export default function LeadSourceDropdown({ onOptionSelected, selectedLeadsources, queryId, leadSources, isLoadingData, isUnavailable}) {
+export default function LeadSourceDropdown({ onOptionSelected, selectedLeadsources, queryId, leadSources, isLoadingData, isUnavailable }) {
     const [selectedOptions, setSelectedOptions] = useState(Object.keys(leadSources));
     const allsourcesLabel = "All Lead Sources";
 
@@ -25,7 +25,11 @@ export default function LeadSourceDropdown({ onOptionSelected, selectedLeadsourc
 
     const handleOptionSelected = (selectedOptionsNames) => {
         const selectedIds = selectedOptionsNames.map(option => leadSources[option]);
-        onOptionSelected(queryId, selectedIds);
+        if (Object.values(leadSources).length === selectedIds.length) {
+            onOptionSelected(queryId, []);
+        } else {
+            onOptionSelected(queryId, selectedIds);
+        }
     };
 
     if (isUnavailable) {

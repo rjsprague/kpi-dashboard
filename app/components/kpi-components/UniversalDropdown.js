@@ -175,7 +175,10 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                             {!isSingleSelect && (
                                 <li className="py-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400">
                                     <label className="inline-flex items-center" onClick={() => handleCheckboxChange('All')}>
-                                        {selectedOptions?.length === options.length && options.length > 0 ? <FiCheckSquare size="20px" /> : <FiSquare size="20px" />}
+                                        {
+                                            label === "All Lead Sources" && selectedOptions.length === 0 ? <FiCheckSquare size="20px" /> :
+                                            selectedOptions?.length === options.length && options.length > 0 ? <FiCheckSquare size="20px" /> : <FiSquare size="20px" />
+                                        }
                                         <span className="ml-2">All</span>
                                     </label>
                                 </li>
@@ -187,7 +190,11 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                                     className={`w-full py-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400 ${index === highlightedIndex ? 'bg-blue-400' : ''}`}
                                 >
                                     <label className="inline-flex items-center">
-                                        {selectedOptions?.includes(option) ? isSingleSelect ? <FiCheck size="20px" /> : <FiCheckSquare size="20px" /> : !isSingleSelect && <FiSquare size="20px" />}
+                                        {                                            
+                                            selectedOptions?.includes(option) ? 
+                                            isSingleSelect ? <FiCheck size="20px" /> : <FiCheckSquare size="20px" /> : 
+                                            !isSingleSelect && <FiSquare size="20px" />
+                                        }
                                         <span className="ml-2 truncate w-34">{option}</span>
                                     </label>
                                 </li>
