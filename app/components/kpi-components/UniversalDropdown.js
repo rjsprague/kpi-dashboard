@@ -144,7 +144,7 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                             ? selectedOption
                             : isSingleSelect && selectedOptions || selectedOptions?.length === 1
                                 ? selectedOptions[0]
-                                : selectedOptions?.length === options.length
+                                : selectedOptions?.length === options.length || label === "All Lead Sources" && selectedOptions.length === 0
                                     ? (label ? label : "All")
                                     : `${selectedOptions?.length} selected`}
                 </div>

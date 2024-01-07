@@ -70,7 +70,7 @@ export default function KpiDashboard({ user }) {
                 isOpen: true,
                 isLoading: true,
                 isUnavailable: false,
-                leadSources: Object.values(leadSourcesObject),
+                leadSources: [],
                 dateRange: { gte: datePresets['Last Week'].startDate, lte: datePresets['Last Week'].endDate },
                 departments: [firstDepartment],
                 teamMembers: firstDeptTeamMembers,
