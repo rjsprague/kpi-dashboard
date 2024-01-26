@@ -7,7 +7,7 @@ import { ReduxProvider } from '../GlobalRedux/provider';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Script from 'next/script';
-import Head from 'next/head';
+
 
 export const fetchCache = 'force-no-store';
 

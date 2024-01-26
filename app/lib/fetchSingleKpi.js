@@ -473,6 +473,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name",
                     "Status": result["Status of the Call"] ? result["Status of the Call"] : "No Status",
                     "Lead Source": result["Related Lead Source Item"] ? result["Related Lead Source Item"] : "No lead source",
+                    "Setter": result["Setter Responsible"] ? result["Setter Responsible"] : result["Team Member Responsible"] ? result["Team Member Responsible"] : "Setter not given",
                     "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "Closer not given",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]].seller_id : "No Seller ID",

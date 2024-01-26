@@ -354,6 +354,11 @@ const apiEndpoints = (startDate, endDate, leadSources, kpiView, teamMembers, clo
                     "type": "app",
                     "fieldName": "Closer Responsible",
                     "values": closers
+                },
+                {
+                    "type": "app",
+                    "fieldName": "Setter Responsible",
+                    "values": setters
                 }
             ])
         },
