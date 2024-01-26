@@ -67,6 +67,7 @@ const getDayOfWeek = (date) => {
     return dayOfWeek;
 }
 
+
 // Function to calculate total sales capacity within a date range
 const calculateTotalSalesCapacity = (startDate, endDate, closerIDs) => {
 
