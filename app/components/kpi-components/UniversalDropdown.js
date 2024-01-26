@@ -77,7 +77,7 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
         if (isSingleSelect) {
             newSelectedOptions = [option];
             setSelectedOption(option);
-        } else if (option === 'All') {
+        } else if (option.includes("All")) {
             newSelectedOptions = newSelectedOptions.length === options.length ? [] : [...options];
         } else {
             const isSelected = selectedOptions.includes(option);
@@ -144,7 +144,7 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                             ? selectedOption
                             : isSingleSelect && selectedOptions || selectedOptions?.length === 1
                                 ? selectedOptions[0]
-                                : selectedOptions?.length === options.length || label === "All Lead Sources" && selectedOptions.length === 0
+                                : selectedOptions?.length === options.length || label.includes("All") && selectedOptions.length === 0
                                     ? (label ? label : "All")
                                     : `${selectedOptions?.length} selected`}
                 </div>
@@ -176,7 +176,7 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                                 <li className="py-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400">
                                     <label className="inline-flex items-center" onClick={() => handleCheckboxChange('All')}>
                                         {
-                                            label === "All Lead Sources" && selectedOptions.length === 0 ? <FiCheckSquare size="20px" /> :
+                                            label && label.includes("All") && selectedOptions.length === 0 ? <FiCheckSquare size="20px" /> :
                                             selectedOptions?.length === options.length && options.length > 0 ? <FiCheckSquare size="20px" /> : <FiSquare size="20px" />
                                         }
                                         <span className="ml-2">All</span>

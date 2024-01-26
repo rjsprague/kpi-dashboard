@@ -78,6 +78,10 @@ const calculateTotalSalesCapacity = (startDate, endDate, closerIDs) => {
     currentDate.setUTCHours(0, 0, 0, 0);
     end.setUTCHours(0, 0, 0, 0);
 
+    if (closerIDs.length === 0) {
+        closerIDs = Object.keys(salesTeamMemberSlots);
+    }
+
 
     while (currentDate.getTime() <= end.getTime()) {
         const dayOfWeek = getDayOfWeek(currentDate);

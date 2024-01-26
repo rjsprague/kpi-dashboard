@@ -96,6 +96,8 @@ const AcquisitionsKpiQuery = ({
         }
     }, [departments])
 
+    // console.log(setters)
+
     const handleCardInfoClick = (result) => {
         setSelectedResult(result);
         setModalType("info");
@@ -115,7 +117,7 @@ const AcquisitionsKpiQuery = ({
     };
 
     const handleDateRangeChange = (startDate, endDate) => {
-        console.log(startDate, endDate)
+        // console.log(startDate, endDate)
         onDateRangeChange(startDate, endDate, query.id);
     };
 
@@ -125,7 +127,12 @@ const AcquisitionsKpiQuery = ({
     };
 
     const handleClosersChange = (selectedClosers) => {
-        const selectedCloserIds = selectedClosers.map(option => reversedClosers[option])
+        let selectedCloserIds = [];
+        if (selectedClosers.length === 0 || selectedClosers.length === Object.values(closers).length) {
+            selectedCloserIds = [];
+        } else {
+            selectedCloserIds = selectedClosers.map(option => reversedClosers[option])
+        }
         onClosersChange(selectedCloserIds, query.id)
     };
 
@@ -138,7 +145,12 @@ const AcquisitionsKpiQuery = ({
     // console.log(selectedClosers)
 
     const handleSettersChange = (selectedSetters) => {
-        const selectedSetterIds = selectedSetters.map(option => reversedSetters[option])
+        let selectedSetterIds = [];
+        if (selectedSetters.length === 0 || selectedSetters.length === Object.values(setters).length) {
+            selectedSetterIds = [];
+        } else {
+            selectedSetterIds = selectedSetters.map(option => reversedSetters[option])
+        }        
         onSettersChange(selectedSetterIds, query.id)
     };
 

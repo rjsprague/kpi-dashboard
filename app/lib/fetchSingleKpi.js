@@ -460,8 +460,8 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Event #": result["lead_event #"] ? result["lead_event #"] : "No event number given",
                     "Status": namesAddresses && namesAddresses[result["Related Lead"]] && namesAddresses[result["Related Lead"]]["Status"] ? namesAddresses[result["Related Lead"]]["Status"] : "No status given",
                     "Follow Up": namesAddresses && namesAddresses[result["Related Lead"]] && namesAddresses[result["Related Lead"]]["Follow Up"] ? namesAddresses[result["Related Lead"]]["Follow Up"] : "No follow up given",
-                    "Setter": result["Setter Responsible"] ? result["Setter Responsible"] : "No setter responsible",
-                    "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "No closer responsible",                    
+                    "Setter": result["Setter Responsible"] ? result["Setter Responsible"] : "Not set",
+                    "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "No closer responsible",                 
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]].seller_id : "No Seller ID",
                 }
@@ -473,7 +473,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name",
                     "Status": result["Status of the Call"] ? result["Status of the Call"] : "No Status",
                     "Lead Source": result["Related Lead Source Item"] ? result["Related Lead Source Item"] : "No lead source",
-                    "Setter": result["Setter Responsible"] ? result["Setter Responsible"] : result["Team Member Responsible"] ? result["Team Member Responsible"] : "Setter not given",
+                    "Setter": result["Setter Responsible"] ? result["Setter Responsible"] : result["Team Member Responsible"] ? result["Team Member Responsible"] : "Not Set",
                     "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "Closer not given",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]].seller_id : "No Seller ID",
@@ -487,7 +487,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Qualification": result["Qualification"] ? result["Qualification"] : "No qualification",
                     "Call Confirmed": result["Call Confirmed"] ? result["Call Confirmed"] : "No call confirmed",
                     // "Lead Source": result["Related Lead Source Item"] ? result["Related Lead Source Item"] : "No lead source",
-                    "Setter": result["Setter Responsible"] ? result["Setter Responsible"] : result["Team Member Responsible"] ? result["Team Member Responsible"] : "Setter not given",
+                    "Setter": result["Setter Responsible"] ? result["Setter Responsible"] : result["Team Member Responsible"] ? result["Team Member Responsible"] : "Not Set",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]].seller_id : "No Seller ID",
                 }
