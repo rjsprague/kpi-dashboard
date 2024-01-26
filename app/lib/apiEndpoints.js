@@ -328,7 +328,7 @@ const apiEndpoints = (startDate, endDate, leadSources, kpiView, teamMembers, clo
         closersPayments: {
             name: "Closers Payments",
             url: "/api/closers/management/payment-plans",
-            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date", setters, closers, [
+            filters: generateFilters(startDate, endDate, null, kpiView, null, "Date", null, closers, [
                 {
                     "type": "category",
                     "fieldName": "Plan #",
