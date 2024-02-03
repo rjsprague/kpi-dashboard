@@ -26,16 +26,16 @@ const KpiQuery = ({
     ...props
 }) => {
 
-    let id, dateRange, leadSources, departments, teamMembers, gte, lte, closers, setters;
+    let id, dateRange, leadSources, departments, teamMembers, gte, lte, closers, setters, noSetter;
     if (query) {
-        ({ id, dateRange, leadSources, departments, teamMembers, closers, setters } = query);
+        ({ id, dateRange, leadSources, departments, teamMembers, closers, setters, noSetter } = query);
         gte = dateRange?.gte || '';
         lte = dateRange?.lte || '';
     }
     const clientSpaceId = useSelector(selectSpaceId);
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
 
-    const { data, error } = useSWR({ isStarter, isProfessional, clientSpaceId, view, kpiList, leadSources, gte, lte, departments, teamMembers, closers, setters }, fetchKpiData);
+    const { data, error } = useSWR({ isStarter, isProfessional, clientSpaceId, view, kpiList, leadSources, gte, lte, departments, teamMembers, closers, setters, noSetter }, fetchKpiData);
 
     // console.log(id, data)
 

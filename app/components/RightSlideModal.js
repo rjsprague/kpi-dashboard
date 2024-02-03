@@ -27,7 +27,8 @@ const RightSlideModal = ({
     tableProps,
     leadSources,
     departments,
-    isProfessional
+    isProfessional,
+    noSetter
 }) => {
     const [selectedViewKpiList, setSelectedViewKpiList] = useState([]);
     const [dataTable1, setDataTable1] = useState(null);
@@ -58,9 +59,10 @@ const RightSlideModal = ({
             clientSpaceId,
             apiName,
             closers,
-            setters
+            setters,
+            noSetter
         };
-    }, [startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters]);
+    }, [startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters, noSetter]);
 
     const { data, error } = useSWR(swrKey, fetchSingleKpi);
     // console.log('data', data)

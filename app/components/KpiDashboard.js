@@ -57,8 +57,7 @@ export default function KpiDashboard({ user }) {
     }
 
     const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId, kpiView) => {
-        // console.log(departmentsDataObject)
-        // console.log(Object.keys(departmentsDataObject["Closer"]))
+
         const firstDepartment = Object?.keys(departmentsDataObject)[0]
         const firstDeptTeamMembers = Object?.keys(departmentsDataObject[firstDepartment])
 
@@ -74,8 +73,9 @@ export default function KpiDashboard({ user }) {
                 dateRange: { gte: datePresets['Last Week'].startDate, lte: datePresets['Last Week'].endDate },
                 departments: [firstDepartment],
                 teamMembers: firstDeptTeamMembers,
-                closers: [],
-                setters: [],
+                closers: clientSpaceId === closersSpaceId ? Object.keys(departmentsDataObject["Closer"]) : [],
+                setters: clientSpaceId === closersSpaceId ? Object.keys(departmentsDataObject["Setter"]) : [],
+                noSetter: false
             },
         ];
         return initialQuery;
@@ -229,6 +229,10 @@ export default function KpiDashboard({ user }) {
     };
 
     const handleTeamChange = (queryId, department, teamMembers) => {
+        console.log(department)
+        console.log(teamMembers)
+        
+
         setQueries((prevQueries) =>
             prevQueries.map((query) =>
                 query.id === queryId
@@ -328,7 +332,7 @@ export default function KpiDashboard({ user }) {
         });
     };
 
-    const handleSettersChange = (setters, queryId) => {
+    const handleSettersChange = (setters, queryId, noSetter) => {
         // console.log(queryId)
         // console.log("setters", setters)
         setQueries((prevQueries) => {
@@ -337,6 +341,7 @@ export default function KpiDashboard({ user }) {
                     return {
                         ...query,
                         setters: setters,
+                        noSetter: noSetter
                     };
                 } else {
                     return query;

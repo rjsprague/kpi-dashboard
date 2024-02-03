@@ -1,6 +1,6 @@
 import cookies from 'js-cookie';
 
-export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, filters, kpiView) {
+export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, filters, kpiView, noSetter) {
 
     const accessToken = cookies.get('token');
     // console.log("accessToken", accessToken)
@@ -8,6 +8,7 @@ export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, fil
     // console.log("apiEndpoint: ", apiEndpoint)
     // console.log("filters: ", filters)
     // console.log("kpiView: ", kpiView)
+    // console.log("noSetter: ", noSetter)
 
 
     try {
@@ -16,7 +17,7 @@ export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, fil
                 return await handleFinancialKpis(accessToken, clientSpaceId, apiName, apiEndpoint, filters);
 
             case 'Acquisitions':
-                return await handleAcquisitionKpis(accessToken, clientSpaceId, apiName, apiEndpoint, filters);
+                return await handleAcquisitionKpis(accessToken, clientSpaceId, apiName, apiEndpoint, filters, noSetter);
 
             case 'Leaderboard':
                 return null;
@@ -37,11 +38,12 @@ export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, fil
     }
 };
 
-const handleAcquisitionKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, filters) => {
+const handleAcquisitionKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, filters, noSetter) => {
     // console.log("clientSpaceId: ", clientSpaceId)
     // console.log("filters: ", filters)
     // console.log("apiEndpoint: ", apiEndpoint)
     // console.log("apiName: ", apiName)
+    
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
 
     try {
@@ -53,7 +55,8 @@ const handleAcquisitionKpis = async (accessToken, clientSpaceId, apiName, apiEnd
             },
             body: JSON.stringify({
                 "spaceid": apiName === "Closers Payments" ? managementSpaceId : clientSpaceId,
-                "filters": filters
+                "filters": filters,
+                "limit": 1
             }),
         });
 
@@ -65,9 +68,7 @@ const handleAcquisitionKpis = async (accessToken, clientSpaceId, apiName, apiEnd
         const data = await response.json();
         if (data.total === 0) {
             return 0;
-        } else if (apiName !== "Marketing Expenses" && apiName !== "Profit" && apiName !== "Projected Profit" && apiName !== "Contracted Profit" && apiName !== "Pending Deals" && apiName !== "Closers Ad Spend" && apiName !== "Closers Payments") {
-            return data.total;
-        } else {
+        } else if (noSetter === true && apiName === "Closers Bookings" || noSetter === true && apiName === "Closers Appointments" || noSetter === true && apiName === "Closers Total Attended" || noSetter === true && apiName === "Closers Unique Attended" || noSetter === true && apiName === "Closers DC Offers" || noSetter === true && apiName === "Closers DC Closed" || apiName === "Marketing Expenses" || apiName === "Profit" || apiName === "Projected Profit" || apiName === "Contracted Profit" || apiName === "Pending Deals" || apiName === "Closers Ad Spend" || apiName === "Closers Payments") {
             // console.log(apiName)
             // console.log(data)
             let fetchedResults = data.data ? data.data : [];
@@ -92,8 +93,19 @@ const handleAcquisitionKpis = async (accessToken, clientSpaceId, apiName, apiEnd
                 fetchedResults = fetchedResults.concat(moreData.data);
                 offset += moreData.data.length;
             }
-            // console.log("fetchedResults: ", fetchedResults)
+            if (noSetter === true && apiName === "Closers Bookings" || noSetter === true && apiName === "Closers Appointments" || noSetter === true && apiName === "Closers Total Attended" || noSetter === true && apiName === "Closers Unique Attended" || noSetter === true && apiName === "Closers DC Offers" || noSetter === true && apiName === "Closers DC Closed") {
+                // return the results where there is no "Setter Responsible" key
+                // console.log(apiName + " Results: ", fetchedResults)
+
+                return fetchedResults.filter(result => !result["Setter Responsible"]).length;
+            }
+
+            // console.log(noSetter)
+            // console.log(apiName + " Results: ", fetchedResults)
+
             return fetchedResults;
+        } else {
+            return data.total;
         }
     } catch (error) {
         console.error(error);
@@ -106,6 +118,7 @@ const handleTeamKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, 
     // console.log("apiName: ", apiName)
     // console.log("apiEndpoint: ", apiEndpoint)
     // console.log("filters: ", filters)
+
     try {
         const response = await fetch(apiEndpoint, {
             method: 'POST',
@@ -125,7 +138,9 @@ const handleTeamKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, 
             throw new Error(`Server responded with an error: ${response.statusText}`);
         }
         const data = await response.json();
-        //console.log("data: ", data)
+
+        console.log("data: ", data)
+
         let fetchedResults = data.data ? data.data : [];
         let offset = fetchedResults.length;
 
@@ -148,7 +163,8 @@ const handleTeamKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, 
             offset += moreData.data.length;
         }
 
-        // console.log("fetchedResults: ", fetchedResults)
+        console.log("fetchedResults: ", fetchedResults)
+
         return fetchedResults;
 
     } catch (error) {
@@ -224,7 +240,7 @@ const handlePaymentsKpis = async (accessToken, apiName, apiEndpoint, filters) =>
     // console.log("apiName: ", apiName)
     // console.log("apiEndpoint: ", apiEndpoint)
     // console.log("filters: ", filters)
-    
+
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
 
     try {
@@ -280,5 +296,4 @@ const handlePaymentsKpis = async (accessToken, apiName, apiEndpoint, filters) =>
         throw new Error("Error fetching data. Please try again later.");
     }
 };
-
 

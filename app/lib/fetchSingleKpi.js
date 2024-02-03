@@ -15,21 +15,21 @@ function formatTime(time) {
     }
 }
 
-export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters }) {
+export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters, noSetter }) {
 
     // console.log(closers)
     // console.log(setters)
 
     const accessToken = cookies.get('token');
     // console.log("accessToken", accessToken)
-    // console.log("api name: ", apiName)
+    console.log("api name: ", apiName)
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
     let teamMembersNum = teamMembers.map(Number);
     let closersNum = closers.map(Number);
     let settersNum = setters.map(Number);
     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
 
-    // console.log(apiEndpointsKeys)
+    console.log(apiEndpointsKeys)
     // console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters)
 
     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
@@ -122,6 +122,16 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     });
 
 
+    for (let i = 0; i < apiEndpointsKeys.length; i++) {        
+        if (noSetter === false) {
+            break;
+        }
+        if (noSetter === true && apiEndpointsKeys[i] === "closersBookings" || noSetter === true && apiEndpointsKeys[i] === "closersAppointments" || noSetter === true && apiEndpointsKeys[i] === "closersTotalAttended" || noSetter === true && apiEndpointsKeys[i] === "closersUniqueAttended" || noSetter === true && apiEndpointsKeys[i] === "closersDcOffers" || noSetter === true && apiEndpointsKeys[i] === "closersDcClosed") {
+            // return the results where there is no "Setter Responsible" key
+            results[apiEndpointsKeys[i]] = results[apiEndpointsKeys[i]].filter(result => !result["Setter Responsible"]);
+        }
+    }
+
     // filter "Seller Lead" and "Related Lead" from each of the objects in the results object
     let leadsArray = [];
 
@@ -137,6 +147,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
             leadsArray.push(item["Contact"])
         }
     });
+
 
     // console.log(leadsArray)
     // query the leads endpoint for each of the leads in the leadsArray
@@ -301,6 +312,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 60) + " mins" : "No LM STL Median",
+                    "Team Member": result["Team Member Responsible"] ? result["Team Member Responsible"] : "No Team Member",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
@@ -313,6 +325,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
                     "AM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 3600).toFixed(2) + " hours" : "No AM STL Median",
+                    "Team Member": result["Team Member Responsible"] ? result["Team Member Responsible"] : "No Team Member",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
@@ -324,7 +337,8 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Date": result["Timestamp"]["start"] ? formatDate(result["Timestamp"]["start"]) : "No Date",
                     "Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
-                    "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 3600).toFixed(2) + " hours" : "No DA STL Median",
+                    "DA STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 3600).toFixed(2) + " hours" : "No DA STL Median",
+                    "Team Member": result["Team Member Responsible"] ? result["Team Member Responsible"] : "No Team Member",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
@@ -452,6 +466,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                 }
             })
         } else if (apiEndpointKey === "closersUniqueAttended" || apiEndpointKey === "closersTotalAttended" || apiEndpointKey === "closersBookings" || apiEndpointKey === "closersAppointments") {
+            // Unique Attended, Total Attended, Bookings and Appointments are pulled from the Lead Events app
             return results.map((result) => {
                 return {
                     "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No Date",
@@ -461,7 +476,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     "Status": namesAddresses && namesAddresses[result["Related Lead"]] && namesAddresses[result["Related Lead"]]["Status"] ? namesAddresses[result["Related Lead"]]["Status"] : "No status given",
                     "Follow Up": namesAddresses && namesAddresses[result["Related Lead"]] && namesAddresses[result["Related Lead"]]["Follow Up"] ? namesAddresses[result["Related Lead"]]["Follow Up"] : "No follow up given",
                     "Setter": result["Setter Responsible"] ? result["Setter Responsible"] : "Not set",
-                    "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "No closer responsible",                 
+                    "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "No closer responsible",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]].seller_id : "No Seller ID",
                 }

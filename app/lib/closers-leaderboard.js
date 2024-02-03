@@ -148,6 +148,7 @@ function determineWinners(teamMemberData) {
 export default async function getClosersLeaderboard({ startDate, endDate, departments }) {
 
     const accessToken = cookies.get('token')
+    // console.log('accessToken:', accessToken)
 
     const closersSpaceId = parseInt(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
     const managementSpaceId = parseInt(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID)

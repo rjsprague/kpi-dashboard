@@ -12,6 +12,7 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
     const [isOpen, setIsOpen] = useState(false);
     const [contentHeight, setContentHeight] = useState(0);
     const [filteredOptions, setFilteredOptions] = useState(options);
+    const [noSetter, setNoSetter] = useState(false);
     const dropdownRef = useRef(null);
     const dropdownContentRef = useRef(null);
     const searchInputRef = useRef(null);
@@ -72,13 +73,12 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
     };
 
     const handleCheckboxChange = (option) => {
+        setNoSetter(false);
         let newSelectedOptions = [...selectedOptions];
 
         if (isSingleSelect) {
             newSelectedOptions = [option];
             setSelectedOption(option);
-        } else if (option.includes("All")) {
-            newSelectedOptions = newSelectedOptions.length === options.length ? [] : [...options];
         } else {
             const isSelected = selectedOptions.includes(option);
 
@@ -90,9 +90,30 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                 newSelectedOptions.push(option);
             }
         }
-
         onOptionSelected(newSelectedOptions);
     };
+
+    // handle All / None button click
+    const handleAllNoneClick = () => {
+        setNoSetter(false);
+        if (selectedOptions.length === options.length) {
+            onOptionSelected([]);
+        } else {
+            onOptionSelected(options);
+        }
+    };
+
+    // handle No Setter button click
+    const handleNoSetter = () => {
+        setNoSetter(true);
+        onOptionSelected([], true);
+    }
+
+
+    // console.log(selectedOptions.length)
+    // console.log(options.length)
+    // console.log(onOptionSelected)
+    // console.log(label)
 
 
     const handleKeyDown = (event) => {
@@ -135,6 +156,8 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
         exited: { height: 0, opacity: 0 },
     };
 
+    console.log(isSingleSelect)
+
     return (
         <div ref={dropdownRef} className={`relative items-center text-xs dropdown sm:text-sm ${className}`}>
             <ButtonComponent onClick={toggleOpen} isOpen={isOpen}>
@@ -144,9 +167,10 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                             ? selectedOption
                             : isSingleSelect && selectedOptions || selectedOptions?.length === 1
                                 ? selectedOptions[0]
-                                : selectedOptions?.length === options.length || label.includes("All") && selectedOptions.length === 0
-                                    ? (label ? label : "All")
-                                    : `${selectedOptions?.length} selected`}
+                                : noSetter ? "No Setter" :
+                                    selectedOptions?.length === options.length ? (label ? "All " + label : "All") :
+                                        selectedOptions?.length === 0 ? "No Filter" :
+                                            `${selectedOptions?.length} selected`}
                 </div>
             </ButtonComponent>
 
@@ -154,7 +178,7 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                 {(state) => (
                     <div
                         ref={dropdownContentRef}
-                        className="absolute z-50 p-1 text-white bg-blue-800 rounded-b-lg shadow-lg sm:w-44 bg-opacity-80"
+                        className="absolute z-50 p-1 text-white bg-blue-800 rounded-b-lg shadow-lg bg-opacity-80"
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],
@@ -168,34 +192,39 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
                             onKeyDown={handleKeyDown}
-                            className="z-10 w-full px-3 py-1 text-blue-900 rounded-md"
+                            className="z-10 w-full px-2 py-1 text-blue-900 rounded-md"
                             placeholder="Search..."
                         />
                         <ul className="py-1">
                             {!isSingleSelect && (
-                                <li className="py-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400">
-                                    <label className="inline-flex items-center" onClick={() => handleCheckboxChange('All')}>
-                                        {
-                                            label && label.includes("All") && selectedOptions.length === 0 ? <FiCheckSquare size="20px" /> :
-                                            selectedOptions?.length === options.length && options.length > 0 ? <FiCheckSquare size="20px" /> : <FiSquare size="20px" />
-                                        }
-                                        <span className="ml-2">All</span>
-                                    </label>
-                                </li>
+                                <div className="py-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400" onClick={() => handleAllNoneClick()}>
+                                    <div className="inline-flex" >
+                                        All / None
+                                    </div>
+                                </div>
                             )}
+                            {
+                                label && label.includes("Setters") && (
+                                    <div className="py-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400">
+                                        <div className="inline-flex" onClick={() => handleNoSetter()}>
+                                            No Setter
+                                        </div>
+                                    </div>
+                                )}
                             {Array.isArray(filteredOptions) ? filteredOptions.map((option, index) => (
                                 <li
                                     key={option}
                                     onClick={() => handleCheckboxChange(option)}
-                                    className={`w-full py-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400 ${index === highlightedIndex ? 'bg-blue-400' : ''}`}
+                                    className={`w-full text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400 ${index === highlightedIndex ? 'bg-blue-400' : ''}`}
                                 >
-                                    <label className="inline-flex items-center">
-                                        {                                            
-                                            selectedOptions?.includes(option) ? 
-                                            isSingleSelect ? <FiCheck size="20px" /> : <FiCheckSquare size="20px" /> : 
-                                            !isSingleSelect && <FiSquare size="20px" />
+                                    <label className="inline-flex justify-start">
+                                        {
+                                            isSingleSelect && selectedOptions?.includes(option) ? <FiCheck size="20px" /> : isSingleSelect && <div className="w-5"></div>
                                         }
-                                        <span className="ml-2 truncate w-34">{option}</span>
+                                        {
+                                            !isSingleSelect && selectedOptions?.includes(option) ? <FiCheckSquare size="20px" /> : !isSingleSelect && <FiSquare size="20px" />
+                                        }
+                                        <span className="ml-1 truncate">{option}</span>
                                     </label>
                                 </li>
                             )) : <LoadingIcon />}

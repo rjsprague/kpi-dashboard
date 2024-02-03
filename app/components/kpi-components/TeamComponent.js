@@ -8,6 +8,9 @@ function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, depar
     const [selectedDepartment, setSelectedDepartment] = useState(query.departments);
     const [selectedTeamMembers, setSelectedTeamMembers] = useState(query.teamMembers);
 
+    // console.log(departments[query.departments[0]]);
+    // console.log(query.departments);
+
     useEffect(() => {
         setSelectedDepartment(query.departments);
         if (isProfessional || isStarter) {
@@ -38,6 +41,7 @@ function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, depar
     };
 
     const handleTeamSelected = (teamMembers) => {
+        console.log(teamMembers);
         onTeamChange(queryId, selectedDepartment, teamMembers.map(name => getTeamMemberIdByName(name)));
     };
 
@@ -54,6 +58,7 @@ function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, depar
         for (let department in departments) {
             for (let id in departments[department]) {
                 if (departments[department][id] === name) {
+                    console.log(id);
                     return id;
                 }
             }

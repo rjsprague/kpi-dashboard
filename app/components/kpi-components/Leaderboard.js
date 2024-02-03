@@ -35,7 +35,7 @@ export default function Leaderboard({
     onToggleQuery,
     onRemoveQuery,
 }) {
-    const years = ['2023'];
+    const years = ['2023', '2024'];
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const [costPerContractTop3, setCostPerContractTop3] = useState([]);
     const [costPerQualifiedLeadTop3, setCostPerQualifiedLeadTop3] = useState([]);
@@ -52,10 +52,16 @@ export default function Leaderboard({
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
     const [loading, setLoading] = useState(true);
     
-
+    // console.log("kpiList", kpiList)
+    // console.log("view", view)
+    // console.log("VIEW_KPIS", VIEW_KPIS)
+    // console.log("query", query)
+    // console.log("onKpiListChange", onKpiListChange)
     // console.log("selectedKpis", selectedKpis);
 
-    const { data: leaderData, error: leaderError } = useSWR(`/api/leaderboard?year=${year}&month=${month}`, fetcher);    
+    const { data: leaderData, error: leaderError } = useSWR(`/api-routes/leaderboard?year=${year}&month=${month}`, fetcher);
+    // console.log("leaderData", leaderData)
+    // console.log("leaderError", leaderError)
 
     useEffect(() => {
         if (!leaderData) {

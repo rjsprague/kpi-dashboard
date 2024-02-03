@@ -96,8 +96,6 @@ const AcquisitionsKpiQuery = ({
         }
     }, [departments])
 
-    // console.log(setters)
-
     const handleCardInfoClick = (result) => {
         setSelectedResult(result);
         setModalType("info");
@@ -110,14 +108,12 @@ const AcquisitionsKpiQuery = ({
     };
 
     const handleKpiCardClick = async (startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName) => {
-        // console.log(leadSource)
         setTableProps({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers: query.closers, setters: query.setters });
         setModalType("table")
         setOpenModal(true)
     };
 
     const handleDateRangeChange = (startDate, endDate) => {
-        // console.log(startDate, endDate)
         onDateRangeChange(startDate, endDate, query.id);
     };
 
@@ -128,7 +124,7 @@ const AcquisitionsKpiQuery = ({
 
     const handleClosersChange = (selectedClosers) => {
         let selectedCloserIds = [];
-        if (selectedClosers.length === 0 || selectedClosers.length === Object.values(closers).length) {
+        if (selectedClosers.length === 0) {
             selectedCloserIds = [];
         } else {
             selectedCloserIds = selectedClosers.map(option => reversedClosers[option])
@@ -144,14 +140,14 @@ const AcquisitionsKpiQuery = ({
 
     // console.log(selectedClosers)
 
-    const handleSettersChange = (selectedSetters) => {
+    const handleSettersChange = (selectedSetters, noSetter=false) => {
         let selectedSetterIds = [];
-        if (selectedSetters.length === 0 || selectedSetters.length === Object.values(setters).length) {
+        if (selectedSetters.length === 0) {
             selectedSetterIds = [];
         } else {
             selectedSetterIds = selectedSetters.map(option => reversedSetters[option])
-        }        
-        onSettersChange(selectedSetterIds, query.id)
+        }    
+        onSettersChange(selectedSetterIds, query.id, noSetter)
     };
 
     useEffect(() => {
@@ -187,7 +183,7 @@ const AcquisitionsKpiQuery = ({
                                 className={""}
                                 ButtonComponent={DropdownButton}
                                 showButton={settersOpen}
-                                label={"All Setters"}
+                                label={"Setters"}
                             />
                             <UniversalDropdown
                                 options={Object.values(closers)}
@@ -199,7 +195,7 @@ const AcquisitionsKpiQuery = ({
                                 className={""}
                                 ButtonComponent={DropdownButton}
                                 showButton={closersOpen}
-                                label={"All Closers"}
+                                label={"Closers"}
                             />
                         </>
                     }
@@ -248,6 +244,7 @@ const AcquisitionsKpiQuery = ({
                                     leadSources={leadSources}
                                     departments={departments}
                                     isProfessional={isProfessional}
+                                    noSetter={query.noSetter}
                                 />
                             }
 

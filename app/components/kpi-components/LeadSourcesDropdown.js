@@ -8,7 +8,7 @@ import DropdownButton from './DropdownButton';
 
 export default function LeadSourceDropdown({ onOptionSelected, selectedLeadsources, queryId, leadSources, isLoadingData, isUnavailable }) {
     const [selectedOptions, setSelectedOptions] = useState(Object.keys(leadSources));
-    const allsourcesLabel = "All Lead Sources";
+    const allsourcesLabel = "Lead Sources";
 
     // console.log(leadSources)
     // console.log(selectedLeadsources)
@@ -24,8 +24,9 @@ export default function LeadSourceDropdown({ onOptionSelected, selectedLeadsourc
 
 
     const handleOptionSelected = (selectedOptionsNames) => {
+        // console.log(selectedOptionsNames)
         const selectedIds = selectedOptionsNames.map(option => leadSources[option]);
-        if (Object.values(leadSources).length === selectedIds.length) {
+        if (selectedIds.length === 0) {
             onOptionSelected(queryId, []);
         } else {
             onOptionSelected(queryId, selectedIds);

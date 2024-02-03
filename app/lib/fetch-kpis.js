@@ -114,7 +114,7 @@ function getKpiValue(calculatedKPIs, endpointData, dataKey) {
 
 }
 
-async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kpiList, leadSources, gte, lte, departments, teamMembers, closers, setters }) {
+async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kpiList, leadSources, gte, lte, departments, teamMembers, closers, setters, noSetter }) {
 
     // console.log(isStarter, clientSpaceId)
     // console.log(isProfessional, clientSpaceId)
@@ -127,6 +127,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
     // console.log(view)
     // console.log(closers)
     // console.log(setters)
+    // console.log(noSetter)
 
     if (view === "Leaderboard") {
         return null;
@@ -204,7 +205,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                 console.error(`apiEndpointsObj[endpointKey] is undefined for endpointKey: ${endpointKey}`);
             }
             const { name, url, filters } = apiEndpointsObj[endpointKey];
-            return fetchKPIs(clientSpaceId, name, url, filters, view);
+            return fetchKPIs(clientSpaceId, name, url, filters, view, noSetter);
         });
 
         const endpointData = {};
@@ -220,6 +221,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                 throw new Error("Error fetching endpoint data. Please try again later.");
             });
 
+        // console.log(endpointData)
 
         if (view === 'Financial' || view === 'Acquisitions') {
 
