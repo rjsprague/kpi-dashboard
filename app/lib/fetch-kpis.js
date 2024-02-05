@@ -109,7 +109,7 @@ function getKpiValue(calculatedKPIs, endpointData, dataKey) {
         return calculatedKPIs["Current Passive Income"].current;
     } 
     else if (dataKey === 'closersDcOffers') {
-        let uniqueOffers = calculatedKPIs["Closers Offer Rate"].current * endpointData.closersUniqueAttended / 100;
+        let uniqueOffers = Math.round(calculatedKPIs["Closers Offer Rate"].current * endpointData.closersUniqueAttended / 100);
         // console.log(closersDCOffers)
         return uniqueOffers;
     } 
