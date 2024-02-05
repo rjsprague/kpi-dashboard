@@ -874,57 +874,57 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
-    "Closers Leads Per Day": {
-        name: "Closers Leads Per Day",
-        dataKeys: ["closersLeadsCreated", "closersSalesCapacity"],
-        createFormula: (startDate, endDate) => (apiData) => {
-            const { closersLeadsCreated } = apiData;
-            const start = new Date(startDate);
-            const end = new Date(endDate + "T23:59:59.999Z");
-            const timeDifference = Math.abs(end.getTime() - start.getTime());
-            const daysInRange = Math.ceil(timeDifference / (1000 * 3600 * 24));
-            return Math.ceil(closersLeadsCreated / daysInRange);
-        },
-        createRedFlag: (startDate, endDate) => (apiData) => {
-            const { closersSalesCapacity } = apiData;
-            const leadsPerSlotRedFlag = 3.46;
+    // "Closers Leads Per Day": {
+    //     name: "Closers Leads Per Day",
+    //     dataKeys: ["closersLeadsCreated", "closersSalesCapacity"],
+    //     createFormula: (startDate, endDate) => (apiData) => {
+    //         const { closersLeadsCreated } = apiData;
+    //         const start = new Date(startDate);
+    //         const end = new Date(endDate + "T23:59:59.999Z");
+    //         const timeDifference = Math.abs(end.getTime() - start.getTime());
+    //         const daysInRange = Math.ceil(timeDifference / (1000 * 3600 * 24));
+    //         return Math.ceil(closersLeadsCreated / daysInRange);
+    //     },
+    //     createRedFlag: (startDate, endDate) => (apiData) => {
+    //         const { closersSalesCapacity } = apiData;
+    //         const leadsPerSlotRedFlag = 3.46;
            
-            const start = new Date(startDate);
-            const end = new Date(endDate + "T23:59:59.999Z");
-            const timeDifference = Math.abs(end.getTime() - start.getTime());
-            const daysInRange = Math.ceil(timeDifference / (1000 * 3600 * 24));
-            const leadsPerDayRedFlag = Math.floor(closersSalesCapacity / daysInRange * leadsPerSlotRedFlag);
+    //         const start = new Date(startDate);
+    //         const end = new Date(endDate + "T23:59:59.999Z");
+    //         const timeDifference = Math.abs(end.getTime() - start.getTime());
+    //         const daysInRange = Math.ceil(timeDifference / (1000 * 3600 * 24));
+    //         const leadsPerDayRedFlag = Math.floor(closersSalesCapacity / daysInRange * leadsPerSlotRedFlag);
 
-            return leadsPerDayRedFlag;
-        },
-        createTarget: (startDate, endDate) => (apiData) => {
-            const { closersSalesCapacity } = apiData;
-            const leadsPerSlotTarget = 5.77;
+    //         return leadsPerDayRedFlag;
+    //     },
+    //     createTarget: (startDate, endDate) => (apiData) => {
+    //         const { closersSalesCapacity } = apiData;
+    //         const leadsPerSlotTarget = 5.77;
 
-            const start = new Date(startDate);
-            const end = new Date(endDate + "T23:59:59.999Z");
-            const timeDifference = Math.abs(end.getTime() - start.getTime());
-            const daysInRange = Math.ceil(timeDifference / (1000 * 3600 * 24));
-            const leadsPerDayTarget = Math.floor(closersSalesCapacity / daysInRange * leadsPerSlotTarget);
+    //         const start = new Date(startDate);
+    //         const end = new Date(endDate + "T23:59:59.999Z");
+    //         const timeDifference = Math.abs(end.getTime() - start.getTime());
+    //         const daysInRange = Math.ceil(timeDifference / (1000 * 3600 * 24));
+    //         const leadsPerDayTarget = Math.floor(closersSalesCapacity / daysInRange * leadsPerSlotTarget);
 
-            return leadsPerDayTarget;
-        },
-        dataLabels: ["Leads Created: ", "Sales Capacity: "],
-        kpiType: "meter",
-        unit: "LPD",
-        kpiFactors: [
-            {
-                id: 0,
-                title: "How to Optimize Leads Per Day",
-            },
-            {
-                id: 1,
-                desc: "Description TBD",
-                linkName: "Learn More",
-                link: ""
-            },
-        ],
-    },
+    //         return leadsPerDayTarget;
+    //     },
+    //     dataLabels: ["Leads Created: ", "Sales Capacity: "],
+    //     kpiType: "meter",
+    //     unit: "LPD",
+    //     kpiFactors: [
+    //         {
+    //             id: 0,
+    //             title: "How to Optimize Leads Per Day",
+    //         },
+    //         {
+    //             id: 1,
+    //             desc: "Description TBD",
+    //             linkName: "Learn More",
+    //             link: ""
+    //         },
+    //     ],
+    // },
     "Closers Leads Set Prequalified": {
         name: "Closers Leads Set Prequalified",
         dataKeys: ["closersLeadsCreated", "closersLeadsSetPrequalified"],
@@ -1026,31 +1026,31 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
-    "Closers Sales Capacity": {
-        name: "Closers Sales Capacity",
-        dataKeys: ["closersSalesCapacity", "closersAppointments"],
-        formula: (apiData) => {
-            const { closersSalesCapacity, closersAppointments } = apiData;
-            return closersSalesCapacity > 0 ? closersAppointments / closersSalesCapacity * 100 : 0;
-        },
-        redFlag: 50,
-        target: 70,
-        dataLabels: ["Sales Capacity: ", "Appointments: "],
-        kpiType: "meter",
-        unit: "%",
-        kpiFactors: [
-            {
-                id: 0,
-                title: "How to Optimize Sales Capacity",
-            },
-            {
-                id: 1,
-                desc: "Description TBD",
-                linkName: "Learn More",
-                link: ""
-            },
-        ],
-    },
+    // "Closers Sales Capacity": {
+    //     name: "Closers Sales Capacity",
+    //     dataKeys: ["closersSalesCapacity", "closersAppointments"],
+    //     formula: (apiData) => {
+    //         const { closersSalesCapacity, closersAppointments } = apiData;
+    //         return closersSalesCapacity > 0 ? closersAppointments / closersSalesCapacity * 100 : 0;
+    //     },
+    //     redFlag: 50,
+    //     target: 70,
+    //     dataLabels: ["Sales Capacity: ", "Appointments: "],
+    //     kpiType: "meter",
+    //     unit: "%",
+    //     kpiFactors: [
+    //         {
+    //             id: 0,
+    //             title: "How to Optimize Sales Capacity",
+    //         },
+    //         {
+    //             id: 1,
+    //             desc: "Description TBD",
+    //             linkName: "Learn More",
+    //             link: ""
+    //         },
+    //     ],
+    // },
     "Closers Total Attendance Rate": {
         name: "Closers Total Attendance Rate",
         dataKeys: ["closersAppointments", "closersTotalAttended"],

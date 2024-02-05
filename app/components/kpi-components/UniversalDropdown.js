@@ -156,7 +156,7 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
         exited: { height: 0, opacity: 0 },
     };
 
-    console.log(isSingleSelect)
+    // console.log(isSingleSelect)
 
     return (
         <div ref={dropdownRef} className={`relative items-center text-xs dropdown sm:text-sm ${className}`}>
@@ -195,7 +195,7 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                             className="z-10 w-full px-2 py-1 text-blue-900 rounded-md"
                             placeholder="Search..."
                         />
-                        <ul className="py-1">
+                        <ul className="">
                             {!isSingleSelect && (
                                 <div className="py-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400" onClick={() => handleAllNoneClick()}>
                                     <div className="inline-flex" >
@@ -205,8 +205,9 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                             )}
                             {
                                 label && label.includes("Setters") && (
-                                    <div className="py-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400">
-                                        <div className="inline-flex" onClick={() => handleNoSetter()}>
+                                    <div className="text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400">
+                                        <div className="inline-flex gap-2" onClick={() => handleNoSetter()}>
+                                            { noSetter ? <FiCheckSquare size="20px" /> : !isSingleSelect && <FiSquare size="20px" /> }
                                             No Setter
                                         </div>
                                     </div>
@@ -217,14 +218,14 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                                     onClick={() => handleCheckboxChange(option)}
                                     className={`w-full text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400 ${index === highlightedIndex ? 'bg-blue-400' : ''}`}
                                 >
-                                    <label className="inline-flex justify-start">
+                                    <label className="inline-flex gap-2">
                                         {
                                             isSingleSelect && selectedOptions?.includes(option) ? <FiCheck size="20px" /> : isSingleSelect && <div className="w-5"></div>
                                         }
                                         {
                                             !isSingleSelect && selectedOptions?.includes(option) ? <FiCheckSquare size="20px" /> : !isSingleSelect && <FiSquare size="20px" />
                                         }
-                                        <span className="ml-1 truncate">{option}</span>
+                                        <span className="truncate">{option}</span>
                                     </label>
                                 </li>
                             )) : <LoadingIcon />}

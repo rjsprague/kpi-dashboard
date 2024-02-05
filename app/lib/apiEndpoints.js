@@ -1,6 +1,7 @@
 const generateFilters = (apiName, startDate, endDate, leadSources, kpiView, leadSourcesFieldName, dateFieldName, teamMembers=null, extraFilters=null, setters=null, closers=null) => {
     const filters = [];
     // console.log(apiName, startDate, endDate, leadSources, kpiView, leadSourcesFieldName, dateFieldName, teamMembers, extraFilters, setters, closers)
+    // console.log(kpiView)
 
     if (startDate && endDate) {
         filters.push({
@@ -20,7 +21,7 @@ const generateFilters = (apiName, startDate, endDate, leadSources, kpiView, lead
     }
 
 
-    if (setters && setters.length > 0) {
+    if (setters && setters.length > 0 && kpiView === "Acquisitions") {
         filters.push({
             "type": "app",
             "fieldName": "Setter Responsible",
@@ -28,7 +29,7 @@ const generateFilters = (apiName, startDate, endDate, leadSources, kpiView, lead
         });
     }
 
-    if (closers && closers.length > 0) {
+    if (closers && closers.length > 0 && kpiView === "Acquisitions") {
         filters.push({
             "type": "app",
             "fieldName": "Closer Responsible",
@@ -243,7 +244,7 @@ const apiEndpoints = (startDate, endDate, leadSources, kpiView, teamMembers, clo
         closersQualifiedBookings: {
             name: "Closers Qualified Bookings",
             url: "/api/closers/acquisitions/reia-leads",
-            filters: generateFilters("Closers Qualified Bookings", startDate, endDate, leadSources, kpiView, "Lead Source Item", "Lead Created On", teamMembers, [
+            filters: generateFilters("Closers Qualified Bookings", startDate, endDate, leadSources, kpiView, "Lead Source Item", "Lead Created On", null, [
                 {
                     "type": "category",
                     "fieldName": "Pre-Qualification Status",

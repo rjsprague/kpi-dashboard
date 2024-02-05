@@ -2,7 +2,7 @@ import fetchKPIs from "./api-utils";
 import KPI_DEFINITIONS from "./kpi-definitions";
 import kpiToEndpointMapping from "./kpiToEndpointMapping";
 import apiEndpoints from "./apiEndpoints";
-import calculateTotalSalesCapacity from "./closers-sales-capacity";
+// import calculateTotalSalesCapacity from "./closers-sales-capacity";
 
 function formatDate(date) {
     const year = date.getFullYear();
@@ -225,7 +225,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
 
         if (view === 'Financial' || view === 'Acquisitions') {
 
-            const closersSalesCapacity = calculateTotalSalesCapacity(startDate, endDate, closers);
+            // const closersSalesCapacity = calculateTotalSalesCapacity(startDate, endDate, closers);
 
             const totalMarketingExpenses = endpointData.marketingExpenses && Array.isArray(endpointData.marketingExpenses) && endpointData.marketingExpenses.reduce((acc, curr) => {
                 if ("Amount" in curr) {
@@ -288,7 +288,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                 return acc;
             }, 0);
 
-            endpointData.closersSalesCapacity = closersSalesCapacity;
+            // endpointData.closersSalesCapacity = closersSalesCapacity;
             endpointData.totalMarketingExpenses = totalMarketingExpenses;
             endpointData.totalClosersAdSpend = totalClosersAdSpend;
             endpointData.actualizedProfit = actualizedProfit;

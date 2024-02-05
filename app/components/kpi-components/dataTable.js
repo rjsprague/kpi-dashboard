@@ -98,7 +98,7 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
                         }
                     } else if (['Team Member', 'Lead Manager', 'Closer', 'Setter'].includes(info.column.columnDef.header)) {
                         if (cellValue && Array.isArray(cellValue)) {
-                            displayValue = teamMembersMap[cellValue[0]];
+                            displayValue = teamMembersMap[cellValue[0]] ? teamMembersMap[cellValue[0]] : "Inactive";
                         } else {
                             displayValue = cellValue;
                         }
