@@ -44,6 +44,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     }, {});
 
     const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMembersNum, closersNum, settersNum);
+    console.log(apiEndpointsObj.allPreviousDcOffers)
 
     const getInitialData = async (requestObject) => {
         const response = await fetch(`${requestObject.url}`, {
@@ -71,6 +72,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     };
 
     const fetchPage = async (requestObject, offset = 0) => {
+        console.log(requestObject)
         const response = await fetch(`${requestObject.url}`, {
             method: 'POST',
             headers: {
@@ -92,7 +94,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
 
         const data = await response.json();
         let fetchedResults = data.data ? data.data : [];
-        // console.log(fetchedResults)
+        console.log(fetchedResults)
         return fetchedResults;
     };
 
@@ -122,7 +124,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     });
 
 
-    for (let i = 0; i < apiEndpointsKeys.length; i++) {        
+    for (let i = 0; i < apiEndpointsKeys.length; i++) {
         if (noSetter === false) {
             break;
         }
@@ -130,6 +132,47 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
             // return the results where there is no "Setter Responsible" key
             results[apiEndpointsKeys[i]] = results[apiEndpointsKeys[i]].filter(result => !result["Setter Responsible"]);
         }
+    }
+
+    if (apiName === 'Closers Offer Rate') {
+
+        let requestObject = apiEndpointsObj.allPreviousDcOffers;
+
+        const allPreviousDcOffers = await fetchPage(requestObject, 0);
+
+        // De-duplicate the offers
+        let deduplicatedAllDcOffers = allPreviousDcOffers.reduce((acc, curr) => {
+            let lead = curr['Related Lead'] && curr['Related Lead'][0];
+            // console.log(lead)
+            if (lead && !acc.includes(lead)) {
+                acc.push(lead);
+            }
+            return acc;
+        }, []);
+
+        let deduplicatedCurrentDcOffers = results.closersDcOffers.reduce((acc, curr) => {
+            let lead = curr['Related Lead'] && curr['Related Lead'][0];
+            if (lead && !acc.includes(lead)) {
+                acc.push(lead);
+            }
+            return acc;
+        }, []);
+
+        let uniqueOffers = deduplicatedCurrentDcOffers.reduce((acc, curr) => {
+            if (!deduplicatedAllDcOffers.includes(curr)) {
+                acc.push(curr);
+            }
+            return acc;
+        }, []);
+
+        let uniqueOffersResults = [];
+
+        for (let i = 0; i < uniqueOffers.length; i++) {
+            let offer = uniqueOffers[i];
+            uniqueOffersResults.push(results.closersDcOffers.find(result => result['Related Lead'] && result['Related Lead'][0] === offer));
+        }
+
+        results.closersDcOffers = uniqueOffersResults;
     }
 
     // filter "Seller Lead" and "Related Lead" from each of the objects in the results object

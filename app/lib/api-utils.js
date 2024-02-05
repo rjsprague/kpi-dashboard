@@ -27,6 +27,9 @@ export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, fil
 
             case 'Payments':
                 return await handlePaymentsKpis(accessToken, apiName, apiEndpoint, filters);
+            
+            case 'All Previous DC Offers':
+                return await fetchAllPreviousDcOffers(accessToken, clientSpaceId, apiEndpoint, filters);
 
             default:
                 console.error(`Unsupported KPI view: ${kpiView}`);
@@ -68,7 +71,7 @@ const handleAcquisitionKpis = async (accessToken, clientSpaceId, apiName, apiEnd
         const data = await response.json();
         if (data.total === 0) {
             return 0;
-        } else if (noSetter === true && apiName === "Closers Bookings" || noSetter === true && apiName === "Closers Appointments" || noSetter === true && apiName === "Closers Total Attended" || noSetter === true && apiName === "Closers Unique Attended" || noSetter === true && apiName === "Closers DC Offers" || noSetter === true && apiName === "Closers DC Closed" || apiName === "Marketing Expenses" || apiName === "Profit" || apiName === "Projected Profit" || apiName === "Contracted Profit" || apiName === "Pending Deals" || apiName === "Closers Ad Spend" || apiName === "Closers Payments") {
+        } else if (noSetter === true && apiName === "Closers Bookings" || noSetter === true && apiName === "Closers Appointments" || noSetter === true && apiName === "Closers Total Attended" || noSetter === true && apiName === "Closers Unique Attended" || noSetter === true && apiName === "Closers DC Offers" || noSetter === true && apiName === "Closers DC Closed" || apiName === "Marketing Expenses" || apiName === "Profit" || apiName === "Projected Profit" || apiName === "Contracted Profit" || apiName === "Pending Deals" || apiName === "Closers Ad Spend" || apiName === "Closers Payments" || apiName === "Closers DC Offers") {
             // console.log(apiName)
             // console.log(data)
             let fetchedResults = data.data ? data.data : [];
@@ -297,3 +300,55 @@ const handlePaymentsKpis = async (accessToken, apiName, apiEndpoint, filters) =>
     }
 };
 
+// Fetch all results from closersDcOffers endpoint
+const fetchAllPreviousDcOffers = async (accessToken, clientSpaceId, apiEndpoint, filters) => {
+
+    try {
+        const response = await fetch(apiEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+                "spaceid": clientSpaceId,
+                "filters": filters,
+                "limit": 1,
+            }),
+        });
+
+        if (!response.ok) {
+            console.error(`Error fetching data from ${apiEndpoint}: ${response.status} ${response.statusText}`);
+            throw new Error(`Server responded with an error: ${response.statusText}`);
+        }
+        const data = await response.json();
+        
+        let fetchedResults = data.data ? data.data : [];
+        let offset = fetchedResults.length;
+
+        while (data.total > fetchedResults.length) {
+            const fetchMoreData = await fetch(apiEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({
+                    "spaceid": clientSpaceId,
+                    "filters": filters,
+                    "offset": offset,
+                    "limit": 1000,
+                }),
+            });
+            const moreData = await fetchMoreData.json();
+            fetchedResults = fetchedResults.concat(moreData.data);
+            offset += moreData.data.length;
+        }
+
+        return fetchedResults;
+
+    } catch (error) {
+        console.error(error);
+        throw new Error("Error fetching data. Please try again later.");
+    }
+}

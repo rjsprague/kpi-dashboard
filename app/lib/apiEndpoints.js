@@ -290,6 +290,18 @@ const apiEndpoints = (startDate, endDate, leadSources, kpiView, teamMembers, clo
                 }
             ], setters, closers)
         },
+        // Finds all offers made by closers BEFORE the selected date range
+        allPreviousDcOffers: {
+            name: "All DC Offers",
+            url: "/api/closers/acquisitions/discovery-calls",
+            filters: generateFilters("Closers DC Offers", "2000-01-01", startDate, null, kpiView, "Related Lead Source Item", "created_on", null, [
+                {
+                    "type": "category",
+                    "fieldName": "Status of the Call",
+                    "values": ["Closed", "Interested", "Lost"]
+                }
+            ], null, null)
+        },
         closersDcOffers: {
             name: "Closers DC Offers",
             url: "/api/closers/acquisitions/discovery-calls",

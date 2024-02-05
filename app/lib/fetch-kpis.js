@@ -46,7 +46,6 @@ function calculateKPIs(startDate, endDate, endpointData, kpiList) {
     return kpiData;
 }
 
-
 const createDataString = (dataLabel, value) => {
     if (value > 999) {
         value = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -108,7 +107,13 @@ function getKpiValue(calculatedKPIs, endpointData, dataKey) {
         return calculatedKPIs["Setter Commission"].current;
     } else if (dataKey === 'currentPassiveIncome') {
         return calculatedKPIs["Current Passive Income"].current;
-    } else {
+    } 
+    else if (dataKey === 'closersDcOffers') {
+        let uniqueOffers = calculatedKPIs["Closers Offer Rate"].current * endpointData.closersUniqueAttended / 100;
+        // console.log(closersDCOffers)
+        return uniqueOffers;
+    } 
+    else {
         return data;
     }
 
@@ -226,6 +231,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
         if (view === 'Financial' || view === 'Acquisitions') {
 
             // const closersSalesCapacity = calculateTotalSalesCapacity(startDate, endDate, closers);
+            const allPreviousDcOffers = clientSpaceId === 8108305 && await fetchKPIs(clientSpaceId, apiEndpointsObj.allPreviousDcOffers.name, apiEndpointsObj.allPreviousDcOffers.url, apiEndpointsObj.allPreviousDcOffers.filters, "All Previous DC Offers", noSetter)
 
             const totalMarketingExpenses = endpointData.marketingExpenses && Array.isArray(endpointData.marketingExpenses) && endpointData.marketingExpenses.reduce((acc, curr) => {
                 if ("Amount" in curr) {
@@ -289,6 +295,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
             }, 0);
 
             // endpointData.closersSalesCapacity = closersSalesCapacity;
+            endpointData.allPreviousDcOffers = allPreviousDcOffers && allPreviousDcOffers;
             endpointData.totalMarketingExpenses = totalMarketingExpenses;
             endpointData.totalClosersAdSpend = totalClosersAdSpend;
             endpointData.actualizedProfit = actualizedProfit;

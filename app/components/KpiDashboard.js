@@ -73,8 +73,10 @@ export default function KpiDashboard({ user }) {
                 dateRange: { gte: datePresets['Last Week'].startDate, lte: datePresets['Last Week'].endDate },
                 departments: [firstDepartment],
                 teamMembers: firstDeptTeamMembers,
-                closers: clientSpaceId === closersSpaceId ? Object.keys(departmentsDataObject["Closer"]) : [],
-                setters: clientSpaceId === closersSpaceId ? Object.keys(departmentsDataObject["Setter"]) : [],
+                // closers: clientSpaceId === closersSpaceId ? Object.keys(departmentsDataObject["Closer"]) : [],
+                closers: [],
+                // setters: clientSpaceId === closersSpaceId ? Object.keys(departmentsDataObject["Setter"]) : [],
+                setters: [],
                 noSetter: false
             },
         ];

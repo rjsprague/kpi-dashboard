@@ -888,7 +888,7 @@ const KPI_DEFINITIONS = {
     //     createRedFlag: (startDate, endDate) => (apiData) => {
     //         const { closersSalesCapacity } = apiData;
     //         const leadsPerSlotRedFlag = 3.46;
-           
+
     //         const start = new Date(startDate);
     //         const end = new Date(endDate + "T23:59:59.999Z");
     //         const timeDifference = Math.abs(end.getTime() - start.getTime());
@@ -1080,12 +1080,49 @@ const KPI_DEFINITIONS = {
         name: "Closers Offer Rate",
         dataKeys: ["closersUniqueAttended", "closersDcOffers"],
         formula: (apiData) => {
-            const { closersUniqueAttended, closersDcOffers } = apiData;
-            return closersUniqueAttended > 0 ? closersDcOffers / closersUniqueAttended * 100 : 0;
+            const { closersUniqueAttended, closersDcOffers, allPreviousDcOffers } = apiData;
+            /*
+            allPreviousDcOffers includes all offers made by closers BEFORE the selected date range
+            closersDcOffers includes all offers made by closers DURING the selected date range
+            We de-duplicate the offers by making sure that the offer is not already in the allPreviousDcOffers array
+            */
+
+            // De-duplicate the offers
+            let deduplicatedAllDcOffers = allPreviousDcOffers.reduce((acc, curr) => {
+                let lead = curr['Related Lead'] && curr['Related Lead'][0];
+                // console.log(lead)
+                if (lead && !acc.includes(lead)) {
+                    acc.push(lead);
+                }
+                return acc;
+            }, []);
+
+            // console.log('deduplicatedAllDcOffers', deduplicatedAllDcOffers)
+
+            let deduplicatedCurrentDcOffers = closersDcOffers.reduce((acc, curr) => {
+                let lead = curr['Related Lead'] && curr['Related Lead'][0];
+                if (lead && !acc.includes(lead)) {
+                    acc.push(lead);
+                }
+                return acc;
+            }, []);
+
+            // console.log('deduplicatedAllDcOffers', deduplicatedAllDcOffers)
+
+            let uniqueOffers = deduplicatedCurrentDcOffers.reduce((acc, curr) => {
+                if (!deduplicatedAllDcOffers.includes(curr)) {
+                    acc.push(curr);
+                }
+                return acc;
+            }, []).length;
+
+            // console.log('uniqueOffers', uniqueOffers)
+
+            return closersUniqueAttended > 0 ? uniqueOffers / closersUniqueAttended * 100 : 0;
         },
         redFlag: 60,
         target: 80,
-        dataLabels: ["Unique Attended: ", "Offers: "],
+        dataLabels: ["Unique Attended: ", "Unique Offers: "],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [
