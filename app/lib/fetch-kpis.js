@@ -231,6 +231,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
         if (view === 'Financial' || view === 'Acquisitions') {
 
             // const closersSalesCapacity = calculateTotalSalesCapacity(startDate, endDate, closers);
+            
             const allPreviousDcOffers = clientSpaceId === 8108305 && await fetchKPIs(clientSpaceId, apiEndpointsObj.allPreviousDcOffers.name, apiEndpointsObj.allPreviousDcOffers.url, apiEndpointsObj.allPreviousDcOffers.filters, "All Previous DC Offers", noSetter)
 
             const totalMarketingExpenses = endpointData.marketingExpenses && Array.isArray(endpointData.marketingExpenses) && endpointData.marketingExpenses.reduce((acc, curr) => {

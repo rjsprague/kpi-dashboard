@@ -29,7 +29,7 @@ export default async function fetchKPIs(clientSpaceId, apiName, apiEndpoint, fil
                 return await handlePaymentsKpis(accessToken, apiName, apiEndpoint, filters);
             
             case 'All Previous DC Offers':
-                return await fetchAllPreviousDcOffers(accessToken, clientSpaceId, apiEndpoint, filters);
+                return await fetchAllPreviousDcOffers(accessToken, clientSpaceId, apiEndpoint, filters, noSetter);
 
             default:
                 console.error(`Unsupported KPI view: ${kpiView}`);
@@ -96,11 +96,10 @@ const handleAcquisitionKpis = async (accessToken, clientSpaceId, apiName, apiEnd
                 fetchedResults = fetchedResults.concat(moreData.data);
                 offset += moreData.data.length;
             }
-            if (noSetter === true && apiName === "Closers Bookings" || noSetter === true && apiName === "Closers Appointments" || noSetter === true && apiName === "Closers Total Attended" || noSetter === true && apiName === "Closers Unique Attended" || noSetter === true && apiName === "Closers DC Offers" || noSetter === true && apiName === "Closers DC Closed") {
-                // return the results where there is no "Setter Responsible" key
-                // console.log(apiName + " Results: ", fetchedResults)
-
+            if (noSetter === true && apiName === "Closers Bookings" || noSetter === true && apiName === "Closers Appointments" || noSetter === true && apiName === "Closers Total Attended" || noSetter === true && apiName === "Closers Unique Attended" || noSetter === true && apiName === "Closers DC Closed") {
                 return fetchedResults.filter(result => !result["Setter Responsible"]).length;
+            } else if (noSetter === true && apiName === "Closers DC Offers") {
+                return fetchedResults.filter(result => !result["Setter Responsible"]);
             }
 
             // console.log(noSetter)
@@ -301,7 +300,7 @@ const handlePaymentsKpis = async (accessToken, apiName, apiEndpoint, filters) =>
 };
 
 // Fetch all results from closersDcOffers endpoint
-const fetchAllPreviousDcOffers = async (accessToken, clientSpaceId, apiEndpoint, filters) => {
+const fetchAllPreviousDcOffers = async (accessToken, clientSpaceId, apiEndpoint, filters, noSetter) => {
 
     try {
         const response = await fetch(apiEndpoint, {
@@ -345,7 +344,12 @@ const fetchAllPreviousDcOffers = async (accessToken, clientSpaceId, apiEndpoint,
             offset += moreData.data.length;
         }
 
-        return fetchedResults;
+        if (noSetter) {
+            // return the results where there is no "Setter Responsible" key
+            return fetchedResults.filter(result => !result["Setter Responsible"]);
+        } else {
+            return fetchedResults;
+        }
 
     } catch (error) {
         console.error(error);

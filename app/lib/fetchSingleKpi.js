@@ -134,6 +134,8 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         }
     }
 
+    // console.log(results)
+
     if (apiName === 'Closers Offer Rate') {
 
         let requestObject = apiEndpointsObj.allPreviousDcOffers;

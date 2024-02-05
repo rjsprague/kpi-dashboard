@@ -1087,6 +1087,11 @@ const KPI_DEFINITIONS = {
             We de-duplicate the offers by making sure that the offer is not already in the allPreviousDcOffers array
             */
 
+            console.log('closersUniqueAttended', closersUniqueAttended)
+            console.log('allPreviousDcOffers', allPreviousDcOffers)
+            console.log('closersDcOffers', closersDcOffers)
+
+
             // De-duplicate the offers
             let deduplicatedAllDcOffers = allPreviousDcOffers.reduce((acc, curr) => {
                 let lead = curr['Related Lead'] && curr['Related Lead'][0];
