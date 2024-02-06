@@ -24,13 +24,16 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     // console.log("accessToken", accessToken)
     console.log("api name: ", apiName)
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
-    let teamMembersNum = teamMembers.map(Number);
-    let closersNum = closers.map(Number);
-    let settersNum = setters.map(Number);
+    let teamMembersNum = teamMembers && teamMembers.map(Number);
+    console.log(teamMembersNum)
+    let closersNum = closers ? closers.map(Number) : [];
+    console.log(closersNum)
+    let settersNum = setters ? setters.map(Number) : [];
+    console.log(settersNum)
     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
 
     console.log(apiEndpointsKeys)
-    // console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters)
+    console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters)
 
     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
         throw new Error('Invalid API name');
@@ -44,7 +47,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     }, {});
 
     const apiEndpointsObj = apiEndpoints(startDate, endDate, leadSource, kpiView, teamMembersNum, closersNum, settersNum);
-    console.log(apiEndpointsObj.allPreviousDcOffers)
+    // console.log(apiEndpointsObj.currentPassiveIncome)
 
     const getInitialData = async (requestObject) => {
         const response = await fetch(`${requestObject.url}`, {
@@ -100,7 +103,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
 
     const promises = apiEndpointsKeys.map(async apiEndpointKey => {
         let requestObject = apiEndpointsObj[apiEndpointKey];
-        // console.log(requestObject)
+        console.log(requestObject)
         try {
             const total = await getInitialData(requestObject);
             const limit = 1000;
@@ -134,7 +137,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         }
     }
 
-    // console.log(results)
+    console.log(results)
 
     if (apiName === 'Closers Offer Rate') {
 
@@ -181,7 +184,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     let leadsArray = [];
 
     let resultsValues = Object.values(results).flat();
-    // console.log(resultsValues)
+    console.log(resultsValues)
 
     resultsValues.forEach(item => {
         if (item["Seller Lead"]) {
@@ -229,7 +232,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     });
 
     // console.log(namesAddresses)
-    // console.log(results)
+    console.log(results)
 
     Object.keys(results).forEach(key => {
         results[key] = filterResults(results[key], key, namesAddresses);

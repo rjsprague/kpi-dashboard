@@ -1,6 +1,8 @@
-const generateFilters = (apiName, startDate, endDate, leadSources, kpiView, leadSourcesFieldName, dateFieldName, teamMembers=null, extraFilters=null, setters=null, closers=null) => {
+const generateFilters = (apiName, startDate, endDate, leadSources, kpiView, leadSourcesFieldName, dateFieldName, teamMembers = null, extraFilters = null, setters = null, closers = null) => {
     const filters = [];
-    // console.log(apiName, startDate, endDate, leadSources, kpiView, leadSourcesFieldName, dateFieldName, teamMembers, extraFilters, setters, closers)
+    console.log(apiName, startDate, endDate, leadSources, kpiView, leadSourcesFieldName, dateFieldName, teamMembers, extraFilters, setters, closers)
+    console.log(closers)
+    console.log(setters)
     // console.log(kpiView)
 
     if (startDate && endDate) {
@@ -21,7 +23,7 @@ const generateFilters = (apiName, startDate, endDate, leadSources, kpiView, lead
     }
 
 
-    if (setters && setters.length > 0 && kpiView === "Acquisitions") {
+    if (setters && setters.length > 0 && kpiView === "Acquisitions" || setters && setters.length > 0 && kpiView === "Payments") {
         filters.push({
             "type": "app",
             "fieldName": "Setter Responsible",
@@ -29,7 +31,7 @@ const generateFilters = (apiName, startDate, endDate, leadSources, kpiView, lead
         });
     }
 
-    if (closers && closers.length > 0 && kpiView === "Acquisitions") {
+    if (closers && closers.length > 0 && kpiView === "Acquisitions" || closers && closers.length > 0 && kpiView === "Payments") {
         filters.push({
             "type": "app",
             "fieldName": "Closer Responsible",
@@ -56,10 +58,10 @@ const generateFilters = (apiName, startDate, endDate, leadSources, kpiView, lead
 // Define the endpoints and filters for each KPI
 const apiEndpoints = (startDate, endDate, leadSources, kpiView, teamMembers, closers, setters) => {
     // console.log(leadSources)
-    // console.log(teamMembers)
+    console.log(teamMembers)
     // console.log(kpiView)
-    // console.log(closers)
-    // console.log(setters)
+    console.log(closers)
+    console.log(setters)
 
     return {
         marketingExpenses: {
@@ -317,12 +319,12 @@ const apiEndpoints = (startDate, endDate, leadSources, kpiView, teamMembers, clo
             name: "Closers DC Closed",
             url: "/api/closers/acquisitions/discovery-calls",
             filters: generateFilters("Closers DC Closed", startDate, endDate, leadSources, kpiView, "Related Lead Source Item", "created_on", null, [
-                    {
-                        "type": "category",
-                        "fieldName": "Status of the Call",
-                        "values": ["Closed"]
-                    }
-                ], setters, closers)
+                {
+                    "type": "category",
+                    "fieldName": "Status of the Call",
+                    "values": ["Closed"]
+                }
+            ], setters, closers)
         },
         closersPayments: {
             name: "Closers Payments",
@@ -348,7 +350,7 @@ const apiEndpoints = (startDate, endDate, leadSources, kpiView, teamMembers, clo
         closerCommission: {
             name: "Closer Commission",
             url: "/api/closers/management/team-events",
-            filters: generateFilters("Closer Commission", startDate, endDate, null, kpiView, null, "Date Completed", teamMembers, [
+            filters: generateFilters("Closer Commission", startDate, endDate, null, kpiView, null, "Date Completed", null, [
                 {
                     "type": "category",
                     "fieldName": "Type",
@@ -358,13 +360,18 @@ const apiEndpoints = (startDate, endDate, leadSources, kpiView, teamMembers, clo
                     "type": "category",
                     "fieldName": "Status",
                     "values": ["Pending", "Completed"]
+                },
+                {
+                    "type": "app",
+                    "fieldName": "Team Member",
+                    "values": teamMembers
                 }
-            ])
+            ], null, null)
         },
         setterCommission: {
             name: "Setter Commission",
             url: "/api/closers/management/team-events",
-            filters: generateFilters("Setter Commission", startDate, endDate, null, kpiView, null, "Date Completed", teamMembers, [
+            filters: generateFilters("Setter Commission", startDate, endDate, null, kpiView, null, "Date Completed", null, [
                 {
                     "type": "category",
                     "fieldName": "Type",
@@ -374,13 +381,18 @@ const apiEndpoints = (startDate, endDate, leadSources, kpiView, teamMembers, clo
                     "type": "category",
                     "fieldName": "Status",
                     "values": ["Pending", "Completed"]
+                },
+                {
+                    "type": "app",
+                    "fieldName": "Team Member",
+                    "values": teamMembers
                 }
-            ])
+            ], null, null)
         },
         currentPassiveIncome: {
             name: "Current Passive Income",
             url: "/api/closers/management/payment-plans",
-            filters: generateFilters("Current Passive Income", null, null, null, kpiView, null, null, teamMembers, [
+            filters: generateFilters("Current Passive Income", null, null, null, kpiView, null, null, null, [
                 {
                     "type": "category",
                     "fieldName": "Plan #",
@@ -390,8 +402,8 @@ const apiEndpoints = (startDate, endDate, leadSources, kpiView, teamMembers, clo
                     "type": "category",
                     "fieldName": "Status",
                     "values": ["Active"]
-                }
-            ])
+                },
+            ], null, teamMembers)
         },
     };
 };
