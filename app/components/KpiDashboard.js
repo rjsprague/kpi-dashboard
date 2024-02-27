@@ -47,7 +47,7 @@ export default function KpiDashboard({ user }) {
 
     // const dispatch = useDispatch();
     // const queries = useSelector(selectAllQueries);
-    // console.log(clientSpaceId)
+    console.log(clientSpaceId)
 
     // console.log(user)
     // console.log(isStarter)

@@ -27,6 +27,8 @@ function CallScriptsPage() {
         }
     }, [user, loading]);
 
+    // console.log('user', user)
+
     const handleScriptChange = (script) => {
         setScript(script)
     }
@@ -36,7 +38,7 @@ function CallScriptsPage() {
         }
         let srcBase = '';
         if (script === 'Triage Call' || script === 'Perfect Presentation') {
-            srcBase = `https://scripts.reiautomated.io/callscripts/${script.toLowerCase().replace(' ', '')}/?clientFolderID=${clientFolderID}&user=${user.email}`;
+            srcBase = `https://scripts.reiautomated.io/callscripts/${script.toLowerCase().replace(' ', '')}/?clientFolderID=${clientFolderID}&user=${user.email}&userName=${user.name}`;
         } else if (script === 'Post-Contract') {
             srcBase = `https://scripts.reiautomated.io/callscripts/${script.toLowerCase()}/`;
         }
@@ -44,11 +46,13 @@ function CallScriptsPage() {
     }
 
     return (
-        <div className="absolute left-0 right-0 flex flex-col h-full pb-20 top-20 max-w-screen lg:left-20">
-            <Script src="//scripts.reiautomated.io/wp-content/plugins/gravity-forms-iframe-master/assets/scripts/gfembed.min.js"></Script>
+        <div className="absolute left-0 right-0 flex flex-col w-screen h-[90vh] max-w-screen top-20 lg:left-20 pb-20">
+            <Script src="//scripts.reiautomated.io/wp-content/plugins/gravity-forms-iframe-master/assets/scripts/gfembed.min.js" strategy="worker"></Script>
             <NavigationBar items={callScripts} onItemChange={handleScriptChange} initialActiveItem={script} />
-            <div className="flex flex-col h-full px-3 pt-2 pb-2 overflow-y-auto">
-                {renderScriptsSection()}
+            <div className="flex flex-col items-center w-full px-3 pt-2 pb-2 overflow-y-auto">
+                <div className="flex w-full sm:w-9/12 lg:w-7/12">
+                    {renderScriptsSection()}
+                </div>
             </div>
         </div>
     )

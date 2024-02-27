@@ -225,8 +225,8 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
                     {tooltipInfo.text}
                 </div>
             )}
-            <div className="flex h-auto px-2 py-4 overflow-auto max-h-screen9">
-                <div className="table w-full h-auto overflow-y-scroll max-h-screen9">
+            <div className="flex h-auto px-2 py-4 overflow-auto max-h-screen8">
+                <div className="table w-full h-auto overflow-y-scroll max-h-screen8">
                     <div className='flex justify-center mb-2 text-xl font-semibold'>{tableTitle} ({data.length})</div>
                     {/* <div
                         {...{

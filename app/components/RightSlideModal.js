@@ -80,7 +80,7 @@ const RightSlideModal = ({
         }
         setClients(clients)
         // console.log(clients)
-    }, [clientsData]) 
+    }, [clientsData])
 
     useEffect(() => {
         if (data) {
@@ -175,7 +175,7 @@ const RightSlideModal = ({
                 }
             }}
         >
-            <div className="absolute top-0 right-0 flex-col w-full h-screen overflow-scroll bg-blue-900 bg-opacity-50 infoModal">
+            <div className="absolute top-0 right-0 flex-col w-full h-screen overflow-auto bg-blue-900 bg-opacity-50 infoModal">
                 <button className="absolute text-xl font-semibold right-2 top-2" onClick={handleCloseModal}>
                     <FiX />
                 </button>
@@ -260,7 +260,9 @@ const RightSlideModal = ({
                                     <div className="ml-2 text-gray-100">Attrition List</div>
                                 </div>
                             )}
-                            <div className="flex flex-row flex-wrap items-center justify-center">
+                            <div
+                                className="flex flex-row flex-wrap items-center justify-center"
+                            >
                                 {enabled ? (
                                     <DataTable className="flex" selectedTableKey={dataTable1Key} data={attritionList} leadSources={leadSources} departments={departments} clients={clients} />
                                 ) : (

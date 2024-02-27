@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { FiUsers } from "react-icons/fi";
+import Image from "next/image";
+import { FiUsers, FiChevronsRight } from "react-icons/fi";
 import { FaGoogleDrive } from "react-icons/fa6";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -184,122 +185,130 @@ export default function SideNav() {
     // ];
 
     return (
-        <div className="fixed z-10 overflow-visible">
-            <div className={`relative flex`} ref={sideNavRef}>
-                <div className="relative">
-                    <nav
-                        className={`fixed top-0 bottom-0 left-0 flex flex-col pl-5 pr-2 bg-gradient-to-r from-blue-900 to-blue-700 shadow-super-2 lg:shadow-black transition-all duration-300 ease-in-out ${isOpen
+        <>
+            <div className="fixed z-10 overflow-visible">
+                <div className={`relative flex`} ref={sideNavRef}>
+                    <div className="relative">
+                        <nav
+                            className={`fixed top-0 bottom-0 left-0 flex flex-col pl-3 pr-2 bg-gradient-to-r from-blue-900 to-blue-700 shadow-super-2 lg:shadow-black transition-all duration-300 ease-in-out ${isOpen
                                 ? "w-60 h-screen"
                                 : "w-20 h-20 lg:h-screen overflow-hidden lg:overflow-visible"
-                            }`}
-                    >
-                        <div className={`relative flex flex-col flex-grow`}>
-                            <div className={`relative flex flex-row top-5 left-1 mb-10`}>
-                                <img
-                                    src="/reia-icon.webp"
-                                    alt="REI Automated Logo"
-                                    className="w-8 h-8 text-white transition-all duration-300 ease-in-out animate-pulse"
+                                }`}
+                        >
+                            <div className={`relative flex flex-col w-full`}>
+                                <div
+                                    className={`relative flex flex-row top-0 left-0 mb-10 items-center cursor-pointer gap-1`}
                                     onClick={toggleOpen}
-                                    style={{
-                                        transform: `${isOpen ? "rotate(360deg)" : "rotate(0deg)"}`,
-                                    }}
-                                />
-                                <p
-                                    className={`text-xl transition-all duration-300 ease-in-out whitespace-nowrap ${isOpen ? "ml-2 w-40 opacity-100" : "w-0 opacity-0"
+                                >
+                                    <Image
+                                        src="/reia-icon.webp"
+                                        alt="REI Automated Logo"
+                                        className="text-white transition-all duration-300 ease-in-out animate-pulse"
+                                        width={24}
+                                        height={24}
+                                        style={{
+                                            transform: `${isOpen ? "rotate(360deg)" : "rotate(0deg)"}`,
+                                        }}
+                                    />
+                                    <p className={`text-xl transition-all duration-300 ease-in-out whitespace-nowrap ${isOpen ? "ml-2 w-40 opacity-100" : "w-0 opacity-0"}`}>
+                                        REI AUTOMATED
+                                    </p>
+                                    <FiChevronsRight
+                                        className="w-10 h-20 text-xl text-white transition-all duration-300"
+                                        style={{
+                                            transform: `${isOpen ? "rotate(180deg)" : "rotate(0deg)"}`,
+                                        }}
+                                    />
+                                </div>
+                                <ul
+                                    className={`relative transition-all ease-in delay-300 flex flex-col mt-8 lg:space-y-2 gap-2 ${isOpen ? "" : "pl-2"
                                         }`}
                                 >
-                                    REI AUTOMATED
-                                </p>
-                            </div>
-                            <ul
-                                className={`relative transition-all ease-in delay-300 flex flex-col mt-8 lg:space-y-2 gap-2 ${isOpen ? "" : "pl-2"
-                                    }`}
-                            >
-                                {navItems.map((item, index) => (
-                                    <li key={index}>
-                                        {item.clients ? (
-                                            user &&
-                                            isAdmin && (
-                                                <div
-                                                    ref={buttonRef}
-                                                    className="relative flex w-full rounded-md"
-                                                    onClick={item.onClick}
-                                                    onKeyDown={handleKeyDown}
-                                                >
-                                                    <div className="flex flex-row gap-2 p-1 text-left cursor-pointer whitespace-nowrap">
-                                                        <span
-                                                            className={`transition-all duration-300 ease-out hover:animate-bounce ${isOpen
+                                    {navItems.map((item, index) => (
+                                        <li key={index}>
+                                            {item.clients ? (
+                                                user &&
+                                                isAdmin && (
+                                                    <div
+                                                        ref={buttonRef}
+                                                        className="relative flex w-full rounded-md"
+                                                        onClick={item.onClick}
+                                                        onKeyDown={handleKeyDown}
+                                                    >
+                                                        <div className="flex flex-row gap-2 p-1 text-left cursor-pointer whitespace-nowrap">
+                                                            <span
+                                                                className={`transition-all duration-300 ease-out hover:animate-bounce ${isOpen
                                                                     ? "opacity-100"
                                                                     : "opacity-0 lg:opacity-100"
+                                                                    }`}
+                                                            >
+                                                                {item.icon}
+                                                            </span>
+                                                            <span
+                                                                className={`truncate transition-all duration-300 ease-out whitespace-nowrap ${isOpen
+                                                                    ? "w-44 overflow-visible opacity-100"
+                                                                    : "w-0 overflow-hidden opacity-0"
+                                                                    }`}
+                                                            >
+                                                                {item.text}
+                                                                {selectedClient && `: ` + selectedClient}
+                                                            </span>
+                                                        </div>
+                                                        {clientsOpen && (
+                                                            <div
+                                                                className="absolute top-0 left-[50%]"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            >
+                                                                <UniversalDropdown
+                                                                    options={clientsNamesArray}
+                                                                    onOptionSelected={handleClientSelect}
+                                                                    selectedOptions={
+                                                                        selectedClient ? [selectedClient] : []
+                                                                    }
+                                                                    queryId={null}
+                                                                    isSingleSelect={true}
+                                                                    isLoadingData={null}
+                                                                    className={"dropdown"}
+                                                                    ButtonComponent={SidenavDropdownButton}
+                                                                    defaultValue={"Select a client..."}
+                                                                    showButton={clientsOpen}
+                                                                />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )
+                                            ) : (
+                                                <Link
+                                                    href={item.link}
+                                                    target={item.target ? item.target : ""}
+                                                    rel={item.rel ? item.rel : ""}
+                                                    className={`flex flex-row gap-2 whitespace-nowrap rounded-md ${isOpen ? "" : ""
+                                                        }`}
+                                                >
+                                                    <div className="flex flex-row gap-2 p-1 text-left whitespace-nowrap ">
+                                                        <span
+                                                            className={`transition-all duration-300 ease-out hover:animate-bounce ${isOpen
+                                                                ? "opacity-100"
+                                                                : "opacity-0 lg:opacity-100"
                                                                 }`}
                                                         >
                                                             {item.icon}
                                                         </span>
                                                         <span
-                                                            className={`truncate transition-all duration-300 ease-out whitespace-nowrap ${isOpen
-                                                                    ? "w-44 overflow-visible opacity-100"
-                                                                    : "w-0 overflow-hidden opacity-0"
+                                                            className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen
+                                                                ? "w-44 overflow-visible opacity-100"
+                                                                : "w-0 overflow-hidden opacity-0"
                                                                 }`}
                                                         >
                                                             {item.text}
-                                                            {selectedClient && `: ` + selectedClient}
                                                         </span>
                                                     </div>
-                                                    {clientsOpen && (
-                                                        <div
-                                                            className="absolute top-0 left-[50%]"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            <UniversalDropdown
-                                                                options={clientsNamesArray}
-                                                                onOptionSelected={handleClientSelect}
-                                                                selectedOptions={
-                                                                    selectedClient ? [selectedClient] : []
-                                                                }
-                                                                queryId={null}
-                                                                isSingleSelect={true}
-                                                                isLoadingData={null}
-                                                                className={"dropdown"}
-                                                                ButtonComponent={SidenavDropdownButton}
-                                                                defaultValue={"Select a client..."}
-                                                                showButton={clientsOpen}
-                                                            />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )
-                                        ) : (
-                                            <Link
-                                                href={item.link}
-                                                target={item.target ? item.target : ""}
-                                                rel={item.rel ? item.rel : ""}
-                                                className={`flex flex-row gap-2 whitespace-nowrap rounded-md ${isOpen ? "" : ""
-                                                    }`}
-                                            >
-                                                <div className="flex flex-row gap-2 p-1 text-left whitespace-nowrap ">
-                                                    <span
-                                                        className={`transition-all duration-300 ease-out hover:animate-bounce ${isOpen
-                                                                ? "opacity-100"
-                                                                : "opacity-0 lg:opacity-100"
-                                                            }`}
-                                                    >
-                                                        {item.icon}
-                                                    </span>
-                                                    <span
-                                                        className={`transition-all duration-300 ease-out whitespace-nowrap ${isOpen
-                                                                ? "w-44 overflow-visible opacity-100"
-                                                                : "w-0 overflow-hidden opacity-0"
-                                                            }`}
-                                                    >
-                                                        {item.text}
-                                                    </span>
-                                                </div>
-                                            </Link>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                            {/* <span className={`block mt-4 mb-2 text-xs font-semibold uppercase lg:mb-4 transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>Teams</span>
+                                                </Link>
+                                            )}
+                                        </li>
+                                    ))}
+                                </ul>
+                                {/* <span className={`block mt-4 mb-2 text-xs font-semibold uppercase lg:mb-4 transition-all duration-300 ease-out whitespace-nowrap ${isOpen ? 'w-44 overflow-visible opacity-100' : 'w-0 overflow-hidden opacity-0'}`}>Teams</span>
                             <ul className='flex flex-col gap-2'>
                                 {teamItems.map((item, index) => (
                                     <li key={index}>
@@ -312,8 +321,8 @@ export default function SideNav() {
                                     </li>
                                 ))}
                             </ul> */}
-                        </div>
-                        {/* <div className="flex flex-col mb-4 space-y-2 lg:space-y-4">
+                            </div>
+                            {/* <div className="flex flex-col mb-4 space-y-2 lg:space-y-4">
                             <Link href="/user-profile" className="flex items-center gap-2 rounded-md">
                                 <div className='flex flex-row gap-2 text-left whitespace-nowrap '>
                                     <span className={`transition-all duration-300 ease-out origin-center hover:animate-spin ${isOpen ? 'opacity-100' : 'opacity-0 lg:opacity-100 overflow-hidden'}`}><FiSettings className='text-2xl' /></span>
@@ -327,9 +336,11 @@ export default function SideNav() {
                                 </div>
                             </button>
                         </div> */}
-                    </nav>
+                        </nav>
+                    </div>
                 </div>
+                {isOpen && <div className="w-screen h-screen bg-black bg-opacity-25 -z-50"></div>}
             </div>
-        </div>
+        </>
     );
 }

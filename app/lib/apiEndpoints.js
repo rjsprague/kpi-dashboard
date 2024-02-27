@@ -1,8 +1,8 @@
 const generateFilters = (apiName, startDate, endDate, leadSources, kpiView, leadSourcesFieldName, dateFieldName, teamMembers = null, extraFilters = null, setters = null, closers = null) => {
     const filters = [];
-    console.log(apiName, startDate, endDate, leadSources, kpiView, leadSourcesFieldName, dateFieldName, teamMembers, extraFilters, setters, closers)
-    console.log(closers)
-    console.log(setters)
+    // console.log(apiName, startDate, endDate, leadSources, kpiView, leadSourcesFieldName, dateFieldName, teamMembers, extraFilters, setters, closers)
+    // console.log(closers)
+    // console.log(setters)
     // console.log(kpiView)
 
     if (startDate && endDate) {
