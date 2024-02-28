@@ -138,16 +138,16 @@ export default function SideNav() {
             icon: <FontAwesomeIcon icon={faGaugeHigh} size="xl" />,
             text: "KPIs",
             link: "/kpi-dashboard",
+            onClick: () => setIsOpen(false),
         },
         {
             icon: <FontAwesomeIcon icon={faFileAlt} size="xl" />,
             text: "Call Scripts",
             link: "/call-scripts",
             scripts: true,
-            onClick: () => setScriptsOpen(!scriptsOpen),
+            onClick: () => setIsOpen(false),
         },
-        clientFolderID
-            ? {
+        clientFolderID ? {
                 icon: <FaGoogleDrive className="block text-xl" />,
                 text: isScaling
                     ? `Files`
@@ -186,7 +186,7 @@ export default function SideNav() {
 
     return (
         <>
-            <div className="fixed z-10 overflow-visible">
+            <div className="fixed z-20 overflow-visible ">
                 <div className={`relative flex`} ref={sideNavRef}>
                     <div className="relative">
                         <nav
@@ -280,6 +280,7 @@ export default function SideNav() {
                                             ) : (
                                                 <Link
                                                     href={item.link}
+                                                    onClick={item.onClick ? item.onClick : null}
                                                     target={item.target ? item.target : ""}
                                                     rel={item.rel ? item.rel : ""}
                                                     className={`flex flex-row gap-2 whitespace-nowrap rounded-md ${isOpen ? "" : ""

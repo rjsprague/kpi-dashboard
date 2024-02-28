@@ -15,15 +15,17 @@ export default function RootLayout({ children }) {
 
     return (
         <AuthProvider>
-            <head>
-                <script
-                    id="jira-service-desk-widget"
-                    data-jsd-embedded data-key="1b3385f6-3fa9-43d0-8209-b36bcd93b5fd"
-                    data-base-url="https://jsd-widget.atlassian.com"
-                    src="https://jsd-widget.atlassian.com/assets/embed.js"
-                    ></script>
-            </head>
             <html lang="en">
+                <head>
+                    <script
+                        id="jira-service-desk-widget"
+                        data-jsd-embedded data-key="1b3385f6-3fa9-43d0-8209-b36bcd93b5fd"
+                        data-base-url="https://jsd-widget.atlassian.com"
+                        src="https://jsd-widget.atlassian.com/assets/embed.js"
+                    ></script>
+
+                    {/* <Script src="//scripts.reiautomated.io/wp-content/plugins/gravity-forms-iframe-master/assets/scripts/gfembed.min.js" strategy="worker"></Script> */}
+                </head>
                 <body className='absolute inset-0 h-screen max-h-screen overflow-hidden'>
                     <ReduxProvider>
                         <div className=''>
@@ -39,7 +41,6 @@ export default function RootLayout({ children }) {
                         <div id="loading-portal"></div>
                     </ReduxProvider>
                 </body>
-                <Script src="//scripts.reiautomated.io/wp-content/plugins/gravity-forms-iframe-master/assets/scripts/gfembed.min.js"></Script>
 
             </html>
         </AuthProvider>

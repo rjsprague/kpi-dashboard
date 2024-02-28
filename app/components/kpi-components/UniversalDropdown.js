@@ -160,19 +160,22 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
 
     return (
         <div ref={dropdownRef} className={`relative items-center text-xs dropdown sm:text-sm ${className}`}>
-            <ButtonComponent onClick={toggleOpen} isOpen={isOpen}>
-                <div className="truncate">
-                    {isLoadingData ? <LoadingIcon /> :
-                        selectedOption
-                            ? selectedOption
-                            : isSingleSelect && selectedOptions || selectedOptions?.length === 1
-                                ? selectedOptions[0]
-                                : noSetter ? "No Setter" :
-                                    selectedOptions?.length === options.length ? (label ? "All " + label : "All") :
-                                        selectedOptions?.length === 0 ? "No Filter" :
-                                            `${selectedOptions?.length} selected`}
-                </div>
-            </ButtonComponent>
+            <div className="flex flex-row items-center gap-2">
+                <div className="flex text-md">{label}:</div>
+                <ButtonComponent onClick={toggleOpen} isOpen={isOpen}>
+                    <div className="truncate">
+                        {isLoadingData ? <LoadingIcon /> :
+                            selectedOption
+                                ? selectedOption
+                                : isSingleSelect && selectedOptions || selectedOptions?.length === 1
+                                    ? selectedOptions[0]
+                                    : noSetter ? "No Setter" :
+                                        selectedOptions?.length === options.length ? (label ? "All " + label : "All") :
+                                            selectedOptions?.length === 0 ? "No Filter" :
+                                                `${selectedOptions?.length} selected`}
+                    </div>
+                </ButtonComponent>
+            </div>
 
             <Transition in={isOpen} timeout={duration}>
                 {(state) => (
@@ -207,7 +210,7 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                                 label && label.includes("Setters") && (
                                     <div className="text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400">
                                         <div className="inline-flex gap-2" onClick={() => handleNoSetter()}>
-                                            { noSetter ? <FiCheckSquare size="20px" /> : !isSingleSelect && <FiSquare size="20px" /> }
+                                            {noSetter ? <FiCheckSquare size="20px" /> : !isSingleSelect && <FiSquare size="20px" />}
                                             No Setter
                                         </div>
                                     </div>
@@ -216,7 +219,7 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                                 <li
                                     key={option}
                                     onClick={() => handleCheckboxChange(option)}
-                                    className={`w-full text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400 ${index === highlightedIndex ? 'bg-blue-400' : ''}`}
+                                    className={`w-full max-w-screen9 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400 ${index === highlightedIndex ? 'bg-blue-400' : ''}`}
                                 >
                                     <label className="inline-flex gap-2">
                                         {

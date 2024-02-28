@@ -141,7 +141,7 @@ const handleTeamKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, 
         }
         const data = await response.json();
 
-        console.log("data: ", data)
+        // console.log("data: ", data)
 
         let fetchedResults = data.data ? data.data : [];
         let offset = fetchedResults.length;
@@ -165,7 +165,7 @@ const handleTeamKpis = async (accessToken, clientSpaceId, apiName, apiEndpoint, 
             offset += moreData.data.length;
         }
 
-        console.log("fetchedResults: ", fetchedResults)
+        // console.log("fetchedResults: ", fetchedResults)
 
         return fetchedResults;
 

@@ -58,10 +58,10 @@ const generateFilters = (apiName, startDate, endDate, leadSources, kpiView, lead
 // Define the endpoints and filters for each KPI
 const apiEndpoints = (startDate, endDate, leadSources, kpiView, teamMembers, closers, setters) => {
     // console.log(leadSources)
-    console.log(teamMembers)
+    // console.log(teamMembers)
     // console.log(kpiView)
-    console.log(closers)
-    console.log(setters)
+    // console.log(closers)
+    // console.log(setters)
 
     return {
         marketingExpenses: {
