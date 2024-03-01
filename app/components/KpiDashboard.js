@@ -281,7 +281,8 @@ export default function KpiDashboard({ user }) {
 
     const createClonedLeaderboardQuery = (queryId, dayStart, dayEnd, weekStart, weekEnd, monthStart, monthEnd) => {
         const clonedQuery = [{
-            id: queryId + 1,
+            id: queryId,
+            kpiView: 'Leaderboard',
             results: { "dayStart": dayStart, "dayEnd": dayEnd, "weekStart": weekStart, "weekEnd": weekEnd, "monthStart": monthStart, "monthEnd": monthEnd },
             isOpen: true,
             isLoading: true,

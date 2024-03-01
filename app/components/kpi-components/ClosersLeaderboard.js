@@ -203,6 +203,7 @@ export default function ClosersLeaderboard({
     };
 
     const handleCloneLeaderboard = (dayStart, dayEnd, weekStart, weekEnd, monthStart, monthEnd) => {
+        console.log(dayStart, dayEnd, weekStart, weekEnd, monthStart, monthEnd)
         onCloneLeaderboard(dayStart, dayEnd, weekStart, weekEnd, monthStart, monthEnd);
     };
 
@@ -216,19 +217,21 @@ export default function ClosersLeaderboard({
     return (
         <>
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleRemoveQuery={handleRemoveQuery} handleGearIconClick={handleGearIconClick}>
-                <ClosersDateSelector
-                    selectedDay={selectedDay}
-                    selectedWeek={selectedWeek}
-                    selectedMonth={selectedMonth}
-                    days={days}
-                    weeks={weeks}
-                    months={months}
-                    onDayChange={handleDayChange}
-                    onWeekChange={handleWeekChange}
-                    onMonthChange={handleMonthChange}
-                />
-                <div>
-                    <FiCopy className="w-7 h-7 p-0.5 text-white border shadow-super-3 rounded-md cursor-pointer border-color-white hover:text-blue-700 hover:bg-white" onClick={() => handleCloneLeaderboard(dayStart, dayEnd, weekStart, weekEnd, monthStart, monthEnd)} />
+                <div className='flex flex-row gap-2'>
+                    <ClosersDateSelector
+                        selectedDay={selectedDay}
+                        selectedWeek={selectedWeek}
+                        selectedMonth={selectedMonth}
+                        days={days}
+                        weeks={weeks}
+                        months={months}
+                        onDayChange={handleDayChange}
+                        onWeekChange={handleWeekChange}
+                        onMonthChange={handleMonthChange}
+                    />
+                    <div>
+                        <FiCopy className="w-7 h-7 p-0.5 text-white border shadow-super-3 rounded-md cursor-pointer border-color-white hover:text-blue-700 hover:bg-white" onClick={() => handleCloneLeaderboard(dayStart, dayEnd, weekStart, weekEnd, monthStart, monthEnd)} />
+                    </div>
                 </div>
             </QueryPanel>
             <AnimateHeight duration={500} height={height}>

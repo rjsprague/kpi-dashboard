@@ -31,12 +31,12 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
         }
     }, [isOpen]);
 
-    useEffect(() => {        
+    useEffect(() => {
         const handleClickOutside = (event) => {
             if (filtersButtonRef.current && filtersButtonRef.current.contains(event.target)) {
                 return;
             }
-             if (filtersContentRef.current && !filtersContentRef.current.contains(event.target)) {
+            if (filtersContentRef.current && !filtersContentRef.current.contains(event.target)) {
                 setIsOpen(false);
             }
         };
@@ -78,7 +78,7 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
 
     return (
         <div className="p-2 text-sm rounded-lg shadow-super-3 bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
-            <div className='flex flex-row justify-between'>
+            <div className='flex flex-row justify-between gap-2'>
                 <button
                     className="flex h-7 items-center px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md left-0.5 shadow-super-4 hover:animate-pulse"
                     onClick={() => {
@@ -101,13 +101,19 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
                 </button>
 
                 <div className='flex flex-row items-center gap-2 overflow-visible'>
-                    {user && user.isAdmin && clientsMap && clientsMap[clientSpaceId]}
-                    {/* <div className="flex-row flex-wrap hidden sm:flex">
+                    {user && user.isAdmin && clientsMap &&
+                        <div className="p-1 font-semibold text-blue-900 rounded-md bg-gray-50">
+                            Client: {clientsMap[clientSpaceId]}
+                        </div>
+                    }
+
+                    <div className="flex-row hidden md:flex">
                         {children}
-                    </div> */}
-                    <div ref={filtersButtonRef} className="flex">
+                    </div>
+
+                    <div ref={filtersButtonRef} className="relative flex md:hidden">
                         <FiFilter
-                            
+
                             onClick={() => setIsOpen(!isOpen)}
                             className="text-xl text-gray-100" />
 
@@ -115,7 +121,7 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
                             {(state) => (
                                 <div
                                     ref={filtersContentRef}
-                                    className={`flex flex-col px-3 inset-3 sm:left-1/3 sm:w-1/4 absolute z-30 top-24 py-2 text-white bg-blue-800 rounded-lg shadow-lg bg-opacity-80 overflow-visible`}
+                                    className={`flex flex-col px-3 inset-3 absolute top-6 w-72 -left-32 z-30 py-2 text-white bg-blue-800 rounded-lg shadow-lg bg-opacity-80 overflow-visible`}
                                     style={{
                                         ...defaultStyle,
                                         ...transitionStyles[state],
@@ -139,7 +145,7 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
 
                     </div>
                 </div>
-                <div className='flex flex-col justify-between gap-2 xs:flex-row'>
+                <div className='flex flex-row justify-between gap-2'>
                     <button
                         className="flex h-7 items-center px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md right-0.5 shadow-super-4 hover:animate-pulse"
                         onClick={handleGearIconClick}

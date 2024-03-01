@@ -170,7 +170,7 @@ const AcquisitionsKpiQuery = ({
         <div className="mb-2">
             {/* Main KPI Results */}
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
-                <div className='flex flex-col gap-2'>
+                <div className='flex flex-row flex-wrap gap-2'>
                     {clientSpaceId === closersSpaceId && closers && setters &&
                         <>
                             <UniversalDropdown
