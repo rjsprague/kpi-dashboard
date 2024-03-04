@@ -33,7 +33,7 @@ const KpiQueryContainer = ({
     // console.log('view', view)
 
     return (
-        <div>
+        <div className="flex flex-col 6xl:gap-2 6xl:flex-row 6xl:flex-wrap">
             {
                 // Only render queries that match the current view
                 queries.filter((query) => query.kpiView === view)
@@ -65,7 +65,9 @@ const KpiQueryContainer = ({
                         />
                     ))
             }
-            <AddQueryButton handleAddQuery={handleAddQuery} view={view} />
+            <div className=''>
+                <AddQueryButton handleAddQuery={handleAddQuery} view={view} />
+            </div>
         </div>
     );
 };

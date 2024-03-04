@@ -84,11 +84,11 @@ const TeamKpiQuery = ({
     };
 
     return (
-        <div className="mb-2">
+        <div className="w-full max-w-full ">
             {/* Main KPI Results */}
             {/* ... similar to AcquisitionsKpiQuery */}
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
-                <div className='flex flex-col gap-2 sm:items-center sm:justify-between sm:flex-row sm:gap-4'>
+                <div className='flex flex-col gap-2 sm:items-center sm:justify-between sm:flex-row sm:flex-wrap sm:gap-1'>
                     {/* Seat, Team Member and Date Range Selectors */}
                     <div className=''>
                         <TeamComponent
@@ -102,15 +102,15 @@ const TeamKpiQuery = ({
                             isStarter={isStarter}
                         />
                     </div>
-                    <LeadSourcesDropdown
-                        onOptionSelected={onLeadSourceChange}
-                        selectedLeadsources={query.leadSources}
-                        queryId={query.id}
-                        leadSources={leadSources}
-                        isLoadingData={isLoadingData}
-                        isUnavailable={query.isUnavailable}
-                    />
-                    <div className="">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-1">
+                        <LeadSourcesDropdown
+                            onOptionSelected={onLeadSourceChange}
+                            selectedLeadsources={query.leadSources}
+                            queryId={query.id}
+                            leadSources={leadSources}
+                            isLoadingData={isLoadingData}
+                            isUnavailable={query.isUnavailable}
+                        />
                         <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} selectedDateRange={query.dateRange} />
                     </div>
                 </div>

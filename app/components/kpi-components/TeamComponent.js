@@ -67,7 +67,7 @@ function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, depar
     };
 
     return (
-        <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-1">
             <UniversalDropdown
                 options={Object.keys(departments)}
                 onOptionSelected={handleDepartmentSelected}
@@ -76,6 +76,7 @@ function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, depar
                 isSingleSelect={true}
                 isLoadingData={isLoadingData}
                 ButtonComponent={DropdownButton}
+                label={"Department"}
             />
             {selectedDepartment && departments[selectedDepartment] && (
                 <UniversalDropdown
@@ -86,6 +87,7 @@ function TeamComponent({ onTeamChange, query, queryId, onDepartmentChange, depar
                     isSingleSelect={false}
                     isLoadingData={isLoadingData}
                     ButtonComponent={DropdownButton}
+                    label={"Team Members"}
                 />
             )}
         </div>

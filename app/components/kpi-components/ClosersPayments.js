@@ -104,7 +104,7 @@ export default function ClosersPayments({
     
 
     return (
-        <>
+        <div className="w-full">
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleRemoveQuery={handleRemoveQuery} handleGearIconClick={handleGearIconClick}>
                 <div className='flex flex-col gap-2 xs:flex-row'>
                     <UniversalDropdown
@@ -153,6 +153,6 @@ export default function ClosersPayments({
                     </div>
                 }
             </AnimateHeight>
-        </>
+        </div>
     )
 }

@@ -75,10 +75,10 @@ const FinancialsKpiQuery = ({
     //console.log("view ", view)
 
     return (
-        <div className="mb-2">
+        <div className="w-full max-w-full ">
             {/* Main KPI Results */}
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
-                <div className='flex flex-col gap-1 xs:flex-row sm:gap-4'>
+                <div className='flex flex-col gap-1 sm:flex-row sm:flex-wrap sm:gap-2'>
                     {/* Lead Source and Date Range Selectors */}
                     <LeadSourcesDropdown
                         onOptionSelected={onLeadSourceChange}

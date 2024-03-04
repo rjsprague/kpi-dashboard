@@ -85,23 +85,23 @@ function SingleDateRangeSelector({ queryId, onDateRangeChange, selectedDateRange
     };
 
     return (
-        <div className="relative justify-center text-xs sm:text-sm bg-opacity-80 date-picker">
-            <div className="flex flex-row items-center gap-2">
+        <div className="relative text-xs sm:text-sm bg-opacity-80 date-picker">
+            <div className="flex flex-row items-center justify-between gap-2 w-50 md:w-full">
                 <div className="flex text-md">Date:</div>
-            <DropdownButton onClick={toggleDatePicker} isOpen={showDatePicker}>
-                <div className="truncate">
-                    {dateRange && dateRange.gte instanceof Date && !isNaN(dateRange.gte) && dateRange.gte === datePresets['All Time'].startDate ? 'All Time' :
-                        dateRange && dateRange.gte instanceof Date && !isNaN(dateRange.gte) && dateRange.lte && dateRange.gte.toLocaleDateString() === dateRange.lte?.toLocaleDateString() ? dateRange.gte?.toLocaleDateString() :
-                            dateRange && dateRange.gte instanceof Date && !isNaN(dateRange.gte) && dateRange.lte instanceof Date && !isNaN(dateRange.lte) ? `${dateRange.gte.toLocaleDateString()} - ${dateRange.lte.toLocaleDateString()}`
-                                : "Select Date Range"}
-                </div>
-            </DropdownButton>
+                <DropdownButton onClick={toggleDatePicker} isOpen={showDatePicker}>
+                    <div className="truncate">
+                        {dateRange && dateRange.gte instanceof Date && !isNaN(dateRange.gte) && dateRange.gte === datePresets['All Time'].startDate ? 'All Time' :
+                            dateRange && dateRange.gte instanceof Date && !isNaN(dateRange.gte) && dateRange.lte && dateRange.gte.toLocaleDateString() === dateRange.lte?.toLocaleDateString() ? dateRange.gte?.toLocaleDateString() :
+                                dateRange && dateRange.gte instanceof Date && !isNaN(dateRange.gte) && dateRange.lte instanceof Date && !isNaN(dateRange.lte) ? `${dateRange.gte.toLocaleDateString()} - ${dateRange.lte.toLocaleDateString()}`
+                                    : "Select Date Range"}
+                    </div>
+                </DropdownButton>
             </div>
             <Transition in={showDatePicker} timeout={duration}>
                 {(state) => (
                     <div
                         ref={datePickerContentRef}
-                        className={` absolute sm:-left-18 flex-1 mx-auto  z-50 flex w-72 sm:w-100 flex-col sm:flex-row  bg-blue-900 rounded-md bg-opacity-80 shadow-super-4`}
+                        className={` absolute md:-left-40 flex-1 mx-auto  z-50 flex w-72 sm:w-100 flex-col sm:flex-row  bg-blue-900 rounded-md bg-opacity-80 shadow-super-4`}
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],

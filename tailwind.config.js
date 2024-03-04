@@ -16,6 +16,8 @@ module.exports = {
             '3xl': '1440px',
             '4xl': '1600px',
             '5xl': '1700px',
+            '6xl': '1880px',
+            '7xl': '1920px',
         },
         colors: {
             current: 'currentColor',

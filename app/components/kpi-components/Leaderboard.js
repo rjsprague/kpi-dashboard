@@ -170,7 +170,7 @@ export default function Leaderboard({
     return (
         <div className="mb-2">
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
-                <div className="flex flex-row gap-1 sm:gap-4">
+                <div className="flex flex-col gap-1 md:flex-row sm:gap-4">
                     <UniversalDropdown
                         options={years}
                         onOptionSelected={handleYearChange}
@@ -181,6 +181,7 @@ export default function Leaderboard({
                         className={"dropdown"}
                         ButtonComponent={DropdownButton}
                         defaultValue={year}
+                        label={"Year"}
                     />
                     <UniversalDropdown
                         options={months}
@@ -192,6 +193,7 @@ export default function Leaderboard({
                         className={"dropdown"}
                         ButtonComponent={DropdownButton}
                         defaultValue={month}
+                        label={"Month"}
                     />
                 </div>
             </QueryPanel>

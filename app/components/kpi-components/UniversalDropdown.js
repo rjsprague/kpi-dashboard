@@ -160,7 +160,7 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
 
     return (
         <div ref={dropdownRef} className={`relative items-center text-xs dropdown sm:text-sm ${className}`}>
-            <div className="flex flex-row items-center gap-2">
+            <div className="flex flex-row items-center justify-between gap-2 w-50 md:w-full">
                 <div className="flex text-md">{label}:</div>
                 <ButtonComponent onClick={toggleOpen} isOpen={isOpen}>
                     <div className="truncate">
@@ -181,7 +181,7 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                 {(state) => (
                     <div
                         ref={dropdownContentRef}
-                        className="absolute z-50 p-1 text-white bg-blue-800 rounded-b-lg shadow-lg bg-opacity-80"
+                        className="absolute z-50 p-1 text-white bg-blue-800 rounded-lg shadow-lg -left-10 bg-opacity-80 max-w-screen8"
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],

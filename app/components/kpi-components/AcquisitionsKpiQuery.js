@@ -167,7 +167,7 @@ const AcquisitionsKpiQuery = ({
     }
 
     return (
-        <div className="mb-2">
+        <div className="w-full max-w-full ">
             {/* Main KPI Results */}
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
                 <div className='flex flex-row flex-wrap gap-2'>

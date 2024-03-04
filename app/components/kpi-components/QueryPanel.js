@@ -78,7 +78,7 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
 
     return (
         <div className="p-2 text-sm rounded-lg shadow-super-3 bg-gradient-to-r from-blue-600 via-blue-800 to-blue-500 text-gray-50">
-            <div className='flex flex-row justify-between gap-2'>
+            <div className='flex flex-row items-center justify-between gap-2'>
                 <button
                     className="flex h-7 items-center px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md left-0.5 shadow-super-4 hover:animate-pulse"
                     onClick={() => {
@@ -113,15 +113,14 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
 
                     <div ref={filtersButtonRef} className="relative flex md:hidden">
                         <FiFilter
-
                             onClick={() => setIsOpen(!isOpen)}
-                            className="text-xl text-gray-100" />
-
+                            className="text-xl text-gray-100"
+                        />
                         <Transition in={isOpen} timeout={duration}>
                             {(state) => (
                                 <div
                                     ref={filtersContentRef}
-                                    className={`flex flex-col px-3 inset-3 absolute top-6 w-72 -left-32 z-30 py-2 text-white bg-blue-800 rounded-lg shadow-lg bg-opacity-80 overflow-visible`}
+                                    className={`flex flex-col px-3 -left-52 absolute top-6 w-60 z-30 py-2 text-white bg-blue-800 rounded-lg shadow-lg bg-opacity-80 overflow-visible`}
                                     style={{
                                         ...defaultStyle,
                                         ...transitionStyles[state],
@@ -145,6 +144,7 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
 
                     </div>
                 </div>
+
                 <div className='flex flex-row justify-between gap-2'>
                     <button
                         className="flex h-7 items-center px-2 py-1 text-blue-900 transition-shadow duration-500 bg-white rounded-md right-0.5 shadow-super-4 hover:animate-pulse"
