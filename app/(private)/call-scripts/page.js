@@ -18,7 +18,7 @@ function CallScriptsPage() {
     useEffect(() => {
         if (user && user.isScaling) {
             setClientFolderID(user.settings.google.rootFolderID);
-        } else if (user && user.isProfessional) {
+        } else if (user && user.isProfessional || user && user.isStarter) {
             setClientFolderID(user.settings.google.propertyFolderID);
         }
 
