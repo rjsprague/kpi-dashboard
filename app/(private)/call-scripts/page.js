@@ -49,8 +49,8 @@ function CallScriptsPage() {
         <div className="absolute bottom-0 left-0 right-0 flex flex-col h-full top-20 max-w-screen lg:left-20">
             <Script src="//scripts.reiautomated.io/wp-content/plugins/gravity-forms-iframe-master/assets/scripts/gfembed.min.js" strategy="worker"></Script>
             <NavigationBar items={callScripts} onItemChange={handleScriptChange} initialActiveItem={script} />
-            <div className="flex flex-col items-center h-full max-h-screen px-3 pt-2 pb-2 overflow-y-auto">
-                <div className="flex w-full sm:w-9/12 lg:w-7/12 h-[50%]">
+            <div className="flex flex-col items-center h-full max-h-screen pt-2 pb-2 overflow-y-auto">
+                <div className="flex w-full h-[50%]">
                     {renderScriptsSection()}
                 </div>
             </div>

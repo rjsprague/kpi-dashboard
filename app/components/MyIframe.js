@@ -14,7 +14,7 @@ const MyIframe = ({ src, title }) => {
           position: relative;
           overflow: hidden;
           width: 100%;
-          height: 93vh;
+          height: 90vh;
         }
         .iframe-container > iframe {
           position: absolute;
