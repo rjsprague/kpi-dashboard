@@ -284,6 +284,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                                     : result["Last"] ? result["Last"]
                                         : result.Title ? result.Title
                                             : "No Name",
+                        "Status": result["Lead Status"] ? result["Lead Status"] : "No Status",
                         "Pre-Qualification Status": result["Pre-Qualification Status"] ? result["Pre-Qualification Status"] : "No Status",
                         "Lead Source": result["Lead Source Item"] ? result["Lead Source Item"] : "No Lead Source",
                         podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
