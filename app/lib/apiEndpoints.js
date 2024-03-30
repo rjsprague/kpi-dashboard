@@ -216,6 +216,22 @@ const apiEndpoints = (startDate, endDate, leadSources, kpiView, teamMembers, clo
             url: "/api/closers/acquisitions/reia-leads",
             filters: generateFilters("Closers Leads Created", startDate, endDate, leadSources, kpiView, "Lead Source Item", "Lead Created On")
         },
+        closersLeadsConnected: {
+            name: "Closers Leads Connected",
+            url: "/api/closers/acquisitions/reia-leads",
+            filters: generateFilters("Closers Leads Connected", startDate, endDate, leadSources, kpiView, "Lead Source Item", "Lead Created On")
+        },
+        closersLeadsTriaged: {
+            name: "Closers Leads Triaged",
+            url: "/api/closers/acquisitions/setter-calls",
+            filters: generateFilters("Closers Leads Triaged", startDate, endDate, null, kpiView, null, "created_on", null, [
+                {
+                    "type": "category",
+                    "fieldName": "Qualification",
+                    "values": ["Qualified", "Unqualified", "Undesirable"]
+                }
+            ], setters, null)
+        },
         closersLeadsSetPrequalified: {
             name: "Closers Leads Set Prequalified",
             url: "/api/closers/acquisitions/setter-calls",

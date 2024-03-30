@@ -12,6 +12,7 @@ function formatDate(date) {
 }
 
 function calculateKPIs(startDate, endDate, endpointData, kpiList) {
+    // console.log(kpiList)
     const kpiData = {};
     for (const kpiName of kpiList) {
         const kpiDefinition = KPI_DEFINITIONS[kpiName];
@@ -107,12 +108,14 @@ function getKpiValue(calculatedKPIs, endpointData, dataKey) {
         return calculatedKPIs["Setter Commission"].current;
     } else if (dataKey === 'currentPassiveIncome') {
         return calculatedKPIs["Current Passive Income"].current;
-    } 
+    }
     else if (dataKey === 'closersDcOffers') {
         let uniqueOffers = Math.round(calculatedKPIs["Closers Offer Rate"].current * endpointData.closersUniqueAttended / 100);
         // console.log(closersDCOffers)
         return uniqueOffers;
-    } 
+    } else if (dataKey === 'closersLeadsConnected') {
+        return endpointData.allLeadConnections;
+    }
     else {
         return data;
     }
@@ -231,8 +234,19 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
         if (view === 'Financial' || view === 'Acquisitions') {
 
             // const closersSalesCapacity = calculateTotalSalesCapacity(startDate, endDate, closers);
-            
+
             const allPreviousDcOffers = clientSpaceId === 8108305 && await fetchKPIs(clientSpaceId, apiEndpointsObj.allPreviousDcOffers.name, apiEndpointsObj.allPreviousDcOffers.url, apiEndpointsObj.allPreviousDcOffers.filters, "All Previous DC Offers", noSetter)
+
+            const allLeadConnections = endpointData.closersLeadsConnected && Array.isArray(endpointData.closersLeadsConnected) && endpointData.closersLeadsConnected.reduce((acc, curr) => {
+                const adminObj = curr && curr["admin_json"] ? JSON.parse(curr["admin_json"]) : {};
+                if (adminObj.hasOwnProperty("first_connection")) {
+                    return acc += 1;
+                } else {
+                    return acc;
+                }
+            }, 0);
+
+            // console.log(allLeadConnections)
 
             const totalMarketingExpenses = endpointData.marketingExpenses && Array.isArray(endpointData.marketingExpenses) && endpointData.marketingExpenses.reduce((acc, curr) => {
                 if ("Amount" in curr) {
@@ -306,9 +320,12 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
             endpointData.cashCollectedUpFront = cashCollectedUpFront;
             endpointData.totalRevenueContracted = totalRevenueContracted;
             endpointData.numPaymentPlans = numPaymentPlans;
+            endpointData.allLeadConnections = allLeadConnections && allLeadConnections;
         }
 
         const calculatedKPIs = calculateKPIs(startDate, endDate, endpointData, requestedKpiList);
+
+        // console.log(calculatedKPIs)
 
         // Helper function for creating KPI objects
         const kpiObjects = requestedKpiList.map((kpiName) => {

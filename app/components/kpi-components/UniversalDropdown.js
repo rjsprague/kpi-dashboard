@@ -83,7 +83,8 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
             const isSelected = selectedOptions.includes(option);
 
             if (newSelectedOptions.length === options.length) {
-                newSelectedOptions = [option];
+                // if all options are selected, deselect the selected option
+                newSelectedOptions = newSelectedOptions.filter(selectedOption => selectedOption !== option);
             } else if (isSelected) {
                 newSelectedOptions = newSelectedOptions.filter(selectedOption => selectedOption !== option);
             } else {

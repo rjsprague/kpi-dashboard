@@ -29,6 +29,8 @@ const kpiToEndpointMapping = {
     'ROAS Total': ['profit', 'projectedProfit', 'marketingExpenses'],
     'Closers Ad Spend': ['closersAdSpend'],
     // 'Closers Leads Per Day': ['closersLeadsCreated'],
+    'Closers Connection Rate': ['closersLeadsCreated', 'closersLeadsConnected'],
+    'Closers Triage Rate': ['closersLeadsConnected', 'closersLeadsTriaged'],
     'Closers Leads Set Prequalified': ['closersLeadsCreated', 'closersLeadsSetPrequalified'],
     'Closers Booking Rate': ['closersLeadsCreated', 'closersBookings'],
     'Closers Cost Per Booking': ['closersAdSpend', 'closersBookings'],

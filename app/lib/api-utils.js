@@ -63,15 +63,18 @@ const handleAcquisitionKpis = async (accessToken, clientSpaceId, apiName, apiEnd
             }),
         });
 
+        // console.log("response: ", response)
+
         if (!response.ok) {
             console.error(`Error fetching data from ${apiEndpoint}: ${response.status} ${response.statusText}`);
+            console.log(`Error fetching data from ${apiEndpoint}: ${response.status} ${response.statusText}`);
             throw new Error(`Server responded with an error: ${response.statusText}`);
         }
 
         const data = await response.json();
         if (data.total === 0) {
             return 0;
-        } else if (noSetter === true && apiName === "Closers Bookings" || noSetter === true && apiName === "Closers Appointments" || noSetter === true && apiName === "Closers Total Attended" || noSetter === true && apiName === "Closers Unique Attended" || noSetter === true && apiName === "Closers DC Offers" || noSetter === true && apiName === "Closers DC Closed" || apiName === "Marketing Expenses" || apiName === "Profit" || apiName === "Projected Profit" || apiName === "Contracted Profit" || apiName === "Pending Deals" || apiName === "Closers Ad Spend" || apiName === "Closers Payments" || apiName === "Closers DC Offers") {
+        } else if (noSetter === true && apiName === "Closers Bookings" || noSetter === true && apiName === "Closers Appointments" || noSetter === true && apiName === "Closers Total Attended" || noSetter === true && apiName === "Closers Unique Attended" || noSetter === true && apiName === "Closers DC Offers" || noSetter === true && apiName === "Closers DC Closed" || apiName === "Marketing Expenses" || apiName === "Profit" || apiName === "Projected Profit" || apiName === "Contracted Profit" || apiName === "Pending Deals" || apiName === "Closers Ad Spend" || apiName === "Closers Payments" || apiName === "Closers DC Offers" || apiName === "Closers Leads Connected") {
             // console.log(apiName)
             // console.log(data)
             let fetchedResults = data.data ? data.data : [];

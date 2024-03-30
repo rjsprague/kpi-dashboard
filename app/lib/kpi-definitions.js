@@ -925,6 +925,56 @@ const KPI_DEFINITIONS = {
     //         },
     //     ],
     // },
+    "Closers Connection Rate": {
+        name: "Closers Connection Rate",
+        dataKeys: ["closersLeadsCreated", "closersLeadsConnected"],
+        formula: (apiData) => {
+            const { closersLeadsCreated, allLeadConnections } = apiData;
+            return closersLeadsCreated > 0 ? allLeadConnections / closersLeadsCreated * 100 : 0;
+        },
+        redFlag: 60,
+        target: 80,
+        dataLabels: ["Leads Created: ", "Leads Connected: "],
+        kpiType: "meter",
+        unit: "%",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Leads Connected",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closers Triage Rate": {
+        name: "Closers Triage Rate",
+        dataKeys: ["closersLeadsConnected", "closersLeadsTriaged"],
+        formula: (apiData) => {
+            const { allLeadConnections, closersLeadsTriaged } = apiData;
+            return allLeadConnections > 0 ? closersLeadsTriaged / allLeadConnections * 100 : 0;
+        },
+        redFlag: 60,
+        target: 75,
+        dataLabels: ["Leads Connected: ", "Leads Triaged: "],
+        kpiType: "meter",
+        unit: "%",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Leads Triaged",
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },      
     "Closers Leads Set Prequalified": {
         name: "Closers Leads Set Prequalified",
         dataKeys: ["closersLeadsCreated", "closersLeadsSetPrequalified"],

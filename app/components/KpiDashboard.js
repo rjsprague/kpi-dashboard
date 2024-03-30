@@ -50,7 +50,7 @@ export default function KpiDashboard({ user }) {
     // console.log(clientSpaceId)
 
     // console.log(user)
-    console.log(isStarter)
+    // console.log(isStarter)
 
     const professionalQuery = (type) => {
         return ({ id: idCounter + 1, kpiView: type ? type : "Acquisitions", results: [], isOpen: true, isLoading: false, isUnavailable: false, leadSources: [], dateRange: { gte: datePresets['Last Week'].startDate, lte: datePresets['Last Week'].endDate }, departments: ["Lead Manager"], teamMembers: [{ "Lead Manager": "Bob" }, { "Acquisition Manager": "Bob" }, { "Deal Analyst": "Bob" }] })
