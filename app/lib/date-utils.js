@@ -1,4 +1,5 @@
 "use client"
+import { DateTime } from 'luxon';
 
 export const formatDate = (dateTimeString) => {
     const dateObject = new Date(dateTimeString);
@@ -12,7 +13,6 @@ export function getStartOfTheDay(date) {
 export function getEndOfTheDay(date) {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
 }
-
 
 export function getStartOfLastWeek() {
     const now = new Date();
@@ -88,7 +88,7 @@ export function getDatePresets() {
     const startOfToday = getStartOfTheDay(today);
 
     const endOfToday = getEndOfTheDay(today);
-    
+
     const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
 
@@ -164,4 +164,25 @@ export function getWeekRange(year, weekNumber) {
     end.setDate(start.getDate() + 6);
     // Return the start and end dates
     return { startDate: start, endDate: end };
+}
+
+export function calculateBusinessHoursDiff(startTimestamp, endTimestamp, timezone) {
+
+    const workingStartHour = 8;  // 8 AM
+    const workingEndHour = 20;   // 8 PM, 20 in 24-hour format
+
+    let start = DateTime.fromISO(startTimestamp, { zone: timezone });
+    let end = DateTime.fromISO(endTimestamp, { zone: timezone });
+
+    let businessHoursCount = 0;
+
+    while (start < end) {
+        if (start.hour >= workingStartHour && start.hour < workingEndHour) {
+            businessHoursCount++;
+        }
+        // Move to the next hour
+        start = start.plus({ hours: 1 });
+    }
+
+    return businessHoursCount*60*60; // Convert to seconds
 }

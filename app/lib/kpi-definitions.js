@@ -1269,40 +1269,6 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
-    // "Setter STL Median": {
-    //     name: "Setter STL Median",
-    //     dataKeys: ["setterStlMedian"],
-    //     formula: (apiData) => {
-    //         const { setterStlMedian } = apiData;
-    //         // console.log('setterStlMedian', setterStlMedian)
-    //         let stlArray = (setterStlMedian && setterStlMedian.length > 0) ? setterStlMedian.reduce((acc, curr) => {
-    //             if ('STL Outbound Call' in curr) {
-    //                 acc.push(curr['STL Outbound Call']);
-    //             }
-    //             return acc;
-    //         }, []) : [];
-    //         stlArray.sort((a, b) => a - b);
-    //         let setterStlMedianSorted = stlArray.length % 2 === 0 ? (stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2 : stlArray[(stlArray.length - 1) / 2];
-    //         return setterStlMedianSorted;
-    //     },
-    //     redFlag: 15,
-    //     target: 5,
-    //     dataLabels: [" minutes"],
-    //     kpiType: "STL",
-    //     unit: " mins",
-    //     kpiFactors: [
-    //         {
-    //             id: 0,
-    //             title: "How to Optimize Setter STL Median",
-    //         },
-    //         {
-    //             id: 1,
-    //             desc: "Description TBD",
-    //             linkName: "Learn More",
-    //             link: ""
-    //         },
-    //     ],
-    // },
     "Team STL Median": {
         // The times it takes for a lead to be contacted by ALL active setters
         // OR when a Setter Call has been submitted
@@ -1313,7 +1279,7 @@ const KPI_DEFINITIONS = {
             let stlArray = teamStlMedian ? teamStlMedian : [];
             stlArray.sort((a, b) => a - b);
             let teamStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) : (stlArray[(stlArray.length - 1) / 2]);
-            console.log("Team STL Median: ", teamStlMedianSorted)
+            // console.log("Team STL Median: ", teamStlMedianSorted)
             return teamStlMedianSorted;
         },
         redFlag: 15,
