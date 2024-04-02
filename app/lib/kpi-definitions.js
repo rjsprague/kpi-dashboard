@@ -1312,9 +1312,9 @@ const KPI_DEFINITIONS = {
             const { teamStlMedian } = apiData;
             let stlArray = teamStlMedian ? teamStlMedian : [];
             stlArray.sort((a, b) => a - b);
-            let teamStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) / 60 : (stlArray[(stlArray.length - 1) / 2]) / 60;
-            // console.log("Team STL Median: ", teamStlMedianSorted)
-            return Number(teamStlMedianSorted).toFixed(2);
+            let teamStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) : (stlArray[(stlArray.length - 1) / 2]);
+            console.log("Team STL Median: ", teamStlMedianSorted)
+            return teamStlMedianSorted;
         },
         redFlag: 15,
         target: 5,
@@ -1343,8 +1343,8 @@ const KPI_DEFINITIONS = {
             const { settersStlMedian } = apiData;
             let stlArray = settersStlMedian ? settersStlMedian : [];
             stlArray.sort((a, b) => a - b);
-            let settersStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) / 60 : (stlArray[(stlArray.length - 1) / 2]) / 60;
-            return Number(settersStlMedianSorted).toFixed(2);
+            let settersStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2): (stlArray[(stlArray.length - 1) / 2]);
+            return settersStlMedianSorted;
         },
         redFlag: 15,
         target: 5,
@@ -1375,8 +1375,8 @@ const KPI_DEFINITIONS = {
             const { closersStlMedian } = apiData;
             let stlArray = closersStlMedian ? closersStlMedian : [];
             stlArray.sort((a, b) => a - b);
-            let closersStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) / 60 : (stlArray[(stlArray.length - 1) / 2]) / 60;
-            return Number(closersStlMedianSorted).toFixed(2);
+            let closersStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) : (stlArray[(stlArray.length - 1) / 2]);
+            return closersStlMedianSorted;
         },
         redFlag: 15,
         target: 5,
@@ -1400,15 +1400,14 @@ const KPI_DEFINITIONS = {
     "Team Effort": {
         // How many leads all active setters attempted to contact during the date range
         name: "Team Effort",
-        dataKeys: ["teamEffort"],
+        dataKeys: ["teamEffort", "noSetterCallLeads"],
         formula: (apiData) => {
-            const { teamEffort, teamKpis } = apiData;
-            let numLeads = teamKpis.length > 0 ? teamKpis.length : 0;
-            return numLeads > 0 ? teamEffort / numLeads * 100 : 0;
+            const { teamEffort, noSetterCallLeads } = apiData;
+            return noSetterCallLeads > 0 ? teamEffort / noSetterCallLeads * 100 : 0;
         },
         redFlag: 70,
         target: 90,
-        dataLabels: ["Leads Contacted: "],
+        dataLabels: ["Leads Contacted: ", "Leads: "],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [
@@ -1434,7 +1433,7 @@ const KPI_DEFINITIONS = {
             if (individualStlMedian.length === 0) return 0;
             let stlArray = individualStlMedian;
             stlArray.sort((a, b) => a - b);
-            let individualStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) / 60 : (stlArray[(stlArray.length - 1) / 2]) / 60;
+            let individualStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) : (stlArray[(stlArray.length - 1) / 2]);
             return individualStlMedianSorted;
         },
         redFlag: 15,
@@ -1465,7 +1464,7 @@ const KPI_DEFINITIONS = {
             if (setterStlMedian.length === 0) return 0;
             let stlArray = setterStlMedian;
             stlArray.sort((a, b) => a - b);
-            let setterStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) / 60 : (stlArray[(stlArray.length - 1) / 2]) / 60;
+            let setterStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) : (stlArray[(stlArray.length - 1) / 2]);
             return setterStlMedianSorted;
         },
         redFlag: 15,
@@ -1497,7 +1496,7 @@ const KPI_DEFINITIONS = {
             if (closerStlMedian.length === 0) return 0;
             let stlArray = closerStlMedian;
             stlArray.sort((a, b) => a - b);
-            let closerStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) / 60 : (stlArray[(stlArray.length - 1) / 2]) / 60;
+            let closerStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) : (stlArray[(stlArray.length - 1) / 2]);
             return closerStlMedianSorted;
         },
         redFlag: 15,
@@ -1522,15 +1521,15 @@ const KPI_DEFINITIONS = {
     "Individual Effort": {
         // How many leads the selected setter attempted to contact during the date range
         name: "Individual Effort",
-        dataKeys: ["individualEffort"],
+        dataKeys: ["individualEffort", "noSetterCallLeads"],
         formula: (apiData) => {
-            const { individualEffort, teamKpis } = apiData;
-            let numLeads = teamKpis.length > 0 ? teamKpis.length : 0;
-            return numLeads > 0 ? individualEffort / numLeads * 100 : 0;
+            const { individualEffort, noSetterCallLeads } = apiData;
+            console.log(individualEffort, noSetterCallLeads)
+            return noSetterCallLeads > 0 ? (individualEffort / noSetterCallLeads * 100) : 0;
         },
         redFlag: 50,
         target: 70,
-        dataLabels: ["Leads Contacted: "],
+        dataLabels: ["Leads Contacted: ", "Leads: "],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [

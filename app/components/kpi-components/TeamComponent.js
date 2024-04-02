@@ -50,8 +50,10 @@ function TeamComponent({ onTeamChange, onTeamMemberForClosersChange, query, quer
         console.log(teamMembers);
         if (clientSpaceId === closersSpaceId) {
             onTeamMemberForClosersChange(queryId, teamMembers.map(name => getCloserTeamMemberIdByName(name)));
+            setSelectedTeamMembers(teamMembers);
         } else {
             onTeamChange(queryId, selectedDepartment, teamMembers.map(name => getTeamMemberIdByName(name)));
+            setSelectedTeamMembers(teamMembers);
         }
     };
 
@@ -162,17 +164,18 @@ function TeamComponent({ onTeamChange, onTeamMemberForClosersChange, query, quer
                                 ButtonComponent={DropdownButton}
                                 label={"Subview"}
                             />
-
-                            <UniversalDropdown
-                                options={allTeamMembers ? allTeamMembers : []}
-                                onOptionSelected={handleTeamSelected}
-                                selectedOptions={selectedTeamMembers}
-                                queryId={queryId}
-                                isSingleSelect={true}
-                                isLoadingData={isLoadingData}
-                                ButtonComponent={DropdownButton}
-                                label={"Team Members"}
-                            />
+                            {selectedSubview[0] !== 'Team' &&
+                                <UniversalDropdown
+                                    options={allTeamMembers ? allTeamMembers : []}
+                                    onOptionSelected={handleTeamSelected}
+                                    selectedOptions={selectedTeamMembers}
+                                    queryId={queryId}
+                                    isSingleSelect={true}
+                                    isLoadingData={isLoadingData}
+                                    ButtonComponent={DropdownButton}
+                                    label={"Team Members"}
+                                />
+                            }
 
                         </>
                     )
