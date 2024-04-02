@@ -974,7 +974,7 @@ const KPI_DEFINITIONS = {
                 link: ""
             },
         ],
-    },      
+    },
     "Closers Leads Set Prequalified": {
         name: "Closers Leads Set Prequalified",
         dataKeys: ["closersLeadsCreated", "closersLeadsSetPrequalified"],
@@ -1269,20 +1269,203 @@ const KPI_DEFINITIONS = {
             },
         ],
     },
+    // "Setter STL Median": {
+    //     name: "Setter STL Median",
+    //     dataKeys: ["setterStlMedian"],
+    //     formula: (apiData) => {
+    //         const { setterStlMedian } = apiData;
+    //         // console.log('setterStlMedian', setterStlMedian)
+    //         let stlArray = (setterStlMedian && setterStlMedian.length > 0) ? setterStlMedian.reduce((acc, curr) => {
+    //             if ('STL Outbound Call' in curr) {
+    //                 acc.push(curr['STL Outbound Call']);
+    //             }
+    //             return acc;
+    //         }, []) : [];
+    //         stlArray.sort((a, b) => a - b);
+    //         let setterStlMedianSorted = stlArray.length % 2 === 0 ? (stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2 : stlArray[(stlArray.length - 1) / 2];
+    //         return setterStlMedianSorted;
+    //     },
+    //     redFlag: 15,
+    //     target: 5,
+    //     dataLabels: [" minutes"],
+    //     kpiType: "STL",
+    //     unit: " mins",
+    //     kpiFactors: [
+    //         {
+    //             id: 0,
+    //             title: "How to Optimize Setter STL Median",
+    //         },
+    //         {
+    //             id: 1,
+    //             desc: "Description TBD",
+    //             linkName: "Learn More",
+    //             link: ""
+    //         },
+    //     ],
+    // },
+    "Team STL Median": {
+        // The times it takes for a lead to be contacted by ALL active setters
+        // OR when a Setter Call has been submitted
+        name: "Team STL Median",
+        dataKeys: ["teamStlMedian"],
+        formula: (apiData) => {
+            const { teamStlMedian } = apiData;
+            let stlArray = teamStlMedian ? teamStlMedian : [];
+            stlArray.sort((a, b) => a - b);
+            let teamStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) / 60 : (stlArray[(stlArray.length - 1) / 2]) / 60;
+            // console.log("Team STL Median: ", teamStlMedianSorted)
+            return Number(teamStlMedianSorted).toFixed(2);
+        },
+        redFlag: 15,
+        target: 5,
+        dataLabels: [" minutes"],
+        kpiType: "STL",
+        unit: " mins",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Team STL Median",
+                definition: "The median time it takes for a lead to be contacted by all active setters or when a Setter Call has been submitted."
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Setters STL Median": {
+        // Similar to Setter STL Median but for all active setters, fastest time to contact a lead
+        name: "Setters STL Median",
+        dataKeys: ["settersStlMedian"],
+        formula: (apiData) => {
+            const { settersStlMedian } = apiData;
+            let stlArray = settersStlMedian ? settersStlMedian : [];
+            stlArray.sort((a, b) => a - b);
+            let settersStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) / 60 : (stlArray[(stlArray.length - 1) / 2]) / 60;
+            return Number(settersStlMedianSorted).toFixed(2);
+        },
+        redFlag: 15,
+        target: 5,
+        dataLabels: [" minutes"],
+        kpiType: "STL",
+        unit: " mins",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Setters STL Median",
+                definition: "The median time it takes for a lead to be contacted by at least one active setter."
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closers STL Median": {
+        // The time between when the lead books a call and the assigned closer calls the lead
+        // Self-sets are 1 second
+        // For all active closers
+        name: "Closers STL Median",
+        dataKeys: ["closersStlMedian"],
+        formula: (apiData) => {
+            const { closersStlMedian } = apiData;
+            let stlArray = closersStlMedian ? closersStlMedian : [];
+            stlArray.sort((a, b) => a - b);
+            let closersStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) / 60 : (stlArray[(stlArray.length - 1) / 2]) / 60;
+            return Number(closersStlMedianSorted).toFixed(2);
+        },
+        redFlag: 15,
+        target: 5,
+        dataLabels: [" minutes"],
+        kpiType: "STL",
+        unit: " mins",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Closers STL Median",
+                definition: "The median time between when the lead books a call and the assigned closer calls the lead for all active closers. Self-sets are 1 second."
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Team Effort": {
+        // How many leads all active setters attempted to contact during the date range
+        name: "Team Effort",
+        dataKeys: ["teamEffort"],
+        formula: (apiData) => {
+            const { teamEffort, teamKpis } = apiData;
+            let numLeads = teamKpis.length > 0 ? teamKpis.length : 0;
+            return numLeads > 0 ? teamEffort / numLeads * 100 : 0;
+        },
+        redFlag: 70,
+        target: 90,
+        dataLabels: ["Leads Contacted: "],
+        kpiType: "meter",
+        unit: "%",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Team Effort",
+                definition: "The percentage of leads all active setters attempted to contact during the date range."
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Individual STL Median": {
+        // The time it takes for the selected setter to contact a lead
+        name: "Individual STL Median",
+        dataKeys: ["individualStlMedian"],
+        formula: (apiData) => {
+            const { individualStlMedian } = apiData;
+            if (individualStlMedian.length === 0) return 0;
+            let stlArray = individualStlMedian;
+            stlArray.sort((a, b) => a - b);
+            let individualStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) / 60 : (stlArray[(stlArray.length - 1) / 2]) / 60;
+            return individualStlMedianSorted;
+        },
+        redFlag: 15,
+        target: 5,
+        dataLabels: [" minutes"],
+        kpiType: "STL",
+        unit: " mins",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Individual STL Median",
+                definition: "The median time it takes for the selected setter to contact a lead."
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
     "Setter STL Median": {
+        // The median time between when the lead is created and a Setter Call is submitted for the lead
         name: "Setter STL Median",
         dataKeys: ["setterStlMedian"],
         formula: (apiData) => {
             const { setterStlMedian } = apiData;
-            // console.log('setterStlMedian', setterStlMedian)
-            let stlArray = (setterStlMedian && setterStlMedian.length > 0) ? setterStlMedian.reduce((acc, curr) => {
-                if ('STL Outbound Call' in curr) {
-                    acc.push(curr['STL Outbound Call']);
-                }
-                return acc;
-            }, []) : [];
+            if (setterStlMedian.length === 0) return 0;
+            let stlArray = setterStlMedian;
             stlArray.sort((a, b) => a - b);
-            let setterStlMedianSorted = stlArray.length % 2 === 0 ? (stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2 : stlArray[(stlArray.length - 1) / 2];
+            let setterStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) / 60 : (stlArray[(stlArray.length - 1) / 2]) / 60;
             return setterStlMedianSorted;
         },
         redFlag: 15,
@@ -1294,6 +1477,67 @@ const KPI_DEFINITIONS = {
             {
                 id: 0,
                 title: "How to Optimize Setter STL Median",
+                definition: "The median time between when the lead is created and a Setter Call is submitted for the lead."
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Closer STL Median": {
+        // The time between when the lead books a call and the assigned closer calls the lead
+        // Only applicable if the setter and closer are not the same person
+        name: "Closer STL Median",
+        dataKeys: ["closerStlMedian"],
+        formula: (apiData) => {
+            const { closerStlMedian } = apiData;
+            if (closerStlMedian.length === 0) return 0;
+            let stlArray = closerStlMedian;
+            stlArray.sort((a, b) => a - b);
+            let closerStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) / 60 : (stlArray[(stlArray.length - 1) / 2]) / 60;
+            return closerStlMedianSorted;
+        },
+        redFlag: 15,
+        target: 5,
+        dataLabels: [" minutes"],
+        kpiType: "STL",
+        unit: " mins",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Closer STL Median",
+                definition: "For the selected close, the median time between when the lead books a call and the assigned closer calls the lead. Only applicable if the setter and closer are not the same person."
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Individual Effort": {
+        // How many leads the selected setter attempted to contact during the date range
+        name: "Individual Effort",
+        dataKeys: ["individualEffort"],
+        formula: (apiData) => {
+            const { individualEffort, teamKpis } = apiData;
+            let numLeads = teamKpis.length > 0 ? teamKpis.length : 0;
+            return numLeads > 0 ? individualEffort / numLeads * 100 : 0;
+        },
+        redFlag: 50,
+        target: 70,
+        dataLabels: ["Leads Contacted: "],
+        kpiType: "meter",
+        unit: "%",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Individual Effort",
+                definition: "The percentage of leads the selected setter attempted to contact during the date range."
             },
             {
                 id: 1,

@@ -220,11 +220,11 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                                 <li
                                     key={option}
                                     onClick={() => handleCheckboxChange(option)}
-                                    className={`w-full max-w-screen9 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400 ${index === highlightedIndex ? 'bg-blue-400' : ''}`}
+                                    className={`w-full max-w-screen9 pt-1 text-white cursor-pointer hover:bg-blue-400 focus:bg-blue-400 ${index === highlightedIndex ? 'bg-blue-400' : ''}`}
                                 >
-                                    <label className="inline-flex gap-2">
+                                    <label className={`inline-flex gap-x-0.5`}>
                                         {
-                                            isSingleSelect && selectedOptions?.includes(option) ? <FiCheck size="20px" /> : isSingleSelect && <div className="w-5"></div>
+                                            isSingleSelect && selectedOptions[0]?.includes(option) ? <FiCheck size="20px" /> : isSingleSelect && <div className="w-5"></div>
                                         }
                                         {
                                             !isSingleSelect && selectedOptions?.includes(option) ? <FiCheckSquare size="20px" /> : !isSingleSelect && <FiSquare size="20px" />

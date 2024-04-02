@@ -133,7 +133,7 @@ export default function QueryPanel({ query, height, setHeight, handleToggleQuery
                                     <span className="absolute text-lg text-gray-100 cursor-pointer right-2 top-2">
                                         <FontAwesomeIcon
                                             icon={faTimes}
-                                            size="md"
+                                            size="sm"
                                             className="font-semibold"
                                             onClick={() => setIsOpen(false)}
                                         />

@@ -32,6 +32,10 @@ const KpiQuery = ({
         gte = dateRange?.gte || '';
         lte = dateRange?.lte || '';
     }
+
+    // console.log(view)
+    // console.log(departments)
+    // console.log(teamMembers)
     const clientSpaceId = useSelector(selectSpaceId);
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
 
@@ -49,8 +53,8 @@ const KpiQuery = ({
     }, [data])
 
     if (error) {
-        // console.log(error)
-        
+        console.log(error)
+
         return (
             <div>Failed to load.</div>
         )
@@ -58,7 +62,15 @@ const KpiQuery = ({
 
     switch (view) {
         case 'Acquisitions':
-            return <AcquisitionsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} isProfessional={isProfessional} isStarter={isStarter} />;
+            return <AcquisitionsKpiQuery
+                {...props}
+                view={view}
+                query={query}
+                kpiList={kpiList}
+                isLoadingData={isLoadingData}
+                isProfessional={isProfessional}
+                isStarter={isStarter}
+            />;
         case 'Team':
             return (
                 <TeamKpiQuery
@@ -73,7 +85,17 @@ const KpiQuery = ({
                 />
             );
         case 'Financial':
-            return <FinancialsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} isProfessional={isProfessional} isStarter={isStarter} />;
+            return (
+                <FinancialsKpiQuery
+                    {...props}
+                    view={view}
+                    query={query}
+                    kpiList={kpiList}
+                    isLoadingData={isLoadingData}
+                    isProfessional={isProfessional}
+                    isStarter={isStarter}
+                />
+            );
         case 'Leaderboard':
             if (clientSpaceId === closersSpaceId) {
                 return <ClosersLeaderboard {...props} view={view} query={query} kpiList={kpiList} isProfessional={isProfessional} onCloneLeaderboard={handleCloneLeaderboard} />;
@@ -83,7 +105,15 @@ const KpiQuery = ({
         case 'Payments':
             return <ClosersPayments {...props} view={view} query={query} kpiList={kpiList} />;
         default:
-            return <AcquisitionsKpiQuery {...props} view={view} query={query} kpiList={kpiList} isLoadingData={isLoadingData} isProfessional={isProfessional} isStarter={isStarter} />;
+            return <AcquisitionsKpiQuery
+                {...props}
+                view={view}
+                query={query}
+                kpiList={kpiList}
+                isLoadingData={isLoadingData}
+                isProfessional={isProfessional}
+                isStarter={isStarter}
+            />;
     }
 };
 

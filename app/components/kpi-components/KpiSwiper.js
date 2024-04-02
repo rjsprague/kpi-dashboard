@@ -12,37 +12,38 @@ SwiperCore.use([Controller, Scrollbar, Mousewheel]);
 const KpiSwiper = ({ query, view, selectedKpis, handleCardInfoClick, handleKpiCardClick }) => {
     const swiperRef = useRef(null);
 
-    // console.log("query: ", query)
+    // console.log("query: ", query.departments[0])
     // console.log("view: ", view)
     // console.log("selectedKpis: ", selectedKpis)
-
-    const slides = query?.results?.length > 0 && query.isOpen
-        && query.results
-            .filter((result) => view === 'Team' && !selectedKpis ? []
-            : view === 'Team' ? Object.values(selectedKpis)?.includes(result.name) :  selectedKpis?.includes(result.name))
-            .map((result) => (
-                <SwiperSlide key={result.name} style={{ width: '300px' }}>
-                    <div className='absolute h-full mx-2 w-72 top-2' >
-                        <KpiCard
-                            dateRange={query.dateRange}
-                            leadSource={query.leadSources}
-                            kpiView={view}
-                            teamMembers={query.teamMembers}
-                            prop={result}
-                            handleCardInfoClick={() => handleCardInfoClick(result)}
-                            handleKpiCardClick={handleKpiCardClick}
-                        />
-                    </div>
-                </SwiperSlide>
-            ));
-
-    if (query.isLoading) {
+    
+    if (query.isLoading || !Array.isArray(selectedKpis) || selectedKpis.length === 0) {
         return <LoadingQuotes mode={'light'} />
     }
 
+    const slides = query?.results?.length > 0 && query.isOpen && query.results
+            .filter((result) => view === 'Team' && !selectedKpis ? [] : view === 'Team' ? selectedKpis.includes(result.name) : selectedKpis.includes(result.name))
+            .map((result) => (
+                <>
+                    {/* { console.log("result: ", result) } */}
+                    <SwiperSlide key={result.name} style={{ width: '300px' }}>
+                        <div className='absolute h-full mx-2 w-72 top-2' >
+                            <KpiCard
+                                dateRange={query.dateRange}
+                                leadSource={query.leadSources}
+                                kpiView={view}
+                                teamMembers={query.teamMembers}
+                                prop={result}
+                                handleCardInfoClick={() => handleCardInfoClick(result)}
+                                handleKpiCardClick={handleKpiCardClick}
+                            />
+                        </div>
+                    </SwiperSlide>
+                </>
+            ));
+
     return (
         <Swiper
-            ref={swiperRef}   
+            ref={swiperRef}
             spaceBetween={5}
             speed={100}
             controller={false}

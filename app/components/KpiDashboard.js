@@ -43,8 +43,9 @@ export default function KpiDashboard({ user }) {
     const [idCounter, setIdCounter] = useState(0);
     const [queries, setQueries] = useState([]);
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID);
+    // console.log(closersSpaceId)
     const clientSpaceId = useSelector(selectSpaceId);
-
+    // console.log(clientSpaceId)
     // const dispatch = useDispatch();
     // const queries = useSelector(selectAllQueries);
     // console.log(clientSpaceId)
@@ -58,8 +59,16 @@ export default function KpiDashboard({ user }) {
 
     const createInitialQueries = (leadSourcesObject, departmentsDataObject, datePresets, newQueryId, kpiView) => {
 
+        const initialSubview = ['Team']
+        const allTeamMembers = [];
+        for (let department in departmentsDataObject) {
+            // push each id into the allTeamMembers array
+            allTeamMembers.push(...Object.keys(departmentsDataObject[department]))          
+        }
+
         const firstDepartment = Object?.keys(departmentsDataObject)[0]
         const firstDeptTeamMembers = Object?.keys(departmentsDataObject[firstDepartment])
+
 
         const initialQuery = [
             {
@@ -71,17 +80,18 @@ export default function KpiDashboard({ user }) {
                 isUnavailable: false,
                 leadSources: [],
                 dateRange: { gte: datePresets['Last Week'].startDate, lte: datePresets['Last Week'].endDate },
-                departments: [firstDepartment],
-                teamMembers: clientSpaceId === closersSpaceId ? [] : firstDeptTeamMembers,
-                // closers: clientSpaceId === closersSpaceId ? Object.keys(departmentsDataObject["Closer"]) : [],
+                departments: clientSpaceId === closersSpaceId ? initialSubview : [firstDepartment],
+                teamMembers: clientSpaceId === closersSpaceId ? [allTeamMembers[0]] : firstDeptTeamMembers,
                 closers: [],
-                // setters: clientSpaceId === closersSpaceId ? Object.keys(departmentsDataObject["Setter"]) : [],
                 setters: [],
                 noSetter: false
             },
         ];
+        // console.log(initialQuery)
         return initialQuery;
     };
+
+    // console.log(queries)
 
     // Fetch lead sources and departmentData on component mount, create initial queries
     useEffect(() => {
@@ -231,10 +241,9 @@ export default function KpiDashboard({ user }) {
     };
 
     const handleTeamChange = (queryId, department, teamMembers) => {
+        console.log(queryId)
         console.log(department)
         console.log(teamMembers)
-        
-
         setQueries((prevQueries) =>
             prevQueries.map((query) =>
                 query.id === queryId
@@ -297,8 +306,9 @@ export default function KpiDashboard({ user }) {
     }
 
     const handleQueryTypeChange = (type) => {
-        // console.log(type)
+        console.log(type)
         // console.log(queryType)
+        // console.log(queries)
         if (clientSpaceId === closersSpaceId) {
             setKpiList(VIEW_KPIS[type]["Closers"]);
         } else {
@@ -314,6 +324,7 @@ export default function KpiDashboard({ user }) {
             let newQuery = professionalQuery(type);
             setQueries([...queries, newQuery]);
         } else if (type !== queryType && queries.filter((query) => query.kpiView === type).length === 0) {
+            console.log("adding new query")
             setQueries([...queries, ...createInitialQueries(leadSources, departments, datePresets, idCounter + 1, type)]);
         }
         setQueryType(type);
@@ -353,7 +364,9 @@ export default function KpiDashboard({ user }) {
         });
     };
 
-    const handleTeamMemberForClosersChange = (teamMembers, queryId) => {
+    const handleTeamMemberForClosersChange = (queryId, teamMembers) => {
+        console.log("teamMembers", teamMembers)
+        console.log("queryId", queryId)
         setQueries((prevQueries) => {
             return prevQueries.map((query) => {
                 if (query.id === queryId) {

@@ -182,8 +182,11 @@ const RightSlideModal = ({
                 {modalType === "info" && prop && prop.kpiFactors && (
                     <>
                         <div className="mt-4 text-xl font-bold text-center">
-                            {prop.kpiFactors[0].title}
+                            {prop.kpiFactors[0].title}                            
                         </div>
+                        <div className="pt-2 pl-4 text-sm">
+                            {prop.kpiFactors[0].definition && "Definition: " + prop.kpiFactors[0].definition}
+                            </div>
                         <ul>
                             {prop.kpiFactors.map((factor, index) => {
                                 if (index > 0) {

@@ -29,7 +29,7 @@ export const VIEW_KPIS = {
             "Closers Cost Per Lead",
             // "Closers Leads Per Day",
             "Closers Connection Rate",
-            "Closers Triage Rate",            
+            "Closers Triage Rate",
             "Closers Leads Set Prequalified",
             "Closers Booking Rate",
             // "Closers Sales Capacity",
@@ -60,9 +60,18 @@ export const VIEW_KPIS = {
             ],
         },
         "Closers": {
-            "Setter": [
-                "Setter STL Median"
-            ]
+            "Team": [
+                "Team STL Median",
+                "Setters STL Median",
+                "Closers STL Median",
+                "Team Effort"
+            ],
+            "Individual": [
+                "Individual STL Median",
+                "Setter STL Median",
+                "Closer STL Median",
+                "Individual Effort"
+            ],
         }
     },
     Financial: {

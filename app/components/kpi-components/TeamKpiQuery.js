@@ -9,6 +9,8 @@ import AnimateHeight from 'react-animate-height';
 import RightSlideModal from '../RightSlideModal';
 import ServiceUnavailable from '../ServiceUnavailable';
 import LeadSourcesDropdown from './LeadSourcesDropdown';
+import { useSelector } from 'react-redux';
+import { selectSpaceId } from '@/GlobalRedux/Features/client/clientSlice'
 
 const TeamKpiQuery = ({
     view,
@@ -22,6 +24,7 @@ const TeamKpiQuery = ({
     onToggleQuery,
     onRemoveQuery,
     onTeamChange,
+    onTeamMemberForClosersChange,
     isLoadingData,
     isProfessional,
     isStarter,
@@ -35,16 +38,25 @@ const TeamKpiQuery = ({
     const [department, setDepartment] = useState([]);
     const [tableProps, setTableProps] = useState(null);
 
+    const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID);
+    const clientSpaceId = useSelector(selectSpaceId);
+
+    // console.log(query)
+    // console.log(kpiList)
     // console.log(leadSources)
+    // console.log(query.departments)
+    // console.log(query.teamMembers)
+    // console.log(kpiList[query.departments])
 
     const updateKpiList = (department) => {
+        console.log(department)
         setTeamKpiList(kpiList[department]);
         setSelectedKpis(kpiList[department]);
     };
 
     useEffect(() => {
         updateKpiList(query.departments);
-    }, [kpiList]);
+    }, [view, query.departments]);
 
     const handleDepartmentChange = (department) => {
         setDepartment(department);
@@ -88,11 +100,12 @@ const TeamKpiQuery = ({
             {/* Main KPI Results */}
             {/* ... similar to AcquisitionsKpiQuery */}
             <QueryPanel query={query} height={height} setHeight={setHeight} handleToggleQuery={handleToggleQuery} handleGearIconClick={handleGearIconClick} handleRemoveQuery={handleRemoveQuery}>
-                <div className='flex flex-col gap-2 sm:items-center sm:justify-between sm:flex-row sm:flex-wrap sm:gap-1'>
+                <div className='flex flex-col gap-2 sm:items-center sm:justify-between sm:flex-row sm:flex-wrap sm:gap-2'>
                     {/* Seat, Team Member and Date Range Selectors */}
                     <div className=''>
                         <TeamComponent
                             onTeamChange={onTeamChange}
+                            onTeamMemberForClosersChange={onTeamMemberForClosersChange}
                             query={query}
                             queryId={query.id}
                             onDepartmentChange={handleDepartmentChange}
@@ -103,14 +116,14 @@ const TeamKpiQuery = ({
                         />
                     </div>
                     <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-1">
-                        <LeadSourcesDropdown
+                        {/* <LeadSourcesDropdown
                             onOptionSelected={onLeadSourceChange}
                             selectedLeadsources={query.leadSources}
                             queryId={query.id}
                             leadSources={leadSources}
                             isLoadingData={isLoadingData}
                             isUnavailable={query.isUnavailable}
-                        />
+                        /> */}
                         <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} selectedDateRange={query.dateRange} />
                     </div>
                 </div>

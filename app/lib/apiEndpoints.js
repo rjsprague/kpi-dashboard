@@ -358,10 +358,10 @@ const apiEndpoints = (startDate, endDate, leadSources, kpiView, teamMembers, clo
                 }
             ], null, closers)
         },
-        setterStlMedian: {
-            name: "Setter STL Median",
+        teamKpis: {
+            name: "Team KPIs",
             url: "/api/closers/acquisitions/reia-leads",
-            filters: generateFilters("Setter STL Median", startDate, endDate, leadSources, kpiView, "Lead Source Item", "Lead Created On")
+            filters: generateFilters("Closers Leads Connected", startDate, endDate, leadSources, kpiView, "Lead Source Item", "Lead Created On")
         },
         closerCommission: {
             name: "Closer Commission",

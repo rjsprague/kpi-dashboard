@@ -9,6 +9,10 @@ export default function NavigationBar({ items, onItemChange, initialActiveItem }
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID);
     const [activeItem, setActiveItem] = useState(initialActiveItem || items[0]);
 
+    // console.log(items)
+    // console.log(onItemChange)
+    // console.log(initialActiveItem)
+
     const handleItemClick = (item) => {
         // console.log(item)
         setActiveItem(item);
