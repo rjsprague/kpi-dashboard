@@ -410,12 +410,12 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                     try {
                         const adminObj = curr?.admin_json ? JSON.parse(curr.admin_json) : {};
                         const setters = adminObj?.setters || [];
-                
+
                         // Count the number of setters who have made an outbound call for the current lead
                         let settersWhoCalled = setters.reduce((setterAcc, setter) => {
                             return setterAcc + (setter.first_outbound_call && setter.first_outbound_call.created_on ? 1 : 0);
                         }, 0);
-                
+
                         // Calculate the fraction for the current lead and add it to the accumulator
                         if (setters.length > 0) { // Avoid division by zero
                             acc += settersWhoCalled / setters.length;
@@ -425,7 +425,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                     }
                     return acc;
                 }, 0) : 0;
-                
+
                 // console.log(teamEffort)
 
                 const noSetterCallLeads = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
@@ -454,29 +454,31 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
 
                 const selectedTeamMemberId = teamMember[0];
 
-                const individualStlMedian = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
-                    // The time it takes for the selected setter to contact a lead for the first time
+                const individualStlMedian = Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
                     try {
-                        const adminObj = curr && curr["admin_json"] ? JSON.parse(curr["admin_json"]) : {};
-                        // console.log(adminObj)
+                        const adminObj = curr && curr["admin_json"] ? JSON.parse(curr["admin_json"]) : null;
+                        if (!adminObj || !adminObj.lead_created_ts) return acc; // Skip if no adminObj or lead_created_ts
 
-                        let lead_created_on = adminObj?.lead_created_ts ? new Date(adminObj.lead_created_ts) : null;
-                        let setters = adminObj?.setters || {};
+                        // Convert lead_created_ts directly to ISO string
+                        let lead_created_on = new Date(adminObj.lead_created_ts).toISOString();
 
-                        for (let i = 0; i < setters.length; i++) {
-                            let setterItemId = Number(setters[i].item_id);
-                            if (teamMember[0] === setterItemId) {
-                                let setterOutboundCall = setters[i].first_outbound_call && setters[i].first_outbound_call.created_on ? new Date(setters[i].first_outbound_call.created_on) : null;
-                                if (lead_created_on && setterOutboundCall) {
-                                    acc.push((setterOutboundCall.getTime() - lead_created_on.getTime()) / 1000);
-                                }
+                        // Ensure setters is treated as an array
+                        let setters = Array.isArray(adminObj.setters) ? adminObj.setters : [];
+
+                        setters.forEach(setter => {
+                            let setterItemId = Number(setter.item_id);
+                            if (selectedTeamMemberId === setterItemId && setter.first_outbound_call && setter.first_outbound_call.created_on) {
+                                let setterOutboundCall = new Date(setter.first_outbound_call.created_on).toISOString();
+                                let diffInSeconds = calculateBusinessHoursDiff(lead_created_on, setterOutboundCall, 'America/New_York');
+                                acc.push(diffInSeconds);
                             }
-                        }
+                        });
                     } catch (e) {
                         console.error("Error parsing JSON:", e);
                     }
                     return acc;
                 }, []) : [];
+
 
                 const setterStlMedian = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
                     // The median time between when the lead is created and a Setter Call is submitted for the lead
@@ -484,15 +486,15 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                         const adminObj = curr?.admin_json ? JSON.parse(curr.admin_json) : null;
                         if (!adminObj) return acc; // Skip current iteration if adminObj is null or parsing failed
 
-                        const leadCreatedOn = adminObj.lead_created_ts ? new Date(adminObj.lead_created_ts) : null;
-                        const setterCall = adminObj.setter_call?.created_on ? new Date(adminObj.setter_call.created_on) : null;
+                        const leadCreatedOn = adminObj.lead_created_ts ? new Date(adminObj.lead_created_ts).toISOString() : null;
+                        const setterCall = adminObj.setter_call?.created_on ? new Date(adminObj.setter_call.created_on).toISOString() : null;
                         const setterResponsible = Number(adminObj.setter_call?.setter_responsible?.item_id);
 
                         // Skip if essential data is missing or if the setterResponsible is not the selected setter
-                        if (!leadCreatedOn || !setterCall || setterResponsible !== selectedTeamMemberId) return acc;
-
-                        // Calculate the difference in seconds and add it to the accumulator
-                        acc.push((setterCall.getTime() - leadCreatedOn.getTime()) / 1000);
+                        if (leadCreatedOn && setterCall && setterResponsible === selectedTeamMemberId) {
+                            let diffInSeconds = calculateBusinessHoursDiff(leadCreatedOn, setterCall, 'America/New_York');
+                            acc.push(diffInSeconds);
+                        }
 
                     } catch (e) {
                         console.error("Error parsing JSON:", e);
@@ -509,14 +511,15 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                         if (!adminObj) return acc; // Continue with the next iteration if adminObj is null or undefined
 
                         const dcBooking = adminObj.discovery_call_booking;
-                        const dcBookingCreatedOn = dcBooking?.created_on ? new Date(dcBooking.created_on) : null;
+                        const dcBookingCreatedOn = dcBooking?.created_on ? new Date(dcBooking.created_on).toISOString() : null;
                         const selfSet = dcBooking?.self_set;
                         const closerAssignedId = Number(dcBooking?.closer_assigned?.item_id);
-                        const firstOutboundCloserCallCreatedOn = dcBooking?.closer_assigned?.first_outbound_call?.created_on ? new Date(dcBooking.closer_assigned.first_outbound_call.created_on) : null;
+                        const firstOutboundCloserCallCreatedOn = dcBooking?.closer_assigned?.first_outbound_call?.created_on ? new Date(dcBooking.closer_assigned.first_outbound_call.created_on).toISOString() : null;
 
                         // Check all conditions are met: dcBooking exists, it's not a self-set, the selected closer is assigned, and the first outbound call is made
                         if (dcBookingCreatedOn && !selfSet && closerAssignedId === selectedTeamMemberId && firstOutboundCloserCallCreatedOn) {
-                            acc.push((firstOutboundCloserCallCreatedOn.getTime() - dcBookingCreatedOn.getTime()) / 1000);
+                            let diffInSeconds = calculateBusinessHoursDiff(dcBookingCreatedOn, firstOutboundCloserCallCreatedOn, 'America/New_York');
+                            acc.push(diffInSeconds);
                         }
 
                     } catch (e) {
