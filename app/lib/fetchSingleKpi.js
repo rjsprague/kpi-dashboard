@@ -22,18 +22,18 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
 
     const accessToken = cookies.get('token');
     // console.log("accessToken", accessToken)
-    console.log("api name: ", apiName)
+    // console.log("api name: ", apiName)
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
     let teamMembersNum = teamMembers && teamMembers.map(Number);
-    console.log(teamMembersNum)
+    // console.log(teamMembersNum)
     let closersNum = closers ? closers.map(Number) : [];
-    console.log(closersNum)
+    // console.log(closersNum)
     let settersNum = setters ? setters.map(Number) : [];
-    console.log(settersNum)
+    // console.log(settersNum)
     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
 
-    console.log(apiEndpointsKeys)
-    console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters)
+    // console.log(apiEndpointsKeys)
+    // console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters)
 
     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
         throw new Error('Invalid API name');
@@ -75,7 +75,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     };
 
     const fetchPage = async (requestObject, offset = 0) => {
-        console.log(requestObject)
+        // console.log(requestObject)
         const response = await fetch(`${requestObject.url}`, {
             method: 'POST',
             headers: {
@@ -97,13 +97,13 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
 
         const data = await response.json();
         let fetchedResults = data.data ? data.data : [];
-        console.log(fetchedResults)
+        // console.log(fetchedResults)
         return fetchedResults;
     };
 
     const promises = apiEndpointsKeys.map(async apiEndpointKey => {
         let requestObject = apiEndpointsObj[apiEndpointKey];
-        console.log(requestObject)
+        // console.log(requestObject)
         try {
             const total = await getInitialData(requestObject);
             const limit = 1000;
@@ -137,7 +137,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
         }
     }
 
-    console.log(results)
+    // console.log(results)
 
     if (apiName === 'Closers Offer Rate') {
 
@@ -184,7 +184,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     let leadsArray = [];
 
     let resultsValues = Object.values(results).flat();
-    console.log(resultsValues)
+    // console.log(resultsValues)
 
     resultsValues.forEach(item => {
         if (item["Seller Lead"]) {
@@ -232,7 +232,12 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     });
 
     // console.log(namesAddresses)
-    console.log(results)
+    // console.log(results)
+    // console.log(kpiView)
+    // if view is Team and closersSpaceId equals clientSpaceId
+    if (kpiView === "Team" && clientSpaceId == process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID) {
+        results.teamKpis = results.teamKpis && Array.isArray(results.teamKpis) ? results.teamKpis.filter(lead => lead.contact_phones) : [];
+    }
 
     Object.keys(results).forEach(key => {
         results[key] = filterResults(results[key], key, namesAddresses);
@@ -393,21 +398,22 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                     seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
             })
-        } else if (apiEndpointKey === "setterStlMedian") {
-            return results.map((result) => {
+        } else if (apiEndpointKey === "teamKpis") {
+            // extract the lead information from the result object using the extractLeadInformation function
+            const teamKpiResults = results.map(result => {
+                return extractLeadInformation(result, namesAddresses);
+            })
+            // console.log(teamKpiResults)
+            return teamKpiResults.map((result) => {
                 return {
-                    "Date": result["Lead Created On"] && result["Lead Created On"]["start"] ? formatDate(result["Lead Created On"]["start"]) : "No Date",
-                    "Name": result["Contact Name"] ? result["Contact Name"] : result["Seller Contact Name"] ? result["Seller Contact Name"]
-                        : result["First"] && result["Last"] ? result["First"] + " " + result["Last"]
-                            : result["First"] ? result["First"]
-                                : result["Last"] ? result["Last"]
-                                    : result.Title ? result.Title
-                                        : "No Name",
-                    "Status": result["Lead Status"] ? result["Lead Status"] : "No Status",
-                    "Setter STL Median": result["STL Outbound Call"] ? formatTime(result["STL Outbound Call"]) : "Call ASAP!",
-                    //"Lead Source": result["Lead Source Item"] ? result["Lead Source Item"] : result["Related Lead Source Item"] ? result["Related Lead Source Item"] : "No Lead Source",
-                    podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
-                    seller_id: result.itemid ? result.itemid : result.podio_item_id,
+                    "Lead Created Date": result.leadCreatedDate ? formatDate(result.leadCreatedDate) : "No Lead Created Date",
+                    "First Outbound Date": result.firstContactDate ? formatDate(result.firstContactDate) : "No One Called Me",
+                    "Setter Call Date": result.setterCallDate ? formatDate(result.setterCallDate) : "No Setter Call",
+                    "Setter Responsible": result.setterResponsible ? result.setterResponsible : "No Setter Responsible",
+                    "Final Setter Contact Date": result.finalSetterContactDate ? formatDate(result.finalSetterContactDate) : "Someone didn't call me",
+                    "Setter Names": result.setterNames ? result.setterNames : "No Setter Names",
+                    podio_item_id: result.podio_item_id ? result.podio_item_id : "No podio_item_id",
+                    seller_id: result.seller_id ? result.seller_id : "No Seller ID",
                 }
             })
         } else if (apiEndpointKey === "bigChecks") {
@@ -588,3 +594,57 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
         throw new Error("Error fetching data. Please try again later.");
     }
 }
+
+function extractLeadInformation(lead, namesAddresses) {
+    // console.log(lead)
+
+    // Parse the admin_json string into an object
+    const adminJson = JSON.parse(lead.admin_json);
+
+    // Extracting the required information
+    const leadCreatedDate = adminJson.lead_created_ts;
+
+    // Finding the first outbound call date from all setters
+    const firstContactDate = adminJson.setters
+        .filter(setter => setter.first_outbound_call && setter.first_outbound_call.created_on)
+        .map(setter => setter.first_outbound_call.created_on)
+        .sort()[0]; // Assumes dates are in a sortable string format
+
+    // Extracting the setter call information
+    const setterCallDate = adminJson.setter_call.created_on;
+    const setterResponsible = adminJson.setter_call.setter_responsible.name;
+
+    // Extracting the date the lead was contacted by all setters
+    const finalSetterContactDate = adminJson.speed_to_lead.final_setter_first_outbound_call.created_on;
+
+    // Extracting names of setters with a non-null first_outbound_call
+    const setterNames = adminJson.setters
+        .filter(setter => setter.first_outbound_call !== null)
+        .map(setter => setter.name);
+
+    // get Podio item id
+    const podio_item_id = lead.itemid ? lead.itemid : lead.podio_item_id
+
+    // get seller id
+    const seller_id = namesAddresses[lead["Seller Lead"]] ? namesAddresses[lead["Seller Lead"]].seller_id : "No Seller ID";
+
+    // console.log(leadCreatedDate)
+    // console.log(firstContactDate)
+    // console.log(setterCallDate)
+    // console.log(setterResponsible)
+    // console.log(finalSetterContactDate)
+    // console.log(setterNames)
+    // console.log(podio_item_id)
+    // console.log(seller_id)
+    return {
+        leadCreatedDate,
+        firstContactDate,
+        setterCallDate,
+        setterResponsible,
+        finalSetterContactDate,
+        setterNames,
+        podio_item_id,
+        seller_id,
+    };
+}
+

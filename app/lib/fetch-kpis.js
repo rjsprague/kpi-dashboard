@@ -333,6 +333,10 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
             endpointData.numPaymentPlans = numPaymentPlans;
             endpointData.allLeadConnections = allLeadConnections && allLeadConnections;
         } else if (view === 'Team') {
+
+            // filter out leads that don't have a phone number
+            endpointData.teamKpis = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.filter(lead => lead.contact_phones) : [];
+
             if (departments[0] === "Team") {
                 const teamStlMedian = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
 
