@@ -3,13 +3,24 @@
 import React, { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 
+function formatTime(time, unit) {
+    if (unit === ' hrs') {
+        return (time / 3600);
+    } else if (unit === ' mins') {
+        return (time / 60);
+    } else {
+        console.log("Time unit not supported");
+    }
+}
 
 const SpeedToLeadMeter = ({ value, unit, target, redFlag }) => {
+
     const max = redFlag * 1.5;
+    const convertedValue = formatTime(value, unit);
 
     return (
         <div className="relative px-4 mt-4" style={{ height: '250px' }}>
-            <Dial width={250} height={250} target={target} redFlag={redFlag} max={max} value={value} unit={unit} />
+            <Dial width={250} height={250} target={target} redFlag={redFlag} max={max} value={convertedValue} unit={unit} />
         </div>
     );
 };

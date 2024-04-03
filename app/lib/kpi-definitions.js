@@ -435,7 +435,7 @@ const KPI_DEFINITIONS = {
             }, []) : [];
             stlArray.sort((a, b) => a - b);
             let lmStlMedianSorted = stlArray.length % 2 === 0 ? (stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2 : stlArray[(stlArray.length - 1) / 2];
-            return Number((lmStlMedianSorted / 60).toFixed(2));
+            return lmStlMedianSorted;
         },
         redFlag: 15,
         target: 5,
@@ -462,7 +462,7 @@ const KPI_DEFINITIONS = {
             }, []) : [];
             stlArray.sort((a, b) => a - b);
             let amStlMedianSorted = stlArray.length % 2 === 0 ? (stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2 : stlArray[(stlArray.length - 1) / 2];
-            return Number((amStlMedianSorted / 3600).toFixed(2));
+            return amStlMedianSorted;
         },
         redFlag: 8,
         target: 3,
@@ -489,7 +489,7 @@ const KPI_DEFINITIONS = {
             }, []) : [];
             stlArray.sort((a, b) => a - b);
             let daStlMedianSorted = stlArray.length % 2 === 0 ? (stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2 : stlArray[(stlArray.length - 1) / 2];
-            return Number((daStlMedianSorted / 3600).toFixed(2));
+            return daStlMedianSorted;
         },
         redFlag: 4,
         target: 1,
