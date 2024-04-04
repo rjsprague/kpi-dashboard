@@ -132,7 +132,7 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
 
     // console.log(isProfessional)
 
-    // console.log('data', data)
+    console.log('data', data)
     // console.log('leadSources', leadSources)
     // console.log('departments', departments)
     // console.log('selectedTableKey', selectedTableKey)

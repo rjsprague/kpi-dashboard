@@ -35,9 +35,10 @@ const TeamKpiQuery = ({
     const [selectedResult, setSelectedResult] = useState(null);
     const [selectedKpis, setSelectedKpis] = useState(kpiList);
     const [teamKpiList, setTeamKpiList] = useState([]);
-    const [department, setDepartment] = useState([]);
+    const [department, setDepartment] = useState(query.departments);
     const [tableProps, setTableProps] = useState(null);
 
+    // console.log(department)
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID);
     const clientSpaceId = useSelector(selectSpaceId);
 

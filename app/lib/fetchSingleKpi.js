@@ -2,6 +2,7 @@ import kpiToEndpointMapping from './kpiToEndpointMapping';
 import apiEndpoints from './apiEndpoints';
 import { formatDate } from './date-utils';
 import cookies from 'js-cookie';
+import { calculateTeamKpiTables } from './closers-team-kpis-tables';
 
 
 // function to format time that is in seconds to minutes if greater than 60 seconds and hours if greater than 3600 seconds
@@ -15,14 +16,15 @@ function formatTime(time) {
     }
 }
 
-export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters, noSetter }) {
+export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters, noSetter, selectedDepartment }) {
 
     // console.log(closers)
     // console.log(setters)
+    console.log(teamMembers)
 
     const accessToken = cookies.get('token');
     // console.log("accessToken", accessToken)
-    // console.log("api name: ", apiName)
+    console.log("api name: ", apiName)
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
     let teamMembersNum = teamMembers && teamMembers.map(Number);
     // console.log(teamMembersNum)
@@ -32,7 +34,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     // console.log(settersNum)
     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
 
-    // console.log(apiEndpointsKeys)
+    console.log(apiEndpointsKeys)
     // console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters)
 
     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
@@ -184,7 +186,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     let leadsArray = [];
 
     let resultsValues = Object.values(results).flat();
-    // console.log(resultsValues)
+    console.log(resultsValues)
 
     resultsValues.forEach(item => {
         if (item["Seller Lead"]) {
@@ -202,7 +204,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     let leadsEndpoint;
 
     // console.log(clientSpaceId)
-    // console.log(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
+    console.log(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
 
     if (clientSpaceId == process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID) {
         leadsEndpoint = apiEndpointsObj["closersLeadsCreated"]
@@ -213,6 +215,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     leadsEndpoint.filters = [{ type: "app", fieldName: "itemid", values: leadsArray.flat() }];
     const leads = await fetchPage(leadsEndpoint);
     // console.log(leads[0]["Followup Reminder: Specific Date"])
+    // console.log(leads)
 
     let namesAddresses = {};
     leads.forEach(lead => {
@@ -240,18 +243,22 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     }
 
     Object.keys(results).forEach(key => {
-        results[key] = filterResults(results[key], key, namesAddresses);
+        results[key] = filterResults(results[key], key, namesAddresses, selectedDepartment, apiName, teamMembers);
     });
     // console.log(results)
 
     return results;
 };
 
-function filterResults(results, apiEndpointKey, namesAddresses) {
+function filterResults(results, apiEndpointKey, namesAddresses, selectedDepartment, apiName, teamMembers) {
 
-    // console.log(results)
+    console.log(results)
     // console.log(apiEndpointKey)
-    // console.log(namesAddresses)
+    console.log(namesAddresses)
+    console.log(selectedDepartment)
+    console.log(apiName)
+    console.log(teamMembers)
+    let selectedTeamMemberId = teamMembers && teamMembers[0]
 
     try {
         if (apiEndpointKey === "marketingExpenses" || apiEndpointKey === "closersAdSpend") {
@@ -399,23 +406,19 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
                 }
             })
         } else if (apiEndpointKey === "teamKpis") {
-            // extract the lead information from the result object using the extractLeadInformation function
-            const teamKpiResults = results.map(result => {
-                return extractLeadInformation(result, namesAddresses);
-            })
-            // console.log(teamKpiResults)
-            return teamKpiResults.map((result) => {
-                return {
-                    "Lead Created Date": result.leadCreatedDate ? formatDate(result.leadCreatedDate) : "No Lead Created Date",
-                    "First Outbound Date": result.firstContactDate ? formatDate(result.firstContactDate) : "No One Called Me",
-                    "Setter Call Date": result.setterCallDate ? formatDate(result.setterCallDate) : "No Setter Call",
-                    "Setter Responsible": result.setterResponsible ? result.setterResponsible : "No Setter Responsible",
-                    "Final Setter Contact Date": result.finalSetterContactDate ? formatDate(result.finalSetterContactDate) : "Someone didn't call me",
-                    "Setter Names": result.setterNames ? result.setterNames : "No Setter Names",
-                    podio_item_id: result.podio_item_id ? result.podio_item_id : "No podio_item_id",
-                    seller_id: result.seller_id ? result.seller_id : "No Seller ID",
-                }
-            })
+            if (selectedDepartment[0] === 'Team') {
+                console.log(selectedDepartment)
+                // Map to transform leads to table row data, then filter out null values
+                const validTableRows = results.map(lead => calculateTeamKpiTables(lead, apiName, lead.admin_json))
+                    .filter(tableRowData => tableRowData !== null); // Remove null entries
+                console.log(validTableRows);
+                return validTableRows;
+            } else {
+                // Assuming calculateIndividualKpiTables is correctly handling null values
+                const validTableRows = results.map(lead => calculateIndividualKpiTables(lead, apiName, selectedTeamMemberId))
+                    .filter(tableRowData => tableRowData !== null); // Filter here if necessary
+                return validTableRows;
+            }
         } else if (apiEndpointKey === "bigChecks") {
             return results.map((result) => {
                 return {
@@ -595,7 +598,7 @@ function filterResults(results, apiEndpointKey, namesAddresses) {
     }
 }
 
-function extractLeadInformation(lead, namesAddresses) {
+function extractLeadInformation(lead, namesAddresses, apiName, selectedTeamMemberId, selectedDepartment) {
     // console.log(lead)
 
     // Parse the admin_json string into an object

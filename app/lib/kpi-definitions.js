@@ -1295,14 +1295,14 @@ const KPI_DEFINITIONS = {
             },
             {
                 id: 1,
-                desc: "Description TBD",
+                desc: "Setters should encourage each other to call leads as soon as possible after they are created to increase the likelihood of the lead answering the call. Use CXG method.",
                 linkName: "Learn More",
                 link: ""
             },
         ],
     },
     "Setters STL Median": {
-        // Similar to Setter STL Median but for all active setters, fastest time to contact a lead
+        // The median time between when the lead is created and a Setter Call is submitted for the lead
         name: "Setters STL Median",
         dataKeys: ["settersStlMedian"],
         formula: (apiData) => {
@@ -1321,11 +1321,11 @@ const KPI_DEFINITIONS = {
             {
                 id: 0,
                 title: "How to Optimize Setters STL Median",
-                definition: "The median time it takes for a lead to be contacted by at least one active setter."
+                definition: "The median time between when the lead is created and a Setter Call is submitted for the lead (only shows leads with setter calls)."
             },
             {
                 id: 1,
-                desc: "Description TBD",
+                desc: "All active setters should call leads as soon as possible after they are created to increase the likelihood of the lead answering the call. Use CXG method.",
                 linkName: "Learn More",
                 link: ""
             },
@@ -1353,11 +1353,11 @@ const KPI_DEFINITIONS = {
             {
                 id: 0,
                 title: "How to Optimize Closers STL Median",
-                definition: "The median time between when the lead books a call and the assigned closer calls the lead for all active closers. Self-sets are 1 second."
+                definition: "The median time between when the lead books a call and the assigned closer calls the lead for all active closers."
             },
             {
                 id: 1,
-                desc: "Description TBD",
+                desc: "Call the lead as soon as possible after they book a call to increase the likelihood of the lead showing up for the call.",
                 linkName: "Learn More",
                 link: ""
             },
@@ -1380,11 +1380,11 @@ const KPI_DEFINITIONS = {
             {
                 id: 0,
                 title: "How to Optimize Team Effort",
-                definition: "The percentage of leads all active setters attempted to contact during the date range."
+                definition: "The percentage of leads all active setters attempted to contact during the selected time period. One point for each lead that every active setter has attempted to contact by phone."
             },
             {
                 id: 1,
-                desc: "Description TBD",
+                desc: "Setters can encourage each other to call leads as soon as possible after they are created.",
                 linkName: "Learn More",
                 link: ""
             },
@@ -1474,7 +1474,7 @@ const KPI_DEFINITIONS = {
             {
                 id: 0,
                 title: "How to Optimize Closer STL Median",
-                definition: "For the selected close, the median time between when the lead books a call and the assigned closer calls the lead. Only applicable if the setter and closer are not the same person."
+                definition: "For the selected closer, the median time between when the lead books a call and the assigned closer calls the lead. Only applicable if the setter and closer are not the same person."
             },
             {
                 id: 1,

@@ -338,8 +338,8 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
             endpointData.teamKpis = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.filter(lead => lead.contact_phones) : [];
 
             if (departments[0] === "Team") {
+                
                 const teamStlMedian = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
-
                     try {
                         const adminObj = curr && curr["admin_json"] ? JSON.parse(curr["admin_json"]) : {};
 
@@ -363,7 +363,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                     // The time between when the lead is created and a Setter Call is submitted for the lead
                     try {
                         const adminObj = curr && curr["admin_json"] ? JSON.parse(curr["admin_json"]) : {};
-                        // console.log(adminObj)
+                        console.log(adminObj)
 
                         let lead_created_on = adminObj?.lead_created_ts ? new Date(adminObj.lead_created_ts).toISOString() : null;
                         let setterCall = adminObj?.setter_call && adminObj?.setter_call?.created_on ? new Date(adminObj.setter_call.created_on).toISOString() : null;
@@ -483,16 +483,21 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                     return acc;
                 }, []) : [];
 
+                // console.log(individualStlMedian)
+
 
                 const setterStlMedian = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
-                    // The median time between when the lead is created and a Setter Call is submitted for the lead
+                    // The median time between when the lead is created and a Setter Call is submitted for the lead by the selected setter
                     try {
                         const adminObj = curr?.admin_json ? JSON.parse(curr.admin_json) : null;
                         if (!adminObj) return acc; // Skip current iteration if adminObj is null or parsing failed
+                        // console.log(adminObj)
 
                         const leadCreatedOn = adminObj.lead_created_ts ? new Date(adminObj.lead_created_ts).toISOString() : null;
                         const setterCall = adminObj.setter_call?.created_on ? new Date(adminObj.setter_call.created_on).toISOString() : null;
                         const setterResponsible = Number(adminObj.setter_call?.setter_responsible?.item_id);
+
+                        // console.log(leadCreatedOn, setterCall, setterResponsible, selectedTeamMemberId)
 
                         // Skip if essential data is missing or if the setterResponsible is not the selected setter
                         if (leadCreatedOn && setterCall && setterResponsible === selectedTeamMemberId) {
@@ -506,6 +511,8 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                     return acc;
 
                 }, []) : [];
+
+                // console.log(setterStlMedian)
 
                 const closerStlMedian = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
                     // The time between when the lead books a call and the assigned closer calls the lead

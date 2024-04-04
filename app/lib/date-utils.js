@@ -169,7 +169,6 @@ export function getWeekRange(year, weekNumber) {
 export function calculateBusinessHoursDiff(startTimestamp, endTimestamp, timezone) {
 
     const workingStartHour = 8;  // 8 AM
-    const workingEndHour = 20;   // 8 PM, 20 in 24-hour format
 
     let start = DateTime.fromISO(startTimestamp, { zone: timezone });
     let end = DateTime.fromISO(endTimestamp, { zone: timezone });
@@ -177,7 +176,7 @@ export function calculateBusinessHoursDiff(startTimestamp, endTimestamp, timezon
     let businessHoursCount = 0;
 
     while (start < end) {
-        if (start.hour >= workingStartHour && start.hour < workingEndHour) {
+        if (start.hour >= workingStartHour && start > 0) {
             businessHoursCount++;
         }
         // Move to the next hour

@@ -60,9 +60,10 @@ const RightSlideModal = ({
             apiName,
             closers,
             setters,
-            noSetter
+            noSetter,
+            selectedDepartment
         };
-    }, [startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters, noSetter]);
+    }, [startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters, noSetter, selectedDepartment]);
 
     const { data, error } = useSWR(swrKey, fetchSingleKpi);
     // console.log('data', data)
