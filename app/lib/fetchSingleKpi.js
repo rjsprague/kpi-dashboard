@@ -2,7 +2,7 @@ import kpiToEndpointMapping from './kpiToEndpointMapping';
 import apiEndpoints from './apiEndpoints';
 import { formatDate } from './date-utils';
 import cookies from 'js-cookie';
-import { calculateTeamKpiTables } from './closers-team-kpis-tables';
+import { calculateTeamKpiTables, calculateIndividualKpiTables } from './closers-team-kpis-tables';
 
 
 // function to format time that is in seconds to minutes if greater than 60 seconds and hours if greater than 3600 seconds
@@ -414,8 +414,9 @@ function filterResults(results, apiEndpointKey, namesAddresses, selectedDepartme
                 console.log(validTableRows);
                 return validTableRows;
             } else {
+                console.log(selectedDepartment)
                 // Assuming calculateIndividualKpiTables is correctly handling null values
-                const validTableRows = results.map(lead => calculateIndividualKpiTables(lead, apiName, selectedTeamMemberId))
+                const validTableRows = results.map(lead => calculateIndividualKpiTables(lead, apiName, lead.admin_json, selectedTeamMemberId))
                     .filter(tableRowData => tableRowData !== null); // Filter here if necessary
                 return validTableRows;
             }

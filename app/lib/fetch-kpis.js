@@ -2,7 +2,7 @@ import fetchKPIs from "./api-utils";
 import KPI_DEFINITIONS from "./kpi-definitions";
 import kpiToEndpointMapping from "./kpiToEndpointMapping";
 import apiEndpoints from "./apiEndpoints";
-import { calculateBusinessHoursDiff } from "./date-utils";
+import { calculateDelayedStart, convertTimestamp } from "./date-utils";
 // import calculateTotalSalesCapacity from "./closers-sales-capacity";
 
 function formatDate(date) {
@@ -338,18 +338,18 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
             endpointData.teamKpis = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.filter(lead => lead.contact_phones) : [];
 
             if (departments[0] === "Team") {
-                
+
                 const teamStlMedian = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
                     try {
                         const adminObj = curr && curr["admin_json"] ? JSON.parse(curr["admin_json"]) : {};
 
-                        let lead_created_on = adminObj?.lead_created_ts ? new Date(adminObj.lead_created_ts).toISOString() : null;
-                        let finalSetterOutboundCall = adminObj?.speed_to_lead?.final_setter_first_outbound_call?.created_on ? new Date(adminObj.speed_to_lead.final_setter_first_outbound_call.created_on).toISOString() : null;
+                        let lead_created_on = adminObj?.lead_created_ts ? convertTimestamp(adminObj.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
+                        let finalSetterOutboundCall = adminObj?.speed_to_lead?.final_setter_first_outbound_call?.created_on ? convertTimestamp(adminObj.speed_to_lead.final_setter_first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York') : null;
 
                         if (lead_created_on && finalSetterOutboundCall) {
                             // Calculate the difference in seconds for each lead in the array and push it to the acc array
-                            const businessHoursDiff = calculateBusinessHoursDiff(lead_created_on, finalSetterOutboundCall, "America/New_York");
-                            acc.push(businessHoursDiff);
+                            const diffInSeconds = calculateDelayedStart(lead_created_on, finalSetterOutboundCall, "America/New_York");
+                            acc.push(diffInSeconds);
                         }
                     } catch (e) {
                         console.error("Error parsing JSON:", e);
@@ -363,17 +363,17 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                     // The time between when the lead is created and a Setter Call is submitted for the lead
                     try {
                         const adminObj = curr && curr["admin_json"] ? JSON.parse(curr["admin_json"]) : {};
-                        console.log(adminObj)
+                        // console.log(adminObj)
 
-                        let lead_created_on = adminObj?.lead_created_ts ? new Date(adminObj.lead_created_ts).toISOString() : null;
-                        let setterCall = adminObj?.setter_call && adminObj?.setter_call?.created_on ? new Date(adminObj.setter_call.created_on).toISOString() : null;
+                        let lead_created_on = adminObj?.lead_created_ts ? convertTimestamp(adminObj.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
+                        let setterCall = adminObj?.setter_call && adminObj?.setter_call?.created_on ? convertTimestamp(adminObj.setter_call.created_on, 'Pacific/Honolulu', 'America/New_York') : null;
 
                         // console.log(setterCall)
 
                         if (lead_created_on && setterCall) {
                             // Calculate the difference in seconds for each lead in the array and push it to the acc array
-                            const businessHoursDiff = calculateBusinessHoursDiff(lead_created_on, setterCall, "America/New_York");
-                            acc.push(businessHoursDiff);
+                            const diffInSeconds = calculateDelayedStart(lead_created_on, setterCall, "America/New_York");
+                            acc.push(diffInSeconds);
                         }
 
                     } catch (e) {
@@ -394,13 +394,13 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                         }
 
                         const dcBooking = adminObj.discovery_call_booking;
-                        const dcBookingCreatedOn = dcBooking?.created_on ? new Date(dcBooking.created_on).toISOString() : null;
-                        const firstOutboundCloserCall = dcBooking?.closer_assigned?.first_outbound_call?.created_on ? new Date(dcBooking.closer_assigned.first_outbound_call.created_on).toISOString() : null;
+                        const dcBookingCreatedOn = dcBooking?.created_on ? convertTimestamp(dcBooking.created_on, 'Pacific/Honolulu', 'America/New_York') : null;
+                        const firstOutboundCloserCall = dcBooking?.closer_assigned?.first_outbound_call?.created_on ? convertTimestamp(dcBooking.closer_assigned.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York') : null;
                         // Proceed only if both dates are valid
                         if (dcBookingCreatedOn && firstOutboundCloserCall) {
                             // Calculate the difference in seconds and add to the accumulator
-                            const businessHoursDiff = calculateBusinessHoursDiff(dcBookingCreatedOn, firstOutboundCloserCall, "America/New_York");
-                            acc.push(businessHoursDiff);
+                            const diffInSeconds = calculateDelayedStart(dcBookingCreatedOn, firstOutboundCloserCall, "America/New_York");
+                            acc.push(diffInSeconds);
                         }
                     } catch (e) {
                         console.error("Error parsing JSON:", e);
@@ -411,18 +411,15 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                 // console.log(closersStlMedian)
 
                 const teamEffort = Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
+                    // How many leads all active setters attempted to contact during the date range
                     try {
                         const adminObj = curr?.admin_json ? JSON.parse(curr.admin_json) : {};
-                        const setters = adminObj?.setters || [];
 
-                        // Count the number of setters who have made an outbound call for the current lead
-                        let settersWhoCalled = setters.reduce((setterAcc, setter) => {
-                            return setterAcc + (setter.first_outbound_call && setter.first_outbound_call.created_on ? 1 : 0);
-                        }, 0);
+                        // Checking if every setter has attempted contact
+                        const allSettersCalled = adminObj.setters && adminObj.setters.every(setter => setter.first_outbound_call && setter.first_outbound_call.created_on);
 
-                        // Calculate the fraction for the current lead and add it to the accumulator
-                        if (setters.length > 0) { // Avoid division by zero
-                            acc += settersWhoCalled / setters.length;
+                        if (allSettersCalled) {
+                            acc += 1;
                         }
                     } catch (e) {
                         console.error("Error parsing JSON:", e);
@@ -473,7 +470,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                             let setterItemId = Number(setter.item_id);
                             if (selectedTeamMemberId === setterItemId && setter.first_outbound_call && setter.first_outbound_call.created_on) {
                                 let setterOutboundCall = new Date(setter.first_outbound_call.created_on).toISOString();
-                                let diffInSeconds = calculateBusinessHoursDiff(lead_created_on, setterOutboundCall, 'America/New_York');
+                                let diffInSeconds = calculateDelayedStart(lead_created_on, setterOutboundCall, 'America/New_York');
                                 acc.push(diffInSeconds);
                             }
                         });
@@ -501,7 +498,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
 
                         // Skip if essential data is missing or if the setterResponsible is not the selected setter
                         if (leadCreatedOn && setterCall && setterResponsible === selectedTeamMemberId) {
-                            let diffInSeconds = calculateBusinessHoursDiff(leadCreatedOn, setterCall, 'America/New_York');
+                            let diffInSeconds = calculateDelayedStart(leadCreatedOn, setterCall, 'America/New_York');
                             acc.push(diffInSeconds);
                         }
 
@@ -529,7 +526,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
 
                         // Check all conditions are met: dcBooking exists, it's not a self-set, the selected closer is assigned, and the first outbound call is made
                         if (dcBookingCreatedOn && !selfSet && closerAssignedId === selectedTeamMemberId && firstOutboundCloserCallCreatedOn) {
-                            let diffInSeconds = calculateBusinessHoursDiff(dcBookingCreatedOn, firstOutboundCloserCallCreatedOn, 'America/New_York');
+                            let diffInSeconds = calculateDelayedStart(dcBookingCreatedOn, firstOutboundCloserCallCreatedOn, 'America/New_York');
                             acc.push(diffInSeconds);
                         }
 

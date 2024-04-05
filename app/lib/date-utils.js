@@ -166,22 +166,39 @@ export function getWeekRange(year, weekNumber) {
     return { startDate: start, endDate: end };
 }
 
-export function calculateBusinessHoursDiff(startTimestamp, endTimestamp, timezone) {
-
-    const workingStartHour = 8;  // 8 AM
+export function calculateDelayedStart(startTimestamp, endTimestamp, timezone) {
+    // Assuming startTimestamp and endTimestamp are already in 'America/New_York' timezone
+    const workingStartHour = 8; // 8 AM
 
     let start = DateTime.fromISO(startTimestamp, { zone: timezone });
     let end = DateTime.fromISO(endTimestamp, { zone: timezone });
 
-    let businessHoursCount = 0;
-
-    while (start < end) {
-        if (start.hour >= workingStartHour && start > 0) {
-            businessHoursCount++;
-        }
-        // Move to the next hour
-        start = start.plus({ hours: 1 });
+    // Adjust start time if it's after 8 PM to 8 AM the next day
+    if (start.hour >= 20) {
+        console.log('start.hour >= 20')
+        start = start.plus({ days: 1 }).set({ hour: workingStartHour, minute: 0, second: 0 });
+    } else if (start.hour < workingStartHour) {
+        // Adjust start time if it's before 8 AM to 8 AM the same day
+        console.log('start.hour < workingStartHour')
+        start = start.set({ hour: workingStartHour, minute: 0, second: 0 });
     }
 
-    return businessHoursCount*60*60; // Convert to seconds
+    // Ensure end is after the adjusted start, or adjust end to match start for a zero difference
+    if (end <= start) {
+        end = start;
+    }
+
+    // Calculate the difference in seconds considering the adjusted start time
+    const diff = end.diff(start, 'seconds').seconds;
+
+    return diff; // Returns the difference in seconds
+}
+
+
+export function convertTimestamp(timestamp, fromZone, toZone) {
+    
+    let isoTimestamp = new Date(timestamp).toISOString();
+    return DateTime.fromISO(isoTimestamp, {zone: fromZone})
+                   .setZone(toZone)
+                   .toISO();
 }

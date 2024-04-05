@@ -439,7 +439,7 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 15,
         target: 5,
-        dataLabels: [" minutes", "NA: "],
+        dataLabels: [" minutes"],
         kpiType: "STL",
         unit: " mins",
         kpiFactors: [
@@ -466,7 +466,7 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 8,
         target: 3,
-        dataLabels: [" hours", "NA: "],
+        dataLabels: [" hours"],
         kpiType: "STL",
         unit: " hrs",
         kpiFactors: [
@@ -493,7 +493,7 @@ const KPI_DEFINITIONS = {
         },
         redFlag: 4,
         target: 1,
-        dataLabels: [" hours", "NA: "],
+        dataLabels: [" hours"],
         kpiType: "STL",
         unit: " hrs",
         kpiFactors: [
@@ -508,9 +508,7 @@ const KPI_DEFINITIONS = {
         dataKeys: ['bigChecks'],
         createFormula: (startDate, endDate) => (apiData) => {
             const { bigChecks } = apiData;
-            //console.log("Big Checks: ", bigChecks)
-            //console.log("Start Date: ", startDate)
-            //console.log("End Date: ", endDate)
+
             if (!bigChecks || !startDate || !endDate) {
                 return 0;
             }
@@ -665,7 +663,6 @@ const KPI_DEFINITIONS = {
         dataKeys: ["projectedProfit"],
         formula: (apiData) => {
             const { projectedProfit } = apiData;
-            //console.log("Projected Profit: ", projectedProfit)
             return projectedProfit;
         },
         redFlag: 0,
@@ -1055,7 +1052,6 @@ const KPI_DEFINITIONS = {
         dataKeys: ["totalClosersAdSpend", "closersQualifiedBookings"],
         formula: (apiData) => {
             const { totalClosersAdSpend, closersQualifiedBookings } = apiData;
-            // console.log(totalClosersAdSpend, closersQualifiedBookings)
             return closersQualifiedBookings > 0 ? totalClosersAdSpend / closersQualifiedBookings : 0;
         },
         redFlag: 150,
@@ -1279,14 +1275,13 @@ const KPI_DEFINITIONS = {
             let stlArray = teamStlMedian ? teamStlMedian : [];
             stlArray.sort((a, b) => a - b);
             let teamStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) : (stlArray[(stlArray.length - 1) / 2]);
-            // console.log("Team STL Median: ", teamStlMedianSorted)
             return teamStlMedianSorted;
         },
-        redFlag: 15,
-        target: 5,
-        dataLabels: [" minutes"],
+        redFlag: 4,
+        target: 2,
+        dataLabels: [" hours"],
         kpiType: "STL",
-        unit: " mins",
+        unit: " hrs",
         kpiFactors: [
             {
                 id: 0,
@@ -1312,11 +1307,11 @@ const KPI_DEFINITIONS = {
             let settersStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2): (stlArray[(stlArray.length - 1) / 2]);
             return settersStlMedianSorted;
         },
-        redFlag: 15,
-        target: 5,
-        dataLabels: [" minutes"],
+        redFlag: 8,
+        target: 6,
+        dataLabels: [" hours"],
         kpiType: "STL",
-        unit: " mins",
+        unit: " hrs",
         kpiFactors: [
             {
                 id: 0,
@@ -1344,11 +1339,11 @@ const KPI_DEFINITIONS = {
             let closersStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) : (stlArray[(stlArray.length - 1) / 2]);
             return closersStlMedianSorted;
         },
-        redFlag: 15,
-        target: 5,
-        dataLabels: [" minutes"],
+        redFlag: 4,
+        target: 1,
+        dataLabels: [" hours"],
         kpiType: "STL",
-        unit: " mins",
+        unit: " hrs",
         kpiFactors: [
             {
                 id: 0,
@@ -1366,14 +1361,14 @@ const KPI_DEFINITIONS = {
     "Team Effort": {
         // How many leads all active setters attempted to contact during the date range
         name: "Team Effort",
-        dataKeys: ["teamEffort", "noSetterCallLeads"],
+        dataKeys: [ "noSetterCallLeads", "teamEffort"],
         formula: (apiData) => {
-            const { teamEffort, noSetterCallLeads } = apiData;
+            const { noSetterCallLeads, teamEffort } = apiData;
             return noSetterCallLeads > 0 ? teamEffort / noSetterCallLeads * 100 : 0;
         },
         redFlag: 70,
         target: 90,
-        dataLabels: ["Leads Contacted: ", "Leads: "],
+        dataLabels: ["Leads: ", "Leads Contacted: "],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [
@@ -1384,7 +1379,7 @@ const KPI_DEFINITIONS = {
             },
             {
                 id: 1,
-                desc: "Setters can encourage each other to call leads as soon as possible after they are created.",
+                desc: "Setters can encourage each other to call leads as soon as possible after the lead comes in.",
                 linkName: "Learn More",
                 link: ""
             },
@@ -1402,11 +1397,11 @@ const KPI_DEFINITIONS = {
             let individualStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) : (stlArray[(stlArray.length - 1) / 2]);
             return individualStlMedianSorted;
         },
-        redFlag: 15,
-        target: 5,
-        dataLabels: [" minutes"],
+        redFlag: 4,
+        target: 2,
+        dataLabels: [" hours"],
         kpiType: "STL",
-        unit: " mins",
+        unit: " hrs",
         kpiFactors: [
             {
                 id: 0,
@@ -1433,11 +1428,11 @@ const KPI_DEFINITIONS = {
             let setterStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) : (stlArray[(stlArray.length - 1) / 2]);
             return setterStlMedianSorted;
         },
-        redFlag: 15,
-        target: 5,
-        dataLabels: [" minutes"],
+        redFlag: 8,
+        target: 6,
+        dataLabels: [" hours"],
         kpiType: "STL",
-        unit: " mins",
+        unit: " hrs",
         kpiFactors: [
             {
                 id: 0,
@@ -1465,11 +1460,11 @@ const KPI_DEFINITIONS = {
             let closerStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) : (stlArray[(stlArray.length - 1) / 2]);
             return closerStlMedianSorted;
         },
-        redFlag: 15,
-        target: 5,
-        dataLabels: [" minutes"],
+        redFlag: 4,
+        target: 1,
+        dataLabels: [" hours"],
         kpiType: "STL",
-        unit: " mins",
+        unit: " hrs",
         kpiFactors: [
             {
                 id: 0,
@@ -1487,15 +1482,14 @@ const KPI_DEFINITIONS = {
     "Individual Effort": {
         // How many leads the selected setter attempted to contact during the date range
         name: "Individual Effort",
-        dataKeys: ["individualEffort", "noSetterCallLeads"],
+        dataKeys: ["noSetterCallLeads", "individualEffort"],
         formula: (apiData) => {
-            const { individualEffort, noSetterCallLeads } = apiData;
-            console.log(individualEffort, noSetterCallLeads)
+            const { noSetterCallLeads, individualEffort } = apiData;
             return noSetterCallLeads > 0 ? (individualEffort / noSetterCallLeads * 100) : 0;
         },
-        redFlag: 50,
-        target: 70,
-        dataLabels: ["Leads Contacted: ", "Leads: "],
+        redFlag: 75,
+        target: 95,
+        dataLabels: ["Leads: ", "Leads Contacted: "],
         kpiType: "meter",
         unit: "%",
         kpiFactors: [
