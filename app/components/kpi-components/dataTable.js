@@ -128,11 +128,11 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
 };
 
 
-const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfessional, clients }) => {
+const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfessional, clients, apiName }) => {
 
     // console.log(isProfessional)
 
-    console.log('data', data)
+    // console.log('data', data)
     // console.log('leadSources', leadSources)
     // console.log('departments', departments)
     // console.log('selectedTableKey', selectedTableKey)
@@ -187,10 +187,12 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
     }, [data, showTooltip, hideTooltip]);
 
     useEffect(() => {
-        if (selectedTableKey) {
+        if (selectedTableKey === "teamKpis" && apiName) {
+            setTableTitle(apiName);
+        } else if (selectedTableKey) {
             setTableTitle(formatWords(selectedTableKey));
         }
-    }, [selectedTableKey]);
+    }, [selectedTableKey, apiName]);
 
     const table = useReactTable({
         data: data,

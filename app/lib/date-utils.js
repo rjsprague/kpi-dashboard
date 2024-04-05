@@ -169,17 +169,15 @@ export function getWeekRange(year, weekNumber) {
 export function calculateDelayedStart(startTimestamp, endTimestamp, timezone) {
     // Assuming startTimestamp and endTimestamp are already in 'America/New_York' timezone
     const workingStartHour = 8; // 8 AM
-
+    
     let start = DateTime.fromISO(startTimestamp, { zone: timezone });
     let end = DateTime.fromISO(endTimestamp, { zone: timezone });
 
     // Adjust start time if it's after 8 PM to 8 AM the next day
     if (start.hour >= 20) {
-        console.log('start.hour >= 20')
         start = start.plus({ days: 1 }).set({ hour: workingStartHour, minute: 0, second: 0 });
     } else if (start.hour < workingStartHour) {
         // Adjust start time if it's before 8 AM to 8 AM the same day
-        console.log('start.hour < workingStartHour')
         start = start.set({ hour: workingStartHour, minute: 0, second: 0 });
     }
 
@@ -196,9 +194,11 @@ export function calculateDelayedStart(startTimestamp, endTimestamp, timezone) {
 
 
 export function convertTimestamp(timestamp, fromZone, toZone) {
-    
+
+    if (!timestamp) return null;
+
     let isoTimestamp = new Date(timestamp).toISOString();
-    return DateTime.fromISO(isoTimestamp, {zone: fromZone})
-                   .setZone(toZone)
-                   .toISO();
+    return DateTime.fromISO(isoTimestamp, { zone: fromZone })
+        .setZone(toZone)
+        .toISO();
 }

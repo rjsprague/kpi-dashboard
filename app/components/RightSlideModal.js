@@ -183,11 +183,11 @@ const RightSlideModal = ({
                 {modalType === "info" && prop && prop.kpiFactors && (
                     <>
                         <div className="mt-4 text-xl font-bold text-center">
-                            {prop.kpiFactors[0].title}                            
+                            {prop.kpiFactors[0].title}
                         </div>
                         <div className="pt-2 pl-4 text-sm">
                             {prop.kpiFactors[0].definition && "Definition: " + prop.kpiFactors[0].definition}
-                            </div>
+                        </div>
                         <ul>
                             {prop.kpiFactors.map((factor, index) => {
                                 if (index > 0) {
@@ -268,12 +268,12 @@ const RightSlideModal = ({
                                 className="flex flex-row flex-wrap items-center justify-center"
                             >
                                 {enabled ? (
-                                    <DataTable className="flex" selectedTableKey={dataTable1Key} data={attritionList} leadSources={leadSources} departments={departments} clients={clients} />
+                                    <DataTable className="flex" selectedTableKey={dataTable1Key} data={attritionList} leadSources={leadSources} departments={departments} clients={clients} apiName={apiName} />
                                 ) : (
                                     <>
                                         {error && <div className="text-red-500">Error fetching data</div>}
-                                        {dataTable1 && <DataTable className="flex" selectedTableKey={dataTable1Key} data={dataTable1} leadSources={leadSources} departments={departments} clients={clients} />}
-                                        {dataTable2 && <DataTable className="flex" selectedTableKey={dataTable2Key} data={dataTable2} leadSources={leadSources} departments={departments} clients={clients} />}
+                                        {dataTable1 && <DataTable className="flex" selectedTableKey={dataTable1Key} data={dataTable1} leadSources={leadSources} departments={departments} clients={clients} apiName={apiName} />}
+                                        {dataTable2 && <DataTable className="flex" selectedTableKey={dataTable2Key} data={dataTable2} leadSources={leadSources} departments={departments} clients={clients} apiName={apiName} />}
                                     </>
                                 )}
                             </div>
