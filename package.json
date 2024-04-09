@@ -55,8 +55,7 @@
     "supports-color": "^9.4.0",
     "swiper": "^9.0.5",
     "swr": "^2.2.0",
-    "tailwindcss-gradients": "^3.0.0",
-    "zustand": "^4.3.9"
+    "tailwindcss-gradients": "^3.0.0"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.3",

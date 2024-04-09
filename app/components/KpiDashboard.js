@@ -410,7 +410,7 @@ export default function KpiDashboard({ user }) {
     };
 
     return (
-        <div className="absolute left-0 right-0 flex flex-col h-full pb-20 top-20 max-w-screen lg:left-20">
+        <div className="flex flex-col h-full pb-20 max-w-screen">
             <NavigationBar items={Object.values(KPI_VIEWS)} onItemChange={handleQueryTypeChange} initialActiveItem={Object.values(KPI_VIEWS)[0]} />
             <div className="flex flex-col h-full px-3 pt-2 pb-24 overflow-x-hidden overflow-y-auto">
                 {renderKpiResultsSection()}

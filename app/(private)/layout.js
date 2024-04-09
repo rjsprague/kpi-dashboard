@@ -1,13 +1,19 @@
 // app/layout.tsx
 import '../globals.css'
 import { AuthProvider } from '../context/AuthProvider';
+import { Roboto_Flex } from 'next/font/google'
 import SideNav from '../components/SideNav'
 import Header from '../components/Header'
 import { ReduxProvider } from '../GlobalRedux/provider';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Script from 'next/script';
 
+const roboto = Roboto_Flex({
+    subsets: ['latin-ext'],
+
+    display: 'swap',
+    variable: '--font-roboto_flex'
+})
 
 export const fetchCache = 'force-no-store';
 
@@ -24,9 +30,8 @@ export default function RootLayout({ children }) {
                         src="https://jsd-widget.atlassian.com/assets/embed.js"
                     ></script>
 
-                    {/* <Script src="//scripts.reiautomated.io/wp-content/plugins/gravity-forms-iframe-master/assets/scripts/gfembed.min.js" strategy="worker"></Script> */}
                 </head>
-                <body className='absolute inset-0 h-screen max-h-screen overflow-hidden'>
+                <body className={`${roboto.variable} font-sans absolute bottom-0 right-0 h-screen max-h-screen overflow-hidden top-20 lg:left-20 left-0`}>
                     <ReduxProvider>
                         <div className=''>
                             <SideNav />
