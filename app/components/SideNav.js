@@ -9,6 +9,7 @@ import {
     faGaugeHigh,
     faFileAlt,
     faChalkboardTeacher,
+    faQuestionCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import fetchClients from "../lib/fetchClients";
 import {
@@ -167,6 +168,12 @@ export default function SideNav() {
             link: "https://knowledge.reiautomated.io/enrollments",
             target: "_blank",
             rel: "noopener noreferrer",
+        },
+        {
+            icon: <FontAwesomeIcon icon={faQuestionCircle} size="lg" />,
+            text: "Support",
+            link: "/support",
+            onClick: () => setIsOpen(false),
         },
         {
             icon: <FiUsers className="text-xl" />,
