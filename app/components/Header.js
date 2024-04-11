@@ -1,6 +1,6 @@
 "use client"
 import { BsPerson } from 'react-icons/bs';
-import { FiUsers, FiSettings } from 'react-icons/fi';
+import { FiUsers, FiSettings, FiCreditCard, FiExternalLink } from 'react-icons/fi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOut } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link'
@@ -57,6 +57,20 @@ export default function Header() {
                                     </Link>
                                 )}
                             </Menu.Item>
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <Link
+                                        href="https://billing.stripe.com/p/login/6oEbLhbLHaL62xW6oo"
+                                        className={`flex items-center w-full px-4 py-2 ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}
+                                        target='_blank'
+                                        rel='noopener noreferrer'
+                                    >
+                                        <FiCreditCard className='mr-2 text-xl' />
+                                        Billing
+                                        <FiExternalLink className='ml-2 text-md' />
+                                    </Link>
+                                )}
+                            </Menu.Item>
                             {user && user.isAdmin && (
                                 <Menu.Item>
                                     {({ active }) => (
@@ -69,7 +83,7 @@ export default function Header() {
                             )}
                             <Menu.Item>
                                 {({ active }) => (
-                                    <button type="button" onClick={() => {setIsLoggingOut(true); logout();}} className={`flex items-center text-left w-full px-4 py-2 rounded-b-2xl ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
+                                    <button type="button" onClick={() => { setIsLoggingOut(true); logout(); }} className={`flex items-center text-left w-full px-4 py-2 rounded-b-2xl ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
                                         <FontAwesomeIcon icon={faSignOut} size="lg" className='mr-2' />
                                         Logout
                                     </button>

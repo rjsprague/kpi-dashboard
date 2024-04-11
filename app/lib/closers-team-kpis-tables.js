@@ -1,5 +1,6 @@
 import { calculateDelayedStart, convertTimestamp } from './date-utils';
 
+// Helper functions
 function formatTime(seconds) {
     let hours = Math.floor(seconds / (60 * 60));
     let minutes = Math.floor((seconds % (60 * 60)) / (60));
@@ -15,10 +16,77 @@ function extractLeadName(lead) {
             lead["First"] || lead["Last"] || lead.Title || "No Name");
 }
 
+
+// Closers Acquisitions KPI calculation functions
+export function calculateClosersAcquisitionTables(lead, apiEndpointKey, namesAddresses) {
+    
+    // This is only in REIA Leads API objects
+    const adminData = lead.admin_json && JSON.parse(lead.admin_json);
+
+    let result = {};
+
+    switch (apiEndpointKey) {
+        case 'closersLeadsTriaged':
+            result = calculateLeadsTriagedTable(lead, namesAddresses);
+            break;
+        case 'closersLeadsConnected':
+            result = calculateLeadsConnectedTable(lead, adminData);
+            break;
+    }
+    return result;
+}
+
+function calculateLeadsConnectedTable(lead, data) {
+    
+    const firstConnection = data.first_connection && data.first_connection.timestamp ? data.first_connection.timestamp : null;
+
+    if (!lead.contact_phones || !firstConnection) return null; // Skip if there's no phone number or first connection timestamp
+
+    const leadName = extractLeadName(lead);
+    const leadCreatedTs = lead["Lead Created On"] && lead["Lead Created On"].start ? lead["Lead Created On"].start : null;
+    const leadStatus = lead["Lead Status"] ? lead["Lead Status"] : "❓";
+    const leadSource = lead["Lead Source Item"] ? lead["Lead Source Item"] : "❓";
+    const podio_item_id = lead.itemid ? lead.itemid : lead.podio_item_id;
+
+    return {
+        Date: leadCreatedTs,
+        Name: leadName,
+        "First Connection": firstConnection,
+        "Lead Status": leadStatus,
+        "Lead Source": leadSource,
+        podio_item_id: podio_item_id,
+        seller_id: podio_item_id
+    };
+}
+
+function calculateLeadsTriagedTable(lead, namesAddresses) {
+
+    console.log(namesAddresses)
+
+    const triageCallDate = lead.created_on && lead.created_on.start ? lead.created_on.start : null;
+    const leadName = namesAddresses[lead["Related Lead"][0]]?.Name ? namesAddresses[lead["Related Lead"][0]]?.Name : "❓";
+    const leadStatus = namesAddresses[lead["Related Lead"][0]]?.Status ? namesAddresses[lead["Related Lead"][0]]?.Status : "❓";
+    const leadSource = lead["Related Lead Source Item"] ? lead["Related Lead Source Item"] : "❓";
+    const qualification = lead.Qualification ? lead.Qualification[0] : "❓";
+    const setterResponsible = lead["Setter Responsible"] ? lead["Setter Responsible"] : "❓";
+    const seller_id = namesAddresses[lead["Related Lead"]] ? namesAddresses[lead["Related Lead"]].seller_id : "No Seller ID"
+    
+    return {        
+        Date: triageCallDate,
+        Name: leadName,
+        Qualification: qualification,        
+        "Lead Status": leadStatus,
+        "Lead Source": leadSource,
+        "Setter": setterResponsible,
+        podio_item_id: lead.itemid ? lead.itemid : lead.podio_item_id,
+        seller_id: seller_id
+    };
+}
+
+
+
+// Team KPI calculation functions
 export function calculateTeamKpiTables(lead, apiName, adminJson) {
-    // console.log(lead)
-    // console.log(apiName)
-    // console.log(adminJson)
 
     const adminData = JSON.parse(adminJson); // Assuming adminJson is a JSON string.
     let result = {};
@@ -36,9 +104,6 @@ export function calculateTeamKpiTables(lead, apiName, adminJson) {
         case 'Team Effort':
             result = calculateTeamEffortTable(lead, adminData);
             break;
-        default:
-            console.log('Unknown API Name');
-            return;
     }
 
     return result;
@@ -51,7 +116,7 @@ function calculateTeamStlTable(lead, data) {
     const setterCallTs = data.setter_call && data.setter_call.created_on ? convertTimestamp(data.setter_call.created_on, 'Pacific/Honolulu', 'America/New_York') : null;
 
     let stl = "❌";
-    let completed = "Someone didn’t call";
+    let completed = "Someone didn't call";
     if (leadCreatedTs && (finalOutboundCallTs || setterCallTs)) {
         const diffInSeconds = calculateDelayedStart(leadCreatedTs, finalOutboundCallTs || setterCallTs, 'America/New_York');
         stl = formatTime(diffInSeconds);
@@ -135,7 +200,6 @@ function calculateClosersStlTable(lead, data) {
     };
 }
 
-
 function calculateTeamEffortTable(lead, data) {
     const leadName = extractLeadName(lead);
 
@@ -163,8 +227,10 @@ function calculateTeamEffortTable(lead, data) {
 }
 
 
+
+// Individual KPI calculation functions
 export function calculateIndividualKpiTables(lead, apiName, adminJson, selectedTeamMemberId) {
-    
+
     const adminData = JSON.parse(adminJson); // Assuming adminJson is a JSON string.
     let result = {};
 

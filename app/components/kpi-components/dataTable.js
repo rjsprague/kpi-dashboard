@@ -7,7 +7,9 @@ import {
     createColumnHelper,
     getCoreRowModel,
     useReactTable,
+    ColumnDef,
     flexRender,
+    Table,
     getSortedRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
@@ -73,10 +75,12 @@ const dateColumnKeys = {
     closersDcShowed: "Date Submitted",
     closersDcOffers: "Date Submitted",
     closersDcClosed: "Date Submitted",
+    closersLeadsConnected: "Date"
 };
 
 const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap, clients, showTooltip, hideTooltip) => {
     // console.log(invertedLeadSources)
+    console.log('selectedTableKey', selectedTableKey)
 
     return Object.keys(data[0]).map(key => {
         if (key !== 'podio_item_id' && key !== 'seller_id') {
@@ -85,6 +89,7 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
             return columnHelper.accessor(key, {
                 id: `column_${key}`,
                 header: key,
+                // style: { width: `${key}.getSize()px`},
                 cell: info => {
                     const cellValue = info.getValue();
                     let displayValue;
@@ -120,7 +125,7 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
                     );
                 },
                 enableSorting: true,
-                sortingFn: key === dateColumnKey ? 'datetime': 'basic',
+                sortingFn: key === dateColumnKey ? 'datetime' : 'basic',
                 sortDescFirst: true,
             });
         }
@@ -136,10 +141,10 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
     // console.log('leadSources', leadSources)
     // console.log('departments', departments)
     // console.log('selectedTableKey', selectedTableKey)
+    // console.log('apiName', apiName)
 
     const [tableTitle, setTableTitle] = useState('');
     const [columns, setColumns] = useState([]);
-    const [columnResizeMode, setColumnResizeMode] = useState('onChange');
     const [sorting, setSorting] = useState([]);
     const [tooltipInfo, setTooltipInfo] = useState({
         show: false,
@@ -187,7 +192,7 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
     }, [data, showTooltip, hideTooltip]);
 
     useEffect(() => {
-        if (selectedTableKey === "teamKpis" && apiName) {
+        if (apiName && selectedTableKey === "teamKpis") {
             setTableTitle(apiName);
         } else if (selectedTableKey) {
             setTableTitle(formatWords(selectedTableKey));
@@ -197,14 +202,29 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
     const table = useReactTable({
         data: data,
         columns: newColumns,
+        defaultColumn: {
+            size: 125, //starting column size
+            minSize: 50, //enforced during column resizing
+            maxSize: 500, //enforced during column resizing
+        },
         state: { sorting },
-        columnResizeMode,
+        columnResizeMode: 'onChange',
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
+        // initialState: {
+        //     sorting: [
+        //       {
+        //         id: 'name',
+        //         desc: true,
+        //       },
+        //     ],
+        //   },
     });
+
+    // console.log(table.getState().sorting)
 
     if (data.length === 0 || isProfessional) {
         return (
@@ -217,8 +237,20 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
         )
     }
 
+    const columnSizeVars = React.useMemo(() => {
+        const headers = table.getFlatHeaders()
+        const colSizes = {}
+        for (let i = 0; i < headers.length; i++) {
+            const header = headers[i]
+            colSizes[`--header-${header.id}-size`] = header.getSize()
+            colSizes[`--col-${header.column.id}-size`] = header.column.getSize()
+        }
+        return colSizes
+    }, [table.getState().columnSizingInfo])
+
     return (
         <div className="flex flex-col items-center mt-4">
+
             {tooltipInfo.show && (
                 <div
                     className="fixed z-50 px-2 py-1 text-sm text-white bg-gray-700 rounded"
@@ -227,75 +259,122 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
                     {tooltipInfo.text}
                 </div>
             )}
+
             <div className="flex h-auto px-2 py-4 overflow-auto max-h-screen8">
                 <div className="table w-full h-auto overflow-y-scroll max-h-screen8">
                     <div className='flex justify-center mb-2 text-xl font-semibold'>{tableTitle} ({data.length})</div>
-                    {/* <div
+                    {/* <pre style={{ minHeight: '10rem' }}>
+                        {JSON.stringify(
+                            {
+                                columnSizing: table.getState().columnSizing,
+                            },
+                            null,
+                            2
+                        )}
+                    </pre> */}
+                    <div
                         {...{
+                            className: 'divTable',
                             style: {
-                                width: table.getCenterTotalSize(),
+                                ...columnSizeVars, //Define column sizes on the <table> element
+                                width: table.getTotalSize(),
                             },
                         }}
-                    > */}
-                        <div>
+                    >
+                        <div className="">
                             {table.getHeaderGroups().map((headerGroup, i) => (
                                 <div key={i} className="uppercase bg-blue-700 border-l border-gray-200 tr">
                                     {headerGroup.headers.map((header, j) => (
-                                        <div
-                                            key={j}
-                                            className={header.column.getCanSort() ? "th cursor-pointer" : "th"}
-                                            onClick={header.column.getCanSort() ? header.column.getToggleSortingHandler() : undefined}
-                                        >
-                                            {{
-                                                asc: '🔼 ',
-                                                desc: '🔽 ',
-                                            }[header.column.getIsSorted()] ?? null}
-                                            {flexRender(header.column.columnDef.header, header.getContext())}
+                                        <>
                                             <div
                                                 {...{
-                                                    onMouseDown: header.getResizeHandler(),
-                                                    onTouchStart: header.getResizeHandler(),
-                                                    className: `resizer ${header.column.getIsResizing() ? 'isResizing' : ''
-                                                        }`,
-                                                    style: {
-                                                        transform:
-                                                            columnResizeMode === 'onChange' &&
-                                                                header.column.getIsResizing()
-                                                                ? `translateX(${table.getState().columnSizingInfo.deltaOffset
-                                                                }px)`
-                                                                : '',
-                                                    },
+                                                    key: header.id,
+                                                    className: 'th truncate cursor-pointer',
+                                                    style: { width: `${header.getSize()}px` },
                                                 }}
-                                            />
-                                        </div>
+                                            >
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    :
+
+                                                    // flexRender(
+                                                    //     header.column.columnDef.header,
+                                                    //     header.getContext()
+                                                    // )
+                                                    <div
+                                                        className={
+                                                            header.column.getCanSort()
+                                                                ? 'cursor-pointer select-none'
+                                                                : ''
+                                                        }
+                                                        onClick={header.column.getToggleSortingHandler()}
+                                                        title={
+                                                            header.column.getCanSort()
+                                                                ? header.column.getNextSortingOrder() === 'asc'
+                                                                    ? 'Sort ascending'
+                                                                    : header.column.getNextSortingOrder() === 'desc'
+                                                                        ? 'Sort descending'
+                                                                        : 'Clear sort'
+                                                                : undefined
+                                                        }
+                                                    >
+                                                        {flexRender(
+                                                            header.column.columnDef.header,
+                                                            header.getContext()
+                                                        )}
+                                                        {{
+                                                            asc: ' 🔼',
+                                                            desc: ' 🔽',
+                                                        }[header.column.getIsSorted()] ?? null}
+                                                    </div>
+
+                                                }
+                                                <div
+                                                    {...{
+                                                        onDoubleClick: () => header.column.resetSize(),
+                                                        onMouseDown: header.getResizeHandler(),
+                                                        onTouchStart: header.getResizeHandler(),
+                                                        className: `resizer ${header.column.getIsResizing() ? 'isResizing' : ''
+                                                            }`,
+                                                    }}
+                                                />
+                                            </div>
+                                        </>
                                     ))}
                                 </div>
                             ))}
                         </div>
+                    </div>
 
-                        <div>
-                            {data && table.getRowModel().rows && table.getRowModel().rows.length > 0 ? (
-                                table.getRowModel().rows.map((row, i) => (
+                    <div>
+                        {data && table.getRowModel().rows && table.getRowModel().rows.length > 0 ? (
+                            table.getRowModel().rows.map((row, i) => (
+                                <div>
                                     <a
                                         key={row.original.podio_item_id}
                                         href={`https://podio.com/x/y/item/${row.original.podio_item_id}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className={`tr border-l border-gray-200 tr ${i % 2 === 0 ? 'bg-blue-400' : 'bg-blue-500'}`}
+                                        className={`tr border-l border-gray-200 ${i % 2 === 0 ? 'bg-blue-400' : 'bg-blue-500'}`}
                                     >
                                         {row.getVisibleCells().map((cell, j) => (
-                                            <div key={j} className="td">
+                                            <div
+                                                key={j}
+                                                className="td"
+                                                style={{ width: `${cell.column.getSize()}px` }}
+                                            >
                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                             </div>
                                         ))}
                                     </a>
-                                ))
-                            ) : (
-                                <p className='py-10 text-xl font-bold text-center'>No Data</p>
-                            )}
-                        </div>
-                    {/* </div> */}
+                                </div>
+                            ))
+                        ) : (
+                            <p className='py-10 text-xl font-bold text-center'>No Data</p>
+                        )}
+                    </div>
                 </div>
+
             </div>
             <div className="h-2" />
             <div className="flex items-center gap-2">

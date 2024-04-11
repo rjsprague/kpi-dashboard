@@ -2,43 +2,33 @@ import kpiToEndpointMapping from './kpiToEndpointMapping';
 import apiEndpoints from './apiEndpoints';
 import { formatDate } from './date-utils';
 import cookies from 'js-cookie';
-import { calculateTeamKpiTables, calculateIndividualKpiTables } from './closers-team-kpis-tables';
+import {
+    calculateTeamKpiTables,
+    calculateIndividualKpiTables,
+    calculateClosersAcquisitionTables
+} from './closers-team-kpis-tables';
 
-
-// function to format time that is in seconds to minutes if greater than 60 seconds and hours if greater than 3600 seconds
-function formatTime(time) {
-    if (time >= 3600) {
-        return `${Math.round(time / 3600)}h`;
-    } else if (time >= 60) {
-        return `${Math.round(time / 60)}m`;
-    } else {
-        return `${time}s`;
-    }
-}
 
 export default async function fetchSingleKpi({ startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters, noSetter, selectedDepartment }) {
 
     // console.log(closers)
     // console.log(setters)
-    console.log(teamMembers)
+    // console.log(teamMembers)
+    // console.log(apiName)
 
     const accessToken = cookies.get('token');
-    // console.log("accessToken", accessToken)
-    console.log("api name: ", apiName)
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
     let teamMembersNum = teamMembers && teamMembers.map(Number);
-    // console.log(teamMembersNum)
     let closersNum = closers ? closers.map(Number) : [];
-    // console.log(closersNum)
     let settersNum = setters ? setters.map(Number) : [];
-    // console.log(settersNum)
     const apiEndpointsKeys = kpiToEndpointMapping[apiName];
 
-    console.log(apiEndpointsKeys)
+    // console.log(apiEndpointsKeys)
     // console.log(startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, apiName, closers, setters)
 
     if (!apiEndpointsKeys || apiEndpointsKeys.length < 1) {
-        throw new Error('Invalid API name');
+        console.log(apiEndpointsKeys)
+        throw new Error('Something wrong with the api name?');
     }
 
     let results = apiEndpointsKeys.reduce((acc, key) => {
@@ -141,7 +131,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
 
     // console.log(results)
 
-    if (apiName === 'Closers Offer Rate') {
+    if (apiName && apiName === 'Closers Offer Rate') {
 
         let requestObject = apiEndpointsObj.allPreviousDcOffers;
 
@@ -186,7 +176,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     let leadsArray = [];
 
     let resultsValues = Object.values(results).flat();
-    console.log(resultsValues)
+    // console.log(resultsValues)
 
     resultsValues.forEach(item => {
         if (item["Seller Lead"]) {
@@ -204,7 +194,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     let leadsEndpoint;
 
     // console.log(clientSpaceId)
-    console.log(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
+    // console.log(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID)
 
     if (clientSpaceId == process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID) {
         leadsEndpoint = apiEndpointsObj["closersLeadsCreated"]
@@ -245,19 +235,19 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     Object.keys(results).forEach(key => {
         results[key] = filterResults(results[key], key, namesAddresses, selectedDepartment, apiName, teamMembers);
     });
-    // console.log(results)
+    console.log(results)
 
     return results;
 };
 
 function filterResults(results, apiEndpointKey, namesAddresses, selectedDepartment, apiName, teamMembers) {
 
-    console.log(results)
+    // console.log(results)
     // console.log(apiEndpointKey)
-    console.log(namesAddresses)
-    console.log(selectedDepartment)
-    console.log(apiName)
-    console.log(teamMembers)
+    // console.log(namesAddresses)
+    // console.log(selectedDepartment)
+    // console.log(apiName)
+    // console.log(teamMembers)
     let selectedTeamMemberId = teamMembers && teamMembers[0]
 
     try {
@@ -321,6 +311,10 @@ function filterResults(results, apiEndpointKey, namesAddresses, selectedDepartme
                     seller_id: result.itemid ? result.itemid : result.podio_item_id,
                 }
             })
+        } else if (apiEndpointKey === "closersLeadsConnected" || apiEndpointKey === "closersLeadsTriaged") {
+            const validTableRows = results.map(lead => calculateClosersAcquisitionTables(lead, apiEndpointKey, namesAddresses))
+                .filter(tableRowData => tableRowData !== null);
+            return validTableRows;
         } else if (apiEndpointKey === "triageCalls" || apiEndpointKey === "qualifiedTriageCalls" || apiEndpointKey === "triageApproval") {
             return results.map((result) => {
                 return {
@@ -407,14 +401,13 @@ function filterResults(results, apiEndpointKey, namesAddresses, selectedDepartme
             })
         } else if (apiEndpointKey === "teamKpis") {
             if (selectedDepartment[0] === 'Team') {
-                console.log(selectedDepartment)
+                // console.log(selectedDepartment)
                 // Map to transform leads to table row data, then filter out null values
                 const validTableRows = results.map(lead => calculateTeamKpiTables(lead, apiName, lead.admin_json))
                     .filter(tableRowData => tableRowData !== null); // Remove null entries
-                console.log(validTableRows);
                 return validTableRows;
             } else {
-                console.log(selectedDepartment)
+                // console.log(selectedDepartment)
                 // Assuming calculateIndividualKpiTables is correctly handling null values
                 const validTableRows = results.map(lead => calculateIndividualKpiTables(lead, apiName, lead.admin_json, selectedTeamMemberId))
                     .filter(tableRowData => tableRowData !== null); // Filter here if necessary
@@ -560,7 +553,7 @@ function filterResults(results, apiEndpointKey, namesAddresses, selectedDepartme
                     "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name",
                     "Qualification": result["Qualification"] ? result["Qualification"] : "No qualification",
                     "Call Confirmed": result["Call Confirmed"] ? result["Call Confirmed"] : "No call confirmed",
-                    // "Lead Source": result["Related Lead Source Item"] ? result["Related Lead Source Item"] : "No lead source",
+                    "Lead Source": result["Related Lead Source Item"] ? result["Related Lead Source Item"] : "No lead source",
                     "Setter": result["Setter Responsible"] ? result["Setter Responsible"] : result["Team Member Responsible"] ? result["Team Member Responsible"] : "Not Set",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]].seller_id : "No Seller ID",
@@ -597,58 +590,5 @@ function filterResults(results, apiEndpointKey, namesAddresses, selectedDepartme
         console.error(error);
         throw new Error("Error fetching data. Please try again later.");
     }
-}
-
-function extractLeadInformation(lead, namesAddresses, apiName, selectedTeamMemberId, selectedDepartment) {
-    // console.log(lead)
-
-    // Parse the admin_json string into an object
-    const adminJson = JSON.parse(lead.admin_json);
-
-    // Extracting the required information
-    const leadCreatedDate = adminJson.lead_created_ts;
-
-    // Finding the first outbound call date from all setters
-    const firstContactDate = adminJson.setters
-        .filter(setter => setter.first_outbound_call && setter.first_outbound_call.created_on)
-        .map(setter => setter.first_outbound_call.created_on)
-        .sort()[0]; // Assumes dates are in a sortable string format
-
-    // Extracting the setter call information
-    const setterCallDate = adminJson.setter_call.created_on;
-    const setterResponsible = adminJson.setter_call.setter_responsible.name;
-
-    // Extracting the date the lead was contacted by all setters
-    const finalSetterContactDate = adminJson.speed_to_lead.final_setter_first_outbound_call.created_on;
-
-    // Extracting names of setters with a non-null first_outbound_call
-    const setterNames = adminJson.setters
-        .filter(setter => setter.first_outbound_call !== null)
-        .map(setter => setter.name);
-
-    // get Podio item id
-    const podio_item_id = lead.itemid ? lead.itemid : lead.podio_item_id
-
-    // get seller id
-    const seller_id = namesAddresses[lead["Seller Lead"]] ? namesAddresses[lead["Seller Lead"]].seller_id : "No Seller ID";
-
-    // console.log(leadCreatedDate)
-    // console.log(firstContactDate)
-    // console.log(setterCallDate)
-    // console.log(setterResponsible)
-    // console.log(finalSetterContactDate)
-    // console.log(setterNames)
-    // console.log(podio_item_id)
-    // console.log(seller_id)
-    return {
-        leadCreatedDate,
-        firstContactDate,
-        setterCallDate,
-        setterResponsible,
-        finalSetterContactDate,
-        setterNames,
-        podio_item_id,
-        seller_id,
-    };
 }
 
