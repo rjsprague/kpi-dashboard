@@ -256,15 +256,14 @@ export function calculateIndividualKpiTables(lead, apiName, adminJson, selectedT
 }
 
 function calculateIndividualStlTable(lead, data, selectedTeamMemberId) {
+
     const leadName = extractLeadName(lead);
     // Convert leadCreatedTs to 'America/New_York' timezone
-    const leadCreatedTs = data.lead_created_ts ?
-        convertTimestamp(data.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
+    const leadCreatedTs = data.lead_created_ts ? convertTimestamp(data.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
 
-    const setterCall = data.setters.find(setter => setter.item_id === selectedTeamMemberId && setter.first_outbound_call);
+    const setterCall = data?.setters ? data.setters.find(setter => setter.item_id === selectedTeamMemberId && setter.first_outbound_call) : null;
     // Convert firstOutboundCallTs to 'America/New_York' timezone if exists
-    const firstOutboundCallTs = setterCall ?
-        convertTimestamp(setterCall.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York') :
+    const firstOutboundCallTs = setterCall ? convertTimestamp(setterCall.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York') :
         "Call the dang lead.";
 
     let stl = "❌";
@@ -324,7 +323,7 @@ function calculateIndividualEffortTable(lead, data, selectedTeamMemberId) {
     const leadCreatedTs = data.lead_created_ts ?
         convertTimestamp(data.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
 
-    const setterCalls = data.setters.filter(setter => setter.item_id === selectedTeamMemberId && setter.first_outbound_call);
+    const setterCalls = data?.setters ? data.setters.filter(setter => setter.item_id === selectedTeamMemberId && setter.first_outbound_call) : [];
     const firstOutboundCallTs = setterCalls.length > 0 ?
         convertTimestamp(setterCalls[0].first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York') :
         "CALL NOW";
