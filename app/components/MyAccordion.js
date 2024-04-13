@@ -22,7 +22,7 @@ export default function Accordion({ title, height, setHeight, children }) {
         }
     }, [open]);
 
-    const duration = 350;
+    const duration = 75;
     const defaultStyle = {
         transition: `height ${duration}ms ease-in-out, opacity ${duration}ms ease-in-out`,
         height: 0,
@@ -40,7 +40,7 @@ export default function Accordion({ title, height, setHeight, children }) {
     return (
         <div className="py-2 text-sm md:text-md lg:text-lg">
             <button
-                className={`${open ? "" : "rounded-b-lg"} duration-500 ease-linear flex justify-between w-full px-4 py-2 mt-2 font-medium text-left text-white bg-blue-700 rounded-t-lg hover:bg-blue-500`}
+                className={`${open ? "" : "rounded-b-lg"} duration-75 ease-linear flex justify-between w-full px-4 py-2 mt-2 font-medium text-left text-white bg-blue-700 rounded-t-lg hover:bg-blue-600`}
                 onClick={() => {
                     setOpen(!open)
                     setHeight(height === 0 ? 'auto' : 0)
