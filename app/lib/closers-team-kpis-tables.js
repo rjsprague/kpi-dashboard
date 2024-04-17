@@ -123,9 +123,11 @@ function calculateTeamStlTable(lead, data) {
         completed = finalOutboundCallTs || setterCallTs;
     }
 
+    // console.log(data)
+
     const setterResponsible = data.setter_call && data.setter_call.setter_responsible && data.setter_call.setter_responsible.name ? data.setter_call.setter_responsible.name : "No Setter Call";
-    const allSettersCalled = data.setters && data.setters.every(setter => setter.first_outbound_call && setter.first_outbound_call.created_on);
-    const naughtyList = !allSettersCalled ? data.setters.filter(setter => !setter.first_outbound_call || !setter.first_outbound_call.created_on).map(setter => setter.name).join(', ') : '✅';
+    const allSettersCalled = data?.setters && data?.setters?.every(setter => setter?.first_outbound_call && setter?.first_outbound_call?.created_on);
+    const naughtyList = !allSettersCalled && data.setters ? data.setters.filter(setter => setter?.first_outbound_call === null).map(setter => setter.name).join(', ') : '✅';
 
     return {
         Name: leadName,
