@@ -27,6 +27,7 @@ async function fetchActiveTeamMembers(clientSpaceId) {
             },
             body: JSON.stringify({
                 "spaceid": bearerToken,
+                "limit": 1000,
             })
         });
 
