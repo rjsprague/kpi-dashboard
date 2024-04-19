@@ -9,14 +9,14 @@ async function fetchActiveTeamMembers(clientSpaceId) {
 
     try {
         let apiUrl;
-        let bearerToken;
+        let spaceId;
 
         if (clientSpaceId === closersSpaceId) {
             apiUrl = '/api/closers/acquisitions/team-members';
-            bearerToken = closersSpaceId;
+            spaceId = closersSpaceId;
         } else {
             apiUrl = '/api/team-members';
-            bearerToken = clientSpaceId;
+            spaceId = clientSpaceId;
         }
 
         const response = await fetch(apiUrl, {
@@ -26,7 +26,7 @@ async function fetchActiveTeamMembers(clientSpaceId) {
                 'Authorization': `Bearer ${accessToken}`,
             },
             body: JSON.stringify({
-                "spaceid": bearerToken,
+                "spaceid": spaceId,
                 "limit": 1000,
             })
         });
