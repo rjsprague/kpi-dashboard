@@ -3,7 +3,7 @@ import { Fragment, useState } from 'react';
 import UserForm from './UserForm';
 import { FiX } from 'react-icons/fi';
 
-const UserModal = ({user, isOpen, setIsOpen}) => {
+const UserModal = ({user, isOpen, setIsOpen, accessToken}) => {
 
     const closeModal = () => {
         setIsOpen(false);
@@ -47,7 +47,7 @@ const UserModal = ({user, isOpen, setIsOpen}) => {
                                     <FiX />
                                 </button>
                                 <div className="relative inline-block w-full max-w-md p-4 pt-8 overflow-y-scroll text-left align-middle transition-all transform">
-                                    <UserForm user={user} />
+                                    <UserForm user={user} accessToken={accessToken} />
                                 </div>
                             </div>
                         </Transition.Child>

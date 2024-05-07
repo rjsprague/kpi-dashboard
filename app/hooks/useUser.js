@@ -45,11 +45,11 @@ export const useUser = () => {
 
     const login = async (rawEmail, password) => {
 
-        console.log(rawEmail)
+        // console.log(rawEmail)
 
         // sanitize email address
         const email = rawEmail.trim().toLowerCase();
-        console.log("sanitizedEmail", email)
+        // console.log("sanitizedEmail", email)
 
         const response = await axios.post('/api/auth/login',
             JSON.stringify({ email, password }),
@@ -61,6 +61,7 @@ export const useUser = () => {
         );
         const { exp } = jwt.decode(response.data.token);
         const expiryDate = new Date(exp * 1000);
+        // console.log("expiryDate", expiryDate)
 
         Cookies.set('token', response.data.token, { expires: expiryDate, path: '/' });
         Cookies.set('tokenExpiry', exp.toString(), { expires: expiryDate, path: '/' });

@@ -10,11 +10,12 @@ import { toast } from 'react-toastify';
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
-const UserForm = ({ user }) => {
+const UserForm = ({ user, accessToken }) => {
 
-    // console.log(user)
+    console.log(user)
     const [clientNamesArray, setClientNamesArray] = useState([]);
-    const [selectedClientName, setSelectedClientName] = useState('');
+    const [clientSpacesObj, setClientSpacesObj] = useState({}); // spaceid: clientname
+    const [selectedSpaceId, setSelectedSpaceId] = useState('');
     const [selectedTimezone, setSelectedTimezone] = useState('');
     const [formType, setFormType] = useState('create');
 
@@ -29,9 +30,9 @@ const UserForm = ({ user }) => {
 
     useEffect(() => {
         if (user && user['_id']) {
-            setFormType('updat');
+            setFormType('updated');
         } else {
-            setFormType('creat');
+            setFormType('creating');
         }
     }, [user]);
 
@@ -44,37 +45,40 @@ const UserForm = ({ user }) => {
 
             if (user && user['_id']) {
                 // Update user
-                const updateUserResponse = await axios.put('/api/temp/users/' + user['_id'], formData, {
+                const updateUserResponse = await axios.put('/api/temp/users/' + user['_id'] + '?key=b777b86d-ftlc-9647-dmki-e1ca6ad5ea82', formData, {
                     headers: {
                         'Content-Type': 'application/json',
+                        // Authorization: `Bearer ${accessToken}`,
                     }
                 });
 
                 if (updateUserResponse.status !== 200) {
-                    throw new Error('Error creating or updating user.');
+                    throw new Error('Error updating user.');
                 }
 
             } else {
                 // console.log('Creating user')
-                // console.log(formData)
+                console.log(formData)
 
-                const createUserResponse = await axios.post('/api/temp/users', formData, {
+                const createUserResponse = await axios.post('/api/temp/users?key=b777b86d-ftlc-9647-dmki-e1ca6ad5ea82', formData, {
                     headers: {
                         'Content-Type': 'application/json',
                     }
                 });
-                // console.log(createUserResponse)
-                if (createUserResponse.status !== 200) {
-                    throw new Error('Error creating or updating user.');
+
+                console.log(createUserResponse)
+
+                if (createUserResponse.status !== 201) {
+                    throw new Error('Error creating user.');
                 }
 
             }
 
-            toast.success('User' + formType + 'ed successfully.')
+            toast.success('User ' + formType + ' successfully.')
 
         } catch (error) {
-            console.error('Error creating or updating user:', error);
-            toast.error('Error ' + formType + 'ing user.');
+            console.error('Error creating or updating user: ', error);
+            toast.error('Error ' + formType + ' user.');
         }
     };
 
@@ -103,22 +107,31 @@ const UserForm = ({ user }) => {
 
             // Set state variables for dropdowns
             setSelectedTimezone(user.settings?.timezone && user.settings.timezone || '');
-            setSelectedClientName(user.settings.podio.spaceid || 0); // Assuming you can map spaceid to client name
+            setSelectedSpaceId(user.settings.podio.spaceid || 0); // Assuming you can map spaceid to client name
         }
     }, [user]);
 
     useEffect(() => {
         if (clientsObj) {
             setClientNamesArray(Object.keys(clientsObj));
+            // Reverse the clientsObj object so that we can use the spaceid as the key
+            const reversedClientsObj = {};
+            for (const [key, value] of Object.entries(clientsObj)) {
+                reversedClientsObj[value] = key;
+            }
+            setClientSpacesObj(reversedClientsObj);
         }
     }, [clientsObj]);
 
     useEffect(() => {
-        if (selectedClientName && selectedClientName !== 'Starter' && selectedClientName !== 'Professional') {
-            const spacesID = clientsObj[selectedClientName];
-            setValue('settings.podio.spacesID', spacesID);
+        if (clientsObj && selectedSpaceId && selectedSpaceId !== 0) {
+            console.log(selectedSpaceId);
+            console.log(clientsObj)
+            const spacesID = clientSpacesObj[selectedSpaceId];
+            console.log(spacesID);
+            setValue('settings.podio.spaceid', spacesID);
         }
-    }, [selectedClientName, clientsObj]);
+    }, [selectedSpaceId, clientsObj]);
 
     useEffect(() => {
         if (selectedTimezone) {
@@ -223,7 +236,7 @@ const UserForm = ({ user }) => {
             {/* Podio Client Name Dropdown */}
             <div className='flex flex-row items-center gap-2 pl-4'>
                 <label className='font-normal text-md sm:whitespace-nowrap'>Client</label>
-                <select onChange={(e) => setSelectedClientName(e.target.value)} className="w-full px-2 py-1 text-black border rounded">
+                <select onChange={(e) => setSelectedSpaceId(clientsObj[e.target.value])} value={clientSpacesObj[selectedSpaceId]} className="w-full px-2 py-1 text-black border rounded">
                     <option value="" disabled>Select Client</option>
                     <option>Starter</option>
                     <option>Professional</option>

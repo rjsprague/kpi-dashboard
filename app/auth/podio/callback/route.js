@@ -9,7 +9,8 @@ export async function GET(req, res) {
     const url = new URL(req.url);
     // console.log(url)
     const code = url.searchParams.get('code');
-    // console.log(code)
+    console.log(code)
+    // return NextResponse.redirect(public_base_url + '/login');
     const preLoginRoute = url.searchParams.get('preLoginRoute')
     // console.log(preLoginRoute)
 
@@ -19,20 +20,20 @@ export async function GET(req, res) {
 
     // Construct the absolute URL for the callback
     const callbackUrl = `${process.env.API_BASE_URL}/auth/callback?code=${code}`;
-    // console.log(callbackUrl)
+    console.log(callbackUrl)
     try {
         const response = await fetch(callbackUrl, { cache: 'no-store' });
-        // console.log(response)
+        console.log(response)
 
         const data = await response.json();
 
-        // console.log(data)
+        console.log(data)
 
         const { token } = data;
-        // console.log(token)
+        console.log(token)
 
         const decodedToken = jwt.decode(token);
-        // console.log(decodedToken)
+        console.log(decodedToken)
 
         cookies().set({
             name: 'token',

@@ -20,6 +20,7 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const { auth } = useAuth();
 
     useEffect(() => {
@@ -32,6 +33,7 @@ export default function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitting(true);
 
         // validate email address
         if (!email) {
@@ -74,6 +76,7 @@ export default function LoginPage() {
             }
             errRef.current.focus();
         }
+        setSubmitting(false);
     }
 
     // if auth has a token and the token has not expired, redirect to dashboard
@@ -116,7 +119,7 @@ export default function LoginPage() {
                         <button type="button" onClick={() => setShowPassword(!showPassword)} className='text-sm text-blue-500'>
                             {showPassword ? 'Hide' : 'Show'} Password
                         </button>
-                        <button type="submit" className='w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600'>Sign In</button>
+                        <button type="submit" className='w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600'>{!submitting ? "Sign In" : "Logging in..." }</button>
                     </form>
 
                     <Link

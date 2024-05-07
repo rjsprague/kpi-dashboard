@@ -235,7 +235,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     Object.keys(results).forEach(key => {
         results[key] = filterResults(results[key], key, namesAddresses, selectedDepartment, apiName, teamMembers);
     });
-    console.log(results)
+    // console.log(results)
 
     return results;
 };

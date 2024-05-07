@@ -1,5 +1,5 @@
 "use client"
-import { createContext, useState, ReactNode, useRef, useEffect } from 'react';
+import { createContext, useState, ReactNode } from 'react';
 import { useUser } from '@/hooks/useUser';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';

@@ -317,6 +317,10 @@ function calculateSetterStlTableForIndividual(lead, data, selectedTeamMemberId) 
 
 
 function calculateIndividualEffortTable(lead, data, selectedTeamMemberId) {
+    console.log(lead)
+    console.log(data)
+    console.log(selectedTeamMemberId)
+
     if (data.setter_call && data.setter_call.created_on) return null; // Return null if there is a setter call
 
     const leadName = extractLeadName(lead);

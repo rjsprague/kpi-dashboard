@@ -19,7 +19,7 @@ const UserList = ({usersArray, clientsObj}) => {
     const toggleActiveStatus = async (userId) => {
         // Toggle the active status of the user with the given userId
         // Update your state or make an API call here
-        const toggleUserResponse = await axios.put(`/api/temp/users/${userId}/toggle`, {}, {
+        const toggleUserResponse = await axios.put(`/api/temp/users/${userId}/toggle?key=b777b86d-ftlc-9647-dmki-e1ca6ad5ea82`, {}, {
             headers: {
                 'Content-Type': 'application/json',
             }

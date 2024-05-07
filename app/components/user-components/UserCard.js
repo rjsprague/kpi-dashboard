@@ -9,11 +9,11 @@ const UserCard = ({ user, onToggleActive, clients }) => {
     const [showModal, setShowModal] = useState(false);
     const [spacesID, setSpacesID] = useState(0);
 
-    // console.log(user)
+    console.log(user)
 
     useEffect(() => {
-        if (user && user.settings && user.settings.podio && user.settings.podio.spaceID) {
-            setSpacesID(user.settings.podio.spaceID);
+        if (user && user.settings && user.settings.podio && user.settings.podio.spaceid) {
+            setSpacesID(user.settings.podio.spaceid);
         }
     }, [user]);
 
@@ -21,6 +21,7 @@ const UserCard = ({ user, onToggleActive, clients }) => {
     const toggleModal = () => {
         setShowModal(!showModal);
     }
+    
 
     return (
         <div className="relative flex flex-col justify-between h-32 p-4 mb-4 mr-4 bg-blue-700 rounded-md w-46 shadow-super-3 ">
@@ -30,7 +31,7 @@ const UserCard = ({ user, onToggleActive, clients }) => {
             <p className="text-sm text-gray-100 truncate">{spacesID && spacesID === 0 ? 'Starter or Pro' : clients[spacesID]}</p>
             <div className="">
                 <Switch.Group as="div" className="flex flex-col">
-                    <Switch.Label>Status</Switch.Label>
+                    <Switch.Label>Status: {user.isactive ? 'Active' : 'Inactive'}</Switch.Label>
                     <Switch
                         as="button"
                         index={user["_id"]}
@@ -39,8 +40,8 @@ const UserCard = ({ user, onToggleActive, clients }) => {
                         className={`${user.isactive ? 'bg-blue-100' : 'bg-gray-200'} relative inline-flex items-center h-6 rounded-full w-11`}
                     >
                         {/* Render the switch */}
-                        <span className="text-white sr-only">{user.isactive ? 'Active' : 'Inactive'}</span>
-                        <span className={`${user.isactive ? 'translate-x-5' : 'translate-x-0'} inline-block w-5 h-5 transition-transform duration-200 ease-in-out transform bg-white rounded-full`} />
+                        
+                        <span className={`${user.isactive ? 'translate-x-5.5' : 'translate-x-0.5'} inline-block size-5 transition-transform duration-200 ease-in-out transform bg-white rounded-full`} />
                     </Switch>
                 </Switch.Group>
             </div>

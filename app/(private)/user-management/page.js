@@ -42,7 +42,7 @@ function UserManagementPage() {
             },
             podio: {
                 userID: 0,
-                spacesID: 0
+                spaceID: 0
             }
         },
         isAdmin: false,
@@ -93,7 +93,7 @@ function UserManagementPage() {
             <button onClick={openModal} className="p-2 text-white bg-blue-500 rounded">
                 Create User
             </button>
-            <UserModal user={defaultValues} openModal={openModal} isOpen={isOpen} setIsOpen={setIsOpen} />
+            <UserModal user={defaultValues} openModal={openModal} isOpen={isOpen} setIsOpen={setIsOpen} accessToken={accessToken} />
             <UserList usersArray={users.data} clientsObj={clientsObj} />
         </div>
     );
