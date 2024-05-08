@@ -50,7 +50,7 @@ const TeamKpiQuery = ({
     // console.log(kpiList[query.departments])
 
     const updateKpiList = (department) => {
-        console.log(department)
+        // console.log(department)
         setTeamKpiList(kpiList[department]);
         setSelectedKpis(kpiList[department]);
     };
@@ -117,15 +117,15 @@ const TeamKpiQuery = ({
                         />
                     </div>
                     <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-1">
-                        {/* <LeadSourcesDropdown
+                        <LeadSourcesDropdown
                             onOptionSelected={onLeadSourceChange}
                             selectedLeadsources={query.leadSources}
                             queryId={query.id}
                             leadSources={leadSources}
                             isLoadingData={isLoadingData}
                             isUnavailable={query.isUnavailable}
-                        /> */}
-                        <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} selectedDateRange={query.dateRange} />
+                        />
+                        {/* <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} selectedDateRange={query.dateRange} /> */}
                     </div>
                 </div>
             </QueryPanel>
