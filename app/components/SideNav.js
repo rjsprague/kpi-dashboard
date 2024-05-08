@@ -43,7 +43,7 @@ export default function SideNav() {
 
     const dispatch = useDispatch();
 
-    console.log(user)
+    // console.log(user)
 
     useEffect(() => {
         if (user && user.isScaling) {

@@ -453,6 +453,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
 
             } else if (departments[0] === "Individual") {
 
+
                 const selectedTeamMemberId = teamMember[0];
 
                 const individualStlMedian = Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
@@ -565,7 +566,13 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                     try {
                         const adminObj = curr && curr["admin_json"] ? JSON.parse(curr["admin_json"]) : {};
 
-                        if (adminObj.setter_call?.created_on) {
+                        // console.log(adminObj)
+
+                        const selectedSetterExists = adminObj.setters && adminObj.setters.filter(setter => Number(setter.item_id) === teamMember[0]);
+
+                        // console.log(selectedSetterExists)
+
+                        if (adminObj.setter_call?.created_on || selectedSetterExists.length === 0) {
                             // skip the lead if a Setter Call has already happened
                             return acc;
                         } else {

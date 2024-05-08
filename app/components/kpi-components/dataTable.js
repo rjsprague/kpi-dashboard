@@ -80,7 +80,7 @@ const dateColumnKeys = {
 
 const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSources, teamMembersMap, clients, showTooltip, hideTooltip) => {
     // console.log(invertedLeadSources)
-    console.log('selectedTableKey', selectedTableKey)
+    // console.log('selectedTableKey', selectedTableKey)
 
     return Object.keys(data[0]).map(key => {
         if (key !== 'podio_item_id' && key !== 'seller_id') {
