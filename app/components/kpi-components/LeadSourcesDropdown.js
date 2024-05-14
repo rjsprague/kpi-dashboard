@@ -10,8 +10,8 @@ export default function LeadSourceDropdown({ onOptionSelected, selectedLeadsourc
     const [selectedOptions, setSelectedOptions] = useState(Object.keys(leadSources));
     const allsourcesLabel = "Lead Sources";
 
-    // console.log(leadSources)
-    // console.log(selectedLeadsources)
+    console.log(leadSources)
+    console.log(selectedLeadsources)
 
     useEffect(() => {
         const leadSourcesObj = {};

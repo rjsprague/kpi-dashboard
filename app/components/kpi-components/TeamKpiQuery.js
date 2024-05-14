@@ -125,7 +125,7 @@ const TeamKpiQuery = ({
                             isLoadingData={isLoadingData}
                             isUnavailable={query.isUnavailable}
                         />
-                        {/* <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} selectedDateRange={query.dateRange} /> */}
+                        <SingleDateRangeSelector queryId={query.id} onDateRangeChange={handleDateRangeChange} selectedDateRange={query.dateRange} />
                     </div>
                 </div>
             </QueryPanel>

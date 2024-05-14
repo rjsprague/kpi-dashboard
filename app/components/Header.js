@@ -6,7 +6,6 @@ import { faSignOut } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link'
 import Image from 'next/image'
 import { Menu, Transition } from '@headlessui/react'
-import LoadingQuotes from './LoadingQuotes';
 import useAuth from '@/hooks/useAuth';
 
 
@@ -72,14 +71,24 @@ export default function Header() {
                                 )}
                             </Menu.Item>
                             {user && user.isAdmin && (
-                                <Menu.Item>
-                                    {({ active }) => (
-                                        <Link href="/user-management" className={`flex items-center w-full px-4 py-2 ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
-                                            <FiUsers className='mr-2 text-xl' />
-                                            Users
-                                        </Link>
-                                    )}
-                                </Menu.Item>
+                                <>
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <Link href="/user-management" className={`flex items-center w-full px-4 py-2 ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
+                                                <FiUsers className='mr-2 text-xl' />
+                                                Users
+                                            </Link>
+                                        )}
+                                    </Menu.Item>
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <Link href="/client-sites" className={`flex items-center w-full px-4 py-2 ${active ? 'bg-blue-500 text-white' : 'text-gray-900'}`}>
+                                                <FiUsers className='mr-2 text-xl' />
+                                                Client Sites
+                                            </Link>
+                                        )}
+                                    </Menu.Item>
+                                </>
                             )}
                             <Menu.Item>
                                 {({ active }) => (
