@@ -250,6 +250,8 @@ function filterResults(results, apiEndpointKey, namesAddresses, selectedDepartme
     // console.log(teamMembers)
     let selectedTeamMemberId = teamMembers && teamMembers[0]
 
+    console.log(results)
+
     try {
         if (apiEndpointKey === "marketingExpenses" || apiEndpointKey === "closersAdSpend") {
             return results.map((result) => {
@@ -366,7 +368,7 @@ function filterResults(results, apiEndpointKey, namesAddresses, selectedDepartme
                     "Date": result["Timestamp"]["start"] ? formatDate(result["Timestamp"]["start"]) : "No Date",
                     "Name": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Name"] : "Ask Ryan",
                     "Address": namesAddresses && namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]]["Address"] : "Ask Ryan",
-                    "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 60) + " mins" : "No LM STL Median",
+                    "LM STL Median": result["Speed to Lead Adjusted"] ? (result["Speed to Lead Adjusted"] / 60).toFixed(2) + " mins" : "No LM STL Median",
                     "Team Member": result["Team Member Responsible"] ? result["Team Member Responsible"] : "No Team Member",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,

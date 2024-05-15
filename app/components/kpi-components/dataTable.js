@@ -86,7 +86,7 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
         if (key !== 'podio_item_id' && key !== 'seller_id') {
             const dateColumnKey = dateColumnKeys[selectedTableKey];
 
-            console.log(key)
+            // console.log(key)
 
 
             return columnHelper.accessor(key, {
@@ -97,9 +97,9 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
                     const cellValue = info.getValue();
                     let displayValue;
 
-                    if (info.column.columnDef.header === 'AM STL Median') {
-                        console.log(info.getValue())
-                    }
+                    // if (info.column.columnDef.header === 'AM STL Median') {
+                    //     console.log(info.getValue())
+                    // }
 
                     // Your logic for determining the displayValue
                     if (info.column.columnDef.header === 'Lead Source') {
@@ -132,7 +132,7 @@ const generateColumns = (selectedTableKey, data, columnHelper, invertedLeadSourc
                     );
                 },
                 enableSorting: true,
-                sortingFn: key === dateColumnKey ? 'datetime' : key === 'AM STL Median' || key === 'Amount' ? 'alphanumeric' : 'basic',
+                sortingFn: key === dateColumnKey ? 'datetime' : key === 'AM STL Median' || key === 'Amount' || key === 'LM STL Median' ? 'alphanumeric' : 'basic',
                 sortDescFirst: true,
             });
         }
