@@ -11,6 +11,7 @@
 /* width */
 ::-webkit-scrollbar {
     width: 10px;
+    height: 10px;
 }
 
 /* Track */
@@ -130,7 +131,6 @@ body {
 }
 
 .kpis-open {
-
     max-height: 400px;
 }
 

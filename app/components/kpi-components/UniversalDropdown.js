@@ -182,12 +182,12 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                 {(state) => (
                     <div
                         ref={dropdownContentRef}
-                        className="absolute z-50 p-1 text-white bg-blue-800 rounded-lg shadow-lg -left-10 bg-opacity-80 max-w-screen8"
+                        className="absolute z-50 p-1 text-white bg-blue-800 rounded-lg shadow-lg resize bg-opacity-80 w-60 -left-10 sm:left-0"
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],
-                            maxHeight: "200px",
-                            overflowY: "auto",
+                            height: "200px",
+                            overflow: "auto",
                         }}
                     >
                         <input
