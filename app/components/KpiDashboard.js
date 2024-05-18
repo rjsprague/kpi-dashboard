@@ -306,7 +306,7 @@ export default function KpiDashboard({ user }) {
     }
 
     const handleQueryTypeChange = (type) => {
-        console.log(type)
+        // console.log(type)
         // console.log(queryType)
         // console.log(queries)
         if (clientSpaceId === closersSpaceId) {
@@ -324,7 +324,7 @@ export default function KpiDashboard({ user }) {
             let newQuery = professionalQuery(type);
             setQueries([...queries, newQuery]);
         } else if (type !== queryType && queries.filter((query) => query.kpiView === type).length === 0) {
-            console.log("adding new query")
+            // console.log("adding new query")
             setQueries([...queries, ...createInitialQueries(leadSources, departments, datePresets, idCounter + 1, type)]);
         }
         setQueryType(type);

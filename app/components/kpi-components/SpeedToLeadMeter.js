@@ -95,9 +95,9 @@ const Dial = ({ target, redFlag, max, value, unit }) => {
     ];
 
     const targetTriangle = [
-        { x: 225 + 195 * Math.cos((Math.PI / 180) * (180 - targetPosition)), y: 200 - 200 * Math.sin((Math.PI / 180) * (180 - targetPosition)) },
+        { x: 228 + 195 * Math.cos((Math.PI / 180) * (180 - targetPosition)), y: 200 - 200 * Math.sin((Math.PI / 180) * (180 - targetPosition)) },
         { x: 225 + 180 * Math.cos((Math.PI / 180) * (180 - targetPosition)), y: 200 - 170 * Math.sin((Math.PI / 180) * (180 - targetPosition)) },
-        { x: 225 + 195 * Math.cos((Math.PI / 180) * (180 - targetPosition + 4)), y: 200 - 200 * Math.sin((Math.PI / 180) * (180 - targetPosition + 4)) },
+        { x: 228 + 195 * Math.cos((Math.PI / 180) * (180 - targetPosition + 4)), y: 200 - 200 * Math.sin((Math.PI / 180) * (180 - targetPosition + 4)) },
     ];
 
 

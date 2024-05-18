@@ -64,13 +64,23 @@ export const VIEW_KPIS = {
                 "Team STL Median",
                 "Setters STL Median",
                 "Closers STL Median",
-                "Team Effort"
+                "Team Effort",
+                // "STL Under 10",
+                // "STL 10-30",
+                // "Outside B.H. STL",
+                // "1st Setter Bonus",
+                // "Big Checks",
             ],
             "Individual": [
                 "Individual STL Median",
                 "Setter STL Median",
                 "Closer STL Median",
-                "Individual Effort"
+                "Individual Effort",
+                "STL Under 10",
+                "STL 10 to 30",
+                "Outside B.H. STL",
+                "1st Setter Bonus",
+                // "Big Checks",
             ],
         }
     },

@@ -1304,7 +1304,7 @@ const KPI_DEFINITIONS = {
             const { settersStlMedian } = apiData;
             let stlArray = settersStlMedian ? settersStlMedian : [];
             stlArray.sort((a, b) => a - b);
-            let settersStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2): (stlArray[(stlArray.length - 1) / 2]);
+            let settersStlMedianSorted = stlArray.length % 2 === 0 ? ((stlArray[stlArray.length / 2 - 1] + stlArray[stlArray.length / 2]) / 2) : (stlArray[(stlArray.length - 1) / 2]);
             return settersStlMedianSorted;
         },
         redFlag: 8,
@@ -1361,7 +1361,7 @@ const KPI_DEFINITIONS = {
     "Team Effort": {
         // How many leads all active setters attempted to contact during the date range
         name: "Team Effort",
-        dataKeys: [ "noSetterCallLeads", "teamEffort"],
+        dataKeys: ["noSetterCallLeads", "teamEffort"],
         formula: (apiData) => {
             const { noSetterCallLeads, teamEffort } = apiData;
             return noSetterCallLeads > 0 ? teamEffort / noSetterCallLeads * 100 : 0;
@@ -1497,6 +1497,114 @@ const KPI_DEFINITIONS = {
                 id: 0,
                 title: "How to Optimize Individual Effort",
                 definition: "The percentage of leads the selected setter attempted to contact during the date range."
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "STL Under 10": {
+        // The number of leads that were contacted within 10 minutes of being created
+        name: "STL Under 10",
+        dataKeys: ["stlUnder10"],
+        formula: (apiData) => {
+            const { stlUnder10 } = apiData;
+            return stlUnder10;
+        },
+        redFlag: 0,
+        target: 0,
+        dataLabels: [""],
+        kpiType: "",
+        unit: " leads",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize STL Under 10",
+                definition: "The number of leads that were contacted within 10 minutes of being created."
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "STL 10 to 30": {
+        // The number of leads that were contacted between 10 and 30 minutes of being created
+        name: "STL 10 to 30",
+        dataKeys: ["stl10to30"],
+        formula: (apiData) => {
+            const { stl10to30 } = apiData;
+            return stl10to30;
+        },
+        redFlag: 0,
+        target: 0,
+        dataLabels: [""],
+        kpiType: "",
+        unit: " leads",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize STL 10 to 30",
+                definition: "The number of leads that were contacted between 10 and 30 minutes of being created."
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "Outside B.H. STL": {
+        // The number of leads that were contacted outside of business hours
+        name: "Outside B.H. STL",
+        dataKeys: ["outsideBHStl"],
+        formula: (apiData) => {
+            const { outsideBHStl } = apiData;
+            return outsideBHStl;
+        },
+        redFlag: 0,
+        target: 0,
+        dataLabels: [""],
+        kpiType: "",
+        unit: " leads",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize Outside B.H. STL",
+                definition: "The number of leads that were contacted outside of business hours."
+            },
+            {
+                id: 1,
+                desc: "Description TBD",
+                linkName: "Learn More",
+                link: ""
+            },
+        ],
+    },
+    "1st Setter Bonus": {
+        // The number of leads that were contacted by the selected setter first
+        name: "1st Setter Bonus",
+        dataKeys: ["firstSetterBonus"],
+        formula: (apiData) => {
+            const { firstSetterBonus } = apiData;
+            return firstSetterBonus;
+        },
+        redFlag: 0,
+        target: 0,
+        dataLabels: [""],
+        kpiType: "",
+        unit: " leads",
+        kpiFactors: [
+            {
+                id: 0,
+                title: "How to Optimize 1st Setter Bonus",
+                definition: "The number of leads that were contacted by the selected setter first."
             },
             {
                 id: 1,

@@ -2,7 +2,14 @@ import fetchKPIs from "./api-utils";
 import KPI_DEFINITIONS from "./kpi-definitions";
 import kpiToEndpointMapping from "./kpiToEndpointMapping";
 import apiEndpoints from "./apiEndpoints";
-import { calculateDelayedStart, convertTimestamp } from "./date-utils";
+import { calculateDelayedStart, convertTimestamp, outsideBusinessHours } from "./date-utils";
+
+import {
+    calculateTeamKpiTables,
+    calculateIndividualKpiTables,
+    calculateClosersAcquisitionTables
+} from './closers-team-kpis-tables';
+
 // import calculateTotalSalesCapacity from "./closers-sales-capacity";
 
 function formatDate(date) {
@@ -462,7 +469,8 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                         if (!adminObj || !adminObj.lead_created_ts) return acc; // Skip if no adminObj or lead_created_ts
 
                         // Convert lead_created_ts directly to ISO string
-                        let lead_created_on = new Date(adminObj.lead_created_ts).toISOString();
+                        let leadCreatedOn = adminObj.lead_created_ts ? convertTimestamp(adminObj.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
+
 
                         // Ensure setters is treated as an array
                         let setters = Array.isArray(adminObj.setters) ? adminObj.setters : [];
@@ -470,8 +478,8 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                         setters.forEach(setter => {
                             let setterItemId = Number(setter.item_id);
                             if (selectedTeamMemberId === setterItemId && setter.first_outbound_call && setter.first_outbound_call.created_on) {
-                                let setterOutboundCall = new Date(setter.first_outbound_call.created_on).toISOString();
-                                let diffInSeconds = calculateDelayedStart(lead_created_on, setterOutboundCall, 'America/New_York');
+                                let setterOutboundCall = convertTimestamp(setter.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York');
+                                let diffInSeconds = calculateDelayedStart(leadCreatedOn, setterOutboundCall, 'America/New_York');
                                 acc.push(diffInSeconds);
                             }
                         });
@@ -483,6 +491,105 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
 
                 // console.log(individualStlMedian)
 
+                const stlUnder10 = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
+                    // the number of leads where the selected setter has a speed to lead under 10 minutes
+                    try {
+                        const adminObj = curr && curr["admin_json"] ? JSON.parse(curr["admin_json"]) : {};
+                        if (!adminObj || !adminObj.lead_created_ts) return acc;
+
+                        const leadCreatedOn = adminObj.lead_created_ts ? convertTimestamp(adminObj.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
+                        let setters = Array.isArray(adminObj.setters) ? adminObj.setters : [];
+
+                        setters.forEach(setter => {
+                            let setterItemId = Number(setter.item_id);
+                            if (selectedTeamMemberId === setterItemId && setter.first_outbound_call && setter.first_outbound_call.created_on) {
+                                let setterOutboundCall = convertTimestamp(setter.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York');
+                                let diffInSeconds = calculateDelayedStart(leadCreatedOn, setterOutboundCall, 'America/New_York');
+                                if (diffInSeconds < 600) {
+                                    acc += 1;
+                                }
+                            }
+                        });
+                    } catch (e) {
+                        console.error("Error parsing JSON:", e);
+                    }
+                    return acc;
+                }, 0) : 0;
+
+                console.log(stlUnder10)
+
+                const stl10to30 = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
+                    // the number of leads where the selected setter has a speed to lead between 10 and 30 minutes
+                    try {
+                        const adminObj = curr && curr["admin_json"] ? JSON.parse(curr["admin_json"]) : {};
+                        if (!adminObj || !adminObj.lead_created_ts) return acc;
+
+                        const leadCreatedOn = adminObj.lead_created_ts ? convertTimestamp(adminObj.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
+                        let setters = Array.isArray(adminObj.setters) ? adminObj.setters : [];
+
+                        setters.forEach(setter => {
+                            let setterItemId = Number(setter.item_id);
+                            if (selectedTeamMemberId === setterItemId && setter.first_outbound_call && setter.first_outbound_call.created_on) {
+                                let setterOutboundCall = convertTimestamp(setter.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York');
+                                let diffInSeconds = calculateDelayedStart(leadCreatedOn, setterOutboundCall, 'America/New_York');
+                                if (diffInSeconds >= 600 && diffInSeconds <= 1800) {
+                                    acc += 1;
+                                }
+                            }
+                        });
+                    } catch (e) {
+                        console.error("Error parsing JSON:", e);
+                    }
+                    return acc;
+                }, 0) : 0;
+
+                console.log(stl10to30)
+
+                const outsideBHStl = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
+                    // the number of leads where the selected setter has a speed to lead outside of business hours
+                    try {
+                        const adminObj = curr && curr["admin_json"] ? JSON.parse(curr["admin_json"]) : {};
+                        if (!adminObj || !adminObj.lead_created_ts) return acc;
+                        // console.log(adminObj)
+                        const leadCreatedOn = adminObj.lead_created_ts ? convertTimestamp(adminObj.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
+
+                        let setters = Array.isArray(adminObj.setters) ? adminObj.setters : [];
+
+                        setters.forEach(setter => {
+                            let setterItemId = Number(setter.item_id);
+                            if (selectedTeamMemberId === setterItemId && setter.first_outbound_call && setter.first_outbound_call.created_on) {
+                                let setterOutboundCall = convertTimestamp(setter.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York');
+                                let diffInSeconds = calculateDelayedStart(leadCreatedOn, setterOutboundCall, 'America/New_York');
+                                let outsideBH = outsideBusinessHours(leadCreatedOn, 'America/New_York');
+                                if (outsideBH && diffInSeconds < 1800) {
+                                    acc += 1;
+                                }
+                            }
+                        });
+                    } catch (e) {
+                        console.error("Error parsing JSON:", e);
+                    }
+                    return acc;
+                }, 0) : 0;
+
+                console.log(outsideBHStl)
+
+                const firstSetterBonus = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
+                    // the number of leads where the selected setter was the first setter to contact the lead
+                    try {
+                        const adminObj = curr && curr["admin_json"] ? JSON.parse(curr["admin_json"]) : {};
+                        if (!adminObj || !adminObj.lead_created_ts || !adminObj.setters) return acc;
+                        if (Number(adminObj.speed_to_lead?.first_outbound_call?.call_owner?.item_id) === selectedTeamMemberId) {
+                            acc += 1;
+                        }
+
+                    } catch (e) {
+                        console.error("Error parsing JSON:", e);
+                    }
+                    return acc;
+                }, 0) : 0;
+
+                console.log(firstSetterBonus)
 
                 const setterStlMedian = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
                     // The median time between when the lead is created and a Setter Call is submitted for the lead by the selected setter
@@ -491,8 +598,8 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                         if (!adminObj) return acc; // Skip current iteration if adminObj is null or parsing failed
                         // console.log(adminObj)
 
-                        const leadCreatedOn = adminObj.lead_created_ts ? new Date(adminObj.lead_created_ts).toISOString() : null;
-                        const setterCall = adminObj.setter_call?.created_on ? new Date(adminObj.setter_call.created_on).toISOString() : null;
+                        const leadCreatedOn = adminObj.lead_created_ts ? convertTimestamp(adminObj.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
+                        const setterCall = adminObj.setter_call?.created_on ? convertTimestamp(adminObj.setter_call.created_on, 'Pacific/Honolulu', 'America/New_York') : null;
                         const setterResponsible = Number(adminObj.setter_call?.setter_responsible?.item_id);
 
                         // console.log(leadCreatedOn, setterCall, setterResponsible, selectedTeamMemberId)
@@ -520,10 +627,10 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                         if (!adminObj) return acc; // Continue with the next iteration if adminObj is null or undefined
 
                         const dcBooking = adminObj.discovery_call_booking;
-                        const dcBookingCreatedOn = dcBooking?.created_on ? new Date(dcBooking.created_on).toISOString() : null;
+                        const dcBookingCreatedOn = dcBooking?.created_on ? convertTimestamp(dcBooking.created_on, 'Pacific/Honolulu', 'America/New_York') : null;
                         const selfSet = dcBooking?.self_set;
                         const closerAssignedId = Number(dcBooking?.closer_assigned?.item_id);
-                        const firstOutboundCloserCallCreatedOn = dcBooking?.closer_assigned?.first_outbound_call?.created_on ? new Date(dcBooking.closer_assigned.first_outbound_call.created_on).toISOString() : null;
+                        const firstOutboundCloserCallCreatedOn = dcBooking?.closer_assigned?.first_outbound_call?.created_on ? convertTimestamp(dcBooking.closer_assigned.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York') : null;
 
                         // Check all conditions are met: dcBooking exists, it's not a self-set, the selected closer is assigned, and the first outbound call is made
                         if (dcBookingCreatedOn && !selfSet && closerAssignedId === selectedTeamMemberId && firstOutboundCloserCallCreatedOn) {
@@ -585,7 +692,12 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                 }, 0) : 0;
 
 
+
                 endpointData.individualStlMedian = individualStlMedian;
+                endpointData.stlUnder10 = stlUnder10;
+                endpointData.stl10to30 = stl10to30;
+                endpointData.outsideBHStl = outsideBHStl;
+                endpointData.firstSetterBonus = firstSetterBonus;
                 endpointData.setterStlMedian = setterStlMedian;
                 endpointData.closerStlMedian = closerStlMedian;
                 endpointData.individualEffort = Math.floor(individualEffort);

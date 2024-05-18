@@ -38,7 +38,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
     const startDate = dateRange.gte ? formatDate(new Date(dateRange.gte)) : null;
     const endDate = dateRange.lte ? formatDate(new Date(dateRange.lte)) : null;
     const clientSpaceId = useSelector(selectSpaceId);
-    // console.log(prop)
+    console.log(prop)
 
     if (isLoading) {
         return ReactDOM.createPortal(
@@ -92,7 +92,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
                             <CountUp delay={1} start={0} decimals={1} end={prop.current} />
                         </span>
                     ) : (
-                        <span>{prop.current}</span>
+                        <span><CountUp delay={1} start={0} decimals={0} end={prop.current} /></span>
                     )
                 }
             </div>)
@@ -112,7 +112,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
                     {
                         prop.data1 !== null && prop.data2 !== null && prop.data3 !== null ?
                             <div className="flex flex-row justify-center gap-2 px-1 text-xs">
-                                <div className="">{prop.data1.length > 1 && prop.name.includes("STL") ? formatTime(prop.current) : prop.data1.length > 1 ? prop.data1 : ""}</div>
+                                <div className="">{prop.data1.length > 1 && prop.name.includes("STL") && !prop.name.includes("10") && !prop.name.includes("Outside") ? formatTime(prop.current) : prop.data1.length > 1 ? prop.data1 : ""}</div>
                                 <div>{prop.data2.length > 1 && prop.data2}</div>
                                 <div>{prop.data3.length > 1 && prop.data3}</div>
                             </div>

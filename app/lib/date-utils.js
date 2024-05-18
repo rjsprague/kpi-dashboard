@@ -171,7 +171,9 @@ export function calculateDelayedStart(startTimestamp, endTimestamp, timezone) {
     const workingStartHour = 8; // 8 AM
 
     let start = DateTime.fromISO(startTimestamp, { zone: timezone });
+    // console.log(start.hour)
     let end = DateTime.fromISO(endTimestamp, { zone: timezone });
+    // console.log(end.hour)
 
     // Adjust start time if it's after 8 PM to 8 AM the next day
     if (start.hour >= 20) {
@@ -192,11 +194,26 @@ export function calculateDelayedStart(startTimestamp, endTimestamp, timezone) {
     return diff; // Returns the difference in seconds
 }
 
+export function outsideBusinessHours(createdTimestamp, timezone) {
+    // Check if the lead was created outside business hours
+    // Assuming startTimestamp and endTimestamp are already in 'America/New_York' timezone
+    8
+    let created = DateTime.fromISO(createdTimestamp, { zone: timezone });
+
+    // Check if the lead was created before 8 AM or after 8 PM
+    if (created.hour < 8 || created.hour >= 20) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 
 export function convertTimestamp(timestamp, fromZone, toZone) {
 
     // console.log(timestamp, fromZone, toZone)
-    
+
     if (!timestamp) return null;
 
     let isoTimestamp = new Date(timestamp).toISOString();
