@@ -197,7 +197,7 @@ export function calculateDelayedStart(startTimestamp, endTimestamp, timezone) {
 export function outsideBusinessHours(createdTimestamp, timezone) {
     // Check if the lead was created outside business hours
     // Assuming startTimestamp and endTimestamp are already in 'America/New_York' timezone
-    8
+    
     let created = DateTime.fromISO(createdTimestamp, { zone: timezone });
 
     // Check if the lead was created before 8 AM or after 8 PM

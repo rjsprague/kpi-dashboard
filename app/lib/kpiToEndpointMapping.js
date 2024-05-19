@@ -50,7 +50,7 @@ const kpiToEndpointMapping = {
     'Closer STL Median': ['teamKpis'],
     'Individual Effort': ['teamKpis'],
     'STL Under 10': ['teamKpis'],
-    'STL 10-30': ['teamKpis'],
+    'STL 10 to 30': ['teamKpis'],
     'Outside B.H. STL': ['teamKpis'],
     '1st Setter Bonus': ['teamKpis'],
     'Closers Cost Per Lead': ['closersAdSpend', 'closersLeadsCreated'],

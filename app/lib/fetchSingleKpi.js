@@ -14,7 +14,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     // console.log(closers)
     // console.log(setters)
     // console.log(teamMembers)
-    // console.log(apiName)
+    console.log(apiName)
 
     const accessToken = cookies.get('token');
     const managementSpaceId = Number(process.env.NEXT_PUBLIC_MANAGEMENT_SPACEID);
@@ -246,11 +246,11 @@ function filterResults(results, apiEndpointKey, namesAddresses, selectedDepartme
     // console.log(apiEndpointKey)
     // console.log(namesAddresses)
     // console.log(selectedDepartment)
-    // console.log(apiName)
+    console.log(apiName)
     // console.log(teamMembers)
     let selectedTeamMemberId = teamMembers && teamMembers[0]
 
-    console.log(results)
+    // console.log(results)
 
     try {
         if (apiEndpointKey === "marketingExpenses" || apiEndpointKey === "closersAdSpend") {

@@ -1,5 +1,5 @@
-import { Concert_One } from 'next/font/google';
-import { calculateDelayedStart, convertTimestamp } from './date-utils';
+import { DateTime } from 'luxon';
+import { calculateDelayedStart, convertTimestamp, outsideBusinessHours } from './date-utils';
 
 // Helper functions
 function formatTime(seconds) {
@@ -20,7 +20,7 @@ function extractLeadName(lead) {
 
 // Closers Acquisitions KPI calculation functions
 export function calculateClosersAcquisitionTables(lead, apiEndpointKey, namesAddresses) {
-    
+
     // This is only in REIA Leads API objects
     const adminData = lead.admin_json && JSON.parse(lead.admin_json);
 
@@ -42,7 +42,7 @@ function calculateLeadsConnectedTable(lead, data) {
     // console.log(lead)
     // console.log(data)
     if (!data) return null; // Skip if there's no data
-    
+
     const firstConnection = data.first_connection && data.first_connection.timestamp ? data.first_connection.timestamp : null;
 
     if (!lead.contact_phones || !firstConnection) return null; // Skip if there's no phone number or first connection timestamp
@@ -75,11 +75,11 @@ function calculateLeadsTriagedTable(lead, namesAddresses) {
     const qualification = lead.Qualification ? lead.Qualification[0] : "❓";
     const setterResponsible = lead["Setter Responsible"] ? lead["Setter Responsible"] : "❓";
     const seller_id = namesAddresses[lead["Related Lead"]] ? namesAddresses[lead["Related Lead"]].seller_id : "No Seller ID"
-    
-    return {        
+
+    return {
         Date: triageCallDate,
         Name: leadName,
-        Qualification: qualification,        
+        Qualification: qualification,
         "Lead Status": leadStatus,
         "Lead Source": leadSource,
         "Setter": setterResponsible,
@@ -241,6 +241,8 @@ export function calculateIndividualKpiTables(lead, apiName, adminJson, selectedT
     const adminData = JSON.parse(adminJson); // Assuming adminJson is a JSON string.
     let result = {};
 
+    // console.log(apiName)
+
     switch (apiName) {
         case 'Individual STL Median':
             result = calculateIndividualStlTable(lead, adminData, selectedTeamMemberId);
@@ -253,6 +255,18 @@ export function calculateIndividualKpiTables(lead, apiName, adminJson, selectedT
             break;
         case 'Closer STL Median':
             result = calculateCloserStlTable(lead, adminData, selectedTeamMemberId);
+            break;
+        case 'STL Under 10':
+            result = calculateStlUnder10Table(lead, adminData, selectedTeamMemberId);
+            break;
+        case 'STL 10 to 30':
+            result = calculateStl10to30Table(lead, adminData, selectedTeamMemberId);
+            break;
+        case 'Outside B.H. STL':
+            result = calculateOutsideBHStlTable(lead, adminData, selectedTeamMemberId);
+            break;
+        case '1st Setter Bonus':
+            result = calculateFirstSetterBonusTable(lead, adminData, selectedTeamMemberId);
             break;
         default:
             console.log('Unknown API Name');
@@ -288,7 +302,6 @@ function calculateIndividualStlTable(lead, data, selectedTeamMemberId) {
     };
 }
 
-
 function calculateSetterStlTableForIndividual(lead, data, selectedTeamMemberId) {
     const leadName = extractLeadName(lead);
 
@@ -319,7 +332,6 @@ function calculateSetterStlTableForIndividual(lead, data, selectedTeamMemberId) 
         podio_item_id: lead.itemid ? lead.itemid : lead.podio_item_id,
     };
 }
-
 
 function calculateIndividualEffortTable(lead, data, selectedTeamMemberId) {
     // console.log(lead)
@@ -390,5 +402,105 @@ function calculateCloserStlTable(lead, data, selectedTeamMemberId) {
     };
 }
 
+function calculateStlUnder10Table(lead, data, selectedTeamMemberId) {
+    const leadName = extractLeadName(lead);
+    // Convert leadCreatedTs to 'America/New_York' timezone
+    const leadCreatedTs = data.lead_created_ts ? convertTimestamp(data.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
 
+    const setterCall = data?.setters ? data.setters.find(setter => setter.item_id === selectedTeamMemberId && setter.first_outbound_call) : null;
+    // Convert firstOutboundCallTs to 'America/New_York' timezone if exists
+    const firstOutboundCallTs = setterCall ? convertTimestamp(setterCall.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York') : "❌";
+
+    let stl = "❌";
+    if (leadCreatedTs && setterCall) {
+        let diffInSeconds = calculateDelayedStart(leadCreatedTs, firstOutboundCallTs, 'America/New_York');
+        stl = diffInSeconds;
+        console.log(stl)
+    }
+
+    return {
+        Name: leadName,
+        Created: leadCreatedTs,
+        Complete: firstOutboundCallTs,
+        STL: stl < 600 ? "✅" : "❌",
+        podio_item_id: lead.itemid ? lead.itemid : lead.podio_item_id,
+    };
+}
+
+function calculateStl10to30Table(lead, data, selectedTeamMemberId) {
+
+    // console.log(data)
+
+    const leadName = extractLeadName(lead);
+    // Convert leadCreatedTs to 'America/New_York' timezone
+    const leadCreatedTs = data.lead_created_ts ? convertTimestamp(data.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
+
+    const setterCall = data?.setters ? data.setters.find(setter => setter.item_id === selectedTeamMemberId && setter.first_outbound_call) : null;
+    // Convert firstOutboundCallTs to 'America/New_York' timezone if exists
+    const firstOutboundCallTs = setterCall ? convertTimestamp(setterCall.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York') : "❌";
+
+    let stl = "❌";
+    if (leadCreatedTs && setterCall) {
+        let diffInSeconds = calculateDelayedStart(leadCreatedTs, firstOutboundCallTs, 'America/New_York');
+        stl = diffInSeconds ;
+    }
+
+    return {
+        Name: leadName,
+        Created: leadCreatedTs,
+        Complete: firstOutboundCallTs,
+        STL: stl >= 600 && stl <= 1800 ? "✅" : "❌",
+        podio_item_id: lead.itemid ? lead.itemid : lead.podio_item_id,
+    };
+}
+
+function calculateOutsideBHStlTable(lead, data, selectedTeamMemberId) {
+    const leadName = extractLeadName(lead);
+    // Convert leadCreatedTs to 'America/New_York' timezone
+    const leadCreatedTs = data.lead_created_ts ? convertTimestamp(data.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
+    const outsideBH = outsideBusinessHours(leadCreatedTs, 'America/New_York');
+
+    if (!outsideBH) return null; // Skip if the lead was created during business hours
+
+    const setterCall = data?.setters ? data.setters.find(setter => setter.item_id === selectedTeamMemberId && setter.first_outbound_call) : null;
+
+    if (!setterCall) return null; // Skip if there's no setter call
+
+    // Convert firstOutboundCallTs to 'America/New_York' timezone if exists
+    const firstOutboundCallTs = setterCall ? convertTimestamp(setterCall.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York') : "❌";
+
+    let stl = "❌";
+    if (leadCreatedTs && setterCall) {
+        const start = DateTime.fromISO(leadCreatedTs, { zone: 'America/New_York' });
+        const end = DateTime.fromISO(firstOutboundCallTs, { zone: 'America/New_York' });
+        let diffInSeconds =  end.diff(start, 'seconds').seconds;
+        stl = diffInSeconds;
+    }
+
+    return {
+        Name: leadName,
+        Created: leadCreatedTs,
+        Complete: firstOutboundCallTs,
+        STL: stl < 1800 ? "✅" : "❌",
+        podio_item_id: lead.itemid ? lead.itemid : lead.podio_item_id,
+    };
+}
+
+function calculateFirstSetterBonusTable(lead, data, selectedTeamMemberId) {
+    const leadName = extractLeadName(lead);
+    // Convert leadCreatedTs to 'America/New_York' timezone
+    const leadCreatedTs = data.lead_created_ts ? convertTimestamp(data.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
+
+    const firstSetter = data?.speed_to_lead?.first_outbound_call?.call_owner?.item_id === selectedTeamMemberId ? "✅" : "❌";
+
+    // console.log(data.speed_to_lead.first_outbound_call.call_owner.item_id, selectedTeamMemberId)
+
+    return {
+        Name: leadName,
+        Created: leadCreatedTs,
+        Completed: data.speed_to_lead?.first_outbound_call?.created_on,
+        "1st Setter": firstSetter,
+        podio_item_id: lead.itemid ? lead.itemid : lead.podio_item_id,
+    };
+}
 
