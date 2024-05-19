@@ -1,3 +1,4 @@
+import { Concert_One } from 'next/font/google';
 import { calculateDelayedStart, convertTimestamp } from './date-utils';
 
 // Helper functions
@@ -37,6 +38,10 @@ export function calculateClosersAcquisitionTables(lead, apiEndpointKey, namesAdd
 }
 
 function calculateLeadsConnectedTable(lead, data) {
+
+    // console.log(lead)
+    // console.log(data)
+    if (!data) return null; // Skip if there's no data
     
     const firstConnection = data.first_connection && data.first_connection.timestamp ? data.first_connection.timestamp : null;
 

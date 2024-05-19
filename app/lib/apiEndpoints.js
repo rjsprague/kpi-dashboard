@@ -224,7 +224,7 @@ const apiEndpoints = (startDate, endDate, leadSources, kpiView, teamMembers, clo
         closersLeadsTriaged: {
             name: "Closers Leads Triaged",
             url: "/api/closers/acquisitions/setter-calls",
-            filters: generateFilters("Closers Leads Triaged", startDate, endDate, null, kpiView, null, "created_on", null, [
+            filters: generateFilters("Closers Leads Triaged", startDate, endDate, leadSources, kpiView, "Related Lead Source Item", "created_on", null, [
                 {
                     "type": "category",
                     "fieldName": "Qualification",
