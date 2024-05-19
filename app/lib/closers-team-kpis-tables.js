@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { calculateDelayedStart, convertTimestamp, outsideBusinessHours } from './date-utils';
+import { calculateDelayedStart, calculateNormalStart, convertTimestamp, outsideBusinessHours } from './date-utils';
 
 // Helper functions
 function formatTime(seconds) {
@@ -407,15 +407,17 @@ function calculateStlUnder10Table(lead, data, selectedTeamMemberId) {
     // Convert leadCreatedTs to 'America/New_York' timezone
     const leadCreatedTs = data.lead_created_ts ? convertTimestamp(data.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
 
+    const outsideBH = outsideBusinessHours(leadCreatedTs, 'America/New_York');
+
+    if (outsideBH) return null; // Skip if the lead was created outside business hours
+
     const setterCall = data?.setters ? data.setters.find(setter => setter.item_id === selectedTeamMemberId && setter.first_outbound_call) : null;
     // Convert firstOutboundCallTs to 'America/New_York' timezone if exists
     const firstOutboundCallTs = setterCall ? convertTimestamp(setterCall.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York') : "❌";
 
     let stl = "❌";
     if (leadCreatedTs && setterCall) {
-        let diffInSeconds = calculateDelayedStart(leadCreatedTs, firstOutboundCallTs, 'America/New_York');
-        stl = diffInSeconds;
-        console.log(stl)
+        stl = calculateNormalStart(leadCreatedTs, firstOutboundCallTs, 'America/New_York');
     }
 
     return {
@@ -435,14 +437,18 @@ function calculateStl10to30Table(lead, data, selectedTeamMemberId) {
     // Convert leadCreatedTs to 'America/New_York' timezone
     const leadCreatedTs = data.lead_created_ts ? convertTimestamp(data.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
 
+    const outsideBH = outsideBusinessHours(leadCreatedTs, 'America/New_York');
+
+    if (outsideBH) return null; // Skip if the lead was created outside business hours
+
+
     const setterCall = data?.setters ? data.setters.find(setter => setter.item_id === selectedTeamMemberId && setter.first_outbound_call) : null;
     // Convert firstOutboundCallTs to 'America/New_York' timezone if exists
     const firstOutboundCallTs = setterCall ? convertTimestamp(setterCall.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York') : "❌";
 
     let stl = "❌";
     if (leadCreatedTs && setterCall) {
-        let diffInSeconds = calculateDelayedStart(leadCreatedTs, firstOutboundCallTs, 'America/New_York');
-        stl = diffInSeconds ;
+        stl = calculateNormalStart(leadCreatedTs, firstOutboundCallTs, 'America/New_York');
     }
 
     return {
@@ -471,10 +477,7 @@ function calculateOutsideBHStlTable(lead, data, selectedTeamMemberId) {
 
     let stl = "❌";
     if (leadCreatedTs && setterCall) {
-        const start = DateTime.fromISO(leadCreatedTs, { zone: 'America/New_York' });
-        const end = DateTime.fromISO(firstOutboundCallTs, { zone: 'America/New_York' });
-        let diffInSeconds =  end.diff(start, 'seconds').seconds;
-        stl = diffInSeconds;
+        stl = calculateNormalStart(leadCreatedTs, firstOutboundCallTs, 'America/New_York');
     }
 
     return {

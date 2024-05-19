@@ -194,6 +194,23 @@ export function calculateDelayedStart(startTimestamp, endTimestamp, timezone) {
     return diff; // Returns the difference in seconds
 }
 
+export function calculateNormalStart(startTimestamp, endTimestamp, timezone) {
+    // Assuming startTimestamp and endTimestamp are already in 'America/New_York' timezone
+
+    let start = DateTime.fromISO(startTimestamp, { zone: timezone });
+    let end = DateTime.fromISO(endTimestamp, { zone: timezone });
+
+    // Ensure end is after the adjusted start, or adjust end to match start for a zero difference
+    if (end <= start) {
+        end = start;
+    }
+
+    // Calculate the difference in seconds considering the adjusted start time
+    const diff = end.diff(start, 'seconds').seconds;
+
+    return diff; // Returns the difference in seconds
+}
+
 export function outsideBusinessHours(createdTimestamp, timezone) {
     // Check if the lead was created outside business hours
     // Assuming startTimestamp and endTimestamp are already in 'America/New_York' timezone

@@ -2,7 +2,7 @@ import fetchKPIs from "./api-utils";
 import KPI_DEFINITIONS from "./kpi-definitions";
 import kpiToEndpointMapping from "./kpiToEndpointMapping";
 import apiEndpoints from "./apiEndpoints";
-import { calculateDelayedStart, convertTimestamp, outsideBusinessHours } from "./date-utils";
+import { calculateDelayedStart, calculateNormalStart, convertTimestamp, outsideBusinessHours } from "./date-utils";
 
 import {
     calculateTeamKpiTables,
@@ -500,11 +500,15 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                         const leadCreatedOn = adminObj.lead_created_ts ? convertTimestamp(adminObj.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
                         let setters = Array.isArray(adminObj.setters) ? adminObj.setters : [];
 
+                        let outsideBH = outsideBusinessHours(leadCreatedOn, 'America/New_York');
+
+                        if (outsideBH) return acc; // Skip if the lead was created outside business hours
+
                         setters.forEach(setter => {
                             let setterItemId = Number(setter.item_id);
                             if (selectedTeamMemberId === setterItemId && setter.first_outbound_call && setter.first_outbound_call.created_on) {
                                 let setterOutboundCall = convertTimestamp(setter.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York');
-                                let diffInSeconds = calculateDelayedStart(leadCreatedOn, setterOutboundCall, 'America/New_York');
+                                let diffInSeconds = calculateNormalStart(leadCreatedOn, setterOutboundCall, 'America/New_York');
                                 if (diffInSeconds < 600) {
                                     acc += 1;
                                 }
@@ -527,11 +531,15 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                         const leadCreatedOn = adminObj.lead_created_ts ? convertTimestamp(adminObj.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
                         let setters = Array.isArray(adminObj.setters) ? adminObj.setters : [];
 
+                        let outsideBH = outsideBusinessHours(leadCreatedOn, 'America/New_York');
+
+                        if (outsideBH) return acc; // Skip if the lead was created outside business hours
+
                         setters.forEach(setter => {
                             let setterItemId = Number(setter.item_id);
                             if (selectedTeamMemberId === setterItemId && setter.first_outbound_call && setter.first_outbound_call.created_on) {
                                 let setterOutboundCall = convertTimestamp(setter.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York');
-                                let diffInSeconds = calculateDelayedStart(leadCreatedOn, setterOutboundCall, 'America/New_York');
+                                let diffInSeconds = calculateNormalStart(leadCreatedOn, setterOutboundCall, 'America/New_York');
                                 if (diffInSeconds >= 600 && diffInSeconds <= 1800) {
                                     acc += 1;
                                 }
@@ -549,9 +557,15 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                     // the number of leads where the selected setter has a speed to lead outside of business hours
                     try {
                         const adminObj = curr && curr["admin_json"] ? JSON.parse(curr["admin_json"]) : {};
+                        
                         if (!adminObj || !adminObj.lead_created_ts) return acc;
                         // console.log(adminObj)
                         const leadCreatedOn = adminObj.lead_created_ts ? convertTimestamp(adminObj.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
+                        let outsideBH = outsideBusinessHours(leadCreatedOn, 'America/New_York');
+
+                        // console.log(outsideBH)
+
+                        if (!outsideBH) return acc; // Skip if the lead was created during business hours
 
                         let setters = Array.isArray(adminObj.setters) ? adminObj.setters : [];
 
@@ -559,9 +573,9 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                             let setterItemId = Number(setter.item_id);
                             if (selectedTeamMemberId === setterItemId && setter.first_outbound_call && setter.first_outbound_call.created_on) {
                                 let setterOutboundCall = convertTimestamp(setter.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York');
-                                let diffInSeconds = calculateDelayedStart(leadCreatedOn, setterOutboundCall, 'America/New_York');
-                                let outsideBH = outsideBusinessHours(leadCreatedOn, 'America/New_York');
-                                if (outsideBH && diffInSeconds < 1800) {
+                                let diffInSeconds = calculateNormalStart(leadCreatedOn, setterOutboundCall, 'America/New_York');
+                                
+                                if (diffInSeconds < 1800) {
                                     acc += 1;
                                 }
                             }
