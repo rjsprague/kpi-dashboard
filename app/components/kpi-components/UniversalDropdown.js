@@ -186,7 +186,8 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                         style={{
                             ...defaultStyle,
                             ...transitionStyles[state],
-                            height: "200px",
+                            height: contentHeight,
+                            maxHeight: "300px",
                             overflow: "auto",
                         }}
                     >
