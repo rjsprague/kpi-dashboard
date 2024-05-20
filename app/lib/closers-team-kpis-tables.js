@@ -406,85 +406,74 @@ function calculateStlUnder10Table(lead, data, selectedTeamMemberId) {
     const leadName = extractLeadName(lead);
     // Convert leadCreatedTs to 'America/New_York' timezone
     const leadCreatedTs = data.lead_created_ts ? convertTimestamp(data.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
-
-    const outsideBH = outsideBusinessHours(leadCreatedTs, 'America/New_York');
-
-    if (outsideBH) return null; // Skip if the lead was created outside business hours
-
     const setterCall = data?.setters ? data.setters.find(setter => setter.item_id === selectedTeamMemberId && setter.first_outbound_call) : null;
-    // Convert firstOutboundCallTs to 'America/New_York' timezone if exists
     const firstOutboundCallTs = setterCall ? convertTimestamp(setterCall.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York') : "❌";
+
+    if (!leadCreatedTs || !setterCall || !firstOutboundCallTs) return null; // Skip if the lead under these conditions
 
     let stl = "❌";
     if (leadCreatedTs && setterCall) {
-        stl = calculateNormalStart(leadCreatedTs, firstOutboundCallTs, 'America/New_York');
+        const diffInSeconds = calculateDelayedStart(leadCreatedTs, firstOutboundCallTs, 'America/New_York');
+        stl = formatTime(diffInSeconds);
     }
 
     return {
         Name: leadName,
         Created: leadCreatedTs,
         Complete: firstOutboundCallTs,
-        STL: stl < 600 ? "✅" : "❌",
+        STL: stl,
         podio_item_id: lead.itemid ? lead.itemid : lead.podio_item_id,
     };
 }
 
 function calculateStl10to30Table(lead, data, selectedTeamMemberId) {
 
-    // console.log(data)
-
     const leadName = extractLeadName(lead);
     // Convert leadCreatedTs to 'America/New_York' timezone
     const leadCreatedTs = data.lead_created_ts ? convertTimestamp(data.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
-
-    const outsideBH = outsideBusinessHours(leadCreatedTs, 'America/New_York');
-
-    if (outsideBH) return null; // Skip if the lead was created outside business hours
-
-
     const setterCall = data?.setters ? data.setters.find(setter => setter.item_id === selectedTeamMemberId && setter.first_outbound_call) : null;
-    // Convert firstOutboundCallTs to 'America/New_York' timezone if exists
     const firstOutboundCallTs = setterCall ? convertTimestamp(setterCall.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York') : "❌";
+
+    if (!leadCreatedTs || !setterCall || !firstOutboundCallTs) return null; // Skip if the lead under these conditions
 
     let stl = "❌";
     if (leadCreatedTs && setterCall) {
-        stl = calculateNormalStart(leadCreatedTs, firstOutboundCallTs, 'America/New_York');
+        const diffInSeconds = calculateDelayedStart(leadCreatedTs, firstOutboundCallTs, 'America/New_York');
+        stl = formatTime(diffInSeconds);
     }
 
     return {
         Name: leadName,
         Created: leadCreatedTs,
         Complete: firstOutboundCallTs,
-        STL: stl >= 600 && stl <= 1800 ? "✅" : "❌",
+        STL: stl,
         podio_item_id: lead.itemid ? lead.itemid : lead.podio_item_id,
     };
 }
 
 function calculateOutsideBHStlTable(lead, data, selectedTeamMemberId) {
     const leadName = extractLeadName(lead);
+
     // Convert leadCreatedTs to 'America/New_York' timezone
     const leadCreatedTs = data.lead_created_ts ? convertTimestamp(data.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
-    const outsideBH = outsideBusinessHours(leadCreatedTs, 'America/New_York');
-
-    if (!outsideBH) return null; // Skip if the lead was created during business hours
-
     const setterCall = data?.setters ? data.setters.find(setter => setter.item_id === selectedTeamMemberId && setter.first_outbound_call) : null;
-
-    if (!setterCall) return null; // Skip if there's no setter call
-
-    // Convert firstOutboundCallTs to 'America/New_York' timezone if exists
+    const outsideBH = outsideBusinessHours(leadCreatedTs, 'America/New_York');
     const firstOutboundCallTs = setterCall ? convertTimestamp(setterCall.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York') : "❌";
 
+    if (!outsideBH || !setterCall || !leadCreatedTs || !firstOutboundCallTs) return null; // Skip if the lead under these conditions
+
     let stl = "❌";
-    if (leadCreatedTs && setterCall) {
-        stl = calculateNormalStart(leadCreatedTs, firstOutboundCallTs, 'America/New_York');
+
+    if (leadCreatedTs && firstOutboundCallTs) {
+        const diffInSeconds = calculateNormalStart(leadCreatedTs, firstOutboundCallTs, 'America/New_York');
+        stl = formatTime(diffInSeconds);
     }
 
     return {
         Name: leadName,
         Created: leadCreatedTs,
         Complete: firstOutboundCallTs,
-        STL: stl < 1800 ? "✅" : "❌",
+        STL: stl,
         podio_item_id: lead.itemid ? lead.itemid : lead.podio_item_id,
     };
 }

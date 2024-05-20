@@ -208,6 +208,8 @@ export function calculateNormalStart(startTimestamp, endTimestamp, timezone) {
     // Calculate the difference in seconds considering the adjusted start time
     const diff = end.diff(start, 'seconds').seconds;
 
+    console.log(diff)
+
     return diff; // Returns the difference in seconds
 }
 
@@ -229,15 +231,13 @@ export function outsideBusinessHours(createdTimestamp, timezone) {
 
 export function convertTimestamp(timestamp, fromZone, toZone) {
 
-    // console.log(timestamp, fromZone, toZone)
-
     if (!timestamp) return null;
 
-    let isoTimestamp = new Date(timestamp).toISOString();
-    // console.log(isoTimestamp)
-    let convertedTimestamp = DateTime.fromISO(isoTimestamp, { zone: fromZone }).setZone(toZone).toISO();
+    // Parse the input timestamp in the source time zone and convert to UTC
+    let sourceDateTime = DateTime.fromFormat(timestamp, 'yyyy-MM-dd HH:mm:ss', { zone: fromZone });
+    
+    // Convert the UTC time to the target time zone and then back to UTC
+    let targetDateTime = sourceDateTime.setZone(toZone);
 
-    // console.log(convertedTimestamp)
-
-    return convertedTimestamp;
+    return targetDateTime.toISO();
 }

@@ -500,15 +500,11 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                         const leadCreatedOn = adminObj.lead_created_ts ? convertTimestamp(adminObj.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
                         let setters = Array.isArray(adminObj.setters) ? adminObj.setters : [];
 
-                        let outsideBH = outsideBusinessHours(leadCreatedOn, 'America/New_York');
-
-                        if (outsideBH) return acc; // Skip if the lead was created outside business hours
-
                         setters.forEach(setter => {
                             let setterItemId = Number(setter.item_id);
                             if (selectedTeamMemberId === setterItemId && setter.first_outbound_call && setter.first_outbound_call.created_on) {
                                 let setterOutboundCall = convertTimestamp(setter.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York');
-                                let diffInSeconds = calculateNormalStart(leadCreatedOn, setterOutboundCall, 'America/New_York');
+                                let diffInSeconds = calculateDelayedStart(leadCreatedOn, setterOutboundCall, 'America/New_York');
                                 if (diffInSeconds < 600) {
                                     acc += 1;
                                 }
@@ -531,15 +527,11 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                         const leadCreatedOn = adminObj.lead_created_ts ? convertTimestamp(adminObj.lead_created_ts, 'Pacific/Honolulu', 'America/New_York') : null;
                         let setters = Array.isArray(adminObj.setters) ? adminObj.setters : [];
 
-                        let outsideBH = outsideBusinessHours(leadCreatedOn, 'America/New_York');
-
-                        if (outsideBH) return acc; // Skip if the lead was created outside business hours
-
                         setters.forEach(setter => {
                             let setterItemId = Number(setter.item_id);
                             if (selectedTeamMemberId === setterItemId && setter.first_outbound_call && setter.first_outbound_call.created_on) {
                                 let setterOutboundCall = convertTimestamp(setter.first_outbound_call.created_on, 'Pacific/Honolulu', 'America/New_York');
-                                let diffInSeconds = calculateNormalStart(leadCreatedOn, setterOutboundCall, 'America/New_York');
+                                let diffInSeconds = calculateDelayedStart(leadCreatedOn, setterOutboundCall, 'America/New_York');
                                 if (diffInSeconds >= 600 && diffInSeconds <= 1800) {
                                     acc += 1;
                                 }
