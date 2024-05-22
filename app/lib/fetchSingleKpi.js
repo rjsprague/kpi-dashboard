@@ -208,6 +208,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     // console.log(leads)
 
     let namesAddresses = {};
+    console.log(leads)
     leads.forEach(lead => {
         // console.log(lead["Followup Reminder: Specific Date"])
         namesAddresses[lead.itemid] = {
@@ -220,6 +221,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
             "Address": lead["Property Address"] ? lead["Property Address"] : lead["*AS Address"] ? lead["*AS Address"] : "No address",
             "Status": lead["Lead Status"] ? lead["Lead Status"] : "No lead status",
             "Follow Up": lead['Followup Reminder: Specific Date'] ? lead['Followup Reminder: Specific Date']['start'] : "No followup date",
+            "Lead Source": lead["Lead Source Item"] ? lead["Lead Source Item"] : "no lead source",
             seller_id: lead.itemid ? lead.itemid : lead.podio_item_id,
         }
     });
@@ -511,10 +513,11 @@ function filterResults(results, apiEndpointKey, namesAddresses, selectedDepartme
             return results.map((result) => {
                 return {
                     "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No date given",
-                    "Client": result["Workspace Name"] ? result["Workspace Name"] : "Update in Podio",
+                    "Client": result["Client"] ? result["Client"] : "Update in Podio",
                     "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "Update in Podio",
                     "Cash Up Front": result["Cash Collected Up Front"] ? result["Cash Collected Up Front"] : "Update in Podio",
                     "Revenue Contracted": result["Contract Total"] ? result["Contract Total"] : "Update in Podio",
+                    "Service Product": result["Service Product"] ? result["Service Product"] : "Update in Podio",
                     podio_item_id: result.itemid ? result.itemid : podio_item_id,
                     seller_id: namesAddresses[result["Seller Lead"]] ? namesAddresses[result["Seller Lead"]].seller_id : "No Seller ID",
                 }
@@ -526,9 +529,10 @@ function filterResults(results, apiEndpointKey, namesAddresses, selectedDepartme
                     "Date": result["Date"]["start"] ? formatDate(result["Date"]["start"]) : "No Date",
                     "Name": namesAddresses && namesAddresses[result["Related Lead"]] ? namesAddresses[result["Related Lead"]]["Name"] : "No Name",
                     "Event": result["Event"] ? result["Event"] : "No event given",
-                    "Event #": result["lead_event #"] ? result["lead_event #"] : "No event number given",
+                    // "Event #": result["lead_event #"] ? result["lead_event #"] : "No event number given",
                     "Status": namesAddresses && namesAddresses[result["Related Lead"]] && namesAddresses[result["Related Lead"]]["Status"] ? namesAddresses[result["Related Lead"]]["Status"] : "No status given",
                     "Follow Up": namesAddresses && namesAddresses[result["Related Lead"]] && namesAddresses[result["Related Lead"]]["Follow Up"] ? namesAddresses[result["Related Lead"]]["Follow Up"] : "No follow up given",
+                    "Lead Source": namesAddresses && namesAddresses[result["Related Lead"]] && namesAddresses[result["Related Lead"]]["Lead Source"] ? namesAddresses[result["Related Lead"]]["Lead Source"] : "No lead source",
                     "Setter": result["Setter Responsible"] ? result["Setter Responsible"] : "Not set",
                     "Closer": result["Closer Responsible"] ? result["Closer Responsible"] : "No closer responsible",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
