@@ -929,8 +929,8 @@ const KPI_DEFINITIONS = {
             const { closersLeadsCreated, allLeadConnections } = apiData;
             return closersLeadsCreated > 0 ? allLeadConnections / closersLeadsCreated * 100 : 0;
         },
-        redFlag: 60,
-        target: 80,
+        redFlag: 50,
+        target: 65,
         dataLabels: ["Leads Created: ", "Leads Connected: "],
         kpiType: "meter",
         unit: "%",
@@ -1004,7 +1004,7 @@ const KPI_DEFINITIONS = {
             const { closersLeadsCreated, closersBookings } = apiData;
             return closersLeadsCreated > 0 ? closersBookings / closersLeadsCreated * 100 : 0;
         },
-        redFlag: 20,
+        redFlag: 25,
         target: 40,
         dataLabels: ["Leads: ", "Unique Bookings: "],
         kpiType: "meter",
@@ -1104,8 +1104,8 @@ const KPI_DEFINITIONS = {
             const { closersAppointments, closersTotalAttended } = apiData;
             return closersAppointments > 0 ? closersTotalAttended / closersAppointments * 100 : 0;
         },
-        redFlag: 70,
-        target: 90,
+        redFlag: 55,
+        target: 70,
         dataLabels: ["Appointments: ", "Total Attended: "],
         kpiType: "meter",
         unit: "%",
@@ -1133,11 +1133,6 @@ const KPI_DEFINITIONS = {
             We de-duplicate the offers by making sure that the offer is not already in the allPreviousDcOffers array
             */
 
-            // console.log('closersUniqueAttended', closersUniqueAttended)
-            // console.log('allPreviousDcOffers', allPreviousDcOffers)
-            // console.log('closersDcOffers', closersDcOffers)
-
-
             // De-duplicate the offers
             let deduplicatedAllDcOffers = allPreviousDcOffers.reduce((acc, curr) => {
                 let lead = curr['Related Lead'] && curr['Related Lead'][0];
@@ -1148,8 +1143,6 @@ const KPI_DEFINITIONS = {
                 return acc;
             }, []);
 
-            // console.log('deduplicatedAllDcOffers', deduplicatedAllDcOffers)
-
             let deduplicatedCurrentDcOffers = closersDcOffers.reduce((acc, curr) => {
                 let lead = curr['Related Lead'] && curr['Related Lead'][0];
                 if (lead && !acc.includes(lead)) {
@@ -1158,8 +1151,6 @@ const KPI_DEFINITIONS = {
                 return acc;
             }, []);
 
-            // console.log('deduplicatedAllDcOffers', deduplicatedAllDcOffers)
-
             let uniqueOffers = deduplicatedCurrentDcOffers.reduce((acc, curr) => {
                 if (!deduplicatedAllDcOffers.includes(curr)) {
                     acc.push(curr);
@@ -1167,12 +1158,10 @@ const KPI_DEFINITIONS = {
                 return acc;
             }, []).length;
 
-            // console.log('uniqueOffers', uniqueOffers)
-
             return closersUniqueAttended > 0 ? uniqueOffers / closersUniqueAttended * 100 : 0;
         },
-        redFlag: 60,
-        target: 80,
+        redFlag: 85,
+        target: 95,
         dataLabels: ["Unique Attended: ", "Unique Offers: "],
         kpiType: "meter",
         unit: "%",
@@ -1621,8 +1610,8 @@ const KPI_DEFINITIONS = {
             const { totalClosersAdSpend, closersLeadsCreated } = apiData;
             return closersLeadsCreated > 0 ? totalClosersAdSpend / closersLeadsCreated : 0;
         },
-        redFlag: 35,
-        target: 20,
+        redFlag: 50,
+        target: 35,
         dataLabels: ["Ad Spend: $", "Leads Created: "],
         kpiType: "meter",
         unit: "$",
