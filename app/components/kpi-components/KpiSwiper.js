@@ -26,7 +26,7 @@ const KpiSwiper = ({ query, view, selectedKpis, handleCardInfoClick, handleKpiCa
                 <>
                     {/* { console.log("result: ", result) } */}
                     <SwiperSlide key={result.name} style={{ width: '300px' }}>
-                        <div className='absolute h-full mx-2 w-72 top-2' >
+                        <div className='absolute h-full mx-2 w-68 top-2' >
                             <KpiCard
                                 dateRange={query.dateRange}
                                 leadSource={query.leadSources}

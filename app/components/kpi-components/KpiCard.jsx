@@ -38,7 +38,7 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
     const startDate = dateRange.gte ? formatDate(new Date(dateRange.gte)) : null;
     const endDate = dateRange.lte ? formatDate(new Date(dateRange.lte)) : null;
     const clientSpaceId = useSelector(selectSpaceId);
-    console.log(prop)
+    // console.log(prop)
 
     if (isLoading) {
         return ReactDOM.createPortal(
@@ -70,13 +70,15 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
             );
         } else if (prop.kpiType === 'meter') {
             return (
-                <KpiMeter
-                    redFlag={prop.redFlag}
-                    current={prop.current}
-                    target={prop.target}
-                    kpiName={prop.name}
-                    unit={prop.unit}
-                />
+                <div className="flex items-center justify-center w-full h-full">
+                    <KpiMeter
+                        redFlag={prop.redFlag}
+                        current={prop.current}
+                        target={prop.target}
+                        kpiName={prop.name}
+                        unit={prop.unit}
+                    />
+                </div>
             );
         } else {
             return (<div className="flex justify-center text-3xl font-bold w-70">
@@ -101,32 +103,37 @@ export default function KpiCard({ prop, handleCardInfoClick, handleKpiCardClick,
 
     //console.log("KpiCard.jsx: handleKpiCardClick: ", startDate, endDate, leadSource, kpiView, teamMembers, clientSpaceId, prop.name)
 
-
     return (
         <div>
-            <div className="relative flex flex-col px-3 py-1 text-center text-black delay-500 rounded h-52 shadow-super-3 transform-gpu ">
+            <div className="relative flex flex-col items-center px-3 py-1 text-center text-black delay-500 rounded h-52 shadow-super-3 transform-gpu ">
                 <h1 className="absolute flex self-center text-2xl font-semibold tracking-tighter text-center align-top">
                     {prop.name.includes("Closers") && prop.name !== "Closers STL Median" ? removeWord(prop.name, "Closers") : prop.name}
                 </h1>
                 <div className="absolute flex self-center mt-1 font-medium top-10">
                     {
-                        prop.data1 !== null && prop.data2 !== null && prop.data3 !== null ?
+                        isNaN(prop.current) ? (
                             <div className="flex flex-row justify-center gap-2 px-1 text-xs">
-                                <div className="">{prop.data1.length > 1 && prop.name.includes("STL") && !prop.name.includes("10") && !prop.name.includes("Outside") ? formatTime(prop.current) : prop.data1.length > 1 ? prop.data1 : ""}</div>
-                                <div>{prop.data2.length > 1 && prop.data2}</div>
-                                <div>{prop.data3.length > 1 && prop.data3}</div>
+                                No Data
                             </div>
-                            :
-                            prop.data1 !== null && prop.data2 !== null ? (
-                                <div className="flex flex-row justify-center gap-4 text-xs">
-                                    <div>{prop.data1.length > 1 && prop.data1}</div>
+                        ) :
+                            prop.data1 !== null && prop.data2 !== null && prop.data3 !== null ? (
+                                <div className="flex flex-row justify-center gap-2 px-1 text-xs">
+                                    <div className="">{prop.data1.length > 1 && prop.name.includes("STL") && !prop.name.includes("10") && !prop.name.includes("Outside") ? formatTime(prop.current) : prop.data1.length > 1 ? prop.data1 : ""}</div>
                                     <div>{prop.data2.length > 1 && prop.data2}</div>
+                                    <div>{prop.data3.length > 1 && prop.data3}</div>
                                 </div>
-                            ) : (
-                                ''
-                            )}
+                            ) :
+                                prop.data1 !== null && prop.data2 !== null && prop.current !== NaN ? (
+                                    <div className="flex flex-row justify-center gap-4 text-xs">
+                                        <div>{prop.data1.length > 1 && prop.data1}</div>
+                                        <div>{prop.data2.length > 1 && prop.data2}</div>
+                                    </div>
+                                ) : (
+                                    ''
+                                )
+                    }
                 </div>
-                <div className="absolute flex justify-center bottom-16">{renderMeter()}</div>
+                <div className="absolute flex w-full bottom-16">{renderMeter()}</div>
                 <button
                     onClick={() => {
                         handleCardInfoClick(prop);

@@ -1112,11 +1112,11 @@ const KPI_DEFINITIONS = {
         kpiFactors: [
             {
                 id: 0,
-                title: "How to Optimize Show Rate",
+                title: "How to Optimize Total Attendance Rate",
             },
             {
                 id: 1,
-                desc: "Description TBD",
+                desc: "Definition: The number of DC Attended divided by DC Attended + DC No Shows.",
                 linkName: "Learn More",
                 link: ""
             },

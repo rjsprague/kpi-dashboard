@@ -255,16 +255,19 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
 
             const allPreviousDcOffers = clientSpaceId === 8108305 && await fetchKPIs(clientSpaceId, apiEndpointsObj.allPreviousDcOffers.name, apiEndpointsObj.allPreviousDcOffers.url, apiEndpointsObj.allPreviousDcOffers.filters, "All Previous DC Offers", noSetter)
 
-            const allLeadConnections = endpointData.closersLeadsConnected && Array.isArray(endpointData.closersLeadsConnected) && endpointData.closersLeadsConnected.reduce((acc, curr) => {
+            const allLeadConnections = endpointData.closersLeadsConnected && Array.isArray(endpointData.closersLeadsConnected) && endpointData.closersLeadsConnected.reduce((acc, curr) => {       
                 const adminObj = curr && curr["admin_json"] ? JSON.parse(curr["admin_json"]) : {};
-                if (adminObj.hasOwnProperty("first_connection")) {
+
+                const firstConnection = adminObj["first_connection"] ? true : false;
+
+                if (firstConnection) {
                     return acc += 1;
                 } else {
                     return acc;
                 }
             }, 0);
 
-            // console.log(allLeadConnections)
+            console.log(allLeadConnections)
 
             const totalMarketingExpenses = endpointData.marketingExpenses && Array.isArray(endpointData.marketingExpenses) && endpointData.marketingExpenses.reduce((acc, curr) => {
                 if ("Amount" in curr) {
@@ -516,7 +519,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                     return acc;
                 }, 0) : 0;
 
-                console.log(stlUnder10)
+                // console.log(stlUnder10)
 
                 const stl10to30 = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
                     // the number of leads where the selected setter has a speed to lead between 10 and 30 minutes
@@ -543,7 +546,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                     return acc;
                 }, 0) : 0;
 
-                console.log(stl10to30)
+                // console.log(stl10to30)
 
                 const outsideBHStl = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
                     // the number of leads where the selected setter has a speed to lead outside of business hours
@@ -578,7 +581,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                     return acc;
                 }, 0) : 0;
 
-                console.log(outsideBHStl)
+                // console.log(outsideBHStl)
 
                 const firstSetterBonus = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
                     // the number of leads where the selected setter was the first setter to contact the lead
@@ -595,7 +598,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
                     return acc;
                 }, 0) : 0;
 
-                console.log(firstSetterBonus)
+                // console.log(firstSetterBonus)
 
                 const setterStlMedian = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.reduce((acc, curr) => {
                     // The median time between when the lead is created and a Setter Call is submitted for the lead by the selected setter

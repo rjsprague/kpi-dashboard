@@ -8,6 +8,7 @@ import RightSlideModal from '../RightSlideModal';
 import LoadingQuotes from '../LoadingQuotes';
 import UniversalDropdown from './UniversalDropdown';
 import DropdownButton from './DropdownButton';
+import { getDatePresets } from '../../lib/date-utils';
 import useSWR from 'swr';
 
 const currencyToNumber = (str) => {
@@ -42,7 +43,7 @@ export default function Leaderboard({
     const [speedToLeadTop3, setSpeedToLeadTop3] = useState([]);
     const [signedContractsTop3, setSignedContractsTop3] = useState([]);
     const [dealsTop3, setDealsTop3] = useState([]);
-    const [year, setYear] = useState('2023');
+    const [year, setYear] = useState(getDatePresets()["Current Year"].startDate.getFullYear().toString());
     const previousMonth = new Date().getMonth() - 1;
     const [month, setMonth] = useState(previousMonth < 0 ? "December" : months[previousMonth]);
     const [error, setError] = useState(null);

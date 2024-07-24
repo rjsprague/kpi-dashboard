@@ -32,10 +32,16 @@ function TeamComponent({ onTeamChange, onTeamMemberForClosersChange, query, quer
             const teamMemberNames = query.teamMembers.map(id => getCloserTeamMemberNameById(id));
             setSelectedTeamMembers(teamMemberNames);
         } else {
-            // check if selected team members are in the selected department
-            const teamMembers = query.teamMembers.length > 0 ? query.teamMembers.filter(id => departments[query.departments[0]][id]) : [];
-            const teamMemberNames = teamMembers.map(id => getTeamMemberNameById(id));
-            setSelectedTeamMembers(teamMemberNames);
+            // check if there is at least one team member in the selected department
+            if (query.teamMembers.length > 0 && query.teamMembers.filter((id) => departments[query.departments[0]][id]).length > 0) {
+                // check if selected team members are in the selected department
+                const teamMembers = query.teamMembers.length > 0 ? query.teamMembers.filter(id => departments[query.departments[0]][id]) : [];
+                const teamMemberNames = teamMembers.map(id => getTeamMemberNameById(id));
+                setSelectedTeamMembers(teamMemberNames);
+            } else {
+                // Display "No Team Members" if there are no team members in the selected department
+                setSelectedTeamMembers([]);
+            }
         }
     }, [query, query.teamMembers, query.departments, departments]);
 
@@ -147,6 +153,8 @@ function TeamComponent({ onTeamChange, onTeamMemberForClosersChange, query, quer
         }
         return null;
     };
+
+    console.log(departments);
 
     return (
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-1">

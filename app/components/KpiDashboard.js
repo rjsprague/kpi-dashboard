@@ -43,15 +43,18 @@ export default function KpiDashboard({ user }) {
     const [idCounter, setIdCounter] = useState(0);
     const [queries, setQueries] = useState([]);
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID);
-    // console.log(closersSpaceId)
+    console.log(closersSpaceId)
     const clientSpaceId = useSelector(selectSpaceId);
-    // console.log(clientSpaceId)
+
+    console.log(clientSpaceId)
     // const dispatch = useDispatch();
     // const queries = useSelector(selectAllQueries);
     // console.log(clientSpaceId)
 
-    // console.log(user)
-    // console.log(isStarter)
+    console.log(user)
+    console.log(isStarter)
+    console.log(isProfessional)
+    console.log(isScaling)
 
     const professionalQuery = (type) => {
         return ({ id: idCounter + 1, kpiView: type ? type : "Acquisitions", results: [], isOpen: true, isLoading: false, isUnavailable: false, leadSources: [], dateRange: { gte: datePresets['Last Week'].startDate, lte: datePresets['Last Week'].endDate }, departments: ["Lead Manager"], teamMembers: [{ "Lead Manager": "Bob" }, { "Acquisition Manager": "Bob" }, { "Deal Analyst": "Bob" }] })
@@ -63,11 +66,12 @@ export default function KpiDashboard({ user }) {
         const allTeamMembers = [];
         for (let department in departmentsDataObject) {
             // push each id into the allTeamMembers array
-            allTeamMembers.push(...Object.keys(departmentsDataObject[department]))          
+            allTeamMembers.push(...Object.keys(departmentsDataObject[department]))
         }
 
-        const firstDepartment = Object?.keys(departmentsDataObject)[0]
-        const firstDeptTeamMembers = Object?.keys(departmentsDataObject[firstDepartment])
+        console.log(departmentsDataObject)
+        const firstDepartment = departmentsDataObject.length > 0 ? Object?.keys(departmentsDataObject)[0] : "Lead Manager"
+        const firstDeptTeamMembers = departmentsDataObject.length > 0 ? Object?.keys(departmentsDataObject[firstDepartment]) : []
 
 
         const initialQuery = [
@@ -104,6 +108,12 @@ export default function KpiDashboard({ user }) {
         setIsProfessional(user.isProfessional);
         setIsScaling(user.isScaling);
         setIsStarter(user.isStarter);
+
+        setLeadSources({});
+        setDepartments([]);
+        setTeamMembers([]);
+        setQueries([]);
+        setQueryType(KPI_VIEWS.Acquisitions);
 
         async function getSetData() {
             if (!clientSpaceId) {
@@ -142,29 +152,22 @@ export default function KpiDashboard({ user }) {
 
         if (clientSpaceId !== closersSpaceId && isProfessional || clientSpaceId !== closersSpaceId && isStarter) {
             // console.log("professional query")
-            setLeadSources({});
-            setDepartments([]);
-            setTeamMembers([]);
-            setQueryType(KPI_VIEWS.Acquisitions);
+           
             setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
             let newQuery = professionalQuery("Acquisitions");
             setIdCounter(newQuery.id);
             setQueries([newQuery]);
-            // dispatch(addQuery([professionalQuery]))
+            dispatch(addQuery([professionalQuery]))
             setIsLoadingData(false);
             return;
         } else if (clientSpaceId !== closersSpaceId && isScaling) {
-            // console.log("scaling query")
+            console.log("scaling query")
             getSetData();
         } else if (clientSpaceId === closersSpaceId || isAdmin) {
-            // console.log("closers query")
+            console.log("Admin or closers query")
             getSetData();
         } else {
-            // console.log("no query")
-            setLeadSources({});
-            setDepartments([]);
-            setTeamMembers([]);
-            setQueryType(KPI_VIEWS.Acquisitions);
+            console.log("no query")
             setKpiList(VIEW_KPIS["Acquisitions"]["Clients"]);
             let newQuery = professionalQuery("Acquisitions");
             setQueries([newQuery]);
