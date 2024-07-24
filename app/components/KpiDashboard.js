@@ -43,18 +43,18 @@ export default function KpiDashboard({ user }) {
     const [idCounter, setIdCounter] = useState(0);
     const [queries, setQueries] = useState([]);
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID);
-    console.log(closersSpaceId)
+    // console.log(closersSpaceId)
     const clientSpaceId = useSelector(selectSpaceId);
 
-    console.log(clientSpaceId)
+    // console.log(clientSpaceId)
     // const dispatch = useDispatch();
     // const queries = useSelector(selectAllQueries);
     // console.log(clientSpaceId)
 
-    console.log(user)
-    console.log(isStarter)
-    console.log(isProfessional)
-    console.log(isScaling)
+    // console.log(user)
+    // console.log(isStarter)
+    // console.log(isProfessional)
+    // console.log(isScaling)
 
     const professionalQuery = (type) => {
         return ({ id: idCounter + 1, kpiView: type ? type : "Acquisitions", results: [], isOpen: true, isLoading: false, isUnavailable: false, leadSources: [], dateRange: { gte: datePresets['Last Week'].startDate, lte: datePresets['Last Week'].endDate }, departments: ["Lead Manager"], teamMembers: [{ "Lead Manager": "Bob" }, { "Acquisition Manager": "Bob" }, { "Deal Analyst": "Bob" }] })
@@ -69,10 +69,8 @@ export default function KpiDashboard({ user }) {
             allTeamMembers.push(...Object.keys(departmentsDataObject[department]))
         }
 
-        console.log(departmentsDataObject)
-        const firstDepartment = departmentsDataObject.length > 0 ? Object?.keys(departmentsDataObject)[0] : "Lead Manager"
-        const firstDeptTeamMembers = departmentsDataObject.length > 0 ? Object?.keys(departmentsDataObject[firstDepartment]) : []
-
+        const firstDepartment = Object?.keys(departmentsDataObject)[0]
+        const firstDeptTeamMembers = Object?.keys(departmentsDataObject[firstDepartment])
 
         const initialQuery = [
             {

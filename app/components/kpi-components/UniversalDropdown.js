@@ -171,8 +171,9 @@ function UniversalDropdown({ options, onOptionSelected, selectedOptions, queryId
                                 : isSingleSelect && selectedOptions || selectedOptions?.length === 1
                                     ? selectedOptions[0]
                                     : noSetter ? "No Setter" :
-                                        selectedOptions?.length === options.length ? (label ? "All " + label : "All") :
-                                            selectedOptions?.length === 0 ? "No Filter" :
+                                        selectedOptions?.length === options.length && options.length > 0 ? (label ? "All " + label : "All") :
+                                            selectedOptions?.length === 0 && options.length > 0 ? "No Filter" :
+                                                options.length === 0 ? (label ? "No " + label : "None") :                                                    
                                                 `${selectedOptions?.length} selected`}
                     </div>
                 </ButtonComponent>

@@ -14,14 +14,11 @@ function TeamComponent({ onTeamChange, onTeamMemberForClosersChange, query, quer
     const [selectedSubview, setSelectedSubview] = useState(['Team']);
     const [allTeamMembers, setAllTeamMembers] = useState([]);
 
-
     const closersSpaceId = Number(process.env.NEXT_PUBLIC_ACQUISITIONS_SPACEID);
     const clientSpaceId = useSelector(selectSpaceId);
 
     // console.log(departments[query.departments[0]]);
     // console.log(query.departments);
-
-
 
     useEffect(() => {
         if (isProfessional || isStarter) {
@@ -153,8 +150,6 @@ function TeamComponent({ onTeamChange, onTeamMemberForClosersChange, query, quer
         }
         return null;
     };
-
-    console.log(departments);
 
     return (
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-1">
