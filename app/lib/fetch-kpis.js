@@ -342,7 +342,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
             endpointData.totalRevenueContracted = totalRevenueContracted;
             endpointData.numPaymentPlans = numPaymentPlans;
             endpointData.allLeadConnections = allLeadConnections && allLeadConnections;
-        } else if (view === 'Team') {
+        } else if (view === 'Team' && clientSpaceId === 8108305) {
 
             // filter out leads that don't have a phone number
             endpointData.teamKpis = endpointData.teamKpis && Array.isArray(endpointData.teamKpis) ? endpointData.teamKpis.filter(lead => lead.contact_phones) : [];
@@ -717,7 +717,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
 
         const calculatedKPIs = calculateKPIs(startDate, endDate, endpointData, requestedKpiList);
 
-        // console.log(calculatedKPIs)
+        console.log(calculatedKPIs)
 
         // Helper function for creating KPI objects
         const kpiObjects = requestedKpiList.map((kpiName) => {
@@ -733,7 +733,7 @@ async function fetchKpiData({ isStarter, isProfessional, clientSpaceId, view, kp
             return createKpiObject(name, current, redFlag, target, data1, data2, data3, unit, kpiType, kpiFactors);
         })
 
-        // console.log("kpiObjects: ", kpiObjects);
+        console.log("kpiObjects: ", kpiObjects);
         return kpiObjects;
 
     } catch (error) {

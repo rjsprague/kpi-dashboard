@@ -185,6 +185,8 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
             leadsArray.push(item["Related Lead"]);
         } else if (item["Contact"]) {
             leadsArray.push(item["Contact"])
+        } else if (item["Linked Lead"]) {
+            leadsArray.push(item["Linked Lead"])
         }
     });
 
@@ -203,12 +205,14 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
     }
 
     leadsEndpoint.filters = [{ type: "app", fieldName: "itemid", values: leadsArray.flat() }];
+    // console.log(leadsEndpoint)
+
     const leads = await fetchPage(leadsEndpoint);
     // console.log(leads[0]["Followup Reminder: Specific Date"])
     // console.log(leads)
 
     let namesAddresses = {};
-    console.log(leads)
+    // console.log(leads)
     leads.forEach(lead => {
         // console.log(lead["Followup Reminder: Specific Date"])
         namesAddresses[lead.itemid] = {
@@ -222,6 +226,7 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
             "Status": lead["Lead Status"] ? lead["Lead Status"] : "No lead status",
             "Follow Up": lead['Followup Reminder: Specific Date'] ? lead['Followup Reminder: Specific Date']['start'] : "No followup date",
             "Lead Source": lead["Lead Source Item"] ? lead["Lead Source Item"] : "no lead source",
+            "Lead Manager": lead["Lead Manager Responsible"] ? lead["Lead Manager Responsible"] : lead["Lead Assignee"] ? lead["Lead Assignee"] : "No Lead Manager",
             seller_id: lead.itemid ? lead.itemid : lead.podio_item_id,
         }
     });
@@ -244,9 +249,9 @@ export default async function fetchSingleKpi({ startDate, endDate, leadSource, k
 
 function filterResults(results, apiEndpointKey, namesAddresses, selectedDepartment, apiName, teamMembers) {
 
-    // console.log(results)
-    // console.log(apiEndpointKey)
-    // console.log(namesAddresses)
+    console.log(results)
+    console.log(apiEndpointKey)
+    console.log(namesAddresses)
     // console.log(selectedDepartment)
     console.log(apiName)
     // console.log(teamMembers)
@@ -333,7 +338,7 @@ function filterResults(results, apiEndpointKey, namesAddresses, selectedDepartme
                         : result["Q or UNQ"] ? result["Q or UNQ"]
                             : "No Status",
                     "Address": result["Property Address"] ? result["Property Address"] : result["*AS Address"] ? result["*AS Address"] : "No address",
-                    "Lead Manager": result["Lead Manager Responsible"] ? result["Lead Manager Responsible"] : "No Lead Manager",
+                    "Lead Manager": result["Lead Manager Responsible"] ? result["Lead Manager Responsible"] : namesAddresses && namesAddresses[result["Linked Lead"]] ? namesAddresses[result["Linked Lead"]]["Lead Manager"] : "No Lead Manager",
                     "Lead Source": result["Lead Source"] ? result["Lead Source"] : "No Lead Source",
                     podio_item_id: result.itemid ? result.itemid : result.podio_item_id,
                     seller_id: result["Linked Lead"] ? result["Linked Lead"][0] : "No Seller ID",

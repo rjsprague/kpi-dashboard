@@ -53,6 +53,8 @@ function calculateLeadsConnectedTable(lead, data) {
     const leadSource = lead["Lead Source Item"] ? lead["Lead Source Item"] : "❓";
     const podio_item_id = lead.itemid ? lead.itemid : lead.podio_item_id;
 
+    console.log(leadName)
+
     return {
         Date: leadCreatedTs,
         Name: leadName,
