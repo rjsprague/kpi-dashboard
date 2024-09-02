@@ -144,7 +144,7 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
 
     // console.log(isProfessional)
 
-    // console.log('data', data)
+    console.log('data', data)
     // console.log('leadSources', leadSources)
     // console.log('departments', departments)
     // console.log('selectedTableKey', selectedTableKey)
@@ -195,6 +195,8 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
                 }
                 return prevColumns;
             });
+        } else {
+            setColumns([]);
         }
     }, [data, showTooltip, hideTooltip]);
 
@@ -233,17 +235,6 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
 
     // console.log(table.getState().sorting)
 
-    if (data.length === 0 || isProfessional) {
-        return (
-            <div className="flex flex-col max-w-sm px-10 m-4 w-100 h-1/4">
-                <h1 className="text-xl font-bold text-center text-gray-100">{selectedTableKey && formatWords(selectedTableKey)}</h1>
-                <div className="flex items-center justify-center w-full h-full py-40 mt-4 border">
-                    <h2 className="text-lg font-semibold text-center text-gray-100">No Data</h2>
-                </div>
-            </div>
-        )
-    }
-
     const columnSizeVars = React.useMemo(() => {
         const headers = table.getFlatHeaders()
         const colSizes = {}
@@ -254,6 +245,17 @@ const DataTable = ({ selectedTableKey, data, leadSources, departments, isProfess
         }
         return colSizes
     }, [table.getState().columnSizingInfo])
+
+    if (data.length === 0 || isProfessional) {
+        return (
+            <div className="flex flex-col max-w-sm px-10 m-4 w-100 h-1/4">
+                <h1 className="text-xl font-bold text-center text-gray-100">{selectedTableKey && formatWords(selectedTableKey)}</h1>
+                <div className="flex items-center justify-center w-full h-full py-40 mt-4 border">
+                    <h2 className="text-lg font-semibold text-center text-gray-100">No Data</h2>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="flex flex-col items-center mt-4">

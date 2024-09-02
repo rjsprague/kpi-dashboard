@@ -145,21 +145,26 @@ const RightSlideModal = ({
         // Create attrition list by removing the elements that exist in dataTable2 from dataTable1
         // Must use the seller_id as the key to compare
         if (data) {
-            // console.log(dataTable1)
-            // console.log(dataTable2)
+            console.log(dataTable1)
+            console.log(dataTable2)
 
             const dataTable1SellerIDSet = dataTable1 ? new Set(dataTable1.map(item => item.seller_id)) : new Set();
-            // console.log('dataTable1Set', dataTable1SellerIDSet)
+            console.log('dataTable1Set', dataTable1SellerIDSet)
             const dataTable2SellerIDSet = dataTable2 ? new Set(dataTable2.map(item => item.seller_id)) : new Set();
-            // console.log('dataTable2Set', dataTable2SellerIDSet)
+            console.log('dataTable2Set', dataTable2SellerIDSet)
             for (let item of dataTable2SellerIDSet) {
-                // console.log(item)
+                console.log(item)
                 dataTable1SellerIDSet.delete(item);
             }
-            // console.log('dataTable1Set', dataTable1SellerIDSet)
+            console.log('dataTable1Set', dataTable1SellerIDSet)
             const attritionList = dataTable1.filter(item => dataTable1SellerIDSet.has(item.seller_id));
-            // console.log('attritionList', attritionList)
-            setAttritionList(attritionList);
+            console.log('attritionList', attritionList)
+            if (attritionList && attritionList.length > 0) {
+                console.log('attritionList', attritionList)
+                setAttritionList(attritionList);
+            } else {
+                setAttritionList([]);
+            }
         } else {
             setAttritionList([]);
         }
